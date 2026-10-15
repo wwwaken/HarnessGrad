@@ -1,0 +1,97 @@
+{
+  "packet": "/tmp/hg-e6b/reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685",
+  "case_results": {
+    "mounted-timeout": {
+      "verdict": {
+        "kind": "command",
+        "passed": false,
+        "outcome": "timeout",
+        "unmeasured": "the verifier timed out after 3s",
+        "detail": "the verifier timed out after 3s",
+        "scorer_isolation_class": "snapshot-service",
+        "scorer_isolation_declared": "snapshot-service"
+      }
+    },
+    "mounted-missing-reward": {
+      "verdict": {
+        "kind": "command",
+        "passed": false,
+        "score": 0.0,
+        "detail": "the check wrote no /verifier/reward.txt (looked for /tmp/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-esqb52cy/hg-verdict-q20xf2fs/reward.txt), exit 1 | stdout      unlimited            unlimited            locks     \\nMax pending signals       1028970              1028970              signals   \\nMax msgqueue size         819200               819200               bytes     \\nMax nice priority         0                    0                    \\nMax realtime priority     0                    0                    \\nMax realtime timeout      unlimited            unlimited            us        \\n\", \"cgroup\": \"0::/\\n\", \"mode\": \"missing-reward\"}\n{\"pid\": 1, \"child\": 7, \"recording_visible\": true, \"limits\": \"Limit                     Soft Limit           Hard Limit           Units     \\nMax cpu time              unlimited            unlimited            seconds   \\nMax file size             unlimited            unlimited            bytes     \\nMax data size             unlimited            unlimited            bytes     \\nMax stack size            8388608              unlimited            bytes     \\nMax core file size        unlimited            unlimited            bytes     \\nMax resident set          unlimited            unlimited            bytes     \\nMax processes             unlimited            unlimited            processes \\nMax open files            1024                 524288               files     \\nMax locked memory         8388608              8388608              bytes     \\nMax address space         unlimited            unlimited            bytes     \\nMax file locks            unlimited            unlimited            locks     \\nMax pending signals       1028970              1028970              signals   \\nMax msgqueue size         819200               819200               bytes     \\nMax nice priority         0                    0                    \\nMax realtime priority     0                    0                    \\nMax realtime timeout      unlimited            unlimited            us        \\n\", \"cgroup\": \"0::/\\n\", \"mode\": \"missing-reward\", \"child_returncode\": -15, \"child_proc_absent_after_wait\": true} | stderr Traceback (most recent call last):\n  File \"/app/probe.py\", line 39, in <module>\n    raise RuntimeError('authored error after child wait, before reward')\nRuntimeError: authored error after child wait, before reward",
+        "scorer_isolation_class": "snapshot-service",
+        "scorer_isolation_declared": "snapshot-service"
+      }
+    },
+    "mounted-malformed-reward": {
+      "verdict": {
+        "kind": "command",
+        "passed": false,
+        "score": 0.0,
+        "detail": "/verifier/reward.txt held 'not-a-number', which is not a number",
+        "scorer_isolation_class": "snapshot-service",
+        "scorer_isolation_declared": "snapshot-service"
+      }
+    },
+    "mounted-missing-evidence": {
+      "verdict": {
+        "kind": "command",
+        "passed": true,
+        "score": 1.0,
+        "detail": "reward 1 from /verifier/reward.txt (exit 0) | stdout  unlimited            unlimited            locks     \\nMax pending signals       1028970              1028970              signals   \\nMax msgqueue size         819200               819200               bytes     \\nMax nice priority         0                    0                    \\nMax realtime priority     0                    0                    \\nMax realtime timeout      unlimited            unlimited            us        \\n\", \"cgroup\": \"0::/\\n\", \"mode\": \"missing-evidence\"}\n{\"pid\": 1, \"child\": 7, \"recording_visible\": true, \"limits\": \"Limit                     Soft Limit           Hard Limit           Units     \\nMax cpu time              unlimited            unlimited            seconds   \\nMax file size             unlimited            unlimited            bytes     \\nMax data size             unlimited            unlimited            bytes     \\nMax stack size            8388608              unlimited            bytes     \\nMax core file size        unlimited            unlimited            bytes     \\nMax resident set          unlimited            unlimited            bytes     \\nMax processes             unlimited            unlimited            processes \\nMax open files            1024                 524288               files     \\nMax locked memory         8388608              8388608              bytes     \\nMax address space         unlimited            unlimited            bytes     \\nMax file locks            unlimited            unlimited            locks     \\nMax pending signals       1028970              1028970              signals   \\nMax msgqueue size         819200               819200               bytes     \\nMax nice priority         0                    0                    \\nMax realtime priority     0                    0                    \\nMax realtime timeout      unlimited            unlimited            us        \\n\", \"cgroup\": \"0::/\\n\", \"mode\": \"missing-evidence\", \"child_returncode\": -15, \"child_proc_absent_after_wait\": true}",
+        "unmeasured": "the check wrote no /verifier/evidence.json: its tests did not run, so this task was not measured",
+        "scorer_isolation_class": "snapshot-service",
+        "scorer_isolation_declared": "snapshot-service"
+      }
+    },
+    "mounted-writable-helper-timeout": {
+      "exception": "TimeoutExpired(['docker', 'run', '--name', 'hg-run-f8621576685c4f91804684a3aeff97e3', '--rm', '--network', 'hg-w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-mounted', '--read-only', '--tmpfs', '/tmp:rw,exec,nosuid,size=512m,mode=1777', '--pids-limit', '1024', '--memory', '4g', '--cpus', '2', '--mount', 'type=bind,src=/tmp/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-esqb52cy/mounted-writable-helper-timeout,dst=/app', '--mount', 'type=bind,src=/tmp/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-esqb52cy/authored-harness,dst=/tmp/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-esqb52cy/authored-harness,readonly', '--mount', 'type=bind,src=/tmp/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-esqb52cy/authored-harness/.state,dst=/tmp/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-esqb52cy/authored-harness/.state', '--user', '1026:1026', '-w', '/app', 'harnessgrad/appworld-service@sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca', 'python3', 'probe.py', 'timeout', '--out', '/app'], 3)"
+    },
+    "snapshot-missing-argv": {
+      "verdict": {
+        "kind": "command",
+        "passed": false,
+        "detail": "a command verifier with state='container' needs `argv`",
+        "scorer_isolation_class": "snapshot-service",
+        "scorer_isolation_declared": "snapshot-service"
+      }
+    },
+    "snapshot-staging-error": {
+      "exception": "ValueError('verifier input source /tmp/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-esqb52cy/absent-input.py does not exist')"
+    },
+    "unsandboxed-normal": {
+      "verdict": {
+        "kind": "command",
+        "passed": true,
+        "score": 1.0,
+        "detail": "reward 1 from /verifier/reward.txt (exit 0) | stdout 970              1028970              signals   \\nMax msgqueue size         819200               819200               bytes     \\nMax nice priority         0                    0                    \\nMax realtime priority     0                    0                    \\nMax realtime timeout      unlimited            unlimited            us        \\n\", \"cgroup\": \"0::/user.slice/user-1026.slice/session-30838.scope\\n\", \"mode\": \"normal\"}\n{\"pid\": 3190596, \"child\": 3190635, \"recording_visible\": false, \"limits\": \"Limit                     Soft Limit           Hard Limit           Units     \\nMax cpu time              unlimited            unlimited            seconds   \\nMax file size             unlimited            unlimited            bytes     \\nMax data size             unlimited            unlimited            bytes     \\nMax stack size            8388608              unlimited            bytes     \\nMax core file size        0                    unlimited            bytes     \\nMax resident set          unlimited            unlimited            bytes     \\nMax processes             1028970              1028970              processes \\nMax open files            1048576              1048576              files     \\nMax locked memory         33750654976          33750654976          bytes     \\nMax address space         unlimited            unlimited            bytes     \\nMax file locks            unlimited            unlimited            locks     \\nMax pending signals       1028970              1028970              signals   \\nMax msgqueue size         819200               819200               bytes     \\nMax nice priority         0                    0                    \\nMax realtime priority     0                    0                    \\nMax realtime timeout      unlimited            unlimited            us        \\n\", \"cgroup\": \"0::/user.slice/user-1026.slice/session-30838.scope\\n\", \"mode\": \"normal\", \"child_returncode\": -15, \"child_proc_absent_after_wait\": true}",
+        "scorer_isolation_class": "actor-workdir",
+        "scorer_isolation_declared": "unknown"
+      }
+    },
+    "unsandboxed-single-timeout": {
+      "verdict": {
+        "kind": "command",
+        "passed": false,
+        "outcome": "timeout",
+        "unmeasured": "the verifier timed out after 2s",
+        "detail": "the verifier timed out after 2s",
+        "scorer_isolation_class": "actor-workdir",
+        "scorer_isolation_declared": "unknown"
+      }
+    },
+    "unsandboxed-missing-command": {
+      "verdict": {
+        "kind": "command",
+        "passed": false,
+        "detail": "the verifier command does not exist: [Errno 2] No such file or directory: '/tmp/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-esqb52cy/absent-executable'",
+        "scorer_isolation_class": "actor-workdir",
+        "scorer_isolation_declared": "unknown"
+      }
+    },
+    "service-health-failure": {
+      "exception": "ServiceUnavailable(\"service 'recording' was not healthy after 1s (exit 7: ). This is a dataset-side failure, not a harness result: the task is recorded as invalid rather than scored zero.\")"
+    }
+  },
+  "native_service_stop_problems": [],
+  "rescue_containers": []
+}

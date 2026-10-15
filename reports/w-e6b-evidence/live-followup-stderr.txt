@@ -1,0 +1,35 @@
+Traceback (most recent call last):
+  File "/tmp/hg-e6b/tests/fixtures/hg_we6b/collect.py", line 251, in mounted
+    result = threaded_call(lambda: verifier._verify(task, spec, '', sandbox=True,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/hg-e6b/tests/fixtures/hg_we6b/collect.py", line 209, in threaded_call
+    result['native_after_objects'] = {cid: inspect(cid) for cid in set(known) - before}
+                                           ^^^^^^^^^^^^
+  File "/tmp/hg-e6b/tests/fixtures/hg_we6b/collect.py", line 108, in inspect
+    raise RuntimeError('inspect observation failed: ' + p.stderr)
+RuntimeError: inspect observation failed: error: no such object: 3e410f7074251781fe44c386a7ed84747760a5aa37940e4758830033980f2c30
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/hg-e6b/tests/fixtures/hg_we6b/collect.py", line 358, in <module>
+    mounted(image)
+  File "/tmp/hg-e6b/tests/fixtures/hg_we6b/collect.py", line 274, in mounted
+    summary['service_after_native_stop'] = inspect(running.containers['recording'])
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/hg-e6b/tests/fixtures/hg_we6b/collect.py", line 108, in inspect
+    raise RuntimeError('inspect observation failed: ' + p.stderr)
+RuntimeError: inspect observation failed: error: no such object: 5a5508b77d22299d8a565ffb1e26b62b045228e79af71da4016123ac9fd61e03
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/hg-e6b/tests/fixtures/hg_we6b/collect.py", line 367, in <module>
+    summary['before_rescue_objects'] = {cid: inspect(cid) for cid in known}
+                                             ^^^^^^^^^^^^
+  File "/tmp/hg-e6b/tests/fixtures/hg_we6b/collect.py", line 108, in inspect
+    raise RuntimeError('inspect observation failed: ' + p.stderr)
+RuntimeError: inspect observation failed: error: no such object: 5a5508b77d22299d8a565ffb1e26b62b045228e79af71da4016123ac9fd61e03
+

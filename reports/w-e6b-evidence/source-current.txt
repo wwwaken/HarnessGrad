@@ -1,0 +1,1980 @@
+{"shared_dataset_count": 23, "shared_datasets": ["alfworld", "appworld", "bfcl_v3", "bird_minidev", "chessbench_puzzles", "ds1000", "fever", "gaia", "gsm8k", "hotpotqa", "jericho", "livecodebench", "musique", "physicsquestions", "reasoning_gym", "scienceworld", "sportsunderstanding", "spreadsheetbench", "strategyqa", "tau_bench", "terminal_bench", "triviaqa", "twowikimultihopqa"], "source_file_count": 45}
+SOURCE data/datasets/alfworld.py sha256=49e71de4c0a89b9c6feb75211862ff5073f116d824707222d11354920c14417f bytes=27216
+data/datasets/alfworld.py:97: from data.scaffolds.scorer_input import bind as bind_scorer_input
+data/datasets/alfworld.py:147: def _load_gym_env():
+data/datasets/alfworld.py:198: def _split_dir() -> Path:
+data/datasets/alfworld.py:202: def _collect() -> list[dict]:
+data/datasets/alfworld.py:224:         if "movable" in str(trial_dir) or "Sliced" in str(trial_dir):
+data/datasets/alfworld.py:227:         if not traj_path.is_file():
+data/datasets/alfworld.py:229:         try:
+data/datasets/alfworld.py:232:         except (OSError, ValueError) as exc:
+data/datasets/alfworld.py:234:         if traj_data.get("task_type") not in TASK_TYPES.values():
+data/datasets/alfworld.py:236:         if "solvable" not in gamedata:
+data/datasets/alfworld.py:243:         if not gamedata["solvable"]:
+data/datasets/alfworld.py:246:         if not match:
+data/datasets/alfworld.py:266: def _stripped_game(gamedata: dict) -> str:
+data/datasets/alfworld.py:277: def _goal(record: dict) -> str:
+data/datasets/alfworld.py:315: def _setup(record: dict) -> dict:
+data/datasets/alfworld.py:329: def _verifier(record: dict) -> dict:
+data/datasets/alfworld.py:362:         "timeout_s": 300,
+data/datasets/alfworld.py:369: def downloads() -> list[dict]:
+data/datasets/alfworld.py:464: def provision_status() -> dict:
+data/datasets/alfworld.py:475:         try:
+data/datasets/alfworld.py:476:             if "solvable" in json.loads(game.read_text()):
+data/datasets/alfworld.py:478:         except (OSError, ValueError):
+data/datasets/alfworld.py:497: try:
+data/datasets/alfworld.py:500: except Exception as _exc:  # noqa: BLE001 - reported by load(), which is where it bites
+data/datasets/alfworld.py:505: def load() -> tuple[list[dict], dict[str, str]]:
+data/datasets/alfworld.py:508:     if _LOAD_ERROR is not None:
+data/datasets/alfworld.py:511:     if not _RECORDS:
+data/datasets/alfworld.py:522: def _is_eval(task_id: str) -> bool:
+data/datasets/alfworld.py:537: DEFAULT_ENV: dict = {"kind": "files"}
+data/datasets/alfworld.py:541: VERIFY: dict[str, dict] = {r["task_id"]: _verifier(r) for r in _RECORDS}
+data/datasets/alfworld.py:544: if _split_mode == "none":
+data/datasets/alfworld.py:546: else:
+SOURCE data/datasets/alfworld/verify/check.py sha256=c4978ec4af63cf1df8cdacf8000f182307a6a2281f513791a7d6f7a46b56b741 bytes=11201
+data/datasets/alfworld/verify/check.py:63: from data.scaffolds.scorer_input import add_arguments, run_bound
+data/datasets/alfworld/verify/check.py:73: def parse_args(argv):
+data/datasets/alfworld/verify/check.py:95: def write_reward(path: Path, score: int) -> None:
+data/datasets/alfworld/verify/check.py:100: def write_evidence(path: Path, evidence: dict) -> None:
+data/datasets/alfworld/verify/check.py:102:     try:
+data/datasets/alfworld/verify/check.py:106:     except OSError as exc:
+data/datasets/alfworld/verify/check.py:110: def official_reduction(won_per_step: list[bool]) -> float:
+data/datasets/alfworld/verify/check.py:135: def main(argv) -> int:
+data/datasets/alfworld/verify/check.py:141: def _score(args, inputs, receipt) -> int:
+data/datasets/alfworld/verify/check.py:143:         "scorer_input": receipt,
+data/datasets/alfworld/verify/check.py:149:     if not args.game.is_file():
+data/datasets/alfworld/verify/check.py:159:                if r.get("kind") == "action" and isinstance(r.get("action"), str)]
+data/datasets/alfworld/verify/check.py:163:                         if args.log.is_file() else []) if line.strip()]) - len(records)
+data/datasets/alfworld/verify/check.py:168:     try:
+data/datasets/alfworld/verify/check.py:169:         state = gym_env.replay(str(inputs[str(args.game)]), actions, args.budget)
+data/datasets/alfworld/verify/check.py:170:     except Exception as exc:  # noqa: BLE001 - a check that cannot run is not a zero
+data/datasets/alfworld/verify/check.py:187:               if "Nothing happens" in str(r.get("observation", ""))]
+data/datasets/alfworld/verify/check.py:212:     if won_step is None:
+data/datasets/alfworld/verify/check.py:213:         if budget_exhausted:
+data/datasets/alfworld/verify/check.py:216:         elif not actions:
+data/datasets/alfworld/verify/check.py:218:         else:
+data/datasets/alfworld/verify/check.py:221:     else:
+data/datasets/alfworld/verify/check.py:226:     if reward == 1:
+data/datasets/alfworld/verify/check.py:238: if __name__ == "__main__":
+data/datasets/alfworld/verify/check.py:239:     try:
+data/datasets/alfworld/verify/check.py:241:     except SystemExit:
+data/datasets/alfworld/verify/check.py:243:     except Exception:  # noqa: BLE001 - a crash must not look like a measured zero
+SOURCE data/datasets/appworld.py sha256=504107fa806f533c4067f4d1c3bed3102f0f0f376692a0a4543fc0e1e3eb493e bytes=14440
+data/datasets/appworld.py:71: def bundle_zip(bundle_path: Path | str | None = None) -> zipfile.ZipFile:
+data/datasets/appworld.py:86: def task_ids(bundle_path: Path | str | None = None) -> list[str]:
+data/datasets/appworld.py:93:                 if name.startswith(prefix) and name.endswith(suffix)
+data/datasets/appworld.py:98: def split_ids(bundle_path: Path | str | None = None) -> dict[str, list[str]]:
+data/datasets/appworld.py:106: def _db_digest(root: Path) -> str:
+data/datasets/appworld.py:114: def prepare() -> Path:
+data/datasets/appworld.py:122:     if not marker.is_file():
+data/datasets/appworld.py:126:                 if member.is_dir():
+data/datasets/appworld.py:159: def _pool() -> list[dict]:
+data/datasets/appworld.py:160:     if not POOL.is_file():
+data/datasets/appworld.py:163:     if actual != POOL_SHA256:
+data/datasets/appworld.py:168: def _oracle_ids() -> set[str]:
+data/datasets/appworld.py:172: def oracle_files(task: dict) -> dict[str, str]:
+data/datasets/appworld.py:174:     if task_id not in _oracle_ids():
+data/datasets/appworld.py:179:     if not path.is_file():
+data/datasets/appworld.py:202: def _goal(row: dict) -> str:
+data/datasets/appworld.py:206: def _runtime_prompt(task_id: str) -> str:
+data/datasets/appworld.py:242: def _setup(task_id: str) -> dict:
+data/datasets/appworld.py:247: def load():
+data/datasets/appworld.py:252: def reporting_manifest(task_ids: list[str]) -> list[dict]:
+data/datasets/appworld.py:267: VERIFY = {
+data/datasets/appworld.py:270:         "scorer_bundle": {"isolation_class": "snapshot-service"},
+data/datasets/appworld.py:279:             f"/recordings/appworld/experiments/outputs/harness/tasks/{task_id}/logs/api_calls.jsonl",
+data/datasets/appworld.py:289:         "timeout_s": 900,
+data/datasets/appworld.py:294: DEFAULT_ENV = {
+data/datasets/appworld.py:315:                 "timeout_s": 60,
+data/datasets/appworld.py:330: def downloads() -> list[dict]:
+data/datasets/appworld.py:345: def provision_status() -> dict:
+SOURCE data/datasets/appworld/server.sh sha256=494ac67d025b7fcd733c641e5de95b85dc29f87e5829e11f4bfb198bca3fd5e4 bytes=1041
+data/datasets/appworld/server.sh:16: if not re.fullmatch(r"[A-Za-z0-9]+_[0-9]+", task_id):
+data/datasets/appworld/server.sh:19: if not (tasks / task_id).is_dir():
+data/datasets/appworld/server.sh:22:     if task.name != task_id:
+SOURCE data/datasets/appworld/service.py sha256=c99019172d073ed9b8e8df260e94894f2a2b7c2cd1c87bed8ea30a7745055cd8 bytes=2720
+data/datasets/appworld/service.py:18: if not TASK_ID:
+data/datasets/appworld/service.py:25: def _check(task_id: str) -> None:
+data/datasets/appworld/service.py:26:     if task_id != TASK_ID:
+data/datasets/appworld/service.py:28:     if world is None:
+data/datasets/appworld/service.py:41:     if task_id != TASK_ID:
+data/datasets/appworld/service.py:67:     if world is None:
+SOURCE data/datasets/appworld/verify/check.py sha256=0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5 bytes=3490
+data/datasets/appworld/verify/check.py:12: def unmeasured(message: str, evidence_file: str, metadata: dict) -> "NoReturn":
+data/datasets/appworld/verify/check.py:21: def main() -> int:
+data/datasets/appworld/verify/check.py:32:     if not log.is_file():
+data/datasets/appworld/verify/check.py:34:     try:
+data/datasets/appworld/verify/check.py:36:     except (OSError, json.JSONDecodeError) as exc:
+data/datasets/appworld/verify/check.py:38:     try:
+data/datasets/appworld/verify/check.py:39:         if Path("/appworld/data").is_dir():
+data/datasets/appworld/verify/check.py:50:                 if method not in {"get", "post", "put", "patch", "delete"}:
+data/datasets/appworld/verify/check.py:57:     except SystemExit:
+data/datasets/appworld/verify/check.py:59:     except Exception as exc:  # an environment/import/data failure is not a task failure
+data/datasets/appworld/verify/check.py:79: if __name__ == "__main__":
+SOURCE data/datasets/bfcl_v3.py sha256=de8f7efb844c39fa79632d42171d537e488f055dae7b5e1bceb583368e3bce17 bytes=28188
+data/datasets/bfcl_v3.py:80: def NOOP_EXPECTED(record: dict) -> float:
+data/datasets/bfcl_v3.py:115: DEFAULT_ENV = {"kind": "files"}
+data/datasets/bfcl_v3.py:123: def _read_jsonl(path: Path) -> list[dict]:
+data/datasets/bfcl_v3.py:125:     if not path.is_file():
+data/datasets/bfcl_v3.py:129:         if line.strip():
+data/datasets/bfcl_v3.py:134: def _rows(subsets: set[str] | None = None) -> dict[str, list[dict]]:
+data/datasets/bfcl_v3.py:138:     if unknown:
+data/datasets/bfcl_v3.py:141:     if "simple" in wanted:
+data/datasets/bfcl_v3.py:147:     if "irrelevance" in wanted:
+data/datasets/bfcl_v3.py:152: def normalize_schema(parameters: dict) -> dict:
+data/datasets/bfcl_v3.py:160:     if "type" in out:
+data/datasets/bfcl_v3.py:165:         if "type" in spec:
+data/datasets/bfcl_v3.py:168:     if properties:
+data/datasets/bfcl_v3.py:173: def bare_name(name: str) -> str:
+data/datasets/bfcl_v3.py:184: def gold_names(ground_truth) -> list[str]:
+data/datasets/bfcl_v3.py:192:     if isinstance(ground_truth, list):
+data/datasets/bfcl_v3.py:194:             if isinstance(call, dict):
+data/datasets/bfcl_v3.py:199: def parse_prediction(text: str) -> list[str]:
+data/datasets/bfcl_v3.py:209:         if not line:
+data/datasets/bfcl_v3.py:211:         if re.fullmatch(r"(?i)none|no[ _-]?tool|no[ _-]?function", line):
+data/datasets/bfcl_v3.py:217: def score(prediction: str, gold: dict) -> dict:
+data/datasets/bfcl_v3.py:246: def _render_functions(functions: list[dict]) -> str:
+data/datasets/bfcl_v3.py:258: def _goal(record: dict) -> str:
+data/datasets/bfcl_v3.py:300: def _downloads() -> list[dict]:
+data/datasets/bfcl_v3.py:336: def _selected_records(task_ids: list[str] | set[str]) -> list[dict]:
+data/datasets/bfcl_v3.py:348:     if task_ids is None:
+data/datasets/bfcl_v3.py:351:     if not ids:
+data/datasets/bfcl_v3.py:356:         if match is None:
+data/datasets/bfcl_v3.py:360:         if index >= (N_SIMPLE if subset == "simple" else N_IRRELEVANCE):
+data/datasets/bfcl_v3.py:365:     try:
+data/datasets/bfcl_v3.py:367:     except (OSError, ValueError) as exc:
+data/datasets/bfcl_v3.py:369:     if (not isinstance(manifest, dict) or type(manifest.get("schema_version")) is not int
+data/datasets/bfcl_v3.py:379:         if (not isinstance(entry, dict) or not isinstance(entry.get("question_id"), str)
+data/datasets/bfcl_v3.py:384:             if (not isinstance(span, dict)
+data/datasets/bfcl_v3.py:394:     def fingerprint(info):
+data/datasets/bfcl_v3.py:398:     def read_span(handle, span: dict, question_id: str) -> dict:
+data/datasets/bfcl_v3.py:401:         if (len(payload) != span["length"]
+data/datasets/bfcl_v3.py:405:         if not isinstance(row, dict) or row.get("id") != question_id:
+data/datasets/bfcl_v3.py:415:             if subset == "simple":
+data/datasets/bfcl_v3.py:418:                 if relative not in sources:
+data/datasets/bfcl_v3.py:421:                     if not stat.S_ISREG(info.st_mode):
+data/datasets/bfcl_v3.py:427:                 if span["length"] > info.st_size or span["offset"] > info.st_size - span["length"]:
+data/datasets/bfcl_v3.py:436:             if subset == "simple":
+data/datasets/bfcl_v3.py:441:             if fingerprint(os.fstat(handle.fileno())) != fingerprint(before):
+data/datasets/bfcl_v3.py:447: def _records(task_ids: list[str] | set[str] | None = None) -> list[dict]:
+data/datasets/bfcl_v3.py:453:     if task_ids is not None:
+data/datasets/bfcl_v3.py:461:         if len(rows) != expected:
+data/datasets/bfcl_v3.py:468: def _record_from_row(subset: str, index: int, row: dict, ground_truth) -> dict:
+data/datasets/bfcl_v3.py:477:             if isinstance(turn, dict) and str(turn.get("role")) == "user":
+data/datasets/bfcl_v3.py:479:                 if content:
+data/datasets/bfcl_v3.py:482:         if request:
+data/datasets/bfcl_v3.py:484:     if not request:
+data/datasets/bfcl_v3.py:492:     if subset == "simple" and not gold:
+data/datasets/bfcl_v3.py:509: class _BFCLSpec(base.QASpec):
+data/datasets/bfcl_v3.py:518:     def __init__(self, **kwargs) -> None:
+data/datasets/bfcl_v3.py:522:     def records(self) -> list[dict]:
+data/datasets/bfcl_v3.py:524:         if not records:
+data/datasets/bfcl_v3.py:529: _SPEC = _BFCLSpec(
+data/datasets/bfcl_v3.py:548: def _ensure(task_ids: list[str] | set[str] | None = None) -> list[dict]:
+data/datasets/bfcl_v3.py:550:     if task_ids is not None:
+data/datasets/bfcl_v3.py:552:     if _RECORDS:
+data/datasets/bfcl_v3.py:554:     try:
+data/datasets/bfcl_v3.py:556:     except Exception as exc:  # noqa: BLE001
+data/datasets/bfcl_v3.py:562: def load_selected(task_ids: list[str] | set[str]) -> tuple[list[dict], dict[str, str]]:
+data/datasets/bfcl_v3.py:569: def control_task(task_id: str | None) -> dict:
+data/datasets/bfcl_v3.py:573: def task_for(record: dict) -> dict:
+data/datasets/bfcl_v3.py:578: def setup_for(record: dict) -> dict:
+data/datasets/bfcl_v3.py:582: def verify_for(record: dict) -> dict:
+data/datasets/bfcl_v3.py:588: def load() -> tuple[list[dict], dict[str, str]]:
+data/datasets/bfcl_v3.py:589:     if _LOAD_ERROR is not None:
+data/datasets/bfcl_v3.py:598: def _is_eval(task_id: str) -> bool:
+data/datasets/bfcl_v3.py:603: def __getattr__(name: str):
+data/datasets/bfcl_v3.py:604:     if name == "SETUP":
+data/datasets/bfcl_v3.py:606:     if name == "VERIFY":
+data/datasets/bfcl_v3.py:608:     if name == "ENV":
+data/datasets/bfcl_v3.py:610:     if name == "SPLIT":
+data/datasets/bfcl_v3.py:613:         if (os.environ.get("HG_BFCL_V3_SPLIT") or "hash").lower() == "none":
+data/datasets/bfcl_v3.py:620: def downloads() -> list[dict]:
+data/datasets/bfcl_v3.py:624: def provision_status() -> dict:
+SOURCE data/datasets/bird_minidev.py sha256=b6160403cbd99c57bd601200cb3dd3e0fcf280f7bbb13182762859fe605ff5de bytes=17537
+data/datasets/bird_minidev.py:54: from data.scaffolds.scorer_input import bind as bind_scorer_input
+data/datasets/bird_minidev.py:88: def _rows() -> list[dict]:
+data/datasets/bird_minidev.py:92:              if line.strip()]
+data/datasets/bird_minidev.py:93:     if len(questions) != EXPECTED_ROWS or len(golds) != EXPECTED_ROWS:
+data/datasets/bird_minidev.py:105: try:
+data/datasets/bird_minidev.py:107: except Exception as _exc:  # noqa: BLE001 - reported by load(), which is where it bites
+data/datasets/bird_minidev.py:112: def _ensure() -> list[dict]:
+data/datasets/bird_minidev.py:121:     if _RECORDS:
+data/datasets/bird_minidev.py:128: def _ids() -> list[str]:
+data/datasets/bird_minidev.py:138: def _descriptions(db_id: str) -> dict[str, str]:
+data/datasets/bird_minidev.py:150:     if db_id not in _DESCRIPTION_CACHE:
+data/datasets/bird_minidev.py:153:         if directory.is_dir():
+data/datasets/bird_minidev.py:157:                     try:
+data/datasets/bird_minidev.py:160:                     except UnicodeDecodeError:
+data/datasets/bird_minidev.py:162:                 if text is None:                        # pragma: no cover - latin-1 never fails
+data/datasets/bird_minidev.py:166:                     if not column:
+data/datasets/bird_minidev.py:171:                     if values and values != description:
+data/datasets/bird_minidev.py:178: def schema_text(db_id: str) -> str:
+data/datasets/bird_minidev.py:185:                   if row["db_id"] == db_id), None)
+data/datasets/bird_minidev.py:186:     if entry is None:
+data/datasets/bird_minidev.py:194:         if table_index >= 0:
+data/datasets/bird_minidev.py:197:     def flatten(values) -> list[int]:
+data/datasets/bird_minidev.py:212:         if keys:
+data/datasets/bird_minidev.py:215:             if columns[index][0] == table_index:
+data/datasets/bird_minidev.py:226: def _task_md(record: dict) -> str:
+data/datasets/bird_minidev.py:238: def _goal(record: dict) -> str:
+data/datasets/bird_minidev.py:245: def _setup(record: dict) -> dict:
+data/datasets/bird_minidev.py:253: def _verify(record: dict) -> dict:
+data/datasets/bird_minidev.py:277: def setup_map() -> dict:
+data/datasets/bird_minidev.py:281: def verify_map() -> dict:
+data/datasets/bird_minidev.py:285: def tasks() -> list[dict]:
+data/datasets/bird_minidev.py:293: def __getattr__(name: str):
+data/datasets/bird_minidev.py:301:     if name == "SETUP":
+data/datasets/bird_minidev.py:303:     if name == "VERIFY":
+data/datasets/bird_minidev.py:305:     if name == "TASKS":
+data/datasets/bird_minidev.py:306:         if not _TASKS_CACHE:
+data/datasets/bird_minidev.py:309:     if name == "_RECORDS":
+data/datasets/bird_minidev.py:316: DEFAULT_ENV = {"kind": "files"}
+data/datasets/bird_minidev.py:331: def load() -> tuple[list[dict], dict[str, str]]:
+data/datasets/bird_minidev.py:333:     if not records:
+data/datasets/bird_minidev.py:338: def oracle_files(task: dict) -> dict[str, str]:
+data/datasets/bird_minidev.py:344: def downloads() -> list[dict]:
+data/datasets/bird_minidev.py:360: def provision_status() -> dict:
+SOURCE data/datasets/bird_minidev/verify/check.py sha256=fee968528375ed5dc129a40ce68995bf763d9f5e0c2f39559690caf4f279a575 bytes=6342
+data/datasets/bird_minidev/verify/check.py:37: from data.scaffolds.scorer_input import add_arguments, run_bound
+data/datasets/bird_minidev/verify/check.py:44: def calculate_ex(predicted_res, ground_truth_res):
+data/datasets/bird_minidev/verify/check.py:46:     if set(predicted_res) == set(ground_truth_res):
+data/datasets/bird_minidev/verify/check.py:52: class QueryTimedOut(Exception):
+data/datasets/bird_minidev/verify/check.py:56: def _alarm(_signum, _frame):
+data/datasets/bird_minidev/verify/check.py:60: def run_query(connection: sqlite3.Connection, sql: str) -> list[tuple]:
+data/datasets/bird_minidev/verify/check.py:62:     previous = signal.signal(signal.SIGALRM, _alarm)
+data/datasets/bird_minidev/verify/check.py:63:     signal.setitimer(signal.ITIMER_REAL, TIMEOUT_S)
+data/datasets/bird_minidev/verify/check.py:64:     try:
+data/datasets/bird_minidev/verify/check.py:65:         cursor = connection.cursor()
+data/datasets/bird_minidev/verify/check.py:68:     finally:
+data/datasets/bird_minidev/verify/check.py:69:         signal.setitimer(signal.ITIMER_REAL, 0)
+data/datasets/bird_minidev/verify/check.py:70:         signal.signal(signal.SIGALRM, previous)
+data/datasets/bird_minidev/verify/check.py:73: def _write(path: str, payload: str) -> None:
+data/datasets/bird_minidev/verify/check.py:79: def _measure(args, reward: float, why: str) -> int:
+data/datasets/bird_minidev/verify/check.py:82:         {"scorer_input": args.scorer_input_receipt, "measured": True, "metric": "EX", "reward": reward, "why": why}, sort_keys=True) + "\n")
+data/datasets/bird_minidev/verify/check.py:87: def _cannot_measure(args, why: str) -> int:
+data/datasets/bird_minidev/verify/check.py:90:         {"scorer_input": args.scorer_input_receipt, "measured": False, "metric": "EX", "error": why}, sort_keys=True) + "\n")
+data/datasets/bird_minidev/verify/check.py:95: def main() -> int:
+data/datasets/bird_minidev/verify/check.py:108: def _score(args, inputs, receipt) -> int:
+data/datasets/bird_minidev/verify/check.py:110:     args.scorer_input_receipt = receipt
+data/datasets/bird_minidev/verify/check.py:112:     if not Path(args.db).is_file():
+data/datasets/bird_minidev/verify/check.py:114:     if not gold_sql:
+data/datasets/bird_minidev/verify/check.py:117:     connection = sqlite3.connect(str(inputs[args.db]))
+data/datasets/bird_minidev/verify/check.py:118:     try:
+data/datasets/bird_minidev/verify/check.py:119:         try:
+data/datasets/bird_minidev/verify/check.py:121:         except Exception as exc:                    # noqa: BLE001 - a broken gold is not the agent's
+data/datasets/bird_minidev/verify/check.py:127:                       if Path(args.pred).is_file() else "")
+data/datasets/bird_minidev/verify/check.py:128:         if not prediction:
+data/datasets/bird_minidev/verify/check.py:130:         try:
+data/datasets/bird_minidev/verify/check.py:132:         except Exception as exc:                    # noqa: BLE001 - upstream scores this 0
+data/datasets/bird_minidev/verify/check.py:134:     finally:
+data/datasets/bird_minidev/verify/check.py:135:         connection.close()
+data/datasets/bird_minidev/verify/check.py:142: if __name__ == "__main__":
+SOURCE data/datasets/chessbench_puzzles.py sha256=61165a5351b9068ebdac5e66f34cba1b6ed3c658ee1198ebdaf789be4e11b261 bytes=17396
+data/datasets/chessbench_puzzles.py:47: def _read_rows() -> list[dict]:
+data/datasets/chessbench_puzzles.py:50:     if len(rows) != 10000:
+data/datasets/chessbench_puzzles.py:55: def _presented_fen(row: dict) -> str:
+data/datasets/chessbench_puzzles.py:57:     if not moves:
+data/datasets/chessbench_puzzles.py:64: def _row(row: dict) -> dict:
+data/datasets/chessbench_puzzles.py:74: def _rows() -> dict[str, list[dict]]:
+data/datasets/chessbench_puzzles.py:78: def _selected_records(task_ids: list[str]) -> list[dict]:
+data/datasets/chessbench_puzzles.py:85:     if not ids:
+data/datasets/chessbench_puzzles.py:90:         if match is None or int(match[1]) >= 10000:
+data/datasets/chessbench_puzzles.py:97:             if index not in remaining:
+data/datasets/chessbench_puzzles.py:110:             if not remaining:
+data/datasets/chessbench_puzzles.py:112:     if remaining:
+data/datasets/chessbench_puzzles.py:117: def _question(row: dict) -> str:
+data/datasets/chessbench_puzzles.py:129: def _gold(row: dict) -> dict:
+data/datasets/chessbench_puzzles.py:138: def _goal(question: str, gold: dict) -> str:
+data/datasets/chessbench_puzzles.py:149: def _official_replay(board: chess.Board, moves: list[str], predicted: list[str]) -> bool:
+data/datasets/chessbench_puzzles.py:160:         if move_idx % 2 == 1:
+data/datasets/chessbench_puzzles.py:161:             if solver_index >= len(predicted):
+data/datasets/chessbench_puzzles.py:165:             if move != predicted_move:
+data/datasets/chessbench_puzzles.py:166:                 try:
+data/datasets/chessbench_puzzles.py:168:                 except ValueError:
+data/datasets/chessbench_puzzles.py:172:             try:
+data/datasets/chessbench_puzzles.py:174:             except ValueError:
+data/datasets/chessbench_puzzles.py:176:         else:
+data/datasets/chessbench_puzzles.py:177:             try:
+data/datasets/chessbench_puzzles.py:179:             except ValueError:
+data/datasets/chessbench_puzzles.py:185: def score_upstream(prediction: str, gold: dict) -> dict:
+data/datasets/chessbench_puzzles.py:187:     try:
+data/datasets/chessbench_puzzles.py:191:     except (ValueError, AssertionError):
+data/datasets/chessbench_puzzles.py:201: class StepwisePuzzle:
+data/datasets/chessbench_puzzles.py:212:     def __init__(self, gold: dict):
+data/datasets/chessbench_puzzles.py:219:         try:
+data/datasets/chessbench_puzzles.py:221:         except ValueError:
+data/datasets/chessbench_puzzles.py:224:         if not self._board.is_valid() or len(self._moves) < 2:
+data/datasets/chessbench_puzzles.py:228:         if move is not None:
+data/datasets/chessbench_puzzles.py:230:             if self._board.is_game_over():
+data/datasets/chessbench_puzzles.py:233:     def _finish(self, verdict: str) -> None:
+data/datasets/chessbench_puzzles.py:238:     def _legal_move(self, uci: str, *, reference: bool = False):
+data/datasets/chessbench_puzzles.py:239:         try:
+data/datasets/chessbench_puzzles.py:241:         except (ValueError, TypeError):
+data/datasets/chessbench_puzzles.py:245:         if move not in self._board.legal_moves:
+data/datasets/chessbench_puzzles.py:250:     def public_task(self) -> dict:
+data/datasets/chessbench_puzzles.py:259:     def submit(self, answer: dict) -> dict:
+data/datasets/chessbench_puzzles.py:260:         if self._status != "awaiting_move":
+data/datasets/chessbench_puzzles.py:262:         if (not isinstance(answer, dict) or set(answer) != {"uci"}
+data/datasets/chessbench_puzzles.py:267:         if move is None:
+data/datasets/chessbench_puzzles.py:272:         if self._board.is_checkmate():
+data/datasets/chessbench_puzzles.py:275:         elif answer["uci"] != expected:
+data/datasets/chessbench_puzzles.py:277:         else:
+data/datasets/chessbench_puzzles.py:279:             if self._index < len(self._moves):
+data/datasets/chessbench_puzzles.py:281:                 if reply is None:
+data/datasets/chessbench_puzzles.py:285:             if self._index == len(self._moves):
+data/datasets/chessbench_puzzles.py:287:             elif self._board.is_game_over():
+data/datasets/chessbench_puzzles.py:291:     def result(self) -> dict:
+data/datasets/chessbench_puzzles.py:297: def score_strict(prediction: str, gold: dict) -> dict:
+data/datasets/chessbench_puzzles.py:301:         if session.public_task()["status"] != "awaiting_move":
+data/datasets/chessbench_puzzles.py:304:     if session.public_task()["status"] == "awaiting_move":
+data/datasets/chessbench_puzzles.py:309: def score(prediction: str, gold: dict) -> dict:
+data/datasets/chessbench_puzzles.py:325: def downloads() -> list[dict]:
+data/datasets/chessbench_puzzles.py:359: def provision_status() -> dict:
+data/datasets/chessbench_puzzles.py:370: _SPEC = base.QASpec(
+data/datasets/chessbench_puzzles.py:385: DEFAULT_ENV = {"kind": "files"}
+data/datasets/chessbench_puzzles.py:403: def __getattr__(name: str):
+data/datasets/chessbench_puzzles.py:405:     if name in {"ENV", "SPLIT"}:
+data/datasets/chessbench_puzzles.py:406:         if _BUILT is None:
+data/datasets/chessbench_puzzles.py:412: def load() -> tuple[list[dict], dict[str, str]]:
+data/datasets/chessbench_puzzles.py:416: def load_selected(task_ids: list[str]) -> tuple[list[dict], dict[str, str]]:
+data/datasets/chessbench_puzzles.py:425: def control_task(task_id: str | None) -> dict:
+data/datasets/chessbench_puzzles.py:427:     if task_id is None:
+data/datasets/chessbench_puzzles.py:429:                        if base.is_eval(f"chessbench_puzzles/test/{index}"))
+data/datasets/chessbench_puzzles.py:433: def setup_for(record: dict) -> dict:
+data/datasets/chessbench_puzzles.py:437: def verify_for(record: dict) -> dict:
+SOURCE data/datasets/ds1000.py sha256=05146f3a18072502599503d64b73ab13747a94ae107934a16601d72cbcc120ac bytes=14291
+data/datasets/ds1000.py:44: from data.scaffolds.scorer_input import bind as bind_scorer_input
+data/datasets/ds1000.py:112: def _read() -> list[dict]:
+data/datasets/ds1000.py:115:     if len(rows) != 1000:
+data/datasets/ds1000.py:117:     if any(not row.get("reference_code") for row in rows):
+data/datasets/ds1000.py:126: def _raw() -> list[dict]:
+data/datasets/ds1000.py:128:     if _RAW is None:
+data/datasets/ds1000.py:133: def tensorflow_indices() -> set[int]:
+data/datasets/ds1000.py:138: def measured_exclusions() -> dict[int, str]:
+data/datasets/ds1000.py:145: def excluded_indices() -> set[int]:
+data/datasets/ds1000.py:150: def included_indices() -> list[int]:
+data/datasets/ds1000.py:152:     if _INCLUDED is None:
+data/datasets/ds1000.py:158: def task_id(index: int) -> str:
+data/datasets/ds1000.py:173: def task_for(index: int) -> dict:
+data/datasets/ds1000.py:182: def setup_for(index: int) -> dict:
+data/datasets/ds1000.py:194: def verify_for(index: int) -> dict:
+data/datasets/ds1000.py:218: VERIFY = {task_id(i): verify_for(i) for i in included_indices()}
+data/datasets/ds1000.py:221: def load():
+data/datasets/ds1000.py:231: def _row_for_task(task: dict) -> dict:
+data/datasets/ds1000.py:235: def oracle_files(task: dict) -> dict[str, str]:
+data/datasets/ds1000.py:239: def downloads():
+data/datasets/ds1000.py:271: def provision_status():
+SOURCE data/datasets/ds1000/verify/check.py sha256=ffcb9ce4913dc944417fc0dc0828b236f1d17c65e7dd9242ae838db4ee15d5d6 bytes=4706
+data/datasets/ds1000/verify/check.py:21: from data.scaffolds.scorer_input import add_arguments, run_bound
+data/datasets/ds1000/verify/check.py:24: def main() -> int:
+data/datasets/ds1000/verify/check.py:31:     if args.scorer_input_files is not None:
+data/datasets/ds1000/verify/check.py:33:         try:
+data/datasets/ds1000/verify/check.py:34:             declared = json.loads(args.scorer_input_files)
+data/datasets/ds1000/verify/check.py:35:             if isinstance(declared, dict):
+data/datasets/ds1000/verify/check.py:37:                               if name.startswith("seaborn-data/")})
+data/datasets/ds1000/verify/check.py:38:         except ValueError:
+data/datasets/ds1000/verify/check.py:44: def _score(args, inputs, receipt) -> int:
+data/datasets/ds1000/verify/check.py:63:             "print(json.dumps(check_correctness(program, timeout=120)))\n",
+data/datasets/ds1000/verify/check.py:76:         proc = subprocess.run([sys.executable, str(runner), str(payload)], cwd=scratch,
+data/datasets/ds1000/verify/check.py:77:                               capture_output=True, text=True, timeout=130, env=env)
+data/datasets/ds1000/verify/check.py:85:     ev.write_text(json.dumps({"scorer_input": receipt, "measured": True, "reward": reward,
+data/datasets/ds1000/verify/check.py:93: if __name__ == "__main__":
+SOURCE data/datasets/fever.py sha256=7c0cd67c7d82d9c71f2bde4c52e564f279930f6fc7f62aae4cdda5b7c27afcd0 bytes=4950
+data/datasets/fever.py:27: def score_prediction(prediction: dict, gold: dict) -> dict:
+data/datasets/fever.py:30:     try:
+data/datasets/fever.py:33:     except MissingEvidence:
+data/datasets/fever.py:41: def score(prediction: str, gold: dict) -> dict:
+data/datasets/fever.py:46: def _rows() -> list[dict]:
+data/datasets/fever.py:48:     if not path.is_file():
+data/datasets/fever.py:53: _SPEC = base.QASpec(
+data/datasets/fever.py:97: DEFAULT_ENV = _BUILT["DEFAULT_ENV"]
+data/datasets/fever.py:104: def __getattr__(name: str):
+data/datasets/fever.py:108: def load() -> tuple[list[dict], dict[str, str]]:
+data/datasets/fever.py:112: def downloads() -> list[dict]:
+data/datasets/fever.py:116: def provision_status() -> dict:
+SOURCE data/datasets/gaia.py sha256=f9f95f1aef2a3f5ad66be7c10a648dfaed43b8db3f30912760df2c0f4f1f28bb bytes=14867
+data/datasets/gaia.py:99: ENV_BASE: dict = {
+data/datasets/gaia.py:114: DEFAULT_ENV = ENV_BASE
+data/datasets/gaia.py:135: def _raw() -> list[dict]:
+data/datasets/gaia.py:139:         if header.get("rows") != ROWS:
+data/datasets/gaia.py:142:             if line.strip():
+data/datasets/gaia.py:144:     if len(rows) != ROWS:
+data/datasets/gaia.py:146:     if any(row["gold"].strip() in ("", "?") for row in rows):
+data/datasets/gaia.py:155: def rows() -> list[dict]:
+data/datasets/gaia.py:158:     if _RAW is None:
+data/datasets/gaia.py:159:         if not (DATASET_ROOT / POOL).is_file():
+data/datasets/gaia.py:167: def task_id(index: int) -> str:
+data/datasets/gaia.py:171: def _row_for(task: dict) -> dict:
+data/datasets/gaia.py:175: def _attachment_path(row: dict) -> Path | None:
+data/datasets/gaia.py:179: def _question(row: dict) -> str:
+data/datasets/gaia.py:181:     if row.get("attachment"):
+data/datasets/gaia.py:187: def _setup(row: dict) -> dict:
+data/datasets/gaia.py:191:     if source is not None:
+data/datasets/gaia.py:196: def _verify(row: dict) -> dict:
+data/datasets/gaia.py:213:         "timeout_s": VERIFY_TIMEOUT_S,
+data/datasets/gaia.py:231: def __getattr__(name: str):
+data/datasets/gaia.py:242:     if name not in _BUILT:
+data/datasets/gaia.py:251:     try:
+data/datasets/gaia.py:253:     except KeyError:
+data/datasets/gaia.py:257: def load() -> tuple[list[dict], dict[str, str]]:
+data/datasets/gaia.py:264: def oracle_files(task: dict) -> dict[str, str]:
+data/datasets/gaia.py:269: def downloads() -> list[dict]:
+data/datasets/gaia.py:289: def provision_status() -> dict:
+SOURCE data/datasets/gaia/verify/check.py sha256=59ed1e1af4aa9d57e129ee6a5d21dd67dc09ffaa90cbd0acf6b69b8b644dae4e bytes=4966
+data/datasets/gaia/verify/check.py:40: def _write(path: str, payload: str) -> None:
+data/datasets/gaia/verify/check.py:46: def _measure(args, reward: float, why: str, extra: dict) -> int:
+data/datasets/gaia/verify/check.py:56: def _cannot_measure(args, why: str) -> int:
+data/datasets/gaia/verify/check.py:63: def main() -> int:
+data/datasets/gaia/verify/check.py:71:     try:
+data/datasets/gaia/verify/check.py:73:     except Exception as exc:                       # noqa: BLE001 - the environment, not the agent
+data/datasets/gaia/verify/check.py:78:     if not gold_path.is_file():
+data/datasets/gaia/verify/check.py:80:     try:
+data/datasets/gaia/verify/check.py:83:     except Exception as exc:                       # noqa: BLE001
+data/datasets/gaia/verify/check.py:85:     if gold.strip() in ("", "?"):
+data/datasets/gaia/verify/check.py:92:     if not answer:
+data/datasets/gaia/verify/check.py:97:     try:
+data/datasets/gaia/verify/check.py:100:     except Exception as exc:                       # noqa: BLE001 - a scorer crash is not a wrong answer
+data/datasets/gaia/verify/check.py:110: if __name__ == "__main__":
+SOURCE data/datasets/gsm8k.py sha256=628dbf064bd7aa965d31b669247f3fae291de897dd17ad8c71b49c2614e630bb bytes=13394
+data/datasets/gsm8k.py:92: def _rows() -> dict[str, list[dict]]:
+data/datasets/gsm8k.py:100: def _question(row: dict) -> str:
+data/datasets/gsm8k.py:104: def _gold(row: dict) -> dict:
+data/datasets/gsm8k.py:116: def official_flexible(text: str) -> str:
+data/datasets/gsm8k.py:124:     if not found:
+data/datasets/gsm8k.py:129: def official_strict(text: str) -> str:
+data/datasets/gsm8k.py:132:     if not found:
+data/datasets/gsm8k.py:137: def numeric_equal(got: str, want: str) -> bool:
+data/datasets/gsm8k.py:143:     try:
+data/datasets/gsm8k.py:145:     except (TypeError, ValueError):
+data/datasets/gsm8k.py:149: def score(prediction: str, gold: dict) -> dict:
+data/datasets/gsm8k.py:165:                if strict or ANSWER_MARK not in (prediction or "") else "")
+data/datasets/gsm8k.py:170: def _goal(question: str, gold: dict) -> str:
+data/datasets/gsm8k.py:198: def _downloads() -> list[dict]:
+data/datasets/gsm8k.py:238: _SPEC = base.QASpec(
+data/datasets/gsm8k.py:259: DEFAULT_ENV = _BUILT["DEFAULT_ENV"]
+data/datasets/gsm8k.py:288: def __getattr__(name: str):
+data/datasets/gsm8k.py:298: def load() -> tuple[list[dict], dict[str, str]]:
+data/datasets/gsm8k.py:302: def downloads() -> list[dict]:
+data/datasets/gsm8k.py:306: def provision_status() -> dict:
+SOURCE data/datasets/hotpotqa.py sha256=1946c6cf56db9124cf1b8d4fed61eed43c61d2a4ff85f181ac8b2739946db6e1 bytes=4946
+data/datasets/hotpotqa.py:23: def _gold(row: dict) -> dict:
+data/datasets/hotpotqa.py:25:     if isinstance(facts, dict):
+data/datasets/hotpotqa.py:28:         if len(titles) != len(indices):
+data/datasets/hotpotqa.py:37: def score_prediction(prediction: dict, gold: dict) -> dict:
+data/datasets/hotpotqa.py:41:     try:
+data/datasets/hotpotqa.py:44:     except MissingEvidence:
+data/datasets/hotpotqa.py:54: def score(prediction: str, gold: dict) -> dict:
+data/datasets/hotpotqa.py:58: def _rows() -> list[dict]:
+data/datasets/hotpotqa.py:60:     if not path.is_file():
+data/datasets/hotpotqa.py:65: _SPEC = base.QASpec(
+data/datasets/hotpotqa.py:105: DEFAULT_ENV = _BUILT["DEFAULT_ENV"]
+data/datasets/hotpotqa.py:112: def __getattr__(name: str):
+data/datasets/hotpotqa.py:116: def load() -> tuple[list[dict], dict[str, str]]:
+data/datasets/hotpotqa.py:120: def downloads() -> list[dict]:
+data/datasets/hotpotqa.py:124: def provision_status() -> dict:
+SOURCE data/datasets/jericho.py sha256=0574c62a84e60c43a3459b5fbe8b94eb5b7cf44cb156f2e0a50a37b78bdc6c9b bytes=19009
+data/datasets/jericho.py:71: from data.scaffolds.scorer_input import bind as bind_scorer_input
+data/datasets/jericho.py:123: def games_dir() -> Path:
+data/datasets/jericho.py:127: def _official_games() -> list[dict]:
+data/datasets/jericho.py:140:         if key.startswith("_"):
+data/datasets/jericho.py:143:         if not isinstance(entry, dict) or "rom" not in entry:
+data/datasets/jericho.py:147:         if not path.is_file():
+data/datasets/jericho.py:158:     if not records:
+data/datasets/jericho.py:165: def missing_games() -> list[str]:
+data/datasets/jericho.py:172:         if key.startswith("_"):
+data/datasets/jericho.py:175:         if isinstance(entry, dict) and "rom" in entry and not (suite / str(entry["rom"])).is_file():
+data/datasets/jericho.py:180: def _goal(record: dict) -> str:
+data/datasets/jericho.py:218: def _setup(record: dict) -> dict:
+data/datasets/jericho.py:245: def _verifier(record: dict) -> dict:
+data/datasets/jericho.py:275:         "timeout_s": VERIFY_TIMEOUT_S,
+data/datasets/jericho.py:282: def downloads() -> list[dict]:
+data/datasets/jericho.py:326: DEFAULT_ENV: dict = {"kind": "files", "network": "none",
+data/datasets/jericho.py:332: def _env() -> dict:
+data/datasets/jericho.py:336:     if spec is None or not spec.origin:
+data/datasets/jericho.py:344: def provision_status() -> dict:
+data/datasets/jericho.py:360: def load() -> tuple[list[dict], dict[str, str]]:
+data/datasets/jericho.py:363:     if _LOAD_ERROR is not None:
+data/datasets/jericho.py:368:     if not records:
+data/datasets/jericho.py:374: def _is_eval(task_id: str) -> bool:
+data/datasets/jericho.py:384: def _map(builder) -> dict:
+data/datasets/jericho.py:388: def __getattr__(name: str):
+data/datasets/jericho.py:394:     if name == "_RECORDS":
+data/datasets/jericho.py:395:         if "_RECORDS" not in globals():
+data/datasets/jericho.py:396:             try:
+data/datasets/jericho.py:398:             except Exception as exc:  # reported by load(), as with eager provisioning
+data/datasets/jericho.py:402:     if name == "ENV":
+data/datasets/jericho.py:405:     if name == "SETUP":
+data/datasets/jericho.py:407:     if name == "VERIFY":
+data/datasets/jericho.py:409:     if name == "SPLIT":
+data/datasets/jericho.py:411:         if (os.environ.get("HG_JERICHO_SPLIT") or "hash").lower() == "none":
+SOURCE data/datasets/jericho/verify/check.py sha256=ae73450376dcbb51c6a74d0e6fd5ebc63ffdd0b232fae8ef9e01601a306b2742 bytes=7751
+data/datasets/jericho/verify/check.py:46: from data.scaffolds.scorer_input import add_arguments, run_bound
+data/datasets/jericho/verify/check.py:54: def parse_args(argv):
+data/datasets/jericho/verify/check.py:73: def write_reward(path: Path, score: float) -> None:
+data/datasets/jericho/verify/check.py:78: def write_evidence(path: Path, evidence: dict) -> None:
+data/datasets/jericho/verify/check.py:80:     try:
+data/datasets/jericho/verify/check.py:84:     except OSError as exc:
+data/datasets/jericho/verify/check.py:88: def main(argv) -> int:
+data/datasets/jericho/verify/check.py:90:     if args.rom is None:
+data/datasets/jericho/verify/check.py:92:                     if args.game.is_file() else "missing-rom")
+data/datasets/jericho/verify/check.py:97: def _score(args, inputs, receipt) -> int:
+data/datasets/jericho/verify/check.py:99:         "scorer_input": receipt,
+data/datasets/jericho/verify/check.py:105:     if not args.game.is_file():
+data/datasets/jericho/verify/check.py:116:                        if args.log.is_file() else []) if line.strip()) - len(records)
+data/datasets/jericho/verify/check.py:121:     try:
+data/datasets/jericho/verify/check.py:122:         env = jer_env.load_game(args.workdir, config_path=inputs[str(args.game)],
+data/datasets/jericho/verify/check.py:124:     except Exception as exc:  # noqa: BLE001 - a check that cannot run is not a zero
+data/datasets/jericho/verify/check.py:131:     try:
+data/datasets/jericho/verify/check.py:134:         steps = jer_env.replay(env, actions)
+data/datasets/jericho/verify/check.py:135:     except Exception as exc:  # noqa: BLE001
+data/datasets/jericho/verify/check.py:158:     if score >= maximum and maximum > 0:
+data/datasets/jericho/verify/check.py:160:     elif not actions:
+data/datasets/jericho/verify/check.py:162:     elif not steps:
+data/datasets/jericho/verify/check.py:165:     else:
+data/datasets/jericho/verify/check.py:176: if __name__ == "__main__":
+data/datasets/jericho/verify/check.py:177:     try:
+data/datasets/jericho/verify/check.py:179:     except SystemExit:
+data/datasets/jericho/verify/check.py:181:     except Exception:  # noqa: BLE001 - a crash must not look like a measured zero
+SOURCE data/datasets/livecodebench.py sha256=f65dae0427839d0a1146f038b2ad47537126b20b20019baf79e806dc5c84ac5a bytes=19488
+data/datasets/livecodebench.py:59: from data.scaffolds.scorer_input import bind as bind_scorer_input
+data/datasets/livecodebench.py:112: def estimate_pass_at_k(num_samples, num_correct, k):
+data/datasets/livecodebench.py:115:     def estimator(n: int, c: int, k: int) -> float:
+data/datasets/livecodebench.py:117:         if n - c < k:
+data/datasets/livecodebench.py:123:     if isinstance(num_samples, int):
+data/datasets/livecodebench.py:125:     else:
+data/datasets/livecodebench.py:134: def compute_metrics_from_results(results, k_list=[1, 5]):
+data/datasets/livecodebench.py:152:         if (total >= k).all()
+data/datasets/livecodebench.py:157:         if (total >= k).all()
+data/datasets/livecodebench.py:165: def decode_private_test_cases(value: str) -> list[dict]:
+data/datasets/livecodebench.py:174:     try:
+data/datasets/livecodebench.py:176:     except ValueError:
+data/datasets/livecodebench.py:187: def _raw() -> list[dict]:
+data/datasets/livecodebench.py:190:     if _RAW is None:
+data/datasets/livecodebench.py:194:             if header.get("problems") != PROBLEMS:
+data/datasets/livecodebench.py:198:                 if line.strip():
+data/datasets/livecodebench.py:200:         if len(rows) != PROBLEMS:
+data/datasets/livecodebench.py:206: def task_id(index: int) -> str:
+data/datasets/livecodebench.py:210: def _row_for(task: dict) -> dict:
+data/datasets/livecodebench.py:214: def _tests_path(row: dict) -> Path:
+data/datasets/livecodebench.py:231: def _question(row: dict) -> str:
+data/datasets/livecodebench.py:233:     if row["starter_code"]:
+data/datasets/livecodebench.py:235:     else:
+data/datasets/livecodebench.py:249: def _setup(row: dict) -> dict:
+data/datasets/livecodebench.py:264: def _verify(row: dict) -> dict:
+data/datasets/livecodebench.py:283:         "timeout_s": 900,
+data/datasets/livecodebench.py:290: DEFAULT_ENV = {"kind": "files"}
+data/datasets/livecodebench.py:304: VERIFY = {task_id(row["index"]): _verify(row) for row in _INDEXED}
+data/datasets/livecodebench.py:310: def references() -> dict[str, str]:
+data/datasets/livecodebench.py:320: def _coverage() -> str:
+data/datasets/livecodebench.py:324:     if unknown:
+data/datasets/livecodebench.py:337: def oracle_files(task: dict) -> dict[str, str]:
+data/datasets/livecodebench.py:346:     if reference is None:
+data/datasets/livecodebench.py:355: def load() -> tuple[list[dict], dict[str, str]]:
+data/datasets/livecodebench.py:363: def downloads() -> list[dict]:
+data/datasets/livecodebench.py:380: def provision_status() -> dict:
+SOURCE data/datasets/livecodebench/verify/check.py sha256=f0db2c5986cb05c308c2917a6ee1a44b748bbec37c5bd21f04c3b576b5950ca6 bytes=10594
+data/datasets/livecodebench/verify/check.py:58: from data.scaffolds.scorer_input import add_arguments, run_bound
+data/datasets/livecodebench/verify/check.py:60: #: Upstream's per-test budget (`testing_util.run_test(..., timeout=6)`).
+data/datasets/livecodebench/verify/check.py:66: def _workdir_on_path() -> None:
+data/datasets/livecodebench/verify/check.py:78:     if work not in sys.path:
+data/datasets/livecodebench/verify/check.py:82: def _child(tests_text: str, solution: str, queue) -> None:
+data/datasets/livecodebench/verify/check.py:89:     try:
+data/datasets/livecodebench/verify/check.py:91:     except Exception as exc:                   # noqa: BLE001 - reported as unmeasurable
+data/datasets/livecodebench/verify/check.py:94:     try:
+data/datasets/livecodebench/verify/check.py:96:                                      timeout=PER_TEST_TIMEOUT)
+data/datasets/livecodebench/verify/check.py:100:     except Exception as exc:                   # noqa: BLE001
+data/datasets/livecodebench/verify/check.py:104: def _positive(value) -> bool:
+data/datasets/livecodebench/verify/check.py:111:     if isinstance(value, bool):
+data/datasets/livecodebench/verify/check.py:113:     try:
+data/datasets/livecodebench/verify/check.py:115:     except TypeError:
+data/datasets/livecodebench/verify/check.py:119: def _write(path: str, payload: str) -> None:
+data/datasets/livecodebench/verify/check.py:125: def _measure(args, reward: float, why: str, total: int, passed: int, results) -> int:
+data/datasets/livecodebench/verify/check.py:128:         {"scorer_input": args.scorer_input_receipt, "measured": True, "metric": "pass@1 (one generation, all released tests)",
+data/datasets/livecodebench/verify/check.py:135: def _cannot_measure(args, why: str) -> int:
+data/datasets/livecodebench/verify/check.py:137:         {"scorer_input": args.scorer_input_receipt, "measured": False, "metric": "pass@1", "error": why}, sort_keys=True) + "\n")
+data/datasets/livecodebench/verify/check.py:142: def main() -> int:
+data/datasets/livecodebench/verify/check.py:154: def _score(args, inputs, receipt) -> int:
+data/datasets/livecodebench/verify/check.py:155:     args.scorer_input_receipt = receipt
+data/datasets/livecodebench/verify/check.py:159:     if not tests_path.is_file():
+data/datasets/livecodebench/verify/check.py:162:     try:
+data/datasets/livecodebench/verify/check.py:165:     except Exception as exc:                   # noqa: BLE001
+data/datasets/livecodebench/verify/check.py:169:     if total == 0 or total != len(outputs):
+data/datasets/livecodebench/verify/check.py:174:     if not solution.strip():
+data/datasets/livecodebench/verify/check.py:180:     process = multiprocessing.Process(target=_child, args=(tests_text, solution, queue))
+data/datasets/livecodebench/verify/check.py:181:     process.start()
+data/datasets/livecodebench/verify/check.py:182:     process.join(cap)
+data/datasets/livecodebench/verify/check.py:183:     if process.is_alive():                     # upstream kills and marks every test failed
+data/datasets/livecodebench/verify/check.py:184:         process.kill()
+data/datasets/livecodebench/verify/check.py:185:         process.join()
+data/datasets/livecodebench/verify/check.py:188:     if queue.empty():
+data/datasets/livecodebench/verify/check.py:191:     if "error" in outcome:
+data/datasets/livecodebench/verify/check.py:201:     try:
+data/datasets/livecodebench/verify/check.py:204:     except Exception as exc:                    # noqa: BLE001
+data/datasets/livecodebench/verify/check.py:209:     if outcome.get("metadata") and not reward:
+data/datasets/livecodebench/verify/check.py:214: if __name__ == "__main__":
+SOURCE data/datasets/musique.py sha256=817af68df579bcf577c64a9613fa5b368424ee00dc4101f20ad00010c357e5f2 bytes=13717
+data/datasets/musique.py:44: def normalize_answer(s):
+data/datasets/musique.py:46:     def remove_articles(text):
+data/datasets/musique.py:48:     def remove_punc(text):
+data/datasets/musique.py:53: def compute_exact(a_gold, a_pred):
+data/datasets/musique.py:57: def compute_f1(a_gold, a_pred):
+data/datasets/musique.py:61:     if len(gold_toks) == 0 or len(pred_toks) == 0:
+data/datasets/musique.py:63:     if num_same == 0:
+data/datasets/musique.py:70: def _check_mode(mode: str) -> None:
+data/datasets/musique.py:71:     if mode not in (DEFAULT_MODE, LEGACY_MODE):
+data/datasets/musique.py:75: def compute_support(predicted_indices: list[int], gold_indices: list[int]) -> dict:
+data/datasets/musique.py:83:     if not predicted and not expected:
+data/datasets/musique.py:88: def _score(answer: str, evidence: list | None, gold: dict, mode: str) -> dict:
+data/datasets/musique.py:96:     if mode == LEGACY_MODE:
+data/datasets/musique.py:101:     if "supporting_facts" not in gold or not isinstance(gold["supporting_facts"], list):
+data/datasets/musique.py:116: def score_prediction(prediction: dict, gold: dict, *, mode: str = DEFAULT_MODE) -> dict:
+data/datasets/musique.py:120:     if error:
+data/datasets/musique.py:125: def score(prediction: str, gold: dict, *, mode: str = DEFAULT_MODE) -> dict:
+data/datasets/musique.py:130: def aggregate(results: list[dict]) -> dict:
+data/datasets/musique.py:138:     if not results:
+data/datasets/musique.py:145:     if len(modes) != 1:
+data/datasets/musique.py:153:     if mode == DEFAULT_MODE:
+data/datasets/musique.py:155:     else:
+data/datasets/musique.py:166: def _rows():
+data/datasets/musique.py:169:     if len(rows) != 2417 or len({r["id"] for r in rows}) != 2417:
+data/datasets/musique.py:171:     if not all(r["answerable"] and r["answer"] for r in rows):
+data/datasets/musique.py:176: def _question(row):
+data/datasets/musique.py:182: def _gold(row):
+data/datasets/musique.py:185:                                  if p["is_supporting"]]}
+data/datasets/musique.py:188: def _goal(question, gold, *, mode=DEFAULT_MODE):
+data/datasets/musique.py:190:     if mode == LEGACY_MODE:
+data/datasets/musique.py:208: def _downloads():
+data/datasets/musique.py:223: class _MuSiQueSpec(base.QASpec):
+data/datasets/musique.py:226:     def verifier(self, record):
+data/datasets/musique.py:232: _SPEC = _MuSiQueSpec(name="musique", root=DATASET_ROOT, rows=_rows,
+data/datasets/musique.py:240: DEFAULT_ENV = {"kind": "files"}
+data/datasets/musique.py:259: def __getattr__(name):
+data/datasets/musique.py:260:     if name in ("ENV", "SPLIT"):
+data/datasets/musique.py:265: def load(*, mode=DEFAULT_MODE):
+data/datasets/musique.py:267:     _SPEC.mode = mode
+data/datasets/musique.py:271: def verify_for(record: dict, *, mode: str = DEFAULT_MODE) -> dict:
+data/datasets/musique.py:279: def downloads():
+data/datasets/musique.py:283: def provision_status():
+SOURCE data/datasets/physicsquestions.py sha256=452d134d58a1900355112edb8dcc9837c39830c953d2d064db3b409d54c001cf bytes=10853
+data/datasets/physicsquestions.py:73: def accepted_answers(target: str) -> list[str]:
+data/datasets/physicsquestions.py:82:     if not match:
+data/datasets/physicsquestions.py:85:     if not items:
+data/datasets/physicsquestions.py:93: def exact_str_match(prediction: str, ground_truth: str) -> bool:
+data/datasets/physicsquestions.py:103: def score(prediction: str, gold: dict) -> dict:
+data/datasets/physicsquestions.py:120: def _rows() -> list[dict]:
+data/datasets/physicsquestions.py:122:     if not path.is_file():
+data/datasets/physicsquestions.py:130:     if len(rows) != N_TOTAL:
+data/datasets/physicsquestions.py:135: def _gold(row: dict) -> dict:
+data/datasets/physicsquestions.py:140: def _goal(question: str, gold: dict) -> str:
+data/datasets/physicsquestions.py:177: def _rewoo_entry(*, name: str, csv_size: str, note: str) -> dict:
+data/datasets/physicsquestions.py:191: _SPEC = base.QASpec(
+data/datasets/physicsquestions.py:222: DEFAULT_ENV = _BUILT["DEFAULT_ENV"]
+data/datasets/physicsquestions.py:241: def __getattr__(name: str):
+data/datasets/physicsquestions.py:245: def load() -> tuple[list[dict], dict[str, str]]:
+data/datasets/physicsquestions.py:249: def downloads() -> list[dict]:
+data/datasets/physicsquestions.py:253: def provision_status() -> dict:
+SOURCE data/datasets/reasoning_gym.py sha256=fcf4be2daa187dc4d74395530bbbdaa308e317bc0173b346f7de0bb889ac7f33 bytes=10031
+data/datasets/reasoning_gym.py:80: def _rows() -> dict[str, list[dict]]:
+data/datasets/reasoning_gym.py:83:     if not path.is_file():
+data/datasets/reasoning_gym.py:90: def _question(row: dict) -> str:
+data/datasets/reasoning_gym.py:94: def _gold(row: dict) -> dict:
+data/datasets/reasoning_gym.py:106: def score(prediction: str, gold: dict) -> dict:
+data/datasets/reasoning_gym.py:111:     if not family:
+data/datasets/reasoning_gym.py:127: def _goal(question: str, gold: dict) -> str:
+data/datasets/reasoning_gym.py:140: def _downloads() -> list[dict]:
+data/datasets/reasoning_gym.py:153: _SPEC = base.QASpec(
+data/datasets/reasoning_gym.py:169: DEFAULT_ENV = _BUILT["DEFAULT_ENV"]
+data/datasets/reasoning_gym.py:176: def __getattr__(name: str):
+data/datasets/reasoning_gym.py:181: def load() -> tuple[list[dict], dict[str, str]]:
+data/datasets/reasoning_gym.py:185: def downloads() -> list[dict]:
+data/datasets/reasoning_gym.py:189: def provision_status() -> dict:
+SOURCE data/datasets/scienceworld.py sha256=566706340f2ca41579f1b61621edd789fa148674440c0ee7ee79589ed186ce20 bytes=25542
+data/datasets/scienceworld.py:92: from data.scaffolds.scorer_input import bind as bind_scorer_input
+data/datasets/scienceworld.py:130: def _load_lib():
+data/datasets/scienceworld.py:175: def test_fold() -> list[dict]:
+data/datasets/scienceworld.py:186:     if _FOLD_CACHE is not None:
+data/datasets/scienceworld.py:188:     if not FOLD_FILE.is_file():
+data/datasets/scienceworld.py:191:     if payload.get("eval_fold") != EVAL_FOLD:
+data/datasets/scienceworld.py:202:     if not records:
+data/datasets/scienceworld.py:205:     if len(records) + len(too_long) == 0:
+data/datasets/scienceworld.py:211: def fold_excluded() -> list[dict]:
+data/datasets/scienceworld.py:224: def _probe_dir() -> Path:
+data/datasets/scienceworld.py:234: def _goal(record: dict) -> str:
+data/datasets/scienceworld.py:277: def _setup(record: dict) -> dict:
+data/datasets/scienceworld.py:300: def _verifier(record: dict) -> dict:
+data/datasets/scienceworld.py:311:     if package is None or package.origin is None:
+data/datasets/scienceworld.py:337:         "timeout_s": 900,
+data/datasets/scienceworld.py:342: def downloads() -> list[dict]:
+data/datasets/scienceworld.py:384: def provision_status() -> dict:
+data/datasets/scienceworld.py:409: try:
+data/datasets/scienceworld.py:412: except Exception as _exc:  # noqa: BLE001 - reported by load(), which is where it bites
+data/datasets/scienceworld.py:417: def _ensure() -> list[dict]:
+data/datasets/scienceworld.py:419:     if _RECORDS:
+data/datasets/scienceworld.py:421:     if _LOAD_ERROR is not None:
+data/datasets/scienceworld.py:423:     try:
+data/datasets/scienceworld.py:425:     except Exception as exc:  # noqa: BLE001 - carried into load()
+data/datasets/scienceworld.py:431: def load() -> tuple[list[dict], dict[str, str]]:
+data/datasets/scienceworld.py:434:     try:
+data/datasets/scienceworld.py:436:     except Exception as exc:  # noqa: BLE001 - the reason is the point
+data/datasets/scienceworld.py:441:     if not records:
+data/datasets/scienceworld.py:447: def _is_eval(task_id: str) -> bool:
+data/datasets/scienceworld.py:462: DEFAULT_ENV: dict = {"kind": "files"}
+data/datasets/scienceworld.py:465: def _split() -> dict:
+data/datasets/scienceworld.py:479: class _Lazy:
+data/datasets/scienceworld.py:488:     def __init__(self) -> None:
+data/datasets/scienceworld.py:491:     def get(self, name: str):
+data/datasets/scienceworld.py:492:         if name not in self._cache:
+data/datasets/scienceworld.py:508: def __getattr__(name: str):
+data/datasets/scienceworld.py:509:     if name in ("ENV", "SETUP", "VERIFY"):
+data/datasets/scienceworld.py:511:     if name == "SPLIT":
+data/datasets/scienceworld.py:512:         if _split_mode == "none":
+SOURCE data/datasets/scienceworld/verify/check.py sha256=45cecf3972a525bbeaf128c0471bf25cf0f073dc39021e3b7d5b3e44ff97bc87 bytes=11021
+data/datasets/scienceworld/verify/check.py:60: from data.scaffolds.scorer_input import add_arguments, run_bound
+data/datasets/scienceworld/verify/check.py:69: def parse_args(argv):
+data/datasets/scienceworld/verify/check.py:87: def _point_at_the_jvm(workdir: Path) -> Path | None:
+data/datasets/scienceworld/verify/check.py:91:     interpreter as `os.path.join(os.environ["JAVA_HOME"], "bin", "java")` and falls back to
+data/datasets/scienceworld/verify/check.py:106:     try:
+data/datasets/scienceworld/verify/check.py:108:     except RuntimeError:
+data/datasets/scienceworld/verify/check.py:115: def write_reward(path: Path, score: float) -> None:
+data/datasets/scienceworld/verify/check.py:120: def write_evidence(path: Path, evidence: dict) -> None:
+data/datasets/scienceworld/verify/check.py:122:     try:
+data/datasets/scienceworld/verify/check.py:126:     except OSError as exc:
+data/datasets/scienceworld/verify/check.py:130: def main(argv) -> int:
+data/datasets/scienceworld/verify/check.py:136: def _score(args, inputs, receipt) -> int:
+data/datasets/scienceworld/verify/check.py:139:         "scorer_input": receipt,
+data/datasets/scienceworld/verify/check.py:145:     if not args.task.is_file():
+data/datasets/scienceworld/verify/check.py:160:     if java_home is None:
+data/datasets/scienceworld/verify/check.py:167:     try:
+data/datasets/scienceworld/verify/check.py:168:         env = scw_env.load_task(workdir, step_budget=args.budget,
+data/datasets/scienceworld/verify/check.py:171:     except Exception as exc:  # noqa: BLE001 - a check that cannot run is not a zero
+data/datasets/scienceworld/verify/check.py:181:     try:
+data/datasets/scienceworld/verify/check.py:188:             if done:
+data/datasets/scienceworld/verify/check.py:190:     except Exception as exc:  # noqa: BLE001
+data/datasets/scienceworld/verify/check.py:200:     try:
+data/datasets/scienceworld/verify/check.py:202:     except Exception as exc:  # noqa: BLE001 - a missing report is not a missing grade
+data/datasets/scienceworld/verify/check.py:204:     env.close()
+data/datasets/scienceworld/verify/check.py:220:     if solved:
+data/datasets/scienceworld/verify/check.py:222:     elif moves == 0:
+data/datasets/scienceworld/verify/check.py:224:     elif moves >= args.budget:
+data/datasets/scienceworld/verify/check.py:227:     else:
+data/datasets/scienceworld/verify/check.py:233:     if solved:
+data/datasets/scienceworld/verify/check.py:243: if __name__ == "__main__":
+data/datasets/scienceworld/verify/check.py:244:     try:
+data/datasets/scienceworld/verify/check.py:246:     except SystemExit:
+data/datasets/scienceworld/verify/check.py:248:     except Exception:  # noqa: BLE001 - a crash must not look like a measured zero
+SOURCE data/datasets/sportsunderstanding.py sha256=e44f856dda4c2761737ffe9d0b0b3fca59e149c1ec12e7451be33872df5d86ad bytes=9416
+data/datasets/sportsunderstanding.py:63: def substring_choice(prediction: str, label: str) -> bool:
+data/datasets/sportsunderstanding.py:75: def names_both(prediction: str) -> bool:
+data/datasets/sportsunderstanding.py:80: def score(prediction: str, gold: dict) -> dict:
+data/datasets/sportsunderstanding.py:101: def _rows() -> list[dict]:
+data/datasets/sportsunderstanding.py:103:     if not path.is_file():
+data/datasets/sportsunderstanding.py:107:     if len(rows) != N_TOTAL:
+data/datasets/sportsunderstanding.py:112: def _gold(row: dict) -> dict:
+data/datasets/sportsunderstanding.py:114:     if label not in LABELS:
+data/datasets/sportsunderstanding.py:119: def _goal(question: str, gold: dict) -> str:
+data/datasets/sportsunderstanding.py:152: def _rewoo_entry(*, name: str, csv_size: str, note: str) -> dict:
+data/datasets/sportsunderstanding.py:166: _SPEC = base.QASpec(
+data/datasets/sportsunderstanding.py:196: DEFAULT_ENV = _BUILT["DEFAULT_ENV"]
+data/datasets/sportsunderstanding.py:215: def __getattr__(name: str):
+data/datasets/sportsunderstanding.py:219: def load() -> tuple[list[dict], dict[str, str]]:
+data/datasets/sportsunderstanding.py:223: def downloads() -> list[dict]:
+data/datasets/sportsunderstanding.py:227: def provision_status() -> dict:
+SOURCE data/datasets/spreadsheetbench.py sha256=1ed36abf71ff84f489d9be1cd9b231180d18e45c60ea514c9b4baf34add2ab9e bytes=16465
+data/datasets/spreadsheetbench.py:53: from data.scaffolds.scorer_input import bind as bind_scorer_input
+data/datasets/spreadsheetbench.py:107: def _tasks() -> list[dict]:
+data/datasets/spreadsheetbench.py:109:     if not path.is_file():
+data/datasets/spreadsheetbench.py:112:     if len(rows) != N_TASKS:
+data/datasets/spreadsheetbench.py:123:         if init is None or golden is None:
+data/datasets/spreadsheetbench.py:128:         if not position:
+data/datasets/spreadsheetbench.py:151: def _find_workbook(folder: Path, task_id: str, kind: str) -> Path | None:
+data/datasets/spreadsheetbench.py:160:     if not folder.is_dir():
+data/datasets/spreadsheetbench.py:164:         if candidate.is_file():
+data/datasets/spreadsheetbench.py:168:         if matches:
+data/datasets/spreadsheetbench.py:173: def _goal(record: dict) -> str:
+data/datasets/spreadsheetbench.py:209: def _setup(record: dict) -> dict:
+data/datasets/spreadsheetbench.py:224: def _verifier(record: dict) -> dict:
+data/datasets/spreadsheetbench.py:255:         "timeout_s": 300,
+data/datasets/spreadsheetbench.py:260: def downloads() -> list[dict]:
+data/datasets/spreadsheetbench.py:297: def _records_cache() -> list[dict]:
+data/datasets/spreadsheetbench.py:303: try:
+data/datasets/spreadsheetbench.py:305: except Exception as _exc:  # noqa: BLE001 - reported by load(), which is where it bites
+data/datasets/spreadsheetbench.py:310: def _ensure() -> list[dict]:
+data/datasets/spreadsheetbench.py:312:     if _RECORDS:
+data/datasets/spreadsheetbench.py:314:     try:
+data/datasets/spreadsheetbench.py:316:     except Exception as exc:  # noqa: BLE001
+data/datasets/spreadsheetbench.py:322: def provision_status() -> dict:
+data/datasets/spreadsheetbench.py:334: def _soffice() -> str | None:
+data/datasets/spreadsheetbench.py:340:         if found:
+data/datasets/spreadsheetbench.py:345: def load() -> tuple[list[dict], dict[str, str]]:
+data/datasets/spreadsheetbench.py:346:     if _LOAD_ERROR is not None:
+data/datasets/spreadsheetbench.py:355: def _is_eval(task_id: str) -> bool:
+data/datasets/spreadsheetbench.py:360: DEFAULT_ENV: dict = {"kind": "files"}
+data/datasets/spreadsheetbench.py:363: def __getattr__(name: str):
+data/datasets/spreadsheetbench.py:364:     if name == "ENV":
+data/datasets/spreadsheetbench.py:366:     if name == "SETUP":
+data/datasets/spreadsheetbench.py:368:     if name == "VERIFY":
+data/datasets/spreadsheetbench.py:370:     if name == "SPLIT":
+data/datasets/spreadsheetbench.py:372:         if (os.environ.get("HG_SPREADSHEETBENCH_SPLIT") or "hash").lower() == "none":
+SOURCE data/datasets/spreadsheetbench/verify/check.py sha256=e7131a2649a89d818a73b6b83e1b66892e41b93c53a7fee8330749146ad3ee46 bytes=17664
+data/datasets/spreadsheetbench/verify/check.py:51: from data.scaffolds.scorer_input import add_arguments, run_bound
+data/datasets/spreadsheetbench/verify/check.py:63: def transform_value(v):
+data/datasets/spreadsheetbench/verify/check.py:65:     if isinstance(v, (int, float)):
+data/datasets/spreadsheetbench/verify/check.py:67:     elif isinstance(v, datetime.time):
+data/datasets/spreadsheetbench/verify/check.py:69:     elif isinstance(v, datetime.datetime):
+data/datasets/spreadsheetbench/verify/check.py:71:     elif isinstance(v, str):
+data/datasets/spreadsheetbench/verify/check.py:72:         try:
+data/datasets/spreadsheetbench/verify/check.py:74:         except ValueError:
+data/datasets/spreadsheetbench/verify/check.py:79: def datetime_to_float(dt):
+data/datasets/spreadsheetbench/verify/check.py:86: def compare_cell_value(v1, v2):
+data/datasets/spreadsheetbench/verify/check.py:90:     if (v1 == "" and v2 is None) or (v1 is None and v2 == ""):
+data/datasets/spreadsheetbench/verify/check.py:92:     if (v1 == "" and v2 == "") or (v1 is None and v2 is None):
+data/datasets/spreadsheetbench/verify/check.py:94:     if type(v1) != type(v2):
+data/datasets/spreadsheetbench/verify/check.py:96:     if v1 == v2:
+data/datasets/spreadsheetbench/verify/check.py:98:     else:
+data/datasets/spreadsheetbench/verify/check.py:102: def col_num2name(n):
+data/datasets/spreadsheetbench/verify/check.py:111: def col_name2num(name):
+data/datasets/spreadsheetbench/verify/check.py:119: def parse_cell_range(range_str):
+data/datasets/spreadsheetbench/verify/check.py:124:         if char.isdigit():
+data/datasets/spreadsheetbench/verify/check.py:126:         else:
+data/datasets/spreadsheetbench/verify/check.py:130:         if char.isdigit():
+data/datasets/spreadsheetbench/verify/check.py:132:         else:
+data/datasets/spreadsheetbench/verify/check.py:137: def generate_cell_names(range_str):
+data/datasets/spreadsheetbench/verify/check.py:139:     if ":" not in range_str:
+data/datasets/spreadsheetbench/verify/check.py:146: def cell_level_compare(wb_gt, wb_proc, sheet_name, cell_range):
+data/datasets/spreadsheetbench/verify/check.py:151:     if sheet_name not in wb_proc:
+data/datasets/spreadsheetbench/verify/check.py:157:         if not compare_cell_value(cell_gt.value, cell_proc.value):
+data/datasets/spreadsheetbench/verify/check.py:163: def compare_workbooks(gt_file, proc_file, instruction_type, answer_position):
+data/datasets/spreadsheetbench/verify/check.py:171:     if not os.path.exists(proc_file):
+data/datasets/spreadsheetbench/verify/check.py:174:     try:
+data/datasets/spreadsheetbench/verify/check.py:177:     except Exception as exc:  # noqa: BLE001 - loading failed, no comparison was completed
+data/datasets/spreadsheetbench/verify/check.py:192:         if ":" in _cell:
+data/datasets/spreadsheetbench/verify/check.py:193:             try:
+data/datasets/spreadsheetbench/verify/check.py:195:             except ValueError as exc:
+data/datasets/spreadsheetbench/verify/check.py:200:         if "!" in sheet_cell_range:
+data/datasets/spreadsheetbench/verify/check.py:203:         else:
+data/datasets/spreadsheetbench/verify/check.py:218: def soffice_path() -> str | None:
+data/datasets/spreadsheetbench/verify/check.py:222:         if found:
+data/datasets/spreadsheetbench/verify/check.py:227: def recalculate(workbook: Path, *, scratch: Path, soffice: str) -> tuple[bool, str]:
+data/datasets/spreadsheetbench/verify/check.py:245:     try:
+data/datasets/spreadsheetbench/verify/check.py:246:         proc = subprocess.run(cmd, capture_output=True, text=True, timeout=180, env=env)
+data/datasets/spreadsheetbench/verify/check.py:247:     except subprocess.TimeoutExpired:
+data/datasets/spreadsheetbench/verify/check.py:249:     if proc.returncode != 0:
+data/datasets/spreadsheetbench/verify/check.py:252:     if not converted.is_file():
+data/datasets/spreadsheetbench/verify/check.py:258: def workbook_has_formulas(path: Path) -> bool:
+data/datasets/spreadsheetbench/verify/check.py:262:     try:
+data/datasets/spreadsheetbench/verify/check.py:264:     except Exception as exc:  # noqa: BLE001 - False must mean a readable, formula-free file
+data/datasets/spreadsheetbench/verify/check.py:270:                 if isinstance(cell.value, str) and cell.value.startswith("="):
+data/datasets/spreadsheetbench/verify/check.py:278: def parse_args(argv):
+data/datasets/spreadsheetbench/verify/check.py:295: def write_reward(path: Path, score: float) -> None:
+data/datasets/spreadsheetbench/verify/check.py:300: def write_evidence(path: Path, evidence: dict) -> None:
+data/datasets/spreadsheetbench/verify/check.py:301:     try:
+data/datasets/spreadsheetbench/verify/check.py:305:     except OSError as exc:
+data/datasets/spreadsheetbench/verify/check.py:309: def main(argv) -> int:
+data/datasets/spreadsheetbench/verify/check.py:315: def _score(args, inputs, receipt) -> int:
+data/datasets/spreadsheetbench/verify/check.py:320:     evidence: dict = {"scorer_input": receipt, "answer_file": str(answer_path), "golden": str(golden_path)}
+data/datasets/spreadsheetbench/verify/check.py:322:     if not task_path.is_file():
+data/datasets/spreadsheetbench/verify/check.py:327:     if not golden_path.is_file():
+data/datasets/spreadsheetbench/verify/check.py:345:     if not str(candidate).startswith(str(workdir.resolve()) + os.sep):
+data/datasets/spreadsheetbench/verify/check.py:353:     if not candidate.is_file():
+data/datasets/spreadsheetbench/verify/check.py:365:     try:
+data/datasets/spreadsheetbench/verify/check.py:367:         if workbook_has_formulas(candidate):
+data/datasets/spreadsheetbench/verify/check.py:370:             if soffice is None:
+data/datasets/spreadsheetbench/verify/check.py:377:             if not ok:
+data/datasets/spreadsheetbench/verify/check.py:379:         else:
+data/datasets/spreadsheetbench/verify/check.py:386:     except Exception as exc:  # noqa: BLE001 - a failed tool/comparator is not a zero
+data/datasets/spreadsheetbench/verify/check.py:404: if __name__ == "__main__":
+data/datasets/spreadsheetbench/verify/check.py:405:     try:
+data/datasets/spreadsheetbench/verify/check.py:407:     except SystemExit:
+data/datasets/spreadsheetbench/verify/check.py:409:     except Exception:  # noqa: BLE001 - a crash must not look like a measured zero
+SOURCE data/datasets/strategyqa.py sha256=eaad45dfb944241fad84eb575882560ffcf7243de40c9d34fd0766a40c16a50a bytes=9164
+data/datasets/strategyqa.py:66: def normalize_answer(s: str) -> str:
+data/datasets/strategyqa.py:69:     def remove_articles(text: str) -> str:
+data/datasets/strategyqa.py:72:     def white_space_fix(text: str) -> str:
+data/datasets/strategyqa.py:75:     def remove_punc(text: str) -> str:
+data/datasets/strategyqa.py:78:     def lower(text: str) -> str:
+data/datasets/strategyqa.py:84: def exact_match(prediction: str, ground_truth: str) -> bool:
+data/datasets/strategyqa.py:89: def score(prediction: str, gold: dict) -> dict:
+data/datasets/strategyqa.py:107: def _rows() -> list[dict]:
+data/datasets/strategyqa.py:109:     if not path.is_file():
+data/datasets/strategyqa.py:113:     if len(rows) != N_TOTAL:
+data/datasets/strategyqa.py:118: def _gold(row: dict) -> dict:
+data/datasets/strategyqa.py:120:     if label not in LABELS:
+data/datasets/strategyqa.py:125: def _goal(question: str, gold: dict) -> str:
+data/datasets/strategyqa.py:162: def _rewoo_entry(*, name: str, csv_size: str, note: str) -> dict:
+data/datasets/strategyqa.py:176: _SPEC = base.QASpec(
+data/datasets/strategyqa.py:204: DEFAULT_ENV = _BUILT["DEFAULT_ENV"]
+data/datasets/strategyqa.py:223: def __getattr__(name: str):
+data/datasets/strategyqa.py:227: def load() -> tuple[list[dict], dict[str, str]]:
+data/datasets/strategyqa.py:231: def downloads() -> list[dict]:
+data/datasets/strategyqa.py:235: def provision_status() -> dict:
+SOURCE data/datasets/tau_bench.py sha256=79b9b5264667c019016bcc3de0bc2a4a5cb73bf6b4d8094f97a0a4c3f60ca938 bytes=20196
+data/datasets/tau_bench.py:182: ENV_BASE: dict = {
+data/datasets/tau_bench.py:195: DEFAULT_ENV = ENV_BASE
+data/datasets/tau_bench.py:198: def _read_gt() -> list[dict]:
+data/datasets/tau_bench.py:199:     if not GT_DIR.is_dir():
+data/datasets/tau_bench.py:206:     if not records:
+data/datasets/tau_bench.py:219: if _unknown_excluded:
+data/datasets/tau_bench.py:224:                    if record["task_id"] not in EXCLUDED_TASKS]
+data/datasets/tau_bench.py:228: def _goal(record: dict) -> str:
+data/datasets/tau_bench.py:269: def _db_path(domain: str) -> Path:
+data/datasets/tau_bench.py:273: def measured_no_op_tasks() -> list[str]:
+data/datasets/tau_bench.py:289:     if str(LIB_DIR) not in sys.path:
+data/datasets/tau_bench.py:293:     def hash_of(value) -> str:
+data/datasets/tau_bench.py:308:             if action.get("name") in TERMINATE_TOOLS:
+data/datasets/tau_bench.py:311:             if tool is None:
+data/datasets/tau_bench.py:313:             try:
+data/datasets/tau_bench.py:315:             except Exception:  # noqa: BLE001 - a refused action is not a hash change
+data/datasets/tau_bench.py:317:         if hash_of(db) == before and not (record.get("outputs") or []):
+data/datasets/tau_bench.py:322: def _setup(record: dict) -> dict:
+data/datasets/tau_bench.py:328: def _verifier(record: dict) -> dict:
+data/datasets/tau_bench.py:360:         "timeout_s": VERIFY_TIMEOUT_S,
+data/datasets/tau_bench.py:364: def load() -> tuple[list[dict], dict[str, str]]:
+data/datasets/tau_bench.py:376: VERIFY: dict[str, dict] = {record["task_id"]: _verifier(record) for record in _GT}
+data/datasets/tau_bench.py:388: def downloads() -> list[dict]:
+data/datasets/tau_bench.py:399:     try:
+data/datasets/tau_bench.py:401:     except (OSError, ValueError):
+SOURCE data/datasets/tau_bench/verify/check.py sha256=b2cad46a3f541eae927334961a76c91c79e3dbb730b5016f0dc325a544dad6ec bytes=15424
+data/datasets/tau_bench/verify/check.py:95: def _env_path(flag_value, env_name: str, default: Path) -> Path:
+data/datasets/tau_bench/verify/check.py:96:     if flag_value:
+data/datasets/tau_bench/verify/check.py:102: def parse_args(argv):
+data/datasets/tau_bench/verify/check.py:115: def hash_of(value) -> str:
+data/datasets/tau_bench/verify/check.py:120: def write_reward(path: Path, score: int) -> None:
+data/datasets/tau_bench/verify/check.py:125: def write_evidence(path: Path, evidence: dict) -> None:
+data/datasets/tau_bench/verify/check.py:126:     try:
+data/datasets/tau_bench/verify/check.py:130:     except OSError as exc:  # evidence is for a reader, not for the score
+data/datasets/tau_bench/verify/check.py:134: def import_tools(lib: Path, domain: str) -> dict:
+data/datasets/tau_bench/verify/check.py:135:     if str(lib) not in sys.path:
+data/datasets/tau_bench/verify/check.py:142: def read_agent_log(path: Path) -> dict:
+data/datasets/tau_bench/verify/check.py:153:     if not path.is_file():
+data/datasets/tau_bench/verify/check.py:159:         if not line:
+data/datasets/tau_bench/verify/check.py:162:         try:
+data/datasets/tau_bench/verify/check.py:164:         except ValueError:
+data/datasets/tau_bench/verify/check.py:166:         if not isinstance(record, dict):
+data/datasets/tau_bench/verify/check.py:170:         if kind == "done" or name == "done":
+data/datasets/tau_bench/verify/check.py:172:         elif kind == "say" or name == RESPOND_ACTION_NAME:
+data/datasets/tau_bench/verify/check.py:176:         else:
+data/datasets/tau_bench/verify/check.py:184: def check_outputs(outputs, says) -> tuple[dict, float]:
+data/datasets/tau_bench/verify/check.py:200: def section_comparison(agent_db, gt_db) -> dict:
+data/datasets/tau_bench/verify/check.py:204:         if in_agent and in_gt:
+data/datasets/tau_bench/verify/check.py:206:         else:
+data/datasets/tau_bench/verify/check.py:213: def main(argv) -> int:
+data/datasets/tau_bench/verify/check.py:221:     try:
+data/datasets/tau_bench/verify/check.py:223:     except (OSError, ValueError) as exc:
+data/datasets/tau_bench/verify/check.py:237:     try:
+data/datasets/tau_bench/verify/check.py:239:     except (OSError, ValueError) as exc:
+data/datasets/tau_bench/verify/check.py:245:     try:
+data/datasets/tau_bench/verify/check.py:247:     except Exception as exc:  # noqa: BLE001 - the library is the check's own input
+data/datasets/tau_bench/verify/check.py:258:         if name in TERMINATE_TOOLS:
+data/datasets/tau_bench/verify/check.py:262:         if tool is None:
+data/datasets/tau_bench/verify/check.py:265:         try:
+data/datasets/tau_bench/verify/check.py:270:             if isinstance(observation, str) and observation.startswith("Error:"):
+data/datasets/tau_bench/verify/check.py:272:         except Exception as exc:  # noqa: BLE001 - mirrors Env.step
+data/datasets/tau_bench/verify/check.py:293:     try:
+data/datasets/tau_bench/verify/check.py:296:         if not isinstance(agent_db, dict):
+data/datasets/tau_bench/verify/check.py:299:     except (OSError, ValueError) as exc:
+data/datasets/tau_bench/verify/check.py:318:     if reward == 1:
+data/datasets/tau_bench/verify/check.py:325:     if not matched:
+data/datasets/tau_bench/verify/check.py:330:     if not done:
+data/datasets/tau_bench/verify/check.py:333:     if r_outputs != 1.0:
+data/datasets/tau_bench/verify/check.py:340: if __name__ == "__main__":
+data/datasets/tau_bench/verify/check.py:341:     try:
+data/datasets/tau_bench/verify/check.py:343:     except SystemExit:
+data/datasets/tau_bench/verify/check.py:345:     except Exception:  # noqa: BLE001 - a crash must not look like a measured zero
+SOURCE data/datasets/terminal_bench.py sha256=8f3d8c1b0ecb0fbbb9696f876257706ff3c0019e7a5657dd296dc295a9a47175 bytes=15657
+data/datasets/terminal_bench.py:14: exceptions: `instruction.md`, `task.toml`, `environment/` (a Dockerfile, often with
+data/datasets/terminal_bench.py:37: | `task.toml` `agent.timeout_sec` / `verifier.timeout_sec` | `env.agent_timeout_s` / `env.verify_timeout_s` |
+data/datasets/terminal_bench.py:141: def _workdir(task_dir: Path) -> str:
+data/datasets/terminal_bench.py:150:     if dockerfile.is_file():
+data/datasets/terminal_bench.py:152:         if found:
+data/datasets/terminal_bench.py:157: def _task_dirs() -> list[Path]:
+data/datasets/terminal_bench.py:167:     if not ROOT.is_dir():
+data/datasets/terminal_bench.py:174:         if not candidate.is_dir():
+data/datasets/terminal_bench.py:177:                       if d.is_dir() and (d / "task.toml").is_file())
+data/datasets/terminal_bench.py:178:         if dirs:
+data/datasets/terminal_bench.py:185: def _load_one(task_dir: Path) -> tuple[dict, dict, dict, dict]:
+data/datasets/terminal_bench.py:210:         "agent_timeout_s": int((meta.get("agent") or {}).get("timeout_sec", 900)),
+data/datasets/terminal_bench.py:211:         "verify_timeout_s": int((meta.get("verifier") or {}).get("timeout_sec", 900)),
+data/datasets/terminal_bench.py:225:     if os.environ.get("HG_TB_ORACLE"):
+data/datasets/terminal_bench.py:227:         if not solution.is_dir():
+data/datasets/terminal_bench.py:233:         "scorer_bundle": {"isolation_class": "snapshot-service"},
+data/datasets/terminal_bench.py:245:         "timeout_s": env["verify_timeout_s"],
+data/datasets/terminal_bench.py:250: def _all() -> list[tuple[dict, dict, dict, dict]]:
+data/datasets/terminal_bench.py:253:         if d.name in EXCLUDED:
+data/datasets/terminal_bench.py:255:         if ONLY and d.name not in ONLY:
+data/datasets/terminal_bench.py:258:     if not out:
+data/datasets/terminal_bench.py:265: def _is_eval(task_id: str) -> bool:
+data/datasets/terminal_bench.py:276: def load():
+data/datasets/terminal_bench.py:284: VERIFY = {r[0]["task_id"]: r[2] for r in _all()}
+data/datasets/terminal_bench.py:288: if _split_mode == "none":
+data/datasets/terminal_bench.py:290: else:
+data/datasets/terminal_bench.py:304: def downloads() -> list[dict]:
+SOURCE data/datasets/triviaqa.py sha256=c4c9e7121672f482abd5ec5527daa07d893f27bfbdcb7255841782332597413c bytes=18723
+data/datasets/triviaqa.py:100: def normalize_answer(s: str) -> str:
+data/datasets/triviaqa.py:107:     def remove_articles(text: str) -> str:
+data/datasets/triviaqa.py:110:     def white_space_fix(text: str) -> str:
+data/datasets/triviaqa.py:113:     def remove_punc(text: str) -> str:
+data/datasets/triviaqa.py:117:     def lower(text: str) -> str:
+data/datasets/triviaqa.py:120:     def replace_underscore(text: str) -> str:
+data/datasets/triviaqa.py:127: def get_ground_truths(answer: dict) -> list[str]:
+data/datasets/triviaqa.py:143: def exact_match_score(prediction: str, ground_truth: str) -> float:
+data/datasets/triviaqa.py:148: def metric_max_over_ground_truths(metric_fn, prediction: str,
+data/datasets/triviaqa.py:155:     if not ground_truths:
+data/datasets/triviaqa.py:160: def score(prediction: str, gold: dict) -> dict:
+data/datasets/triviaqa.py:179:                if gold.get("value") else "")
+data/datasets/triviaqa.py:213: def _rows():
+data/datasets/triviaqa.py:232: class _LazySplits:
+data/datasets/triviaqa.py:233:     def __init__(self) -> None:
+data/datasets/triviaqa.py:236:     def get(self, split, default=None):
+data/datasets/triviaqa.py:237:         if split not in SPLIT_FILES:
+data/datasets/triviaqa.py:239:         if split not in self._loaded:
+data/datasets/triviaqa.py:248: def _question(row: dict) -> str:
+data/datasets/triviaqa.py:252: def _gold(row: dict) -> dict:
+data/datasets/triviaqa.py:262:     if not accepted:
+data/datasets/triviaqa.py:273: def _goal(question: str, gold: dict) -> str:
+data/datasets/triviaqa.py:299: def _downloads() -> list[dict]:
+data/datasets/triviaqa.py:339: _SPEC = base.QASpec(
+data/datasets/triviaqa.py:361: DEFAULT_ENV = _BUILT["DEFAULT_ENV"]
+data/datasets/triviaqa.py:386: def __getattr__(name: str):
+data/datasets/triviaqa.py:395: def load() -> tuple[list[dict], dict[str, str]]:
+data/datasets/triviaqa.py:399: def downloads() -> list[dict]:
+data/datasets/triviaqa.py:403: def provision_status() -> dict:
+SOURCE data/datasets/twowikimultihopqa.py sha256=55556cbb914e64bcdb644b5d96df6b89752a927c3b96a4b5d34f3dbbc3ceec21 bytes=32451
+data/datasets/twowikimultihopqa.py:124: def normalize_answer(s):
+data/datasets/twowikimultihopqa.py:126:     def remove_articles(text):
+data/datasets/twowikimultihopqa.py:129:     def white_space_fix(text):
+data/datasets/twowikimultihopqa.py:132:     def remove_punc(text):
+data/datasets/twowikimultihopqa.py:136:     def lower(text):
+data/datasets/twowikimultihopqa.py:142: def f1_score(prediction, ground_truth):
+data/datasets/twowikimultihopqa.py:148:     if normalized_prediction in ['yes', 'no', 'noanswer'] and normalized_prediction != normalized_ground_truth:
+data/datasets/twowikimultihopqa.py:150:     if normalized_ground_truth in ['yes', 'no', 'noanswer'] and normalized_prediction != normalized_ground_truth:
+data/datasets/twowikimultihopqa.py:157:     if num_same == 0:
+data/datasets/twowikimultihopqa.py:165: def exact_match_score(prediction, ground_truth):
+data/datasets/twowikimultihopqa.py:169: def eval_answer(prediction, gold):
+data/datasets/twowikimultihopqa.py:175: def update_answer(metrics, prediction, golds):
+data/datasets/twowikimultihopqa.py:194: def normalize_sp(sps):
+data/datasets/twowikimultihopqa.py:203: def update_sp(metrics, prediction, gold):
+data/datasets/twowikimultihopqa.py:208:         if e in gold_sp_pred:
+data/datasets/twowikimultihopqa.py:210:         else:
+data/datasets/twowikimultihopqa.py:213:         if e not in cur_sp_pred:
+data/datasets/twowikimultihopqa.py:226: def normalize_evi(evidences):
+data/datasets/twowikimultihopqa.py:228:     def white_space_fix(text):
+data/datasets/twowikimultihopqa.py:231:     def remove_punc(text):
+data/datasets/twowikimultihopqa.py:235:     def lower(text):
+data/datasets/twowikimultihopqa.py:238:     def recurse(arr):
+data/datasets/twowikimultihopqa.py:240:             if isinstance(arr[i], str):
+data/datasets/twowikimultihopqa.py:242:             else:
+data/datasets/twowikimultihopqa.py:250: def update_evi(metrics, prediction, gold):
+data/datasets/twowikimultihopqa.py:263:             if pred_evidence in gold_evidences:
+data/datasets/twowikimultihopqa.py:280: def eval(prediction_file, gold_file, alias_file):
+data/datasets/twowikimultihopqa.py:302:         if cur_id not in prediction['answer']:
+data/datasets/twowikimultihopqa.py:305:         else:
+data/datasets/twowikimultihopqa.py:308:             if dp['answer_id'] in aliases and aliases[dp['answer_id']]["aliases"]:
+data/datasets/twowikimultihopqa.py:314:         if cur_id not in prediction['sp']:
+data/datasets/twowikimultihopqa.py:317:         else:
+data/datasets/twowikimultihopqa.py:321:         if cur_id not in prediction['evidence']:
+data/datasets/twowikimultihopqa.py:324:         else:
+data/datasets/twowikimultihopqa.py:331:                 if dp['evidences_id'] != []:
+data/datasets/twowikimultihopqa.py:338:                     if sub_id in aliases:
+data/datasets/twowikimultihopqa.py:340:                     if obj_id in aliases:
+data/datasets/twowikimultihopqa.py:353:         if can_eval_joint:
+data/datasets/twowikimultihopqa.py:357:             if joint_prec + joint_recall > 0:
+data/datasets/twowikimultihopqa.py:359:             else:
+data/datasets/twowikimultihopqa.py:379: def _one_question(prediction: str, golds) -> dict:
+data/datasets/twowikimultihopqa.py:392: def score_answer_only(prediction: str, gold: dict) -> dict:
+data/datasets/twowikimultihopqa.py:399:     if not gold.get("answer"):
+data/datasets/twowikimultihopqa.py:422: def validate_prediction(prediction: dict) -> None:
+data/datasets/twowikimultihopqa.py:428:     if not isinstance(prediction, dict) or set(prediction) - PREDICTION_KEYS:
+data/datasets/twowikimultihopqa.py:430:     if type(prediction.get("schema_version")) is not int or prediction["schema_version"] != 1:
+data/datasets/twowikimultihopqa.py:432:     if "answer" in prediction and not isinstance(prediction["answer"], str):
+data/datasets/twowikimultihopqa.py:435:         if channel not in prediction:
+data/datasets/twowikimultihopqa.py:437:         if not isinstance(prediction[channel], list):
+data/datasets/twowikimultihopqa.py:440:             if not isinstance(item, list) or len(item) != length:
+data/datasets/twowikimultihopqa.py:442:             if channel == "supporting_facts":
+data/datasets/twowikimultihopqa.py:444:             else:
+data/datasets/twowikimultihopqa.py:446:             if not valid:
+data/datasets/twowikimultihopqa.py:450: def _prediction_metrics(prediction: dict, gold: dict) -> dict:
+data/datasets/twowikimultihopqa.py:452:     if not isinstance(gold.get("answer"), str):
+data/datasets/twowikimultihopqa.py:454:     if "supporting_facts" not in gold or "evidences" not in gold:
+data/datasets/twowikimultihopqa.py:457:     if "answer" in prediction:
+data/datasets/twowikimultihopqa.py:460:     if "supporting_facts" in prediction:
+data/datasets/twowikimultihopqa.py:463:     if "evidence" in prediction:
+data/datasets/twowikimultihopqa.py:469:     if all(channel in prediction for channel in ("answer", "supporting_facts", "evidence")):
+data/datasets/twowikimultihopqa.py:476:                       if joint_prec + joint_recall > 0 else 0.0))
+data/datasets/twowikimultihopqa.py:480: def score_prediction(prediction: dict, gold: dict) -> dict:
+data/datasets/twowikimultihopqa.py:490: def score(prediction: str | dict, gold: dict) -> dict:
+data/datasets/twowikimultihopqa.py:492:     if isinstance(prediction, dict):
+data/datasets/twowikimultihopqa.py:494:     if prediction.lstrip().startswith("{"):
+data/datasets/twowikimultihopqa.py:499: def evaluate_predictions(predictions: dict[str, dict], golds: list[dict]) -> dict:
+data/datasets/twowikimultihopqa.py:505:     if not golds:
+data/datasets/twowikimultihopqa.py:523: def _aliases() -> dict[str, list[str]]:
+data/datasets/twowikimultihopqa.py:531:     if _ALIASES is None:
+data/datasets/twowikimultihopqa.py:535:                 if not line.strip():
+data/datasets/twowikimultihopqa.py:545: def _rows() -> dict[str, list[dict]]:
+data/datasets/twowikimultihopqa.py:548:     if len(rows) != EXPECTED_ROWS or len({row["_id"] for row in rows}) != EXPECTED_ROWS:
+data/datasets/twowikimultihopqa.py:550:     if not all(row["answer"] and row.get("context") for row in rows):
+data/datasets/twowikimultihopqa.py:555: def _question(row: dict) -> str:
+data/datasets/twowikimultihopqa.py:569: def _gold(row: dict) -> dict:
+data/datasets/twowikimultihopqa.py:572:     if evidence_ids and len(evidence_ids) != len(row["evidences"]):
+data/datasets/twowikimultihopqa.py:577:         if relation_id != relation:
+data/datasets/twowikimultihopqa.py:580:             if entity_id in aliases:
+data/datasets/twowikimultihopqa.py:590: def _evidence_variants(gold: dict) -> list:
+data/datasets/twowikimultihopqa.py:598:     if evidence_ids and len(evidence_ids) != len(gold["evidences"]):
+data/datasets/twowikimultihopqa.py:603:         if evidence_ids:
+data/datasets/twowikimultihopqa.py:605:             if relation_id != relation:
+data/datasets/twowikimultihopqa.py:614: def _goal(question: str, gold: dict) -> str:
+data/datasets/twowikimultihopqa.py:631: def _downloads() -> list[dict]:
+data/datasets/twowikimultihopqa.py:654: _SPEC = base.QASpec(name="twowikimultihopqa", root=DATASET_ROOT, rows=_rows,
+data/datasets/twowikimultihopqa.py:660: DEFAULT_ENV = _BUILT["DEFAULT_ENV"]
+data/datasets/twowikimultihopqa.py:681: def __getattr__(name):
+data/datasets/twowikimultihopqa.py:685: def load():
+data/datasets/twowikimultihopqa.py:689: def downloads():
+data/datasets/twowikimultihopqa.py:693: def provision_status():
+SOURCE data/scaffolds/qa/base.py sha256=3c2242e4ed82d76eb7732a6c077122f3d74fb4387860caa3b53a9d8a049a8d8a bytes=27878
+data/scaffolds/qa/base.py:61: def normalize_missing(value):
+data/scaffolds/qa/base.py:123: def is_eval(task_id: str) -> bool:
+data/scaffolds/qa/base.py:134: class QASpec:
+data/scaffolds/qa/base.py:147:     def __init__(
+data/scaffolds/qa/base.py:195:     def ensure(self) -> list[dict]:
+data/scaffolds/qa/base.py:205:         if self._records:
+data/scaffolds/qa/base.py:207:         if self.load_error is None:
+data/scaffolds/qa/base.py:208:             try:
+data/scaffolds/qa/base.py:210:             except Exception as exc:  # noqa: BLE001 - carried, not swallowed
+data/scaffolds/qa/base.py:215:     def records(self) -> list[dict]:
+data/scaffolds/qa/base.py:228:         try:
+data/scaffolds/qa/base.py:230:         except FileNotFoundError as exc:
+data/scaffolds/qa/base.py:237:             if rows is None:
+data/scaffolds/qa/base.py:248:                 if isinstance(row, dict) and SOURCE_INDEX in row:
+data/scaffolds/qa/base.py:259:         if not records:
+data/scaffolds/qa/base.py:265:     def load(self) -> tuple[list[dict], dict[str, str]]:
+data/scaffolds/qa/base.py:270:         if self.load_error:
+data/scaffolds/qa/base.py:272:         if not records:
+data/scaffolds/qa/base.py:279:         if not division["train"] or not division["eval"]:
+data/scaffolds/qa/base.py:290:     def division(self) -> dict:
+data/scaffolds/qa/base.py:301:         if self.study:
+data/scaffolds/qa/base.py:314:     def setup(self, record: dict) -> dict:
+data/scaffolds/qa/base.py:322:     def verifier(self, record: dict) -> dict:
+data/scaffolds/qa/base.py:340:         scorer_input = {"task_id": record["task_id"], "path": GOLD_FILE,
+data/scaffolds/qa/base.py:344:             "scorer_input": scorer_input,
+data/scaffolds/qa/base.py:352:                 "--gold-sha256", scorer_input["sha256"],
+data/scaffolds/qa/base.py:392:             "timeout_s": 3600,
+data/scaffolds/qa/base.py:395:     def provision_status(self) -> dict:
+data/scaffolds/qa/base.py:411:             if dst:
+data/scaffolds/qa/base.py:426:     def downloads(self) -> list[dict]:
+data/scaffolds/qa/base.py:429:     def build(self) -> dict:
+data/scaffolds/qa/base.py:473:     def setup_map(self) -> dict:
+data/scaffolds/qa/base.py:486:     def verify_map(self) -> dict:
+data/scaffolds/qa/base.py:490:     def control_dir(self) -> Path:
+data/scaffolds/qa/base.py:494: def module_getattr(spec: "QASpec", name: str):
+data/scaffolds/qa/base.py:503:     if name == "SETUP":
+data/scaffolds/qa/base.py:505:     if name == "VERIFY":
+data/scaffolds/qa/base.py:507:     if name == "_RECORDS":
+data/scaffolds/qa/base.py:509:     if name == "_LOAD_ERROR":
+data/scaffolds/qa/base.py:514: def split_env_override(name: str) -> str | None:
+SOURCE data/scaffolds/qa/verify/check.py sha256=7625d8070cac767c5a878623f98469cb7f4bb0b528a86980d7334b5fdbbbbe7e bytes=14894
+data/scaffolds/qa/verify/check.py:55:     if str(candidate) not in sys.path:
+data/scaffolds/qa/verify/check.py:76: def parse_args(argv):
+data/scaffolds/qa/verify/check.py:92: def write_reward(path: Path, score: float) -> None:
+data/scaffolds/qa/verify/check.py:97: def write_evidence(path: Path, evidence: dict) -> None:
+data/scaffolds/qa/verify/check.py:99:     try:
+data/scaffolds/qa/verify/check.py:103:     except OSError as exc:
+data/scaffolds/qa/verify/check.py:107: def unmeasured(args, evidence: dict, why: str) -> int:
+data/scaffolds/qa/verify/check.py:115: def error_detail(args, exc: Exception) -> str:
+data/scaffolds/qa/verify/check.py:120: def record_traceback(args, evidence: dict) -> None:
+data/scaffolds/qa/verify/check.py:121:     if not args.redact_gold:
+data/scaffolds/qa/verify/check.py:135: def unwrap(answer: str) -> str:
+data/scaffolds/qa/verify/check.py:140: def main(argv) -> int:
+data/scaffolds/qa/verify/check.py:157:     if args.redact_gold:
+data/scaffolds/qa/verify/check.py:160:     if not gold_path.is_file():
+data/scaffolds/qa/verify/check.py:168:     try:
+data/scaffolds/qa/verify/check.py:176:         evidence["scorer_input"] = {
+data/scaffolds/qa/verify/check.py:180:         if (args.task_id is not None or args.gold_sha256 is not None) and not bound:
+data/scaffolds/qa/verify/check.py:185:     except (OSError, ValueError) as exc:
+data/scaffolds/qa/verify/check.py:188:     if not isinstance(gold, dict):
+data/scaffolds/qa/verify/check.py:193:     try:
+data/scaffolds/qa/verify/check.py:195:     except (OSError, ValueError) as exc:
+data/scaffolds/qa/verify/check.py:204:     if prediction_path.is_file():
+data/scaffolds/qa/verify/check.py:205:         try:
+data/scaffolds/qa/verify/check.py:209:         except (OSError, ValueError) as exc:
+data/scaffolds/qa/verify/check.py:212:         except Exception as exc:  # noqa: BLE001 - unavailable validation is unmeasured
+data/scaffolds/qa/verify/check.py:216:         if prediction_error:
+data/scaffolds/qa/verify/check.py:222:     if not DATASET_NAME_RE.match(args.dataset):
+data/scaffolds/qa/verify/check.py:228:     try:
+data/scaffolds/qa/verify/check.py:236:         if getattr(adapter, "REDACT_EVIDENCE", False) and not args.redact_gold:
+data/scaffolds/qa/verify/check.py:242:         if not callable(scorer):
+data/scaffolds/qa/verify/check.py:246:     except Exception as exc:  # noqa: BLE001 - materializing the scorer is the platform's job
+data/scaffolds/qa/verify/check.py:253:     try:
+data/scaffolds/qa/verify/check.py:257:                   if structured is not None
+data/scaffolds/qa/verify/check.py:261:     except Exception as exc:  # noqa: BLE001 - a scorer that refuses is not a zero
+data/scaffolds/qa/verify/check.py:267:     if not isinstance(result, dict) or "reward" not in result:
+data/scaffolds/qa/verify/check.py:272:     try:
+data/scaffolds/qa/verify/check.py:274:     except (TypeError, ValueError):
+data/scaffolds/qa/verify/check.py:290: if __name__ == "__main__":
+data/scaffolds/qa/verify/check.py:291:     try:
+data/scaffolds/qa/verify/check.py:293:     except SystemExit:
+data/scaffolds/qa/verify/check.py:295:     except Exception:  # noqa: BLE001 - a crash must not look like a measured zero
+SOURCE eval/containers/container.py sha256=216c1de97885625c81c5a31e6964e93254fdec7326ae77c02ede28c419fb7e52 bytes=48995
+eval/containers/container.py:68: class ContainerUnavailable(RuntimeError):
+eval/containers/container.py:72: class SnapshotUnavailable(ContainerUnavailable):
+eval/containers/container.py:85: def _snapshot_limit(key: str, default: int) -> int:
+eval/containers/container.py:86:     try:
+eval/containers/container.py:88:         if not 0 < value <= 2**63 - 1:
+eval/containers/container.py:91:     except (TypeError, ValueError) as exc:
+eval/containers/container.py:95: def _snapshot_failure(stage: str, proc: subprocess.CompletedProcess | None = None,
+eval/containers/container.py:103:     if ((proc is not None and proc.returncode == 137)
+eval/containers/container.py:107:     elif any(marker in lowered for marker in
+eval/containers/container.py:110:     elif any(marker in lowered for marker in
+eval/containers/container.py:113:     else:
+eval/containers/container.py:119: def snapshot_admission(name: str) -> dict[str, int | str | bool]:
+eval/containers/container.py:129:     try:
+eval/containers/container.py:131:                       timeout=SNAPSHOT_INSPECT_TIMEOUT_S)
+eval/containers/container.py:132:     except (subprocess.TimeoutExpired, OSError) as exc:
+eval/containers/container.py:134:     if proc.returncode != 0:
+eval/containers/container.py:136:     try:
+eval/containers/container.py:138:     except ValueError:
+eval/containers/container.py:141:     if not 0 <= writable <= 2**63 - 1:
+eval/containers/container.py:143:     if writable > maximum:
+eval/containers/container.py:148:     try:
+eval/containers/container.py:150:                       timeout=SNAPSHOT_INSPECT_TIMEOUT_S)
+eval/containers/container.py:151:     except (subprocess.TimeoutExpired, OSError) as exc:
+eval/containers/container.py:153:     if info.returncode != 0:
+eval/containers/container.py:157:     if (not root.is_absolute() or len(root_text) > 1024
+eval/containers/container.py:160:     try:
+eval/containers/container.py:162:     except OSError as exc:
+eval/containers/container.py:164:     if type(free) is not int or not 0 <= free <= 2**63 - 1:
+eval/containers/container.py:167:     if free < required:
+eval/containers/container.py:187: def _drain(pipe, sink: list[str], limit: int = _STREAM_KEEP) -> None:
+eval/containers/container.py:190:     Interleaving stdout and stderr is what `subprocess.run` would not do, and it is
+eval/containers/container.py:195:     try:
+eval/containers/container.py:198:             if not chunk:
+eval/containers/container.py:201:             if sum(len(c) for c in sink) > limit:
+eval/containers/container.py:203:     except (ValueError, OSError):
+eval/containers/container.py:205:     finally:
+eval/containers/container.py:206:         try:
+eval/containers/container.py:207:             pipe.close()
+eval/containers/container.py:208:         except OSError:
+eval/containers/container.py:212: def _run_streaming(argv: list[str], timeout: int, _label: str = ""):
+eval/containers/container.py:213:     """`subprocess.run` shape, but in slices so this thread stays interruptible.
+eval/containers/container.py:225:     if timeout:
+eval/containers/container.py:227:     else:
+eval/containers/container.py:229:     proc = subprocess.Popen(argv, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+eval/containers/container.py:238:         r.start()
+eval/containers/container.py:240:     #: promise `subprocess.run`'s own timeout makes -- and short enough that a stopping
+eval/containers/container.py:244:         try:
+eval/containers/container.py:245:             proc.wait(timeout=SLICE)
+eval/containers/container.py:247:         except subprocess.TimeoutExpired:
+eval/containers/container.py:248:             if deadline is not None and time.monotonic() > deadline:
+eval/containers/container.py:249:                 proc.kill()
+eval/containers/container.py:250:                 proc.wait()
+eval/containers/container.py:252:                     r.join(timeout=2)
+eval/containers/container.py:255:         r.join(timeout=5)
+eval/containers/container.py:260: def docker(*args: str, timeout: int = 120) -> subprocess.CompletedProcess:
+eval/containers/container.py:268:     `subprocess.run`. The branch is on the presence of a task rather than on a flag per
+eval/containers/container.py:275:     if progress_mod.task_of() is None:
+eval/containers/container.py:276:         return subprocess.run(["docker", *args], capture_output=True, text=True,
+eval/containers/container.py:277:                               timeout=timeout)
+eval/containers/container.py:285: def available() -> str | None:
+eval/containers/container.py:287:     if shutil.which("docker") is None:
+eval/containers/container.py:289:     try:
+eval/containers/container.py:290:         proc = _docker("version", "--format", "{{.Server.Version}}", timeout=30)
+eval/containers/container.py:291:     except (subprocess.TimeoutExpired, OSError):
+eval/containers/container.py:296: def looks_pinned(image: str) -> bool:
+eval/containers/container.py:298:     if "@sha256:" in image:
+eval/containers/container.py:300:     if image.startswith("sha256:"):
+eval/containers/container.py:305: def _is_hex(value: str) -> bool:
+eval/containers/container.py:309: def resolve_digest(image: str) -> str:
+eval/containers/container.py:320:     if looks_pinned(image):
+eval/containers/container.py:322:     if image in _DIGEST_CACHE:
+eval/containers/container.py:325:     try:
+eval/containers/container.py:328:                        image, timeout=60)
+eval/containers/container.py:329:     except subprocess.TimeoutExpired as exc:
+eval/containers/container.py:331:     if proc.returncode != 0:
+eval/containers/container.py:339:     if not looks_pinned(pinned):
+eval/containers/container.py:353: def digest_of(pinned: str) -> str:
+eval/containers/container.py:355:     if "@sha256:" in pinned:
+eval/containers/container.py:362: def interpreter_paths() -> tuple[Path, ...]:
+eval/containers/container.py:381:         if path.is_dir() and path not in out:
+eval/containers/container.py:390: def image_python(image: str) -> str | None:
+eval/containers/container.py:403:     if image in _PYTHON_CACHE:
+eval/containers/container.py:406:     try:
+eval/containers/container.py:409:                       timeout=180)
+eval/containers/container.py:412:     except (subprocess.TimeoutExpired, OSError):
+eval/containers/container.py:418: def env_home(task_mount: str) -> str:
+eval/containers/container.py:429: def container_env(task_mount: str, deadline_s: int | None = None) -> dict[str, str]:
+eval/containers/container.py:447:            if k.startswith(PASS_THROUGH_PREFIXES) or k in PASS_THROUGH_EXACT}
+eval/containers/container.py:458:     if deadline_s:
+eval/containers/container.py:469: def writable_env_dirs(task_mount: str) -> tuple[str, ...]:
+eval/containers/container.py:491:         if value and value not in seen:
+eval/containers/container.py:496: def _mounts(task_dir: Path, task_mount: str, harness_root: Path | None,
+eval/containers/container.py:521:     if harness_root is not None:
+eval/containers/container.py:534: def command(argv: list[str], *, image: str, task_dir: Path, task_mount: str,
+eval/containers/container.py:546:     if read_only:
+eval/containers/container.py:578: def run(argv: list[str], *, image: str, task_dir: Path, task_mount: str,
+eval/containers/container.py:581:         timeout_s: int = 3600, network: str = "none",
+eval/containers/container.py:586:     """`subprocess.run` shape, inside a **fresh** container. Same return type.
+eval/containers/container.py:602:     if not looks_pinned(image):
+eval/containers/container.py:617:     try:
+eval/containers/container.py:618:         return subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_s)
+eval/containers/container.py:619:     finally:
+eval/containers/container.py:620:         remove_container(name)
+eval/containers/container.py:623: def to_container(path: Path | str, task_dir: Path, task_mount: str) -> str:
+eval/containers/container.py:631:     try:
+eval/containers/container.py:633:     except ValueError:
+eval/containers/container.py:655: if ( echo x > __HARNESS__/probe 2>/dev/null ); then echo harness_writable=yes; else echo harness_writable=no; fi
+eval/containers/container.py:656: if ( echo x > __HARNESS__/.state/probe 2>/dev/null ); then echo state_writable=yes; else echo state_writable=no; fi
+eval/containers/container.py:657: if ( echo x > __TASK__/written 2>/dev/null ); then echo task_writable=yes; else echo task_writable=no; fi
+eval/containers/container.py:658: if ( echo x > /var/tmp/probe 2>/dev/null ); then echo rootfs_writable=yes; else echo rootfs_writable=no; fi
+eval/containers/container.py:659: if ( echo x > /tmp/probe 2>/dev/null ); then echo tmp_writable=yes; else echo tmp_writable=no; fi
+eval/containers/container.py:664: def self_check(platform: Path, image: str) -> dict:
+eval/containers/container.py:682:     try:
+eval/containers/container.py:684:     except ContainerUnavailable as exc:
+eval/containers/container.py:709:         try:
+eval/containers/container.py:712:                        state_dirs=(state,), cwd=str(task_dir), timeout_s=180)
+eval/containers/container.py:713:         except (subprocess.TimeoutExpired, OSError) as exc:
+eval/containers/container.py:716:         if proc.returncode != 0:
+eval/containers/container.py:723:         if "=" in line:
+eval/containers/container.py:728:     if facts.get("platform_visible") != "no":
+eval/containers/container.py:730:     if facts.get("sibling_visible") != "no":
+eval/containers/container.py:733:     if facts.get("docker_socket") != "no":
+eval/containers/container.py:736:     if facts.get("harness_readable") != "yes":
+eval/containers/container.py:738:     if facts.get("harness_writable") != "no":
+eval/containers/container.py:740:     if facts.get("state_writable") != "yes":
+eval/containers/container.py:743:     if facts.get("task_writable") != "yes":
+eval/containers/container.py:745:     if facts.get("rootfs_writable") != "no":
+eval/containers/container.py:748:     if facts.get("tmp_writable") != "yes":
+eval/containers/container.py:769: def require_snapshot_identity(image: str, expected: str | None) -> None:
+eval/containers/container.py:771:     if (not expected or not looks_pinned(expected) or not looks_pinned(image)
+eval/containers/container.py:776: def require_snapshot_container(name: str, expected: str) -> None:
+eval/containers/container.py:778:     try:
+eval/containers/container.py:780:                       timeout=SNAPSHOT_INSPECT_TIMEOUT_S)
+eval/containers/container.py:781:     except (subprocess.TimeoutExpired, OSError) as exc:
+eval/containers/container.py:783:     if proc.returncode:
+eval/containers/container.py:788: def _require_static_elf(path: Path) -> None:
+eval/containers/container.py:795:     try:
+eval/containers/container.py:796:         if raw[:4] != b"\x7fELF" or raw[4] not in (1, 2) or raw[5] not in (1, 2):
+eval/containers/container.py:802:         if (header[1] != 2 or not 0 < count <= 4096
+eval/containers/container.py:808:             if kind in (2, 3):  # PT_DYNAMIC / PT_INTERP
+eval/containers/container.py:810:     except (IndexError, struct.error, ValueError) as exc:
+eval/containers/container.py:815: def snapshot_startup():
+eval/containers/container.py:823:     if not source:
+eval/containers/container.py:827:         try:
+eval/containers/container.py:831:         except OSError as exc:
+eval/containers/container.py:837: def create(name: str, *, image: str, limits: dict | None = None,
+eval/containers/container.py:864:     if task_id:
+eval/containers/container.py:872:     if startup_entrypoint is not None:
+eval/containers/container.py:878:     proc = docker(*cmd, timeout=180)
+eval/containers/container.py:879:     if proc.returncode != 0:
+eval/containers/container.py:885: def cp_in(name: str, source: Path, dest: str, *, contents: bool = False) -> None:
+eval/containers/container.py:900:     proc = docker("cp", src, f"{name}:{dest}", timeout=300)
+eval/containers/container.py:901:     if proc.returncode != 0:
+eval/containers/container.py:906: def cp_out(name: str, source: str, dest: Path) -> bool:
+eval/containers/container.py:913:     proc = docker("cp", f"{name}:{source}", str(dest), timeout=300)
+eval/containers/container.py:917: def mkdir_in(name: str, path: str, mode: str = "0777") -> None:
+eval/containers/container.py:918:     proc = docker("exec", name, "mkdir", "-p", "-m", mode, path, timeout=60)
+eval/containers/container.py:919:     if proc.returncode != 0:
+eval/containers/container.py:924: def start(name: str) -> None:
+eval/containers/container.py:925:     proc = docker("start", name, timeout=180)
+eval/containers/container.py:926:     if proc.returncode != 0:
+eval/containers/container.py:931: def exec_in(name: str, argv: list[str], *, cwd: str | None = None,
+eval/containers/container.py:932:             env: dict[str, str] | None = None, timeout_s: int = 3600,
+eval/containers/container.py:934:     """Run a command inside a running container. `subprocess.run` shape."""
+eval/containers/container.py:936:     if cwd:
+eval/containers/container.py:941:     return docker(*cmd, timeout=timeout_s)
+eval/containers/container.py:944: def stop(name: str) -> None:
+eval/containers/container.py:951:     try:
+eval/containers/container.py:952:         proc = docker("stop", "--time", "5", name, timeout=60)
+eval/containers/container.py:953:     except (subprocess.TimeoutExpired, OSError) as exc:
+eval/containers/container.py:955:     if proc.returncode != 0:
+eval/containers/container.py:959: def commit(name: str, tag: str) -> str:
+eval/containers/container.py:967:     try:
+eval/containers/container.py:968:         proc = docker("commit", name, tag, timeout=SNAPSHOT_COMMIT_TIMEOUT_S)
+eval/containers/container.py:969:     except (subprocess.TimeoutExpired, OSError) as exc:
+eval/containers/container.py:971:     if proc.returncode != 0:
+eval/containers/container.py:974:     if not looks_pinned(image_id):
+eval/containers/container.py:981: def remove_container(name: str) -> None:
+eval/containers/container.py:983:     try:
+eval/containers/container.py:984:         docker("rm", "--force", name, timeout=120)
+eval/containers/container.py:985:     except (subprocess.TimeoutExpired, OSError):
+eval/containers/container.py:989: def remove_image(image: str) -> None:
+eval/containers/container.py:991:     try:
+eval/containers/container.py:992:         docker("image", "rm", "--force", image, timeout=300)
+eval/containers/container.py:993:     except (subprocess.TimeoutExpired, OSError):
+eval/containers/container.py:997: def network_connect(name: str, network: str) -> None:
+eval/containers/container.py:1006:     proc = docker("network", "connect", network, name, timeout=120)
+eval/containers/container.py:1007:     if proc.returncode != 0:
+eval/containers/container.py:1012: def limits_from(spec: dict) -> dict:
+SOURCE eval/containers/container_state.py sha256=94caeacbb548d97f6033298b69f27f64906f043a29c4f7d3d668980c0983c3c6 bytes=14431
+eval/containers/container_state.py:35: def _run_one_container_state(repo: Path, task: dict, *, env_spec: dict, setup,
+eval/containers/container_state.py:36:                              verifier, timeout_s: int, verify_timeout_s: int,
+eval/containers/container_state.py:68:         try:
+eval/containers/container_state.py:92:                 container_mod.create(
+eval/containers/container_state.py:111:             if env_spec.get("network") == "bridge":
+eval/containers/container_state.py:116:                 if setup and setup.get("files"):
+eval/containers/container_state.py:136:                 child_env = container_mod.container_env(task_mount, deadline_s=timeout_s)
+eval/containers/container_state.py:142:                 if env_spec.get("web"):
+eval/containers/container_state.py:154:                 if base and os.environ.get("HG_AGENT_BACKEND", "mock") != "mock" \
+eval/containers/container_state.py:162:                 container_mod.start(name)
+eval/containers/container_state.py:177:                 try:
+eval/containers/container_state.py:178:                     proc = container_mod.exec_in(name, argv, cwd=task_mount,
+eval/containers/container_state.py:179:                                                  env=child_env, timeout_s=timeout_s)
+eval/containers/container_state.py:181:                 except subprocess.TimeoutExpired:
+eval/containers/container_state.py:182:                     exit_code, stderr = -1, f"timeout after {timeout_s}s"
+eval/containers/container_state.py:189:                 try:
+eval/containers/container_state.py:190:                     container_mod.stop(name)
+eval/containers/container_state.py:191:                     snapshot = container_mod.commit(name, snapshot_tag)
+eval/containers/container_state.py:192:                 except container_mod.SnapshotUnavailable as exc:
+eval/containers/container_state.py:204:                 if container_mod.cp_out(name, f"{task_mount}/trace.jsonl",
+eval/containers/container_state.py:207:                 if container_mod.cp_out(name, f"{task_mount}/answer.txt",
+eval/containers/container_state.py:216:                     timeout_s=verify_timeout_s, run_id=run_id or "run", task_id=tid,
+eval/containers/container_state.py:230:                                       if gateway is not None else None),
+eval/containers/container_state.py:234:                                     if web_gateway is not None else None)}
+eval/containers/container_state.py:235:         finally:
+eval/containers/container_state.py:241:                 if gateway is not None:
+eval/containers/container_state.py:242:                     gateway.stop()
+eval/containers/container_state.py:243:                 if web_gateway is not None:
+eval/containers/container_state.py:244:                     web_gateway.stop()
+eval/containers/container_state.py:245:                 if snapshot is not None:
+eval/containers/container_state.py:246:                     container_mod.remove_image(snapshot)
+eval/containers/container_state.py:247:                 if created:
+eval/containers/container_state.py:248:                     container_mod.remove_container(name)
+eval/containers/container_state.py:249:                 if network_name is not None:
+eval/containers/container_state.py:250:                     services_mod.remove_network(network_name)
+SOURCE eval/containers/sandbox.py sha256=df6870f6f6140105858def9eb943cbee973e36cfa03b1b3c5dc0cbed221572b1 bytes=28909
+eval/containers/sandbox.py:93: class SandboxUnavailable(RuntimeError):
+eval/containers/sandbox.py:97: def interpreter_prefix() -> Path | None:
+eval/containers/sandbox.py:106:         if (parent / "pyvenv.cfg").exists() or (parent / "conda-meta").is_dir():
+eval/containers/sandbox.py:108:         if parent == Path("/"):
+eval/containers/sandbox.py:113: def hidden_trees(work_root: Path, platform: Path) -> list[Path]:
+eval/containers/sandbox.py:138:     if platform == work_root or platform in work_root.parents:
+eval/containers/sandbox.py:143:     if Path("/tmp") != work_root:
+eval/containers/sandbox.py:148: def _bwrap() -> str:
+eval/containers/sandbox.py:158:     if override:
+eval/containers/sandbox.py:159:         if os.access(override, os.X_OK):
+eval/containers/sandbox.py:165:     if not exe:
+eval/containers/sandbox.py:173: def command(argv: list[str], *, platform: Path, work_root: Path,
+eval/containers/sandbox.py:196:     if network not in (None, "none"):
+eval/containers/sandbox.py:198:     if network == "none":
+eval/containers/sandbox.py:202:         if Path(path).exists():
+eval/containers/sandbox.py:205:         if Path(path).exists():
+eval/containers/sandbox.py:209:     if prefix is not None:
+eval/containers/sandbox.py:224:         if target.exists():
+eval/containers/sandbox.py:234:         if target.exists():
+eval/containers/sandbox.py:243:     if repo_in_work_root:
+eval/containers/sandbox.py:245:     else:
+eval/containers/sandbox.py:266:     if private_tmp:
+eval/containers/sandbox.py:306:         if target.exists():
+eval/containers/sandbox.py:309:     if not task_dir_writable:
+eval/containers/sandbox.py:323:         if target.exists():
+eval/containers/sandbox.py:339:         if not state.is_dir():
+eval/containers/sandbox.py:351:         if not source.is_dir() or not target.is_dir():
+eval/containers/sandbox.py:355:             if source == writable or writable in source.parents:
+eval/containers/sandbox.py:369:     def visible(name: str, value: str) -> bool:
+eval/containers/sandbox.py:371:         if name not in path_bearing:
+eval/containers/sandbox.py:373:         try:
+eval/containers/sandbox.py:375:         except (OSError, ValueError):
+eval/containers/sandbox.py:378:             if target == anchor or anchor in target.parents:
+eval/containers/sandbox.py:381:             if target == tree or tree in target.parents:
+eval/containers/sandbox.py:389:         if visible(name, value):
+eval/containers/sandbox.py:395: def run(argv: list[str], *, platform: Path, work_root: Path, task_dir: Path,
+eval/containers/sandbox.py:396:         env: dict[str, str], timeout_s: int, cwd: Path | None = None,
+eval/containers/sandbox.py:405:     """`subprocess.run` with the namespace in place. Same return type.
+eval/containers/sandbox.py:420:     return subprocess.run(wrapped, input=input_text, capture_output=True, text=True,
+eval/containers/sandbox.py:421:                           timeout=timeout_s, cwd=cwd, env=env)
+eval/containers/sandbox.py:424: def self_check(platform: Path, work_root: Path) -> dict:
+eval/containers/sandbox.py:431:     try:
+eval/containers/sandbox.py:433:     except SandboxUnavailable as exc:
+eval/containers/sandbox.py:435:     try:
+eval/containers/sandbox.py:437:     except SandboxUnavailable as exc:
+eval/containers/sandbox.py:469:         try:
+eval/containers/sandbox.py:472:                        env={}, timeout_s=60, cwd=tmp_path,
+eval/containers/sandbox.py:474:         except (subprocess.TimeoutExpired, OSError) as exc:
+eval/containers/sandbox.py:477:     if proc.returncode != 0:
+eval/containers/sandbox.py:481:     try:
+eval/containers/sandbox.py:483:     except (json.JSONDecodeError, IndexError):
+eval/containers/sandbox.py:485:     if result.get("platform_visible") or result.get("env_visible"):
+eval/containers/sandbox.py:490:     if result.get("source_writable") != "OSError":
+eval/containers/sandbox.py:496:     if result.get("state_writable") != "ok":
+eval/containers/sandbox.py:530:         try:
+eval/containers/sandbox.py:536:                         env={}, timeout_s=60, cwd=Path(tmp2),
+eval/containers/sandbox.py:538:         except (subprocess.TimeoutExpired, OSError) as exc:
+eval/containers/sandbox.py:541:     if proc2.returncode != 0:
+eval/containers/sandbox.py:545:     try:
+eval/containers/sandbox.py:547:     except (json.JSONDecodeError, IndexError):
+eval/containers/sandbox.py:550:     if vresult.get("platform_visible"):
+eval/containers/sandbox.py:554:     if vresult.get("artifacts_writable") != "OSError":
+eval/containers/sandbox.py:559:     if vresult.get("artifacts_readable") != "the harness's work":
+SOURCE eval/run/runner.py sha256=b82a8d91c508ace0aeac80ccb976a9d2d3c89e17c1d27f149c86d010af57af62 bytes=80972
+eval/run/runner.py:39: def _refuse_unobserved_policies(task: dict, env: dict | None,
+eval/run/runner.py:56:     if env_spec.get("kind") == "exec":
+eval/run/runner.py:58:     if env_spec.get("state") == "container":
+eval/run/runner.py:60:     # `verifier.timeout_s` is deliberately NOT a trigger. The platform enforces it
+eval/run/runner.py:62:     # subprocess' `timeout=`, and records expiry as its own outcome ("the verifier
+eval/run/runner.py:69:     if "artifact_policy" in (verifier or {}):
+eval/run/runner.py:71:     if not fields:
+eval/run/runner.py:73:     if diagnostic_authorization is not None:
+eval/run/runner.py:89: def harness_env() -> dict:
+eval/run/runner.py:121:            if not k.startswith(("HG_METHOD_", "HG_ENV_", "HARNESSGRAD_SEED"))
+eval/run/runner.py:126: def _improver_credentials() -> set[str]:
+eval/run/runner.py:134:     try:
+eval/run/runner.py:137:     except Exception:                                          # noqa: BLE001
+eval/run/runner.py:151: def run_one(repo: Path, task: dict, timeout_s: int | None = None,
+eval/run/runner.py:160:     if diagnostic_authorization is not None:
+eval/run/runner.py:166:         repo, task, timeout_s, sandbox, setup, verifier, verify_timeout_s,
+eval/run/runner.py:168:     if result.get("verdict") is not None:
+eval/run/runner.py:170:     if diagnostic_authorization is not None:
+eval/run/runner.py:175: def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
+eval/run/runner.py:205:     try:
+eval/run/runner.py:209:     except ValueError as exc:
+eval/run/runner.py:220:     timeout_s = phase_timeout(timeout_s, env_spec.get("agent_timeout_s"))
+eval/run/runner.py:222:                                     (verifier or {}).get("timeout_s"))
+eval/run/runner.py:224:     if agent_runtime and is_exec:
+eval/run/runner.py:226:     if not is_exec and not sandbox and (agent_runtime or env_spec.get("network") == "none"):
+eval/run/runner.py:231:     if not is_exec:
+eval/run/runner.py:235:     if is_exec and env_spec.get("state") == "container":
+eval/run/runner.py:238:             timeout_s=timeout_s, verify_timeout_s=verify_timeout_s,
+eval/run/runner.py:258:     try:
+eval/run/runner.py:259:         if agent_runtime:
+eval/run/runner.py:266:             if setup:
+eval/run/runner.py:271:                           if stepwise_session is not None else task)
+eval/run/runner.py:278:         if service_specs:
+eval/run/runner.py:279:             try:
+eval/run/runner.py:280:                 running = services_mod.start(
+eval/run/runner.py:290:             except services_mod.ServiceUnavailable as exc:
+eval/run/runner.py:293:         if web_spec:
+eval/run/runner.py:294:             try:
+eval/run/runner.py:295:                 if network_name is None:
+eval/run/runner.py:304:             except Exception as exc:
+eval/run/runner.py:324:                     if is_exec else str(task_file))
+eval/run/runner.py:342:         if overlay:
+eval/run/runner.py:384:         if is_exec:
+eval/run/runner.py:387:             child_env = container_mod.container_env(task_mount, deadline_s=timeout_s)
+eval/run/runner.py:388:         else:
+eval/run/runner.py:399:         child_env["HG_AGENT_DEADLINE_S"] = str(timeout_s)
+eval/run/runner.py:401:         if overlay:
+eval/run/runner.py:408:         if is_exec:
+eval/run/runner.py:410:             if base and os.environ.get("HG_AGENT_BACKEND", "mock") != "mock" \
+eval/run/runner.py:412:                 if network_name is None:
+eval/run/runner.py:427:         if running is not None:
+eval/run/runner.py:429:         if web_gateway is not None:
+eval/run/runner.py:446:                    if is_exec else ())
+eval/run/runner.py:448:         if stepwise_session is not None:
+eval/run/runner.py:454:                 public_fields=chess_stepwise.PUBLIC_FIELDS, timeout_s=timeout_s)
+eval/run/runner.py:457:         def launch():
+eval/run/runner.py:458:             if is_exec:
+eval/run/runner.py:463:                 return container_mod.run(
+eval/run/runner.py:467:                     timeout_s=timeout_s, network=network,
+eval/run/runner.py:471:                     extra_mounts=tuple(services_mod.mounts_for(
+eval/run/runner.py:474:             if not sandbox:
+eval/run/runner.py:475:                 return subprocess.run(argv, capture_output=True, text=True,
+eval/run/runner.py:476:                                       timeout=timeout_s, cwd=workdir, env=child_env)
+eval/run/runner.py:484:                                    env=child_env, timeout_s=timeout_s, cwd=workdir,
+eval/run/runner.py:491:         try:
+eval/run/runner.py:493:                 if stepwise_relay is not None:
+eval/run/runner.py:494:                     stepwise_relay.start()
+eval/run/runner.py:495:                 try:
+eval/run/runner.py:497:                 finally:
+eval/run/runner.py:498:                     if stepwise_relay is not None:
+eval/run/runner.py:499:                         stepwise_relay.stop()
+eval/run/runner.py:501:         except subprocess.TimeoutExpired:
+eval/run/runner.py:502:             exit_code, stderr = -1, f"timeout after {timeout_s}s"
+eval/run/runner.py:503:         except OSError:
+eval/run/runner.py:504:             if stepwise_relay is None:
+eval/run/runner.py:507:         except sandbox_mod.SandboxUnavailable as exc:
+eval/run/runner.py:517:                       if stepwise_relay is None and answer_path.exists() else "")
+eval/run/runner.py:524:             if stepwise_relay is not None:
+eval/run/runner.py:526:             else:
+eval/run/runner.py:529:                                   timeout_s=verify_timeout_s, env=env_spec,
+eval/run/runner.py:531:                 if protocol is not None:
+eval/run/runner.py:544:                     "agent_timeout_s": timeout_s,
+eval/run/runner.py:555:                                   if model_gateway is not None else None),
+eval/run/runner.py:558:                                 if web_gateway is not None else None),
+eval/run/runner.py:560:     finally:
+eval/run/runner.py:561:         if stepwise_relay is not None:
+eval/run/runner.py:562:             stepwise_relay.stop()
+eval/run/runner.py:563:         if stepwise_dir is not None:
+eval/run/runner.py:568:         if model_gateway is not None:
+eval/run/runner.py:569:             model_gateway.stop()
+eval/run/runner.py:570:         if web_gateway is not None:
+eval/run/runner.py:571:             web_gateway.stop()
+eval/run/runner.py:572:         if owns_network and network_name is not None:
+eval/run/runner.py:573:             leaked_net = services_mod.remove_network(network_name)
+eval/run/runner.py:574:             if leaked_net:
+eval/run/runner.py:577:         if running is not None:
+eval/run/runner.py:578:             leaked = running.stop()
+eval/run/runner.py:579:             if leaked:
+eval/run/runner.py:585:         if runtime_dir is not None:
+eval/run/runner.py:625: def _provider_failure(result: dict) -> dict | None:
+eval/run/runner.py:636:     if not result.get("exit_code"):            # None(无效)或 0 都不算
+eval/run/runner.py:640:         if marker in tail:
+eval/run/runner.py:643:                          if marker in l), marker)
+eval/run/runner.py:649: def _invalid(task: dict, exc, *, stage: str, service: str | None) -> dict:
+eval/run/runner.py:667: def _spread(xs: list[float]) -> float:
+eval/run/runner.py:675:     if len(xs) < 2:
+eval/run/runner.py:681: def _harness_failure(result: dict) -> dict | None:
+eval/run/runner.py:686:     if the harness *also* wrote no trace, then no method has anything to read while the
+eval/run/runner.py:718:     if not trace:
+eval/run/runner.py:720:     elif result.get("exit_code") and _last_usage(trace) is None:
+eval/run/runner.py:727:     if reason is None:
+eval/run/runner.py:733: def _reporter():
+eval/run/runner.py:753: def evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
+eval/run/runner.py:780:         if diagnostic_authorization is not None:
+eval/run/runner.py:785: def _in_parallel(tasks: list[dict], measure, jobs: int) -> dict[str, dict]:
+eval/run/runner.py:802:     if jobs <= 1:
+eval/run/runner.py:811:     try:
+eval/run/runner.py:818:             if _all_unstarted(outcomes, jobs):
+eval/run/runner.py:822:     except BaseException:
+eval/run/runner.py:835: def _all_unstarted(outcomes: dict[str, dict], jobs: int) -> bool:
+eval/run/runner.py:850:     if len(outcomes) < jobs:
+eval/run/runner.py:853:         if outcome.get("not_run") or outcome.get("invalid") or "cached" in outcome:
+eval/run/runner.py:856:         if not measured or not _harness_failure(measured[-1]):
+eval/run/runner.py:861: def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
+eval/run/runner.py:889:     if diagnostic_authorization is not None:
+eval/run/runner.py:892:         if cache:
+eval/run/runner.py:896:     if trials < 1:
+eval/run/runner.py:898:     if jobs < 1:
+eval/run/runner.py:901:                             if (protocol := chess_stepwise.protocol_of(task)) is not None}
+eval/run/runner.py:902:     if len(set(evaluation_protocols.values())) > 1:
+eval/run/runner.py:905:     def measurement_key(task):
+eval/run/runner.py:908:         bundle = ((verifiers or {}).get(task["task_id"]) or {}).get("scorer_bundle")
+eval/run/runner.py:909:         if bundle is not None:
+eval/run/runner.py:912:         if evaluation_protocols.get(task["task_id"]) == chess_stepwise.STEPWISE:
+eval/run/runner.py:916:     def trial_identity(trial: int) -> str:
+eval/run/runner.py:1007:     def _measure(task_index: int, task: dict) -> dict:
+eval/run/runner.py:1010:                        if diagnostic_authorization is not None else None)
+eval/run/runner.py:1015:         if refusal is not None:
+eval/run/runner.py:1021:         if evaluation_protocols.get(tid) == chess_stepwise.STEPWISE:
+eval/run/runner.py:1022:             try:
+eval/run/runner.py:1025:             except ValueError as exc:
+eval/run/runner.py:1035:         if hit is not None:
+eval/run/runner.py:1036:             if declared_class((verifiers or {}).get(tid)) == "pristine-offline":
+eval/run/runner.py:1038:                 if len(cached) != trials:
+eval/run/runner.py:1044:                     if checked.get("unmeasured"):
+eval/run/runner.py:1063:                 try:
+eval/run/runner.py:1071:                                         if declared_class((verifiers or {}).get(tid)) == "pristine-offline" else {}),
+eval/run/runner.py:1073:                                         if diagnostic_authorization is not None else {}))
+eval/run/runner.py:1074:                 except BaseException as exc:
+eval/run/runner.py:1083:                 if result.get("invalid"):
+eval/run/runner.py:1087:                 if declared_class((verifiers or {}).get(tid)) == "pristine-offline":
+eval/run/runner.py:1106:                 if (provider is not None and not (result.get("verdict") or {}).get("passed")
+eval/run/runner.py:1108:                     if measured:
+eval/run/runner.py:1126:                 if (result.get("verdict") or {}).get("unmeasured"):
+eval/run/runner.py:1129:                     if result["verdict"].get("outcome"):
+eval/run/runner.py:1131:                     if result["verdict"].get("protocol"):
+eval/run/runner.py:1145:         if unmeasured is not None:
+eval/run/runner.py:1168:         if outcome.get("not_run"):
+eval/run/runner.py:1173:         if "cached" in outcome:
+eval/run/runner.py:1179:             if entry.get("per_task_trials"):
+eval/run/runner.py:1182:             if entry.get("trial_traces"):
+eval/run/runner.py:1184:             if entry.get("trial_verdicts"):
+eval/run/runner.py:1189:             if entry.get("harness_failed"):
+eval/run/runner.py:1192:             if cached_record and cached_record not in runtime_records:
+eval/run/runner.py:1194:             if entry.get("harness_output"):
+eval/run/runner.py:1196:             if entry.get("verdict"):
+eval/run/runner.py:1199:                 if tid in evaluation_protocols:
+eval/run/runner.py:1203:         if outcome.get("invalid"):
+eval/run/runner.py:1217:         def _score_of(res: dict) -> float:
+eval/run/runner.py:1229:         if trials > 1:
+eval/run/runner.py:1238:         if rates:
+eval/run/runner.py:1240:             if trials > 1:
+eval/run/runner.py:1245:                 if isinstance(passed_n, int) and isinstance(failed_n, int):
+eval/run/runner.py:1262:         if trials > 1:
+eval/run/runner.py:1278:         if failure:
+eval/run/runner.py:1281:         if runtime_record and runtime_record not in runtime_records:
+eval/run/runner.py:1287:             if isinstance(value, int):
+eval/run/runner.py:1291:         if result.get("model_gateway"):
+eval/run/runner.py:1294:         if declared:
+eval/run/runner.py:1326:         if usage is None:
+eval/run/runner.py:1331:             if isinstance(value, int):
+eval/run/runner.py:1333:         if isinstance(usage.get("calls"), int):
+eval/run/runner.py:1345:         if declared not in identity_variants:
+eval/run/runner.py:1347:     if identity_variants:
+eval/run/runner.py:1355:     if trials > 1 and per_task_trials:
+eval/run/runner.py:1374:     if harness_failed and not (set(per_task) - set(harness_failed)):
+eval/run/runner.py:1396:                           if per_task_test_rate else None),
+SOURCE eval/service/services.py sha256=d125718ba9f0c5ac41f1c65664a610f1747135e5764e9fcbbaa22e412e3bc5ab bytes=24027
+eval/service/services.py:58: class ServiceUnavailable(RuntimeError):
+eval/service/services.py:65:     def __init__(self, message: str, *, service: str | None = None,
+eval/service/services.py:77: def label(name: str) -> str:
+eval/service/services.py:91: def url_var(service_name: str) -> str:
+eval/service/services.py:101: def harness_env(services: list[dict]) -> dict[str, str]:
+eval/service/services.py:111: def service_env(services: list[dict], *, task_id: str, run_seed: str) -> dict[str, str]:
+eval/service/services.py:122:     if any(svc.get("needs_seed") for svc in services):
+eval/service/services.py:124:     if any(svc.get("needs_model") for svc in services):
+eval/service/services.py:132:             if value:
+eval/service/services.py:137: def task_seed(run_seed: str, task_id: str) -> str:
+eval/service/services.py:148: def requires_model(services: list[dict]) -> bool:
+eval/service/services.py:152: def requires_seed(services: list[dict]) -> bool:
+eval/service/services.py:158: class RunningServices:
+eval/service/services.py:166:     def __init__(self, *, network: str, containers: dict[str, str],
+eval/service/services.py:173:     def urls(self) -> dict[str, str]:
+eval/service/services.py:177:     def usage(self) -> dict:
+eval/service/services.py:189:             if not record.is_file():
+eval/service/services.py:191:             try:
+eval/service/services.py:193:             except (OSError, json.JSONDecodeError):
+eval/service/services.py:196:             if not isinstance(usage, dict):
+eval/service/services.py:201:                 if isinstance(value, int):
+eval/service/services.py:206:     def stop(self) -> list[str]:
+eval/service/services.py:218:             if record is not None:
+eval/service/services.py:219:                 try:
+eval/service/services.py:220:                     logs = container_mod.docker("logs", "--tail", "200", cid, timeout=10)
+eval/service/services.py:223:                 except (subprocess.TimeoutExpired, OSError):
+eval/service/services.py:225:             try:
+eval/service/services.py:226:                 proc = container_mod.docker("rm", "--force", cid, timeout=60)
+eval/service/services.py:227:             except (subprocess.TimeoutExpired, OSError) as exc:
+eval/service/services.py:230:             if proc.returncode != 0 and "No such container" not in proc.stderr:
+eval/service/services.py:232:         problems.extend(remove_network(self.network))
+eval/service/services.py:236: def create_network(run_id: str, task_id: str) -> str:
+eval/service/services.py:247:                                 "--label", f"harnessgrad.task={task_id}", timeout=120)
+eval/service/services.py:248:     if proc.returncode != 0:
+eval/service/services.py:255: def remove_network(network: str) -> list[str]:
+eval/service/services.py:257:     try:
+eval/service/services.py:258:         proc = container_mod.docker("network", "rm", network, timeout=60)
+eval/service/services.py:259:     except (subprocess.TimeoutExpired, OSError) as exc:
+eval/service/services.py:266:     if proc.returncode != 0 and not missing:
+eval/service/services.py:271: def reap(run_id: str) -> list[str]:
+eval/service/services.py:307:             try:
+eval/service/services.py:308:                 listed = container_mod.docker(*list_args, "--filter", flt, timeout=60)
+eval/service/services.py:309:             except (subprocess.TimeoutExpired, OSError) as exc:
+eval/service/services.py:312:             if listed.returncode != 0:
+eval/service/services.py:317:             try:
+eval/service/services.py:318:                 removed = container_mod.docker(*remove_args, ident, timeout=120)
+eval/service/services.py:319:             except (subprocess.TimeoutExpired, OSError) as exc:
+eval/service/services.py:322:             if removed.returncode != 0:
+eval/service/services.py:327: def gateway_ip(network: str) -> str:
+eval/service/services.py:335:                                 "{{(index .IPAM.Config 0).Gateway}}", timeout=60)
+eval/service/services.py:337:     if proc.returncode != 0 or not ip:
+eval/service/services.py:344: def start(services: list[dict], *, recordings_root: Path, run_id: str,
+eval/service/services.py:355:         if not container_mod.looks_pinned(svc["image"]):
+eval/service/services.py:365:     try:
+eval/service/services.py:372:             if svc.get("record"):
+eval/service/services.py:399:             if "cpus" in svc or "memory_mb" in svc:
+eval/service/services.py:404:             if record_host is not None:
+eval/service/services.py:411:             if "entrypoint" in svc:
+eval/service/services.py:414:             started = container_mod.docker(*cmd, timeout=180)
+eval/service/services.py:415:             if started.returncode != 0:
+eval/service/services.py:426:     except BaseException:
+eval/service/services.py:435: def _await_health(running: RunningServices, svc: dict) -> None:
+eval/service/services.py:444:     budget = float(health.get("timeout_s", 60))
+eval/service/services.py:449:         try:
+eval/service/services.py:450:             proc = container_mod.docker("exec", cid, *argv, timeout=max(10, int(budget)))
+eval/service/services.py:451:         except (subprocess.TimeoutExpired, OSError) as exc:
+eval/service/services.py:453:         else:
+eval/service/services.py:454:             if proc.returncode == 0:
+eval/service/services.py:457:         if time.monotonic() >= deadline:
+eval/service/services.py:475: def mounts_for(audience: str, services: list[dict],
+eval/service/services.py:487:     if audience not in _AUDIENCES:
+eval/service/services.py:489:     if audience == "harness":
+eval/service/services.py:494:         if path is not None:
+SOURCE eval/verification/native_runtime.py sha256=90abfeb5c905a841c85922dd5555aff96aa44436df2d12805d4a3e6a15dec1e6 bytes=7504
+eval/verification/native_runtime.py:24: class NativeRuntimeUnavailable(RuntimeError):
+eval/verification/native_runtime.py:34: def _snapshot(source: Path, expected: str) -> int:
+eval/verification/native_runtime.py:39:     if fd < 0:
+eval/verification/native_runtime.py:41:     try:
+eval/verification/native_runtime.py:47:         if digest.hexdigest() != expected:
+eval/verification/native_runtime.py:54:     except BaseException:
+eval/verification/native_runtime.py:55:         os.close(fd)
+eval/verification/native_runtime.py:59: class FrozenRuntime:
+eval/verification/native_runtime.py:60:     def __init__(self, manifest: dict, digest: str, fds: dict[str, int], launcher: int):
+eval/verification/native_runtime.py:66:     def run(self, argv: list[str], *, workdir: Path, reward_dir: Path,
+eval/verification/native_runtime.py:67:             timeout_s: int) -> subprocess.CompletedProcess:
+eval/verification/native_runtime.py:80:             if os.pread(fd, 4, 0) == b'\x7fELF':
+eval/verification/native_runtime.py:89:         if argv[1] == 'check.py':
+eval/verification/native_runtime.py:91:         if self.manifest.get('python_path'):
+eval/verification/native_runtime.py:103:         return subprocess.run(plan, pass_fds=(*self.fds.values(), self.launcher),
+eval/verification/native_runtime.py:104:                               capture_output=True, text=True, timeout=timeout_s,
+eval/verification/native_runtime.py:109: def admit(binding: dict):
+eval/verification/native_runtime.py:113:     try:
+eval/verification/native_runtime.py:114:         if binding['dataset'] not in SUPPORTED_DATASETS:
+eval/verification/native_runtime.py:119:         if digest != binding['sha256']:
+eval/verification/native_runtime.py:122:         if manifest['schema'] != 1 or manifest['dataset'] != binding['dataset']:
+eval/verification/native_runtime.py:124:         if (manifest['identity']['machine'] != platform.machine()
+eval/verification/native_runtime.py:129:             if (not p.is_absolute() or '..' in p.parts
+eval/verification/native_runtime.py:136:             if required not in fds:
+eval/verification/native_runtime.py:140:     except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
+eval/verification/native_runtime.py:142:     finally:
+eval/verification/native_runtime.py:144:             os.close(fd)
+eval/verification/native_runtime.py:145:         if launcher is not None:
+eval/verification/native_runtime.py:146:             os.close(launcher)
+SOURCE eval/verification/pristine.py sha256=4c5a3620d9c4651c76297f47a64c6002ac3b0b9b4ed63846bc1f4b509e806694 bytes=12301
+eval/verification/pristine.py:16: from eval.admission import scorer_bundle as bundles
+eval/verification/pristine.py:22: def _command_result(result: subprocess.CompletedProcess) -> dict:
+eval/verification/pristine.py:27: def _platform_path(value, actor: Path) -> Path:
+eval/verification/pristine.py:31:     if path == actor.resolve() or actor.resolve() in path.parents:
+eval/verification/pristine.py:36: def enforce_verdict_binding(verdict: dict, *, task_id: str, run_id: str, trial_id: str) -> dict:
+eval/verification/pristine.py:42:     try:
+eval/verification/pristine.py:46:         if ({key: binding[key] for key in expected} != expected
+eval/verification/pristine.py:54:     except (AdmissionError, KeyError, TypeError, ValueError) as exc:
+eval/verification/pristine.py:56:         if verdict.get("score") is not None or not verdict.get("unmeasured"):
+eval/verification/pristine.py:62: def verify(workdir: Path, spec: dict, *, timeout_s: int, task_id: str | None = None,
+eval/verification/pristine.py:64:     bundle = spec["scorer_bundle"]
+eval/verification/pristine.py:70:     deadline = time.monotonic() + timeout_s
+eval/verification/pristine.py:72:     def docker(*args):
+eval/verification/pristine.py:74:         if remaining <= 0:
+eval/verification/pristine.py:75:             raise subprocess.TimeoutExpired(args, timeout_s)
+eval/verification/pristine.py:76:         return container.docker(*args, timeout=remaining)
+eval/verification/pristine.py:79:         try:
+eval/verification/pristine.py:85:             if manifest.get("isolation_class") != "pristine-offline":
+eval/verification/pristine.py:87:             if spec.get("argv") != manifest["scorer"]["argv"]:
+eval/verification/pristine.py:93:             if contract["task_id"] != task_id:
+eval/verification/pristine.py:111:             if not observation["export_content_matches_before"]:
+eval/verification/pristine.py:126:                 if "," in str(source):
+eval/verification/pristine.py:132:             if created.returncode:
+eval/verification/pristine.py:135:             if inspected.returncode:
+eval/verification/pristine.py:147:             if stopped.returncode:
+eval/verification/pristine.py:151:             if (state["Running"] is not False or state["Status"] != "exited"
+eval/verification/pristine.py:158:                        if line.startswith("completed_check=")]
+eval/verification/pristine.py:159:             if len(markers) != 1 or markers[0] not in ("completed_check=pass", "completed_check=fail"):
+eval/verification/pristine.py:162:             if type(code) is not int or code != expected_code or started.returncode != code:
+eval/verification/pristine.py:167:         except (AdmissionError, OSError, ValueError, KeyError, TypeError, IndexError,
+eval/verification/pristine.py:172:         finally:
+eval/verification/pristine.py:173:             if attempted:
+eval/verification/pristine.py:174:                 try:
+eval/verification/pristine.py:175:                     removed = container.docker("rm", "--force", name, timeout=30)
+eval/verification/pristine.py:178:                 except (OSError, subprocess.TimeoutExpired) as exc:
+eval/verification/pristine.py:181:                 if not evidence["cleanup"]["removed"]:
+eval/verification/pristine.py:187:             if observation is not None:
+eval/verification/pristine.py:188:                 try:
+eval/verification/pristine.py:190:                     if "before" in observation:
+eval/verification/pristine.py:194:                         if changed and verdict.get("outcome") == "measured":
+eval/verification/pristine.py:197:                 except (AdmissionError, OSError) as exc:
+eval/verification/pristine.py:199:                     if verdict.get("outcome") == "measured":
+SOURCE eval/verification/verifier.py sha256=109c461ba5b1db3075fa63b8fe440647a0fb1df97e44ac7316f10ecf1fe93368 bytes=43865
+eval/verification/verifier.py:34: def _verifier_env(workdir: Path) -> dict:
+eval/verification/verifier.py:47: def _verifier_env_container() -> dict:
+eval/verification/verifier.py:96: def _check_env() -> dict[str, str]:
+eval/verification/verifier.py:104:     if not proxy:
+eval/verification/verifier.py:111: def _read_json(path: Path) -> dict | None:
+eval/verification/verifier.py:113:     try:
+eval/verification/verifier.py:115:     except (OSError, ValueError):
+eval/verification/verifier.py:120: def _clear_verdict_file(path: Path) -> None:
+eval/verification/verifier.py:122:     if path.is_symlink() or path.is_file():
+eval/verification/verifier.py:126: def _verdict_parent_is_safe(path: Path, workdir: Path) -> bool:
+eval/verification/verifier.py:128:     try:
+eval/verification/verifier.py:130:     except ValueError:
+eval/verification/verifier.py:135:         if current.is_symlink():
+eval/verification/verifier.py:139: def test_rate_of(verdict: dict | None) -> float | None:
+eval/verification/verifier.py:161:     if not isinstance(tests, dict):
+eval/verification/verifier.py:164:     if not isinstance(passed, int) or not isinstance(failed, int):
+eval/verification/verifier.py:168: def _test_report_failures(report: dict | None) -> tuple[list[str], str, dict]:
+eval/verification/verifier.py:190:     if not isinstance(results, dict):
+eval/verification/verifier.py:196:         if isinstance(summary.get(key), int) and summary[key])
+eval/verification/verifier.py:199:                if isinstance(summary.get(key), int)}
+eval/verification/verifier.py:204:         if not isinstance(test, dict) or test.get("status") != "failed":
+eval/verification/verifier.py:215:             if stripped.startswith("E ") and len(stripped) > 2:
+eval/verification/verifier.py:217:         if not assertion:
+eval/verification/verifier.py:221:     if len(failures) > VERDICT_FAILED_TESTS:
+eval/verification/verifier.py:224:     if failed_names:
+eval/verification/verifier.py:227: def _check_output_detail(out: str, err: str) -> str:
+eval/verification/verifier.py:236:     if out and out.strip():
+eval/verification/verifier.py:238:     if err and err.strip():
+eval/verification/verifier.py:241: def _verify_container_state(snapshot: str, verifier, *, task_mount: str,
+eval/verification/verifier.py:242:                             staging: Path, timeout_s: int, run_id: str,
+eval/verification/verifier.py:247:     if declared_class(verifier) not in ("unknown", "snapshot-service"):
+eval/verification/verifier.py:251:     try:
+eval/verification/verifier.py:254:             snapshot, verifier, task_mount=task_mount, staging=staging, timeout_s=timeout_s,
+eval/verification/verifier.py:258:     except container_mod.SnapshotUnavailable as exc:
+eval/verification/verifier.py:264: def _verify_container_state_inner(snapshot: str, verifier, *, task_mount: str,
+eval/verification/verifier.py:265:                                   staging: Path, timeout_s: int, run_id: str,
+eval/verification/verifier.py:279:     timeout_s = phase_timeout(timeout_s, spec.get("timeout_s"))
+eval/verification/verifier.py:284:     try:
+eval/verification/verifier.py:286:         if reward_file:
+eval/verification/verifier.py:293:         if verdict_dir is not None:
+eval/verification/verifier.py:302:         container_mod.create(name, image=snapshot, limits=limits or {},
+eval/verification/verifier.py:312:         if declared_network == "bridge" and network != "bridge":
+eval/verification/verifier.py:317:         container_mod.start(name)
+eval/verification/verifier.py:322:         if not argv:
+eval/verification/verifier.py:325:         try:
+eval/verification/verifier.py:326:             proc = container_mod.exec_in(name, argv,
+eval/verification/verifier.py:329:                                          timeout_s=timeout_s)
+eval/verification/verifier.py:331:         except subprocess.TimeoutExpired:
+eval/verification/verifier.py:332:             detail = f"the verifier timed out after {timeout_s}s"
+eval/verification/verifier.py:338:         if reward_file:
+eval/verification/verifier.py:340:             if not container_mod.cp_out(name, reward_file, got):
+eval/verification/verifier.py:346:             try:
+eval/verification/verifier.py:348:             except ValueError:
+eval/verification/verifier.py:375:             if report_path:
+eval/verification/verifier.py:377:                 if container_mod.cp_out(name, str(report_path), got_report):
+eval/verification/verifier.py:383:                     if not failures:
+eval/verification/verifier.py:385:                 else:
+eval/verification/verifier.py:396:             if numbers:
+eval/verification/verifier.py:398:             if unmeasured:
+eval/verification/verifier.py:405:         if pass_when == "exit0_stdout":
+eval/verification/verifier.py:409:         if not passed and out.strip():
+eval/verification/verifier.py:412:     finally:
+eval/verification/verifier.py:413:         if created:
+eval/verification/verifier.py:414:             container_mod.remove_container(name)
+eval/verification/verifier.py:415:         startup.close()
+eval/verification/verifier.py:416: def _input_source(entry: dict, staging: Path) -> Path:
+eval/verification/verifier.py:418:     if "content" in entry and entry["content"] is not None:
+eval/verification/verifier.py:424:     if not source.is_absolute():
+eval/verification/verifier.py:426:     if not source.exists():
+eval/verification/verifier.py:429: def _copy_verifier_inputs(name: str, spec: dict, staging: Path, task_mount: str) -> None:
+eval/verification/verifier.py:437:         if entry.get("dst"):
+eval/verification/verifier.py:456:         else:
+eval/verification/verifier.py:458: def _copy_relative_input(name: str, entry: dict, staging: Path,
+eval/verification/verifier.py:465: def _verify(workdir: Path, verifier: dict | None, answer: str, **options) -> dict:
+eval/verification/verifier.py:468:     if "native_runtime" not in spec:
+eval/verification/verifier.py:473:     try:
+eval/verification/verifier.py:474:         if not options.get("sandbox"):
+eval/verification/verifier.py:476:         if not isinstance(binding, dict) or binding.get('dataset') not in SUPPORTED_DATASETS:
+eval/verification/verifier.py:478:         if ((options.get("env") or {}).get("kind", "files") != "files"
+eval/verification/verifier.py:492:     except NativeRuntimeUnavailable as exc:
+eval/verification/verifier.py:498: def _verify_existing(workdir: Path, verifier: dict | None, answer: str,
+eval/verification/verifier.py:499:             *, sandbox: bool, timeout_s: int,
+eval/verification/verifier.py:508:     timeout_s = phase_timeout(timeout_s, spec.get("timeout_s"), env_spec.get("verify_timeout_s"))
+eval/verification/verifier.py:512:     if declared == "pristine-offline":
+eval/verification/verifier.py:513:         if actual != "actor-workdir" or spec.get("reward_file") or spec.get("pass_when", "exit0") != "exit0":
+eval/verification/verifier.py:518:         verdict = verify(workdir, spec, timeout_s=timeout_s, task_id=task_id,
+eval/verification/verifier.py:521:     if declared not in ("unknown", actual):
+eval/verification/verifier.py:525:     binding = spec.get("scorer_input")
+eval/verification/verifier.py:526:     if binding is not None and (not isinstance(binding, dict) or not task_id
+eval/verification/verifier.py:531:     if spec.get("kind") == "command" and spec.get("reward_file") \
+eval/verification/verifier.py:536:                                  timeout_s=timeout_s, env=env,
+eval/verification/verifier.py:541:                          timeout_s=timeout_s, env=env,
+eval/verification/verifier.py:546: def _enforce_scorer_input(verdict: dict, binding: dict | None) -> dict:
+eval/verification/verifier.py:552:     if binding is None:
+eval/verification/verifier.py:555:     receipt = evidence.get("scorer_input") if isinstance(evidence, dict) else None
+eval/verification/verifier.py:556:     if (isinstance(receipt, dict) and receipt.get("verified") is True
+eval/verification/verifier.py:565: def _verify_inner(workdir: Path, verifier: dict | None, answer: str,
+eval/verification/verifier.py:566:             *, sandbox: bool, timeout_s: int,
+eval/verification/verifier.py:589:     if kind == "answer":
+eval/verification/verifier.py:596:     if kind != "command":
+eval/verification/verifier.py:600:     try:
+eval/verification/verifier.py:602:     except (ValueError, OSError) as exc:
+eval/verification/verifier.py:619:     if host_reward and not is_exec and spec.get("evidence_file"):
+eval/verification/verifier.py:621:     if host_reward and not is_exec:
+eval/verification/verifier.py:622:         if (not _verdict_parent_is_safe(host_reward_path, workdir)
+eval/verification/verifier.py:628:         if host_evidence_path is not None:
+eval/verification/verifier.py:630:     if reward_dir is not None:
+eval/verification/verifier.py:633:     try:
+eval/verification/verifier.py:634:         if native_runtime is not None:
+eval/verification/verifier.py:636:                                       timeout_s=timeout_s)
+eval/verification/verifier.py:637:             if proc.returncode and not host_reward_path.is_file():
+eval/verification/verifier.py:641:         elif is_exec:
+eval/verification/verifier.py:653:             verifier_mounts = list(services_mod.mounts_for(
+eval/verification/verifier.py:656:             if exec_verdict_dir is not None:
+eval/verification/verifier.py:659:             proc = container_mod.run(
+eval/verification/verifier.py:664:                 timeout_s=timeout_s,
+eval/verification/verifier.py:669:         elif sandbox:
+eval/verification/verifier.py:687:                                    timeout_s=timeout_s,
+eval/verification/verifier.py:690:         else:
+eval/verification/verifier.py:691:             proc = subprocess.run(argv, capture_output=True, text=True,
+eval/verification/verifier.py:692:                                   timeout=timeout_s, cwd=cwd,
+eval/verification/verifier.py:695:     except FileNotFoundError as exc:
+eval/verification/verifier.py:698:     except subprocess.TimeoutExpired:
+eval/verification/verifier.py:699:         detail = f"the verifier timed out after {timeout_s}s"
+eval/verification/verifier.py:716:     if host_reward:
+eval/verification/verifier.py:718:                if exec_verdict_dir is not None else host_reward_path)
+eval/verification/verifier.py:721:                          if exec_verdict_dir is not None and evidence_path
+eval/verification/verifier.py:727:         if got is None or got.is_symlink() or not got.is_file():
+eval/verification/verifier.py:737:                                             if p)[:VERDICT_DETAIL_LIMIT]}
+eval/verification/verifier.py:738:             if evidence is not None:
+eval/verification/verifier.py:740:                 if evidence.get("measured") is False:
+eval/verification/verifier.py:746:         try:
+eval/verification/verifier.py:748:         except ValueError:
+eval/verification/verifier.py:753:         if evidence is not None and evidence.get("why"):
+eval/verification/verifier.py:758:         if evidence is not None:
+eval/verification/verifier.py:760:         if evidence_path and evidence is None:
+eval/verification/verifier.py:768:     if pass_when == "exit0_stdout":
+eval/verification/verifier.py:772:     if not passed and out.strip():

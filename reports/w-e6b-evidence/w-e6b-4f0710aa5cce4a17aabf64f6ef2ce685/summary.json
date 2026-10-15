@@ -1,0 +1,214 @@
+{
+  "run_id": "w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685",
+  "work_root": "/tmp/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-esqb52cy",
+  "jobs": 1,
+  "model": null,
+  "endpoint": null,
+  "benchmark_scoring": false,
+  "metric": "authored process/object lifecycle; not a benchmark metric",
+  "dataset_selection_trial_counts": null,
+  "cases": {
+    "mounted-timeout": {
+      "verdict": {
+        "kind": "command",
+        "passed": false,
+        "outcome": "timeout",
+        "unmeasured": "the verifier timed out after 3s",
+        "detail": "the verifier timed out after 3s",
+        "scorer_isolation_class": "snapshot-service",
+        "scorer_isolation_declared": "snapshot-service"
+      },
+      "native_after_objects": {},
+      "observed_proc_identities": [],
+      "native_after_processes": {}
+    },
+    "mounted-missing-reward": {
+      "verdict": {
+        "kind": "command",
+        "passed": false,
+        "score": 0.0,
+        "detail": "the check wrote no /verifier/reward.txt (looked for /tmp/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-esqb52cy/hg-verdict-q20xf2fs/reward.txt), exit 1 | stdout      unlimited            unlimited            locks     \\nMax pending signals       1028970              1028970              signals   \\nMax msgqueue size         819200               819200               bytes     \\nMax nice priority         0                    0                    \\nMax realtime priority     0                    0                    \\nMax realtime timeout      unlimited            unlimited            us        \\n\", \"cgroup\": \"0::/\\n\", \"mode\": \"missing-reward\"}\n{\"pid\": 1, \"child\": 7, \"recording_visible\": true, \"limits\": \"Limit                     Soft Limit           Hard Limit           Units     \\nMax cpu time              unlimited            unlimited            seconds   \\nMax file size             unlimited            unlimited            bytes     \\nMax data size             unlimited            unlimited            bytes     \\nMax stack size            8388608              unlimited            bytes     \\nMax core file size        unlimited            unlimited            bytes     \\nMax resident set          unlimited            unlimited            bytes     \\nMax processes             unlimited            unlimited            processes \\nMax open files            1024                 524288               files     \\nMax locked memory         8388608              8388608              bytes     \\nMax address space         unlimited            unlimited            bytes     \\nMax file locks            unlimited            unlimited            locks     \\nMax pending signals       1028970              1028970              signals   \\nMax msgqueue size         819200               819200               bytes     \\nMax nice priority         0                    0                    \\nMax realtime priority     0                    0                    \\nMax realtime timeout      unlimited            unlimited            us        \\n\", \"cgroup\": \"0::/\\n\", \"mode\": \"missing-reward\", \"child_returncode\": -15, \"child_proc_absent_after_wait\": true} | stderr Traceback (most recent call last):\n  File \"/app/probe.py\", line 39, in <module>\n    raise RuntimeError('authored error after child wait, before reward')\nRuntimeError: authored error after child wait, before reward",
+        "scorer_isolation_class": "snapshot-service",
+        "scorer_isolation_declared": "snapshot-service"
+      },
+      "native_after_objects": {},
+      "observed_proc_identities": [],
+      "native_after_processes": {}
+    },
+    "mounted-malformed-reward": {
+      "verdict": {
+        "kind": "command",
+        "passed": false,
+        "score": 0.0,
+        "detail": "/verifier/reward.txt held 'not-a-number', which is not a number",
+        "scorer_isolation_class": "snapshot-service",
+        "scorer_isolation_declared": "snapshot-service"
+      },
+      "native_after_objects": {},
+      "observed_proc_identities": [],
+      "native_after_processes": {}
+    },
+    "mounted-missing-evidence": {
+      "verdict": {
+        "kind": "command",
+        "passed": true,
+        "score": 1.0,
+        "detail": "reward 1 from /verifier/reward.txt (exit 0) | stdout  unlimited            unlimited            locks     \\nMax pending signals       1028970              1028970              signals   \\nMax msgqueue size         819200               819200               bytes     \\nMax nice priority         0                    0                    \\nMax realtime priority     0                    0                    \\nMax realtime timeout      unlimited            unlimited            us        \\n\", \"cgroup\": \"0::/\\n\", \"mode\": \"missing-evidence\"}\n{\"pid\": 1, \"child\": 7, \"recording_visible\": true, \"limits\": \"Limit                     Soft Limit           Hard Limit           Units     \\nMax cpu time              unlimited            unlimited            seconds   \\nMax file size             unlimited            unlimited            bytes     \\nMax data size             unlimited            unlimited            bytes     \\nMax stack size            8388608              unlimited            bytes     \\nMax core file size        unlimited            unlimited            bytes     \\nMax resident set          unlimited            unlimited            bytes     \\nMax processes             unlimited            unlimited            processes \\nMax open files            1024                 524288               files     \\nMax locked memory         8388608              8388608              bytes     \\nMax address space         unlimited            unlimited            bytes     \\nMax file locks            unlimited            unlimited            locks     \\nMax pending signals       1028970              1028970              signals   \\nMax msgqueue size         819200               819200               bytes     \\nMax nice priority         0                    0                    \\nMax realtime priority     0                    0                    \\nMax realtime timeout      unlimited            unlimited            us        \\n\", \"cgroup\": \"0::/\\n\", \"mode\": \"missing-evidence\", \"child_returncode\": -15, \"child_proc_absent_after_wait\": true}",
+        "unmeasured": "the check wrote no /verifier/evidence.json: its tests did not run, so this task was not measured",
+        "scorer_isolation_class": "snapshot-service",
+        "scorer_isolation_declared": "snapshot-service"
+      },
+      "native_after_objects": {},
+      "observed_proc_identities": [],
+      "native_after_processes": {}
+    },
+    "mounted-writable-helper-timeout": {
+      "exception": "TimeoutExpired(['docker', 'run', '--name', 'hg-run-f8621576685c4f91804684a3aeff97e3', '--rm', '--network', 'hg-w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-mounted', '--read-only', '--tmpfs', '/tmp:rw,exec,nosuid,size=512m,mode=1777', '--pids-limit', '1024', '--memory', '4g', '--cpus', '2', '--mount', 'type=bind,src=/tmp/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-esqb52cy/mounted-writable-helper-timeout,dst=/app', '--mount', 'type=bind,src=/tmp/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-esqb52cy/authored-harness,dst=/tmp/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-esqb52cy/authored-harness,readonly', '--mount', 'type=bind,src=/tmp/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-esqb52cy/authored-harness/.state,dst=/tmp/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-esqb52cy/authored-harness/.state', '--user', '1026:1026', '-w', '/app', 'harnessgrad/appworld-service@sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca', 'python3', 'probe.py', 'timeout', '--out', '/app'], 3)",
+      "probe_files": {
+        "started.json": "{\"pid\": 1, \"child\": 7, \"recording_visible\": false, \"limits\": \"Limit                     Soft Limit           Hard Limit           Units     \\nMax cpu time              unlimited            unlimited            seconds   \\nMax file size             unlimited            unlimited            bytes     \\nMax data size             unlimited            unlimited            bytes     \\nMax stack size            8388608              unlimited            bytes     \\nMax core file size        unlimited            unlimited            bytes     \\nMax resident set          unlimited            unlimited            bytes     \\nMax processes             unlimited            unlimited            processes \\nMax open files            1024                 524288               files     \\nMax locked memory         8388608              8388608              bytes     \\nMax address space         unlimited            unlimited            bytes     \\nMax file locks            unlimited            unlimited            locks     \\nMax pending signals       1028970              1028970              signals   \\nMax msgqueue size         819200               819200               bytes     \\nMax nice priority         0                    0                    \\nMax realtime priority     0                    0                    \\nMax realtime timeout      unlimited            unlimited            us        \\n\", \"cgroup\": \"0::/\\n\", \"mode\": \"timeout\"}\n"
+      },
+      "native_after_objects": {},
+      "observed_proc_identities": [],
+      "native_after_processes": {}
+    },
+    "snapshot-missing-argv": {
+      "verdict": {
+        "kind": "command",
+        "passed": false,
+        "detail": "a command verifier with state='container' needs `argv`",
+        "scorer_isolation_class": "snapshot-service",
+        "scorer_isolation_declared": "snapshot-service"
+      },
+      "native_after_objects": {},
+      "observed_proc_identities": [],
+      "native_after_processes": {}
+    },
+    "snapshot-staging-error": {
+      "exception": "ValueError('verifier input source /tmp/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-esqb52cy/absent-input.py does not exist')",
+      "native_after_objects": {},
+      "observed_proc_identities": [],
+      "native_after_processes": {}
+    },
+    "unsandboxed-normal": {
+      "verdict": {
+        "kind": "command",
+        "passed": true,
+        "score": 1.0,
+        "detail": "reward 1 from /verifier/reward.txt (exit 0) | stdout 970              1028970              signals   \\nMax msgqueue size         819200               819200               bytes     \\nMax nice priority         0                    0                    \\nMax realtime priority     0                    0                    \\nMax realtime timeout      unlimited            unlimited            us        \\n\", \"cgroup\": \"0::/user.slice/user-1026.slice/session-30838.scope\\n\", \"mode\": \"normal\"}\n{\"pid\": 3190596, \"child\": 3190635, \"recording_visible\": false, \"limits\": \"Limit                     Soft Limit           Hard Limit           Units     \\nMax cpu time              unlimited            unlimited            seconds   \\nMax file size             unlimited            unlimited            bytes     \\nMax data size             unlimited            unlimited            bytes     \\nMax stack size            8388608              unlimited            bytes     \\nMax core file size        0                    unlimited            bytes     \\nMax resident set          unlimited            unlimited            bytes     \\nMax processes             1028970              1028970              processes \\nMax open files            1048576              1048576              files     \\nMax locked memory         33750654976          33750654976          bytes     \\nMax address space         unlimited            unlimited            bytes     \\nMax file locks            unlimited            unlimited            locks     \\nMax pending signals       1028970              1028970              signals   \\nMax msgqueue size         819200               819200               bytes     \\nMax nice priority         0                    0                    \\nMax realtime priority     0                    0                    \\nMax realtime timeout      unlimited            unlimited            us        \\n\", \"cgroup\": \"0::/user.slice/user-1026.slice/session-30838.scope\\n\", \"mode\": \"normal\", \"child_returncode\": -15, \"child_proc_absent_after_wait\": true}",
+        "scorer_isolation_class": "actor-workdir",
+        "scorer_isolation_declared": "unknown"
+      },
+      "probe_files": {
+        "started.json": "{\"pid\": 3190596, \"child\": 3190635, \"recording_visible\": false, \"limits\": \"Limit                     Soft Limit           Hard Limit           Units     \\nMax cpu time              unlimited            unlimited            seconds   \\nMax file size             unlimited            unlimited            bytes     \\nMax data size             unlimited            unlimited            bytes     \\nMax stack size            8388608              unlimited            bytes     \\nMax core file size        0                    unlimited            bytes     \\nMax resident set          unlimited            unlimited            bytes     \\nMax processes             1028970              1028970              processes \\nMax open files            1048576              1048576              files     \\nMax locked memory         33750654976          33750654976          bytes     \\nMax address space         unlimited            unlimited            bytes     \\nMax file locks            unlimited            unlimited            locks     \\nMax pending signals       1028970              1028970              signals   \\nMax msgqueue size         819200               819200               bytes     \\nMax nice priority         0                    0                    \\nMax realtime priority     0                    0                    \\nMax realtime timeout      unlimited            unlimited            us        \\n\", \"cgroup\": \"0::/user.slice/user-1026.slice/session-30838.scope\\n\", \"mode\": \"normal\"}\n",
+        "waited.json": "{\"pid\": 3190596, \"child\": 3190635, \"recording_visible\": false, \"limits\": \"Limit                     Soft Limit           Hard Limit           Units     \\nMax cpu time              unlimited            unlimited            seconds   \\nMax file size             unlimited            unlimited            bytes     \\nMax data size             unlimited            unlimited            bytes     \\nMax stack size            8388608              unlimited            bytes     \\nMax core file size        0                    unlimited            bytes     \\nMax resident set          unlimited            unlimited            bytes     \\nMax processes             1028970              1028970              processes \\nMax open files            1048576              1048576              files     \\nMax locked memory         33750654976          33750654976          bytes     \\nMax address space         unlimited            unlimited            bytes     \\nMax file locks            unlimited            unlimited            locks     \\nMax pending signals       1028970              1028970              signals   \\nMax msgqueue size         819200               819200               bytes     \\nMax nice priority         0                    0                    \\nMax realtime priority     0                    0                    \\nMax realtime timeout      unlimited            unlimited            us        \\n\", \"cgroup\": \"0::/user.slice/user-1026.slice/session-30838.scope\\n\", \"mode\": \"normal\", \"child_returncode\": -15, \"child_proc_absent_after_wait\": true}\n"
+      },
+      "native_after_objects": {},
+      "observed_proc_identities": [
+        "3190596-656889465",
+        "3190635-656889469"
+      ],
+      "native_after_processes": {
+        "3190596-656889465": {
+          "raw_stat_or_error": "[Errno 2] No such file or directory: '/proc/3190596/stat'",
+          "same_starttime_present": false
+        },
+        "3190635-656889469": {
+          "raw_stat_or_error": "[Errno 2] No such file or directory: '/proc/3190635/stat'",
+          "same_starttime_present": false
+        }
+      }
+    },
+    "unsandboxed-single-timeout": {
+      "verdict": {
+        "kind": "command",
+        "passed": false,
+        "outcome": "timeout",
+        "unmeasured": "the verifier timed out after 2s",
+        "detail": "the verifier timed out after 2s",
+        "scorer_isolation_class": "actor-workdir",
+        "scorer_isolation_declared": "unknown"
+      },
+      "probe_files": {
+        "started.json": "{\"pid\": 3191460, \"child\": null, \"recording_visible\": false, \"limits\": \"Limit                     Soft Limit           Hard Limit           Units     \\nMax cpu time              unlimited            unlimited            seconds   \\nMax file size             unlimited            unlimited            bytes     \\nMax data size             unlimited            unlimited            bytes     \\nMax stack size            8388608              unlimited            bytes     \\nMax core file size        0                    unlimited            bytes     \\nMax resident set          unlimited            unlimited            bytes     \\nMax processes             1028970              1028970              processes \\nMax open files            1048576              1048576              files     \\nMax locked memory         33750654976          33750654976          bytes     \\nMax address space         unlimited            unlimited            bytes     \\nMax file locks            unlimited            unlimited            locks     \\nMax pending signals       1028970              1028970              signals   \\nMax msgqueue size         819200               819200               bytes     \\nMax nice priority         0                    0                    \\nMax realtime priority     0                    0                    \\nMax realtime timeout      unlimited            unlimited            us        \\n\", \"cgroup\": \"0::/user.slice/user-1026.slice/session-30838.scope\\n\", \"mode\": \"single-timeout\"}\n"
+      },
+      "native_after_objects": {},
+      "observed_proc_identities": [
+        "3191460-656889571"
+      ],
+      "native_after_processes": {
+        "3191460-656889571": {
+          "raw_stat_or_error": "[Errno 2] No such file or directory: '/proc/3191460/stat'",
+          "same_starttime_present": false
+        }
+      }
+    },
+    "unsandboxed-missing-command": {
+      "verdict": {
+        "kind": "command",
+        "passed": false,
+        "detail": "the verifier command does not exist: [Errno 2] No such file or directory: '/tmp/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-esqb52cy/absent-executable'",
+        "scorer_isolation_class": "actor-workdir",
+        "scorer_isolation_declared": "unknown"
+      },
+      "probe_files": {},
+      "native_after_objects": {},
+      "observed_proc_identities": [],
+      "native_after_processes": {}
+    },
+    "service-health-failure": {
+      "exception": "ServiceUnavailable(\"service 'recording' was not healthy after 1s (exit 7: ). This is a dataset-side failure, not a harness result: the task is recorded as invalid rather than scored zero.\")",
+      "native_after_objects": {},
+      "observed_proc_identities": [],
+      "native_after_processes": {},
+      "container_after_native_failure": null,
+      "network_after_native_failure": {
+        "returncode": 1,
+        "stdout": "[]\n",
+        "stderr": "Error response from daemon: network hg-w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-unhealthy not found\n"
+      }
+    }
+  },
+  "started_utc": "2026-10-15T06:32:23.068999+00:00",
+  "source_hashes": {
+    "eval/containers/container.py": "216c1de97885625c81c5a31e6964e93254fdec7326ae77c02ede28c419fb7e52",
+    "eval/containers/sandbox.py": "df6870f6f6140105858def9eb943cbee973e36cfa03b1b3c5dc0cbed221572b1",
+    "eval/containers/container_state.py": "94caeacbb548d97f6033298b69f27f64906f043a29c4f7d3d668980c0983c3c6",
+    "eval/verification/verifier.py": "109c461ba5b1db3075fa63b8fe440647a0fb1df97e44ac7316f10ecf1fe93368",
+    "eval/verification/pristine.py": "4c5a3620d9c4651c76297f47a64c6002ac3b0b9b4ed63846bc1f4b509e806694",
+    "eval/service/services.py": "d125718ba9f0c5ac41f1c65664a610f1747135e5764e9fcbbaa22e412e3bc5ab",
+    "eval/run/runner.py": "b82a8d91c508ace0aeac80ccb976a9d2d3c89e17c1d27f149c86d010af57af62",
+    "tests/fixtures/hg_we6b/collect.py": "0a838f1f6c2351c04e4cbbc90dea21d63413dedd43adf0fb776ad28f89698811",
+    "tests/fixtures/hg_we6b/probe.py": "b4cf2b9d2cefe7cfdbc61a61da1d4d7c20e9141fe2eee2e64774657f661c677c"
+  },
+  "runtime_image": "harnessgrad/appworld-service@sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca",
+  "service": null,
+  "network": "hg-w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-mounted",
+  "native_service_stop_problems": [],
+  "service_after_native_stop": null,
+  "network_after_native_stop": {
+    "returncode": 1,
+    "stdout": "[]\n",
+    "stderr": "Error response from daemon: network hg-w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-mounted not found\n"
+  },
+  "recording_retained": [
+    "/tmp/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685-esqb52cy/recordings/mounted/recording"
+  ],
+  "before_rescue_objects": {},
+  "temporary_bind_sources_after": {},
+  "final_process_observations": {
+    "3190596-656889465": {
+      "raw_stat_or_error": "[Errno 2] No such file or directory: '/proc/3190596/stat'",
+      "same_starttime_present": false
+    },
+    "3190635-656889469": {
+      "raw_stat_or_error": "[Errno 2] No such file or directory: '/proc/3190635/stat'",
+      "same_starttime_present": false
+    },
+    "3191460-656889571": {
+      "raw_stat_or_error": "[Errno 2] No such file or directory: '/proc/3191460/stat'",
+      "same_starttime_present": false
+    }
+  },
+  "rescue_containers": [],
+  "ended_utc": "2026-10-15T06:32:43.179831+00:00"
+}

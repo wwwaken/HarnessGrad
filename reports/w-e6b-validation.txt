@@ -1,0 +1,214 @@
+w-e6b validation; real live attempts preserved separately
+
+$ timeout 150s python3 tests/fixtures/hg_we6b/collect.py > reports/w-e6b-evidence/live-console.txt 2> reports/w-e6b-evidence/live-stderr.txt
+Raw stdout/stderr preserved verbatim at those paths; executed source is per fresh packet.
+
+$ timeout 150s python3 tests/fixtures/hg_we6b/collect.py > reports/w-e6b-evidence/live-followup-console.txt 2> reports/w-e6b-evidence/live-followup-stderr.txt
+Raw stdout/stderr preserved verbatim at those paths; executed source is per fresh packet.
+
+$ timeout 150s python3 tests/fixtures/hg_we6b/collect.py > reports/w-e6b-evidence/live-final-console.txt 2> reports/w-e6b-evidence/live-final-stderr.txt
+Raw stdout/stderr preserved verbatim at those paths; executed source is per fresh packet.
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ python3 tests/fixtures/hg_we6b/audit_packet.py
+{
+  "audit": "PASS",
+  "packet": "reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb",
+  "live_cases": 11,
+  "observed_owned_containers": 9,
+  "observed_pid_starttime_identities": 14,
+  "temporary_bind_sources_absent": 6,
+  "all_exact_objects_absent_before_rescue": true,
+  "rescues": 0,
+  "historical_before_fix_same_absence_predicate": false,
+  "registry_boundary": "observed/evidence only; blockers unchanged",
+  "largest_evidence_file_bytes": 154408
+}
+exit_code=0
+
+$ python3 -m pytest -q tests/quality/test_dataset_blockers.py tests/quality/test_dataset_journal_coverage.py tests/quality/test_w_e6fix_cleanup.py tests/quality/test_w_e6fix_adjacent.py --basetemp=/tmp/harnessgrad-pytest-w-e6b
+...........................................................xxx.......... [ 96%]
+...                                                                      [100%]
+72 passed, 3 xfailed in 7.93s
+exit_code=0
+
+$ git diff --check
+exit_code=0
+
+$ git diff --stat
+ docs/adapter-integration-journal.md |  8 ++++++++
+ docs/dataset-blockers.json          | 22 +++++++++++++++++++++-
+ 2 files changed, 29 insertions(+), 1 deletion(-)
+exit_code=0
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ python3 tests/fixtures/hg_we6b/audit_packet.py
+{
+  "audit": "PASS",
+  "packet": "reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb",
+  "live_cases": 11,
+  "observed_owned_containers": 9,
+  "observed_pid_starttime_identities": 14,
+  "temporary_bind_sources_absent": 6,
+  "all_exact_objects_absent_before_rescue": true,
+  "rescues": 0,
+  "historical_before_fix_same_absence_predicate": false,
+  "registry_boundary": "observed/evidence only; blockers unchanged",
+  "reviewed_baseline_commit": "31486f6b41a3a8202dde6602e79edf1062813065",
+  "largest_evidence_file_bytes": 154408
+}
+exit_code=0
+
+$ git diff --cached --check
+reports/w-e6b-evidence/live-followup-stderr.txt:35: new blank line at EOF.
+tests/fixtures/hg_we6b/postmortem.py:49: new blank line at EOF.
+exit_code=2
+
+Raw collector traceback ends with its original blank line; preserve raw bytes. Source whitespace fixed; exclude only that verbatim raw stderr from whitespace check.
+
+$ git diff --cached --check -- . ':(exclude)reports/w-e6b-evidence/live-followup-stderr.txt'
+exit_code=0
+
+$ git diff --cached --name-only --diff-filter=AM -z; pathlib.stat size audit
+{
+  "added_or_modified_files": 61,
+  "largest_staged_files": [
+    [
+      492992,
+      "docs/adapter-integration-journal.md"
+    ],
+    [
+      168833,
+      "docs/dataset-blockers.json"
+    ],
+    [
+      154408,
+      "reports/w-e6b-evidence/source-current.txt"
+    ],
+    [
+      45129,
+      "reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/summary.json"
+    ],
+    [
+      29752,
+      "reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/mounted-writable-helper-timeout.jsonl"
+    ],
+    [
+      29384,
+      "reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/mounted-writable-helper-timeout.jsonl"
+    ],
+    [
+      28498,
+      "reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/mounted-timeout.jsonl"
+    ],
+    [
+      26372,
+      "reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/mounted-timeout.jsonl"
+    ]
+  ],
+  "all_under_1000000_bytes": true,
+  "no_runs_or_payload_paths": true
+}
+
+$ sha256sum <sorted report, registry, journal, fixture and evidence paths> > reports/w-e6b-evidence/SHA256SUMS
+
+$ sha256sum -c reports/w-e6b-evidence/SHA256SUMS
+docs/adapter-integration-journal.md: 成功
+docs/dataset-blockers.json: 成功
+reports/w-e6b-evidence/audit.txt: 成功
+reports/w-e6b-evidence/live-console.txt: 成功
+reports/w-e6b-evidence/live-final-console.txt: 成功
+reports/w-e6b-evidence/live-final-stderr.txt: 成功
+reports/w-e6b-evidence/live-followup-console.txt: 成功
+reports/w-e6b-evidence/live-followup-stderr.txt: 成功
+reports/w-e6b-evidence/live-stderr.txt: 成功
+reports/w-e6b-evidence/postmortem.txt: 成功
+reports/w-e6b-evidence/source-current.txt: 成功
+reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/executed-collect.py: 成功
+reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/executed-probe.py: 成功
+reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/final-native-observations.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/mounted-malformed-reward.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/mounted-missing-evidence.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/mounted-missing-reward.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/mounted-native-cleanup.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/mounted-service-start.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/mounted-timeout.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/mounted-writable-helper-timeout.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/preflight.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/service-health-failure.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/snapshot-missing-argv.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/snapshot-staging-error.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/summary.json: 成功
+reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/unsandboxed-missing-command.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/unsandboxed-normal.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-4f0710aa5cce4a17aabf64f6ef2ce685/unsandboxed-single-timeout.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/executed-collect.py: 成功
+reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/executed-probe.py: 成功
+reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/final-native-observations.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/mounted-malformed-reward.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/mounted-missing-evidence.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/mounted-missing-reward.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/mounted-native-cleanup.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/mounted-service-start.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/mounted-timeout.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/mounted-writable-helper-timeout.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/preflight.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/service-health-failure.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/snapshot-missing-argv.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/snapshot-staging-error.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/summary.json: 成功
+reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/unsandboxed-missing-command.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/unsandboxed-normal.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb/unsandboxed-single-timeout.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-d780eb5e4ec44a5ab1227e14a86032f8/executed-collect.py: 成功
+reports/w-e6b-evidence/w-e6b-d780eb5e4ec44a5ab1227e14a86032f8/executed-probe.py: 成功
+reports/w-e6b-evidence/w-e6b-d780eb5e4ec44a5ab1227e14a86032f8/final-native-observations.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-d780eb5e4ec44a5ab1227e14a86032f8/mounted-native-cleanup.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-d780eb5e4ec44a5ab1227e14a86032f8/mounted-service-start.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-d780eb5e4ec44a5ab1227e14a86032f8/mounted-timeout.jsonl: 成功
+reports/w-e6b-evidence/w-e6b-d780eb5e4ec44a5ab1227e14a86032f8/preflight.jsonl: 成功
+reports/w-e6b-lifecycle.md: 成功
+tests/fixtures/hg_we6b/audit_packet.py: 成功
+tests/fixtures/hg_we6b/collect.py: 成功
+tests/fixtures/hg_we6b/postmortem.py: 成功
+tests/fixtures/hg_we6b/probe.py: 成功
+tests/fixtures/hg_we6b/source_inventory.py: 成功
+exit_code=0
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ python3 tests/fixtures/hg_we6b/audit_packet.py
+{
+  "audit": "PASS",
+  "packet": "reports/w-e6b-evidence/w-e6b-61fad626fa3647ee9425609ad8d229fb",
+  "live_cases": 11,
+  "observed_owned_containers": 9,
+  "observed_pid_starttime_identities": 14,
+  "temporary_bind_sources_absent": 6,
+  "all_exact_objects_absent_before_rescue": true,
+  "rescues": 0,
+  "historical_before_fix_same_absence_predicate": false,
+  "registry_boundary": "observed/evidence only; blockers unchanged",
+  "reviewed_baseline_commit": "31486f6b41a3a8202dde6602e79edf1062813065",
+  "largest_evidence_file_bytes": 154408
+}
+exit_code=0
+
+$ git diff --cached --check -- . ':(exclude)reports/w-e6b-evidence/live-followup-stderr.txt'
+exit_code=0
+
+$ git diff --cached --name-only --diff-filter=A -z; git show :<path> byte audit
+{
+  "largest_added_git_blob_bytes": 154408,
+  "largest_added_git_blob_path": "reports/w-e6b-evidence/source-current.txt",
+  "added_files": 60,
+  "all_added_blobs_text_and_under_1000000_bytes": true
+}
