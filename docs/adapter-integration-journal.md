@@ -5245,3 +5245,52 @@ under names my `*.receipt.json` glob missed. I had reported "receipts present: 0
 
 **Merged:** `7364dcb1` (w-provresidue, evidence-only, 4 files, checker valid). **Corrected:**
 `edff98a5` (the inventory row by class, the false-positive rule, and the four pin mismatches).
+
+## 2026-10-16 (round 11) — The B5 restoration was written into a gitignored path, so most of it is not evidence
+
+**The finding.** The B5 replay restored 59 of the 87 originally-missing bodies and every one verifies
+against its pin. But only **12 of the 59 were ever committed**: the packet's tracked file count went
+148 -> 160. The other **47 bodies are untracked and gitignored** - `.gitignore:365` ignores
+`tests/fixtures/**/*.body` - so they exist only in this checkout's working tree, and a fresh
+`git worktree add` or clone does not have them. Concretely, right now: 234 pinned, **206 present on disk,
+159 of them tracked, 47 ignored**, 28 absent.
+
+This is not a bookkeeping detail, and it explains something the ledger had already noticed without
+diagnosing: the file has a "worktree-only failures - do not mistake these for regressions" section, and
+`w-knownred` - auditing from a fresh worktree at `27d2efaa` - counted `75 missing / 159 present / 160
+tracked` where this checkout has `28 / 206 / 160`. Both are correct; they are looking at two different
+things, and the difference is the gitignore rule. It also means the honest description of the packet's
+state is *"159 of 234 pinned entries are in the repository, 47 more exist on one machine, 28 are gone"*,
+which is a weaker statement than "55 of 87 restored" and a more useful one.
+
+The same rule at `.gitignore:380` (`tests/fixtures/hg_*/`) is why `hg_wprov`, `hg_trivia` and `hg_bfcl`
+carry only **1, 1 and 2** tracked files. For those three, the manifests, the receipts and the bodies are
+**not in version control at all** - so every count this project has ever quoted for them describes the
+main checkout on this machine, not the repository, and a fresh worktree can only report `UNVERIFIABLE`.
+`w-knownred` refused to invent numbers for them, which is the right call and is what surfaced this.
+
+**Corrected, not performed.** Making the restoration durable needs `git add -f` on 47 bodies or a
+`.gitignore` change. I did **not** do either: committing evidence that a manifest pins is a deliberate
+custody change, and the operator's phase brief is code and evidence, not custody. It is on the operator's
+list. `registry/known-red-tests.md`'s B5 section now carries the measured disposition table (23
+error-pinned all *measured* mismatch, 3 live-dynamic, 1 upstream 404, 1 still retryable), the corrected
+59/28 counts, and this durability note, so no later reader re-derives "55 of 87 restored" from a tree that
+would not reproduce it.
+
+**`w-knownred` merged as `527512f3`** (121 grouped standing claims: 30 REPRODUCES, 27 DIFFERS, 7
+PROXY-ONLY, 57 UNVERIFIABLE). Its two load-bearing results deserve to be repeated here because they are
+defects rather than staleness:
+
+* **"Zero unexplained reds across 193 files" is not supportable as written.** The ledger's own latest red
+  table contains a row whose cause it records as UNKNOWN, and the current file denominator is 204, not
+  193. What the evidence supports is "five known filenames were listed and each has a prior account".
+* **"`ran == selected == discovered`" is a proxy for coverage, not coverage.** `tools/quality_sweep.py:79-85`
+  records an entry even when the launch raises and `:123-126` counts those entries, so an `rc=5` skip and an
+  `rc=124` timeout both enter as "covered"; three named modules collect **0** nodes. Invocation-set equality
+  cannot prove a file executed an assertion.
+
+It also found the strict-decoding paragraph stale in the same way as the eleven disclosure entries (the
+referee side no longer has unexempted strict sites; `dsh_agent/agent.py:202` is no longer strict; several
+site counts moved), and independently reproduced the SpreadsheetBench digest drift that round 7 recorded.
+
+**Merged this round:** `527512f3` (w-knownred), `87541c7b` (the B5 correction and durability note).
