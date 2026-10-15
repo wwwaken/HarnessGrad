@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "/tmp/hg-wresolver3-offline-b4cv26aq/triviaqa/bin/python",
+    "-m",
+    "pip",
+    "--isolated",
+    "--disable-pip-version-check",
+    "install",
+    "--ignore-installed",
+    "--no-index",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--dry-run",
+    "--find-links",
+    "/tmp/hg-wresolver3-offline-b4cv26aq/missing-triviaqa-pyarrow",
+    "-r",
+    "/tmp/hg-resolver3/tests/fixtures/hg_wresolver3/profiles/triviaqa/roots.in",
+    "-c",
+    "/tmp/hg-resolver3/tests/fixtures/hg_wresolver3/profiles/triviaqa/constraints.txt"
+  ],
+  "elapsed_seconds": 0.5267825536429882,
+  "exit_code": 1,
+  "timeout_seconds": 180
+}

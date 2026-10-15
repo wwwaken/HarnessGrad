@@ -1,0 +1,10 @@
+Looking in links: /tmp/hg-wresolver3-offline-b4cv26aq/missing-livecodebench-numpy
+
+The conflict is caused by:
+    The user requested numpy==1.26.4
+    The user requested (constraint) numpy==1.26.4
+
+To fix this you could try to:
+1. loosen the range of package versions you've specified
+2. remove package versions to allow pip attempt to solve the dependency conflict
+

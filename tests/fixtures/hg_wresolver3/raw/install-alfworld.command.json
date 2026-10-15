@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "/tmp/hg-wresolver3-offline-n2wn1kvy/alfworld/bin/python",
+    "-m",
+    "pip",
+    "--isolated",
+    "--disable-pip-version-check",
+    "install",
+    "--ignore-installed",
+    "--no-index",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--find-links",
+    "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels",
+    "--require-hashes",
+    "-r",
+    "/tmp/hg-resolver3/tests/fixtures/hg_wresolver3/profiles/alfworld/resolved.lock"
+  ],
+  "elapsed_seconds": 12.917512465268373,
+  "exit_code": 0,
+  "timeout_seconds": 180
+}

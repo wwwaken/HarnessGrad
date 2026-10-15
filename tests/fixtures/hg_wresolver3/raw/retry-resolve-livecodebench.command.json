@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "/tmp/hg-wresolver3-offline-b4cv26aq/livecodebench/bin/python",
+    "-m",
+    "pip",
+    "--isolated",
+    "--disable-pip-version-check",
+    "install",
+    "--ignore-installed",
+    "--no-index",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--dry-run",
+    "-vv",
+    "--find-links",
+    "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels",
+    "--report",
+    "/tmp/hg-resolver3/tests/fixtures/hg_wresolver3/raw/retry-livecodebench.pip-report.json",
+    "-r",
+    "/tmp/hg-resolver3/tests/fixtures/hg_wresolver3/profiles/livecodebench/roots.in",
+    "-c",
+    "/tmp/hg-resolver3/tests/fixtures/hg_wresolver3/profiles/livecodebench/constraints.txt"
+  ],
+  "elapsed_seconds": 0.4952890472486615,
+  "exit_code": 0,
+  "timeout_seconds": 180
+}

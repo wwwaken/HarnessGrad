@@ -1,0 +1,44 @@
+{"bounded_coverage": "11/11", "candidate_wheels": 87, "complete_nonempty_python_coverage": "10/23", "fresh_profiles": 5, "missing_wheel_refusals": 5, "production_authorized": false, "valid": true}
+
+COMMAND ["python3", "tools/check_dataset_blockers.py"]
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+{"exit_code": 0, "elapsed_seconds": 0.31495887506753206}
+
+COMMAND ["python3", "-m", "pytest", "-q", "tests/quality/test_dataset_blockers.py", "tests/quality/test_dataset_journal_coverage.py", "--basetemp=/tmp/harnessgrad-pytest-w-resolver3"]
+...........................................................xxx           [100%]
+59 passed, 3 xfailed in 6.64s
+{"exit_code": 0, "elapsed_seconds": 6.981468040496111}
+
+COMMAND ["python3", "tests/fixtures/hg_wresolver3/validate.py", "--seal"]
+{"bounded_coverage": "11/11", "candidate_wheels": 87, "complete_nonempty_python_coverage": "10/23", "fresh_profiles": 5, "missing_wheel_refusals": 5, "production_authorized": false, "valid": true}
+{"exit_code": 0, "elapsed_seconds": 1.2176882131025195}
+
+COMMAND ["python3", "tests/fixtures/hg_wresolver3/validate.py"]
+{"bounded_coverage": "11/11", "candidate_wheels": 87, "complete_nonempty_python_coverage": "10/23", "fresh_profiles": 5, "missing_wheel_refusals": 5, "production_authorized": false, "valid": true}
+{"exit_code": 0, "elapsed_seconds": 1.216827885247767}
+
+COMMAND ["python3", "tools/check_dataset_blockers.py"]
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+{"exit_code": 0, "elapsed_seconds": 0.31492658983916044}
+
+COMMAND ["python3", "tests/fixtures/hg_wresolver3/validate.py", "--seal"]
+{"bounded_coverage": "11/11", "candidate_wheels": 87, "complete_nonempty_python_coverage": "10/23", "fresh_profiles": 5, "missing_wheel_refusals": 5, "production_authorized": false, "valid": true}
+{"exit_code": 0, "elapsed_seconds": 1.4172141049057245}
+
+COMMAND ["python3", "tests/fixtures/hg_wresolver3/validate.py"]
+{"bounded_coverage": "11/11", "candidate_wheels": 87, "complete_nonempty_python_coverage": "10/23", "fresh_profiles": 5, "missing_wheel_refusals": 5, "production_authorized": false, "valid": true}
+{"exit_code": 0, "elapsed_seconds": 1.21624840144068}
+
+Index and diff scope audit: {"changed_paths": 742, "indexed_fixture_files": 738, "main_untouched": true, "scope_valid": true}
+
+COMMAND ["python3", "tools/check_dataset_blockers.py"]
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+{"exit_code": 0, "elapsed_seconds": 0.2649300768971443}
+
+COMMAND ["python3", "tests/fixtures/hg_wresolver3/validate.py", "--seal"]
+{"bounded_coverage": "11/11", "candidate_wheels": 87, "complete_nonempty_python_coverage": "10/23", "fresh_profiles": 5, "missing_wheel_refusals": 5, "production_authorized": false, "valid": true}
+{"exit_code": 0, "elapsed_seconds": 1.3677905360236764}
+
+COMMAND ["python3", "tests/fixtures/hg_wresolver3/validate.py"]
+{"bounded_coverage": "11/11", "candidate_wheels": 87, "complete_nonempty_python_coverage": "10/23", "fresh_profiles": 5, "missing_wheel_refusals": 5, "production_authorized": false, "valid": true}
+{"exit_code": 0, "elapsed_seconds": 1.3670221716165543}

@@ -1,0 +1,10 @@
+Looking in links: /tmp/hg-wresolver3-offline-n2wn1kvy/missing-pyarrow
+
+The conflict is caused by:
+    The user requested pyarrow==23.0.0
+    The user requested (constraint) pyarrow==23.0.0
+
+To fix this you could try to:
+1. loosen the range of package versions you've specified
+2. remove package versions to allow pip attempt to solve the dependency conflict
+

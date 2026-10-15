@@ -4098,3 +4098,11 @@ clean; all four named deliverables present.
   tests/fixtures/hg_wjournalcov/. Validation and raw commands/output:
   reports/w-journalcov-validation.txt. Commit stays in the registered
   /tmp/hg-journalcov worktree for parent review; main and runs/ are untouched.
+
+## 2026-10-15 — More dataset Python profiles resolved offline - w-resolver3
+
+- Selected all five remaining finite actor-workdir adapter Python profiles outside DS-1000's dynamic contexts: ALFWorld, GSM8K, HotpotQA, TriviaQA and LiveCodeBench. Fresh source/wheel metadata derives requirements; ALFWorld keeps required textworld[pddl]. Exact host reconstruction versions are distinguished from adapter pins.
+- Five profiles pass dependency-aware kernel-network-denied resolution, hash-required installation and pip check, selecting 55/1/1/1/1 distributions; removing fast-downward-textworld, pyarrow or numpy yields five real refusals after installation. Public PyPI's sdist-only planner release was checked against retained build payloads: exact wheel found and rehashed, not declared unobtainable. Initial acquisition assertion and a probe directory-collision exception remain preserved, with cleanup and fresh successful completion evidence.
+- Coverage advances from 6/6 to 11/11 bounded profiles and from 5/23 to 10/23 complete nonempty dataset Python metadata profiles. Remaining 13/23: nine N/A inspected routes (Tau-Bench corrected after full vendored-source AST audit), three untested image/context profiles (AppWorld, DS-1000, GAIA), and incomplete Terminal-Bench task tooling (1/89). Every remaining gap has source-grounded reasons in tests/fixtures/hg_wresolver3/gap-audit.json.
+- Scope is only additive shared scorer-offline-closure observed/evidence. All shared/dataset statuses, next_actions, references, history, gates and production_authorized=false remain unchanged; S1/S3/S4/S5/S6 remain PARTIAL. No task/scorer/container/model/GPU/endpoint/server operation, no runs/ or frozen-receipt edits, no old run ID resumed. Native/image/scorer/runtime closure remains separate.
+- Evidence: reports/w-resolver3-payloads.md, tests/fixtures/hg_wresolver3/README.md and reports/w-resolver3-validation.txt. Ten new wheel candidates are committed; the full 87-wheel graph remains externally retained and rehashed. Commit in registered /tmp/hg-resolver3 only for parent review; main untouched.

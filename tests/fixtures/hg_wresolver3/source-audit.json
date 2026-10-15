@@ -1,0 +1,1518 @@
+{
+  "imports": {
+    "/mnt/20t/xubuqiang/datasets/livecodebench/_src/upstream/LiveCodeBench-28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24/lcb_runner/evaluation/pass_k_utils.py": [
+      "itertools",
+      "numpy"
+    ],
+    "/mnt/20t/xubuqiang/datasets/livecodebench/_src/upstream/LiveCodeBench-28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24/lcb_runner/evaluation/testing_util.py": [
+      "ast",
+      "builtins",
+      "datetime",
+      "decimal",
+      "enum",
+      "faulthandler",
+      "io",
+      "json",
+      "numpy",
+      "os",
+      "platform",
+      "resource",
+      "shutil",
+      "signal",
+      "subprocess",
+      "sys",
+      "time",
+      "types",
+      "unittest"
+    ],
+    "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/alfworld-0.4.2-py3-none-any.whl:alfworld/agents/environment/alfred_tw_env.py": [
+      "alfworld",
+      "json",
+      "os",
+      "random",
+      "termcolor",
+      "textworld",
+      "tqdm"
+    ],
+    "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/textworld-1.7.0-py3-none-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl:textworld/__init__.py": [
+      "textworld",
+      "warnings"
+    ],
+    "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/textworld-1.7.0-py3-none-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl:textworld/envs/pddl/pddl.py": [
+      "fast_downward",
+      "json",
+      "textworld",
+      "typing"
+    ],
+    "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/textworld-1.7.0-py3-none-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl:textworld/gym/__init__.py": [
+      "textworld"
+    ],
+    "data/datasets/alfworld.py": [
+      "__future__",
+      "data",
+      "hashlib",
+      "importlib",
+      "json",
+      "os",
+      "pathlib",
+      "re"
+    ],
+    "data/datasets/alfworld/lib/gym_env.py": [
+      "__future__",
+      "alfworld",
+      "json",
+      "pathlib",
+      "textworld"
+    ],
+    "data/datasets/alfworld/verify/check.py": [
+      "__future__",
+      "argparse",
+      "data",
+      "gym_env",
+      "json",
+      "os",
+      "pathlib",
+      "sys",
+      "traceback"
+    ],
+    "data/datasets/gsm8k.py": [
+      "__future__",
+      "data",
+      "re"
+    ],
+    "data/datasets/hotpotqa.py": [
+      "__future__",
+      "data"
+    ],
+    "data/datasets/livecodebench.py": [
+      "__future__",
+      "base64",
+      "data",
+      "itertools",
+      "json",
+      "numpy",
+      "pathlib",
+      "pickle",
+      "zlib"
+    ],
+    "data/datasets/livecodebench/verify/check.py": [
+      "__future__",
+      "argparse",
+      "data",
+      "json",
+      "multiprocessing",
+      "pass_k_utils",
+      "pathlib",
+      "sys",
+      "testing_util"
+    ],
+    "data/datasets/triviaqa.py": [
+      "__future__",
+      "data",
+      "re",
+      "string"
+    ],
+    "data/scaffolds/qa/base.py": [
+      "__future__",
+      "data",
+      "hashlib",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "typing"
+    ],
+    "data/scaffolds/qa/read.py": [
+      "__future__",
+      "json",
+      "math",
+      "pathlib",
+      "pyarrow",
+      "typing"
+    ],
+    "data/scaffolds/qa/verify/check.py": [
+      "__future__",
+      "argparse",
+      "data",
+      "hashlib",
+      "json",
+      "pathlib",
+      "re",
+      "sys",
+      "traceback"
+    ]
+  },
+  "root_requirements": {
+    "alfworld": [
+      "alfworld==0.4.2",
+      "textworld==1.7.0"
+    ],
+    "gsm8k": [
+      "pyarrow==23.0.0"
+    ],
+    "hotpotqa": [
+      "pyarrow==23.0.0"
+    ],
+    "livecodebench": [
+      "numpy==1.26.4"
+    ],
+    "triviaqa": [
+      "pyarrow==23.0.0"
+    ]
+  },
+  "scope": "Default metadata graph for actual adapter/scorer imports; QA pyarrow is conditional on Parquet reading. ALFWorld pddl extra is mandatory transitively. No dynamic native/library/model/task execution claim.",
+  "sources": [
+    {
+      "bytes": 27114,
+      "excerpts": [
+        {
+          "line": 95,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 97,
+          "text": "from data.scaffolds.scorer_input import bind as bind_scorer_input"
+        },
+        {
+          "line": 117,
+          "text": "import hashlib"
+        },
+        {
+          "line": 118,
+          "text": "import json"
+        },
+        {
+          "line": 119,
+          "text": "import os"
+        },
+        {
+          "line": 120,
+          "text": "import re"
+        },
+        {
+          "line": 121,
+          "text": "from pathlib import Path"
+        },
+        {
+          "line": 144,
+          "text": "#: and truncated for the check. Loaded by file path rather than by `import gym_env`,"
+        },
+        {
+          "line": 148,
+          "text": "    import importlib.util"
+        },
+        {
+          "line": 206,
+          "text": "    calling it would drag in `textworld` and crawl the whole data tree at import time,"
+        },
+        {
+          "line": 208,
+          "text": "    (see `published()` in `data/scaffolds/registry.py`: a module that will not import is hidden"
+        },
+        {
+          "line": 270,
+          "text": "    content, and because it means the stripped copy is built once at import instead of"
+        },
+        {
+          "line": 384,
+          "text": "            \"version\": \"0.2.2\","
+        },
+        {
+          "line": 398,
+          "text": "            \"version\": \"0.2.2\","
+        },
+        {
+          "line": 413,
+          "text": "            \"version\": \"0.4.2\","
+        },
+        {
+          "line": 428,
+          "text": "            \"version\": \"aaba6870f86c5be6a08a491f32a50b906227bc3e\","
+        },
+        {
+          "line": 443,
+          "text": "            \"package\": \"alfworld\","
+        },
+        {
+          "line": 444,
+          "text": "            \"version\": \"0.4.2\","
+        },
+        {
+          "line": 452,
+          "text": "            \"package\": \"textworld\","
+        },
+        {
+          "line": 453,
+          "text": "            \"version\": \"1.7.0\","
+        },
+        {
+          "line": 465,
+          "text": "    Deliberately does not import `textworld` or build an environment: this is the"
+        },
+        {
+          "line": 491,
+          "text": "#: immutable. A missing data root is **not** an import failure: `published()` catches"
+        }
+      ],
+      "origin": "data/datasets/alfworld.py",
+      "preimage": "tests/fixtures/hg_wresolver3/source/repository/data/datasets/alfworld.py",
+      "sha256": "c532804a566585f750f07c1f26d0ab4259ddba2c792ce6f108a709b7e0552dfb"
+    },
+    {
+      "bytes": 13394,
+      "excerpts": [
+        {
+          "line": 57,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 59,
+          "text": "import re"
+        },
+        {
+          "line": 61,
+          "text": "from data.scaffolds.qa import base"
+        },
+        {
+          "line": 95,
+          "text": "        \"test\": base.parquet_rows(DATASET_ROOT / TEST),"
+        },
+        {
+          "line": 96,
+          "text": "        \"train\": base.parquet_rows(DATASET_ROOT / TRAIN),"
+        },
+        {
+          "line": 204,
+          "text": "            \"version\": REVISION,"
+        },
+        {
+          "line": 227,
+          "text": "            \"package\": \"pyarrow\","
+        },
+        {
+          "line": 228,
+          "text": "            \"version\": \"23.0.0\","
+        },
+        {
+          "line": 233,
+          "text": "                    \"layout; `pyarrow` is one import and no network.\","
+        }
+      ],
+      "origin": "data/datasets/gsm8k.py",
+      "preimage": "tests/fixtures/hg_wresolver3/source/repository/data/datasets/gsm8k.py",
+      "sha256": "628dbf064bd7aa965d31b669247f3fae291de897dd17ad8c71b49c2614e630bb"
+    },
+    {
+      "bytes": 4946,
+      "excerpts": [
+        {
+          "line": 8,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 10,
+          "text": "from data.scaffolds.qa import base"
+        },
+        {
+          "line": 11,
+          "text": "from data.scaffolds.qa.evidence_scorers import (hotpot_exact_match, hotpot_f1_score,"
+        },
+        {
+          "line": 62,
+          "text": "    return base.parquet_rows(path)"
+        },
+        {
+          "line": 83,
+          "text": "            \"version\": REVISION,"
+        }
+      ],
+      "origin": "data/datasets/hotpotqa.py",
+      "preimage": "tests/fixtures/hg_wresolver3/source/repository/data/datasets/hotpotqa.py",
+      "sha256": "1946c6cf56db9124cf1b8d4fed61eed43c61d2a4ff85f181ac8b2739946db6e1"
+    },
+    {
+      "bytes": 19488,
+      "excerpts": [
+        {
+          "line": 57,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 59,
+          "text": "from data.scaffolds.scorer_input import bind as bind_scorer_input"
+        },
+        {
+          "line": 61,
+          "text": "import base64"
+        },
+        {
+          "line": 62,
+          "text": "import json"
+        },
+        {
+          "line": 63,
+          "text": "import pickle"
+        },
+        {
+          "line": 64,
+          "text": "import zlib"
+        },
+        {
+          "line": 65,
+          "text": "from pathlib import Path"
+        },
+        {
+          "line": 67,
+          "text": "import numpy as np"
+        },
+        {
+          "line": 69,
+          "text": "from data.scaffolds import registry"
+        },
+        {
+          "line": 121,
+          "text": "    import itertools"
+        },
+        {
+          "line": 366,
+          "text": "        \"kind\": \"http\", \"name\": name, \"version\": REVISION,"
+        },
+        {
+          "line": 372,
+          "text": "        \"kind\": \"http\", \"name\": \"LiveCodeBench upstream source\", \"version\": UPSTREAM_COMMIT,"
+        }
+      ],
+      "origin": "data/datasets/livecodebench.py",
+      "preimage": "tests/fixtures/hg_wresolver3/source/repository/data/datasets/livecodebench.py",
+      "sha256": "f65dae0427839d0a1146f038b2ad47537126b20b20019baf79e806dc5c84ac5a"
+    },
+    {
+      "bytes": 18723,
+      "excerpts": [
+        {
+          "line": 62,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 64,
+          "text": "import re"
+        },
+        {
+          "line": 65,
+          "text": "import string"
+        },
+        {
+          "line": 67,
+          "text": "from data.scaffolds.qa import base"
+        },
+        {
+          "line": 207,
+          "text": "#: `_rows()`/`data/scaffolds/qa/read.py::parquet_rows(sample=\u2026)` (every `total//2000`-th row in file"
+        },
+        {
+          "line": 240,
+          "text": "            self._loaded[split] = base.parquet_rows("
+        },
+        {
+          "line": 305,
+          "text": "            \"version\": REVISION,"
+        },
+        {
+          "line": 329,
+          "text": "            \"package\": \"pyarrow\","
+        },
+        {
+          "line": 330,
+          "text": "            \"version\": \"23.0.0\","
+        },
+        {
+          "line": 389,
+          "text": "    Measured: building them at import cost **18 s** for this dataset's 17,944 tasks, and"
+        }
+      ],
+      "origin": "data/datasets/triviaqa.py",
+      "preimage": "tests/fixtures/hg_wresolver3/source/repository/data/datasets/triviaqa.py",
+      "sha256": "c4c9e7121672f482abd5ec5527daa07d893f27bfbdcb7255841782332597413c"
+    },
+    {
+      "bytes": 8624,
+      "excerpts": [
+        {
+          "line": 5,
+          "text": "The platform must be able to import a dataset adapter on a machine that has **not**"
+        },
+        {
+          "line": 7,
+          "text": "the chooser offers), so an adapter may not touch its data at import time. It must also"
+        },
+        {
+          "line": 9,
+          "text": "runs inside the verification namespace where a heavy import is a timeout. `pyarrow`"
+        },
+        {
+          "line": 26,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 28,
+          "text": "import math"
+        },
+        {
+          "line": 29,
+          "text": "from pathlib import Path"
+        },
+        {
+          "line": 30,
+          "text": "from typing import Sequence"
+        },
+        {
+          "line": 32,
+          "text": "#: Rows per arrow batch when `parquet_rows(sample=\u2026)` streams a file. The measured middle"
+        },
+        {
+          "line": 46,
+          "text": "#: The key `parquet_rows(sample=\u2026)` uses to report where a kept row came from in the file."
+        },
+        {
+          "line": 73,
+          "text": "def parquet_rows(path: Path | str,"
+        },
+        {
+          "line": 106,
+          "text": "    import pyarrow as pa"
+        },
+        {
+          "line": 107,
+          "text": "    import pyarrow.parquet as pq"
+        },
+        {
+          "line": 151,
+          "text": "    import json"
+        },
+        {
+          "line": 177,
+          "text": "            rows.extend(parquet_rows(path))"
+        }
+      ],
+      "origin": "data/scaffolds/qa/read.py",
+      "preimage": "tests/fixtures/hg_wresolver3/source/repository/data/scaffolds/qa/read.py",
+      "sha256": "b28b1150ddf307a1cf037e3e0cb280117d13157687551329b27c24e0526bb383"
+    },
+    {
+      "bytes": 27878,
+      "excerpts": [
+        {
+          "line": 41,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 43,
+          "text": "import hashlib"
+        },
+        {
+          "line": 44,
+          "text": "import json"
+        },
+        {
+          "line": 45,
+          "text": "import os"
+        },
+        {
+          "line": 46,
+          "text": "import re"
+        },
+        {
+          "line": 47,
+          "text": "from pathlib import Path"
+        },
+        {
+          "line": 48,
+          "text": "from typing import Callable, Sequence"
+        },
+        {
+          "line": 53,
+          "text": "from data.scaffolds.qa.read import (  # noqa: F401"
+        },
+        {
+          "line": 113,
+          "text": "#: skill warns about. What the check may not do is import a name that arrived in `argv`"
+        },
+        {
+          "line": 139,
+          "text": "    read a byte at import time."
+        },
+        {
+          "line": 190,
+          "text": "        #: is not on disk -- see `build()` for why that must not be an import failure."
+        },
+        {
+          "line": 199,
+          "text": "        every task's goal and every `VERIFY` entry at import time: measured on triviaqa,"
+        },
+        {
+          "line": 336,
+          "text": "        scorer itself must import nothing but the standard library for this to work,"
+        },
+        {
+          "line": 362,
+          "text": "                # uses (`data.scaffolds.qa`), so the adapter's own `from data.scaffolds.qa import base` is"
+        },
+        {
+          "line": 363,
+          "text": "                # the same line in both contexts. A shim that made the import *different*"
+        },
+        {
+          "line": 368,
+          "text": "                # so the adapter's own `from data.scaffolds.qa import base` is the same line in"
+        },
+        {
+          "line": 372,
+          "text": "                # so the import would resolve into the tree the sandbox hides."
+        },
+        {
+          "line": 437,
+          "text": "        **A missing data root is not an import failure.** `data/scaffolds/registry.py::published`"
+        },
+        {
+          "line": 466,
+          "text": "        # import made importing triviaqa cost 18 s. The caller that needs them (the"
+        },
+        {
+          "line": 478,
+          "text": "    #: materializes one entry per task on purpose (building it at import cost 18 s on"
+        },
+        {
+          "line": 500,
+          "text": "    them at import cost 18 s on triviaqa (`QASpec.ensure`); `_RECORDS` is exposed because"
+        }
+      ],
+      "origin": "data/scaffolds/qa/base.py",
+      "preimage": "tests/fixtures/hg_wresolver3/source/repository/data/scaffolds/qa/base.py",
+      "sha256": "3c2242e4ed82d76eb7732a6c077122f3d74fb4387860caa3b53a9d8a049a8d8a"
+    },
+    {
+      "bytes": 14894,
+      "excerpts": [
+        {
+          "line": 37,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 39,
+          "text": "import argparse"
+        },
+        {
+          "line": 40,
+          "text": "import hashlib"
+        },
+        {
+          "line": 41,
+          "text": "import json"
+        },
+        {
+          "line": 42,
+          "text": "import re"
+        },
+        {
+          "line": 43,
+          "text": "import sys"
+        },
+        {
+          "line": 44,
+          "text": "import traceback"
+        },
+        {
+          "line": 45,
+          "text": "from pathlib import Path"
+        },
+        {
+          "line": 63,
+          "text": "#: validated before it is used to build an import name. Validated rather than escaped: a"
+        },
+        {
+          "line": 64,
+          "text": "#: dynamic import of `data.` + an unchecked value is a route into any importable module,"
+        },
+        {
+          "line": 206,
+          "text": "            from data.scaffolds.qa.prediction import validate_prediction"
+        },
+        {
+          "line": 231,
+          "text": "        # every dynamic import call and refuses one that is not a literal, because a"
+        },
+        {
+          "line": 248,
+          "text": "        return unmeasured(args, evidence, f\"could not import {module_name}: \""
+        }
+      ],
+      "origin": "data/scaffolds/qa/verify/check.py",
+      "preimage": "tests/fixtures/hg_wresolver3/source/repository/data/scaffolds/qa/verify/check.py",
+      "sha256": "7625d8070cac767c5a878623f98469cb7f4bb0b528a86980d7334b5fdbbbbe7e"
+    },
+    {
+      "bytes": 7174,
+      "excerpts": [
+        {
+          "line": 14,
+          "text": "action\", and both programs import it:"
+        },
+        {
+          "line": 39,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 67,
+          "text": "    import textworld"
+        },
+        {
+          "line": 68,
+          "text": "    import textworld.gym"
+        },
+        {
+          "line": 69,
+          "text": "    from alfworld.agents.environment.alfred_tw_env import AlfredDemangler, AlfredInfos"
+        },
+        {
+          "line": 146,
+          "text": "    import json"
+        },
+        {
+          "line": 147,
+          "text": "    from pathlib import Path"
+        }
+      ],
+      "origin": "data/datasets/alfworld/lib/gym_env.py",
+      "preimage": "tests/fixtures/hg_wresolver3/source/repository/data/datasets/alfworld/lib/gym_env.py",
+      "sha256": "46dfb6b0574c8ed391e30162c0d54ce6cd7e6030cf545ad867effaef6561e448"
+    },
+    {
+      "bytes": 11220,
+      "excerpts": [
+        {
+          "line": 52,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 54,
+          "text": "import argparse"
+        },
+        {
+          "line": 55,
+          "text": "import json"
+        },
+        {
+          "line": 56,
+          "text": "import os"
+        },
+        {
+          "line": 57,
+          "text": "import sys"
+        },
+        {
+          "line": 58,
+          "text": "import traceback"
+        },
+        {
+          "line": 59,
+          "text": "from pathlib import Path"
+        },
+        {
+          "line": 63,
+          "text": "from data.scaffolds.scorer_input import add_arguments, run_bound"
+        },
+        {
+          "line": 66,
+          "text": "import gym_env  # noqa: E402"
+        },
+        {
+          "line": 125,
+          "text": "    verbatim copy of upstream's code -- the copy, not an import of their package."
+        }
+      ],
+      "origin": "data/datasets/alfworld/verify/check.py",
+      "preimage": "tests/fixtures/hg_wresolver3/source/repository/data/datasets/alfworld/verify/check.py",
+      "sha256": "597d5b6b1d8ae0737acd56bb7107729610272eb8a11c88c86dfa281de53b5932"
+    },
+    {
+      "bytes": 10594,
+      "excerpts": [
+        {
+          "line": 48,
+          "text": "from __future__ import annotations"
+        },
+        {
+          "line": 50,
+          "text": "import argparse"
+        },
+        {
+          "line": 51,
+          "text": "import json"
+        },
+        {
+          "line": 52,
+          "text": "import multiprocessing"
+        },
+        {
+          "line": 53,
+          "text": "import sys"
+        },
+        {
+          "line": 54,
+          "text": "from pathlib import Path"
+        },
+        {
+          "line": 58,
+          "text": "from data.scaffolds.scorer_input import add_arguments, run_bound"
+        },
+        {
+          "line": 74,
+          "text": "    `eval.verification.verifier` it does not, so `import testing_util` raised `ModuleNotFoundError` only in"
+        },
+        {
+          "line": 90,
+          "text": "        from testing_util import run_test"
+        },
+        {
+          "line": 202,
+          "text": "        from pass_k_utils import compute_metrics_from_results"
+        }
+      ],
+      "origin": "data/datasets/livecodebench/verify/check.py",
+      "preimage": "tests/fixtures/hg_wresolver3/source/repository/data/datasets/livecodebench/verify/check.py",
+      "sha256": "f0db2c5986cb05c308c2917a6ee1a44b748bbec37c5bd21f04c3b576b5950ca6"
+    },
+    {
+      "bytes": 18276,
+      "excerpts": [
+        {
+          "line": 1,
+          "text": "import ast"
+        },
+        {
+          "line": 2,
+          "text": "import json"
+        },
+        {
+          "line": 3,
+          "text": "import sys"
+        },
+        {
+          "line": 4,
+          "text": "import faulthandler"
+        },
+        {
+          "line": 5,
+          "text": "import platform"
+        },
+        {
+          "line": 8,
+          "text": "from datetime import datetime"
+        },
+        {
+          "line": 11,
+          "text": "import signal"
+        },
+        {
+          "line": 13,
+          "text": "import numpy as np"
+        },
+        {
+          "line": 15,
+          "text": "from io import StringIO"
+        },
+        {
+          "line": 18,
+          "text": "from unittest.mock import patch, mock_open"
+        },
+        {
+          "line": 20,
+          "text": "# from pyext import RuntimeModule"
+        },
+        {
+          "line": 21,
+          "text": "from types import ModuleType"
+        },
+        {
+          "line": 23,
+          "text": "from enum import Enum"
+        },
+        {
+          "line": 24,
+          "text": "from decimal import Decimal"
+        },
+        {
+          "line": 25,
+          "text": "import time"
+        },
+        {
+          "line": 27,
+          "text": "import_string = \"from string import *\\nfrom re import *\\nfrom datetime import *\\nfrom collections import *\\nfrom heapq import *\\nfrom bisect import *\\nfrom copy import *\\nfrom math import *\\nfrom random import *\\nfrom statistics import *\\nfrom itertools import *\\nfrom functools import *\\nfrom operator import *\\nfrom io import *\\nfrom sys import *\\nfrom json import *\\nfrom builtins import *\\nfrom typing import *\\nimport string\\nimport re\\nimport datetime\\nimport collections\\nimport heapq\\nimport bisect\\nimport copy\\nimport math\\nimport random\\nimport statistics\\nimport itertools\\nimport functools\\nimport operator\\nimport io\\nimport sys\\nimport json\\nsys.setrecursionlimit(50000)\\n\""
+        },
+        {
+          "line": 522,
+          "text": "        import resource"
+        },
+        {
+          "line": 537,
+          "text": "    import builtins"
+        },
+        {
+          "line": 542,
+          "text": "    import os"
+        },
+        {
+          "line": 574,
+          "text": "    import shutil"
+        },
+        {
+          "line": 580,
+          "text": "    import subprocess"
+        },
+        {
+          "line": 586,
+          "text": "    import sys"
+        }
+      ],
+      "origin": "/mnt/20t/xubuqiang/datasets/livecodebench/_src/upstream/LiveCodeBench-28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24/lcb_runner/evaluation/testing_util.py",
+      "preimage": "tests/fixtures/hg_wresolver3/source/livecodebench-upstream/testing_util.py",
+      "sha256": "b7cb6a8a69807bb868150a61742e25d7bb5328bbe01d514471b6ec43c9fa9ed2"
+    },
+    {
+      "bytes": 2063,
+      "excerpts": [
+        {
+          "line": 1,
+          "text": "import numpy as np"
+        },
+        {
+          "line": 13,
+          "text": "    import itertools"
+        }
+      ],
+      "origin": "/mnt/20t/xubuqiang/datasets/livecodebench/_src/upstream/LiveCodeBench-28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24/lcb_runner/evaluation/pass_k_utils.py",
+      "preimage": "tests/fixtures/hg_wresolver3/source/livecodebench-upstream/pass_k_utils.py",
+      "sha256": "6af3ee55d40f96fa06fa511bd5e43d94b19604750e82454b4b3c1f45c5199010"
+    },
+    {
+      "bytes": 10728,
+      "excerpts": [
+        {
+          "line": 1,
+          "text": "import os"
+        },
+        {
+          "line": 2,
+          "text": "import json"
+        },
+        {
+          "line": 3,
+          "text": "import random"
+        },
+        {
+          "line": 5,
+          "text": "from tqdm import tqdm"
+        },
+        {
+          "line": 6,
+          "text": "from termcolor import colored"
+        },
+        {
+          "line": 8,
+          "text": "import textworld"
+        },
+        {
+          "line": 9,
+          "text": "import textworld.agents"
+        },
+        {
+          "line": 10,
+          "text": "import textworld.gym"
+        },
+        {
+          "line": 12,
+          "text": "from alfworld.agents.utils.misc import Demangler, add_task_to_grammar"
+        },
+        {
+          "line": 13,
+          "text": "from alfworld.agents.expert import HandCodedTWAgent, HandCodedAgentTimeout"
+        }
+      ],
+      "origin": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/alfworld-0.4.2-py3-none-any.whl:alfworld/agents/environment/alfred_tw_env.py",
+      "preimage": "tests/fixtures/hg_wresolver3/source/wheels/alfworld/alfworld/agents/environment/alfred_tw_env.py",
+      "sha256": "4d9166363e32f0fa70c63530a900785ddb45c79387a02ebcb9a21252869a8924"
+    },
+    {
+      "bytes": 573,
+      "excerpts": [
+        {
+          "line": 4,
+          "text": "import warnings"
+        },
+        {
+          "line": 6,
+          "text": "from textworld.version import __version__"
+        },
+        {
+          "line": 7,
+          "text": "from textworld.utils import g_rng"
+        },
+        {
+          "line": 9,
+          "text": "from textworld.core import EnvInfos, EnvInfoMissingError"
+        },
+        {
+          "line": 10,
+          "text": "from textworld.core import Environment, GameState, Agent"
+        },
+        {
+          "line": 11,
+          "text": "from textworld.generator import Game, GameMaker, GameOptions"
+        },
+        {
+          "line": 13,
+          "text": "from textworld.generator import GenerationWarning"
+        },
+        {
+          "line": 15,
+          "text": "from textworld.helpers import make, play, start"
+        }
+      ],
+      "origin": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/textworld-1.7.0-py3-none-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl:textworld/__init__.py",
+      "preimage": "tests/fixtures/hg_wresolver3/source/wheels/textworld/textworld/__init__.py",
+      "sha256": "651106cbb89b93caa81275d75a0f292c66b95f774947a61e573e28b3981e69ba"
+    },
+    {
+      "bytes": 117,
+      "excerpts": [
+        {
+          "line": 1,
+          "text": "from textworld.gym.utils import register_game, register_games, make, registry"
+        },
+        {
+          "line": 2,
+          "text": "from textworld.gym.core import Agent"
+        }
+      ],
+      "origin": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/textworld-1.7.0-py3-none-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl:textworld/gym/__init__.py",
+      "preimage": "tests/fixtures/hg_wresolver3/source/wheels/textworld/textworld/gym/__init__.py",
+      "sha256": "d816323fa2c285604897c0652de0ae784d20ae9523f2502159a042a995148a51"
+    },
+    {
+      "bytes": 6746,
+      "excerpts": [
+        {
+          "line": 6,
+          "text": "import json"
+        },
+        {
+          "line": 8,
+          "text": "from typing import Mapping, Union, Optional"
+        },
+        {
+          "line": 10,
+          "text": "import textworld"
+        },
+        {
+          "line": 11,
+          "text": "from textworld.core import EnvInfos, GameState"
+        },
+        {
+          "line": 12,
+          "text": "from textworld.generator.game import EntityInfo"
+        },
+        {
+          "line": 13,
+          "text": "from textworld.logic import Proposition, Variable"
+        },
+        {
+          "line": 16,
+          "text": "    import fast_downward"
+        },
+        {
+          "line": 17,
+          "text": "    from textworld.envs.pddl import logic as pddl_logic"
+        }
+      ],
+      "origin": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/textworld-1.7.0-py3-none-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl:textworld/envs/pddl/pddl.py",
+      "preimage": "tests/fixtures/hg_wresolver3/source/wheels/textworld/textworld/envs/pddl/pddl.py",
+      "sha256": "3795f5fb7471c7a4551e137267785ffb3e21e49653d17491d6be963b41f454b4"
+    },
+    {
+      "bytes": 2310,
+      "excerpts": [
+        {
+          "line": 28,
+          "text": "Requires-Dist: textworld[pddl]>=1.6.1"
+        },
+        {
+          "line": 29,
+          "text": "Provides-Extra: full"
+        },
+        {
+          "line": 30,
+          "text": "Requires-Dist: ai2thor==2.1.0; extra == \"full\""
+        },
+        {
+          "line": 31,
+          "text": "Requires-Dist: opencv-python; extra == \"full\""
+        },
+        {
+          "line": 32,
+          "text": "Requires-Dist: pandas; extra == \"full\""
+        },
+        {
+          "line": 33,
+          "text": "Requires-Dist: textworld[pddl]>=1.6.1; extra == \"full\""
+        },
+        {
+          "line": 34,
+          "text": "Requires-Dist: torch; extra == \"full\""
+        },
+        {
+          "line": 35,
+          "text": "Requires-Dist: torchvision; extra == \"full\""
+        },
+        {
+          "line": 36,
+          "text": "Requires-Dist: tqdm; extra == \"full\""
+        },
+        {
+          "line": 37,
+          "text": "Requires-Dist: werkzeug==2.0.3; extra == \"full\""
+        },
+        {
+          "line": 38,
+          "text": "Requires-Dist: h5py; extra == \"full\""
+        },
+        {
+          "line": 39,
+          "text": "Requires-Dist: pycocotools; extra == \"full\""
+        },
+        {
+          "line": 40,
+          "text": "Requires-Dist: transformers; extra == \"full\""
+        },
+        {
+          "line": 41,
+          "text": "Requires-Dist: visdom; extra == \"full\""
+        },
+        {
+          "line": 42,
+          "text": "Provides-Extra: vis"
+        },
+        {
+          "line": 43,
+          "text": "Requires-Dist: ai2thor==2.1.0; extra == \"vis\""
+        },
+        {
+          "line": 44,
+          "text": "Requires-Dist: opencv-python; extra == \"vis\""
+        },
+        {
+          "line": 45,
+          "text": "Requires-Dist: pandas; extra == \"vis\""
+        },
+        {
+          "line": 46,
+          "text": "Requires-Dist: torch; extra == \"vis\""
+        },
+        {
+          "line": 47,
+          "text": "Requires-Dist: torchvision; extra == \"vis\""
+        },
+        {
+          "line": 48,
+          "text": "Requires-Dist: tqdm; extra == \"vis\""
+        },
+        {
+          "line": 49,
+          "text": "Requires-Dist: werkzeug==2.0.3; extra == \"vis\""
+        }
+      ],
+      "origin": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/alfworld-0.4.2-py3-none-any.whl:alfworld-0.4.2.dist-info/METADATA",
+      "preimage": "tests/fixtures/hg_wresolver3/source/wheels/alfworld/alfworld-0.4.2.dist-info/METADATA",
+      "sha256": "a5bf57a96bdd5744057388100897c5949a057de6380bd055bbaf3800faa4d1ce"
+    },
+    {
+      "bytes": 91,
+      "excerpts": [],
+      "origin": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/alfworld-0.4.2-py3-none-any.whl:alfworld-0.4.2.dist-info/WHEEL",
+      "preimage": "tests/fixtures/hg_wresolver3/source/wheels/alfworld/alfworld-0.4.2.dist-info/WHEEL",
+      "sha256": "03758e4443f8ce0c48d1f2ab1d41bc0c2f34d777b774ade7edae870db7042301"
+    },
+    {
+      "bytes": 12229,
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "Requires-Dist: numpy>=1.14.5"
+        },
+        {
+          "line": 25,
+          "text": "Requires-Dist: tqdm>=4.17.1"
+        },
+        {
+          "line": 26,
+          "text": "Requires-Dist: networkx>=2"
+        },
+        {
+          "line": 27,
+          "text": "Requires-Dist: more_itertools"
+        },
+        {
+          "line": 28,
+          "text": "Requires-Dist: tatsu==5.8.3"
+        },
+        {
+          "line": 29,
+          "text": "Requires-Dist: hashids>=1.2.0"
+        },
+        {
+          "line": 30,
+          "text": "Requires-Dist: jericho>=3.3.0"
+        },
+        {
+          "line": 31,
+          "text": "Requires-Dist: mementos>=1.3.1"
+        },
+        {
+          "line": 32,
+          "text": "Requires-Dist: termcolor"
+        },
+        {
+          "line": 33,
+          "text": "Requires-Dist: prompt_toolkit"
+        },
+        {
+          "line": 34,
+          "text": "Provides-Extra: vis"
+        },
+        {
+          "line": 35,
+          "text": "Requires-Dist: pybars3>=0.9.3; extra == \"vis\""
+        },
+        {
+          "line": 36,
+          "text": "Requires-Dist: flask>=1.0.2; extra == \"vis\""
+        },
+        {
+          "line": 37,
+          "text": "Requires-Dist: selenium<4.3,>=3.12.0; extra == \"vis\""
+        },
+        {
+          "line": 38,
+          "text": "Requires-Dist: greenlet>=0.4.13; extra == \"vis\""
+        },
+        {
+          "line": 39,
+          "text": "Requires-Dist: gevent>=1.3.5; extra == \"vis\""
+        },
+        {
+          "line": 40,
+          "text": "Requires-Dist: pillow>=5.1.0; extra == \"vis\""
+        },
+        {
+          "line": 41,
+          "text": "Requires-Dist: plotly<6.0.0,>=4.0.0; extra == \"vis\""
+        },
+        {
+          "line": 42,
+          "text": "Requires-Dist: pydot>=1.2.4; extra == \"vis\""
+        },
+        {
+          "line": 43,
+          "text": "Requires-Dist: psutil; extra == \"vis\""
+        },
+        {
+          "line": 44,
+          "text": "Requires-Dist: matplotlib; extra == \"vis\""
+        },
+        {
+          "line": 45,
+          "text": "Provides-Extra: pddl"
+        },
+        {
+          "line": 46,
+          "text": "Requires-Dist: fast-downward-textworld; extra == \"pddl\""
+        },
+        {
+          "line": 47,
+          "text": "Provides-Extra: full"
+        },
+        {
+          "line": 48,
+          "text": "Requires-Dist: numpy>=1.14.5; extra == \"full\""
+        },
+        {
+          "line": 49,
+          "text": "Requires-Dist: tqdm>=4.17.1; extra == \"full\""
+        },
+        {
+          "line": 50,
+          "text": "Requires-Dist: networkx>=2; extra == \"full\""
+        },
+        {
+          "line": 51,
+          "text": "Requires-Dist: more_itertools; extra == \"full\""
+        },
+        {
+          "line": 52,
+          "text": "Requires-Dist: tatsu==5.8.3; extra == \"full\""
+        },
+        {
+          "line": 53,
+          "text": "Requires-Dist: hashids>=1.2.0; extra == \"full\""
+        },
+        {
+          "line": 54,
+          "text": "Requires-Dist: jericho>=2.2.0; extra == \"full\""
+        },
+        {
+          "line": 55,
+          "text": "Requires-Dist: mementos>=1.3.1; extra == \"full\""
+        },
+        {
+          "line": 56,
+          "text": "Requires-Dist: termcolor; extra == \"full\""
+        },
+        {
+          "line": 57,
+          "text": "Requires-Dist: prompt_toolkit; extra == \"full\""
+        },
+        {
+          "line": 58,
+          "text": "Requires-Dist: pybars3>=0.9.3; extra == \"full\""
+        },
+        {
+          "line": 59,
+          "text": "Requires-Dist: flask>=1.0.2; extra == \"full\""
+        },
+        {
+          "line": 60,
+          "text": "Requires-Dist: selenium<4.3,>=3.12.0; extra == \"full\""
+        },
+        {
+          "line": 61,
+          "text": "Requires-Dist: greenlet>=0.4.13; extra == \"full\""
+        },
+        {
+          "line": 62,
+          "text": "Requires-Dist: gevent>=1.3.5; extra == \"full\""
+        },
+        {
+          "line": 63,
+          "text": "Requires-Dist: pillow>=5.1.0; extra == \"full\""
+        },
+        {
+          "line": 64,
+          "text": "Requires-Dist: plotly<6.0.0,>=4.0.0; extra == \"full\""
+        },
+        {
+          "line": 65,
+          "text": "Requires-Dist: pydot>=1.2.4; extra == \"full\""
+        },
+        {
+          "line": 66,
+          "text": "Requires-Dist: psutil; extra == \"full\""
+        },
+        {
+          "line": 67,
+          "text": "Requires-Dist: matplotlib; extra == \"full\""
+        },
+        {
+          "line": 68,
+          "text": "Requires-Dist: fast-downward-textworld; extra == \"full\""
+        },
+        {
+          "line": 69,
+          "text": "Provides-Extra: dev"
+        },
+        {
+          "line": 70,
+          "text": "Requires-Dist: numpy>=1.14.5; extra == \"dev\""
+        },
+        {
+          "line": 71,
+          "text": "Requires-Dist: tqdm>=4.17.1; extra == \"dev\""
+        },
+        {
+          "line": 72,
+          "text": "Requires-Dist: networkx>=2; extra == \"dev\""
+        },
+        {
+          "line": 73,
+          "text": "Requires-Dist: more_itertools; extra == \"dev\""
+        },
+        {
+          "line": 74,
+          "text": "Requires-Dist: tatsu==5.8.3; extra == \"dev\""
+        },
+        {
+          "line": 75,
+          "text": "Requires-Dist: hashids>=1.2.0; extra == \"dev\""
+        },
+        {
+          "line": 76,
+          "text": "Requires-Dist: jericho>=2.2.0; extra == \"dev\""
+        },
+        {
+          "line": 77,
+          "text": "Requires-Dist: mementos>=1.3.1; extra == \"dev\""
+        },
+        {
+          "line": 78,
+          "text": "Requires-Dist: termcolor; extra == \"dev\""
+        },
+        {
+          "line": 79,
+          "text": "Requires-Dist: prompt_toolkit; extra == \"dev\""
+        },
+        {
+          "line": 80,
+          "text": "Requires-Dist: pybars3>=0.9.3; extra == \"dev\""
+        },
+        {
+          "line": 81,
+          "text": "Requires-Dist: flask>=1.0.2; extra == \"dev\""
+        },
+        {
+          "line": 82,
+          "text": "Requires-Dist: selenium<4.3,>=3.12.0; extra == \"dev\""
+        },
+        {
+          "line": 83,
+          "text": "Requires-Dist: greenlet>=0.4.13; extra == \"dev\""
+        },
+        {
+          "line": 84,
+          "text": "Requires-Dist: gevent>=1.3.5; extra == \"dev\""
+        },
+        {
+          "line": 85,
+          "text": "Requires-Dist: pillow>=5.1.0; extra == \"dev\""
+        },
+        {
+          "line": 86,
+          "text": "Requires-Dist: plotly<6.0.0,>=4.0.0; extra == \"dev\""
+        },
+        {
+          "line": 87,
+          "text": "Requires-Dist: pydot>=1.2.4; extra == \"dev\""
+        },
+        {
+          "line": 88,
+          "text": "Requires-Dist: psutil; extra == \"dev\""
+        },
+        {
+          "line": 89,
+          "text": "Requires-Dist: matplotlib; extra == \"dev\""
+        },
+        {
+          "line": 90,
+          "text": "Requires-Dist: fast-downward-textworld; extra == \"dev\""
+        },
+        {
+          "line": 91,
+          "text": "Requires-Dist: pytest; extra == \"dev\""
+        },
+        {
+          "line": 92,
+          "text": "Requires-Dist: pytest-asyncio; extra == \"dev\""
+        },
+        {
+          "line": 93,
+          "text": "Requires-Dist: pytest-cov; extra == \"dev\""
+        },
+        {
+          "line": 94,
+          "text": "Requires-Dist: pytest-xdist; extra == \"dev\""
+        },
+        {
+          "line": 95,
+          "text": "Requires-Dist: pytest-timeout; extra == \"dev\""
+        },
+        {
+          "line": 192,
+          "text": "import textworld.gym"
+        }
+      ],
+      "origin": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/textworld-1.7.0-py3-none-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl:textworld-1.7.0.dist-info/METADATA",
+      "preimage": "tests/fixtures/hg_wresolver3/source/wheels/textworld/textworld-1.7.0.dist-info/METADATA",
+      "sha256": "f18d448125ce868da03130c529e29eade2b2131c554b71c197c393ed28bfeb97"
+    },
+    {
+      "bytes": 171,
+      "excerpts": [],
+      "origin": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/textworld-1.7.0-py3-none-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl:textworld-1.7.0.dist-info/WHEEL",
+      "preimage": "tests/fixtures/hg_wresolver3/source/wheels/textworld/textworld-1.7.0.dist-info/WHEEL",
+      "sha256": "759a08a09d43cc6a41860fbc5b9c87b7ed6588b5f48218e7a024e884075b1d60"
+    },
+    {
+      "bytes": 2980,
+      "excerpts": [],
+      "origin": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/pyarrow-23.0.0-cp312-cp312-manylinux_2_28_x86_64.whl:pyarrow-23.0.0.dist-info/METADATA",
+      "preimage": "tests/fixtures/hg_wresolver3/source/wheels/pyarrow/pyarrow-23.0.0.dist-info/METADATA",
+      "sha256": "ba5f60d5fd106b548b2800ea3a66402d616375d3b21b13a280a1ee9313c82f22"
+    },
+    {
+      "bytes": 113,
+      "excerpts": [],
+      "origin": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/pyarrow-23.0.0-cp312-cp312-manylinux_2_28_x86_64.whl:pyarrow-23.0.0.dist-info/WHEEL",
+      "preimage": "tests/fixtures/hg_wresolver3/source/wheels/pyarrow/pyarrow-23.0.0.dist-info/WHEEL",
+      "sha256": "557bcd2a7ea715e08ce3918452b34b24e3bf27f7be70d269846b7dad6171c84d"
+    },
+    {
+      "bytes": 61041,
+      "excerpts": [
+        {
+          "line": 771,
+          "text": "        make, use, sell, offer for sale, import and otherwise run, modify and"
+        },
+        {
+          "line": 1047,
+          "text": "    python -c \"import numpy, sys; sys.exit(numpy.test() is False)\""
+        }
+      ],
+      "origin": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/numpy-1.26.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl:numpy-1.26.4.dist-info/METADATA",
+      "preimage": "tests/fixtures/hg_wresolver3/source/wheels/numpy/numpy-1.26.4.dist-info/METADATA",
+      "sha256": "b09734a7fed44e84b4c8161934ce532dff1e779ec6822d415644d117f6381070"
+    },
+    {
+      "bytes": 137,
+      "excerpts": [],
+      "origin": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/numpy-1.26.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl:numpy-1.26.4.dist-info/WHEEL",
+      "preimage": "tests/fixtures/hg_wresolver3/source/wheels/numpy/numpy-1.26.4.dist-info/WHEEL",
+      "sha256": "dea2037170a4e7bec05e22b7a4389f3be804f54fcc61660682d0fbf202dadbf5"
+    },
+    {
+      "bytes": 44595,
+      "excerpts": [
+        {
+          "line": 491,
+          "text": "        make, use, sell, offer for sale, import and otherwise run, modify and"
+        }
+      ],
+      "origin": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/fast_downward_textworld-20.6.4-py3-none-any.whl:fast_downward_textworld-20.6.4.dist-info/METADATA",
+      "preimage": "tests/fixtures/hg_wresolver3/source/wheels/fast-downward-textworld/fast_downward_textworld-20.6.4.dist-info/METADATA",
+      "sha256": "511c72ddaf40e86b7a48b314943c10fc09b43f408b367ac352cdcae86b2dc8fc"
+    },
+    {
+      "bytes": 91,
+      "excerpts": [],
+      "origin": "/tmp/hg-wresolver3-payloads-mpgpd22h/wheels/fast_downward_textworld-20.6.4-py3-none-any.whl:fast_downward_textworld-20.6.4.dist-info/WHEEL",
+      "preimage": "tests/fixtures/hg_wresolver3/source/wheels/fast-downward-textworld/fast_downward_textworld-20.6.4.dist-info/WHEEL",
+      "sha256": "6027f0606398322e49870d9f538c8d83012bc9b6f6217e4f13004a57865b741a"
+    }
+  ],
+  "version_observations": {
+    "numpy": {
+      "installed_metadata": "Metadata-Version: 2.1\nName: numpy\nVersion: 1.26.4\nSummary: Fundamental package for array computing in Python\nHome-page: https://numpy.org\nAuthor: Travis E. Oliphant et al.\nMaintainer-Email: NumPy Developers <numpy-discussion@python.org>\nLicense: Copyright (c) 2005-2023, NumPy Developers.\n        All rights reserved.\n        \n        Redistribution and use in source and binary forms, with or without\n        modification, are permitted provided that the following conditions are\n        met:\n        \n            * Redistributions of source code must retain the above copyright\n               notice, this list of conditions and the following disclaimer.\n        \n            * Redistributions in binary form must reproduce the above\n               copyright notice, this list of conditions and the following\n               disclaimer in the documentation and/or other materials provided\n               with the distribution.\n        \n            * Neither the name of the NumPy Developers nor the names of any\n               contributors may be used to endorse or promote products derived\n               from this software without specific prior written permission.\n        \n        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n        \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n        LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n        A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\n        OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\n        SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\n        LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n        DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n        THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n        (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n        OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\nClassifier: Development Status :: 5 - Production/Stable\nClassifier: Intended Audience :: Science/Research\nClassifier: Intended Audience :: Developers\nClassifier: License :: OSI Approved :: BSD License\nClassifier: Programming Language :: C\nClassifier: Programming Language :: Python\nClassifier: Programming Language :: Python :: 3\nClassifier: Programming Language :: Python :: 3.9\nClassifier: Programming Language :: Python :: 3.10\nClassifier: Programming Language :: Python :: 3.11\nClassifier: Programming Language :: Python :: 3.12\nClassifier: Programming Language :: Python :: 3 :: Only\nClassifier: Programming Language :: Python :: Implementation :: CPython\nClassifier: Topic :: Software Development\nClassifier: Topic :: Scientific/Engineering\nClassifier: Typing :: Typed\nClassifier: Operating System :: Microsoft :: Windows\nClassifier: Operating System :: POSIX\nClassifier: Operating System :: Unix\nClassifier: Operating System :: MacOS\nProject-URL: Homepage, https://numpy.org\nProject-URL: Documentation, https://numpy.org/doc/\nProject-URL: Source, https://github.com/numpy/numpy\nProject-URL: Download, https://pypi.org/project/numpy/#files\nProject-URL: Tracker, https://github.com/numpy/numpy/issues\nProject-URL: Release notes, https://numpy.org/doc/stable/release\nRequires-Python: >=3.9\nDescription-Content-Type: text/markdown\n\n<h1 align=\"center\">\n<img src=\"https://raw.githubusercontent.com/numpy/numpy/main/branding/logo/primary/numpylogo.svg\" width=\"300\">\n</h1><br>\n\n\n[![Powered by NumFOCUS](https://img.shields.io/badge/powered%20by-NumFOCUS-orange.svg?style=flat&colorA=E1523D&colorB=007D8A)](\nhttps://numfocus.org)\n[![PyPI Downloads](https://img.shields.io/pypi/dm/numpy.svg?label=PyPI%20downloads)](\nhttps://pypi.org/project/numpy/)\n[![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/numpy.svg?label=Conda%20downloads)](\nhttps://anaconda.org/conda-forge/numpy)\n[![Stack Overflow](https://img.shields.io/badge/stackoverflow-Ask%20questions-blue.svg)](\nhttps://stackoverflow.com/questions/tagged/numpy)\n[![Nature Paper](https://img.shields.io/badge/DOI-10.1038%2Fs41592--019--0686--2-blue)](\nhttps://doi.org/10.1038/s41586-020-2649-2)\n[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/numpy/numpy/badge)](https://api.securityscorecards.dev/projects/github.com/numpy/numpy)\n\n\nNumPy is the fundamental package for scientific computing with Python.\n\n- **Website:** https://www.numpy.org\n- **Documentation:** https://numpy.org/doc\n- **Mailing list:** https://mail.python.org/mailman/listinfo/numpy-discussion\n- **Source code:** https://github.com/numpy/numpy\n- **Contributing:** https://www.numpy.org/devdocs/dev/index.html\n- **Bug reports:** https://github.com/numpy/numpy/issues\n- **Report a security vulnerability:** https://tidelift.com/docs/security\n\nIt provides:\n\n- a powerful N-dimensional array object\n- sophisticated (broadcasting) functions\n- tools for integrating C/C++ and Fortran code\n- useful linear algebra, Fourier transform, and random number capabilities\n\nTesting:\n\nNumPy requires `pytest` and `hypothesis`.  Tests can then be run after installation with:\n\n    python -c \"import numpy, sys; sys.exit(numpy.test() is False)\"\n\nCode of Conduct\n----------------------\n\nNumPy is a community-driven open source project developed by a diverse group of\n[contributors](https://numpy.org/teams/). The NumPy leadership has made a strong\ncommitment to creating an open, inclusive, and positive community. Please read the\n[NumPy Code of Conduct](https://numpy.org/code-of-conduct/) for guidance on how to interact\nwith others in a way that makes our community thrive.\n\nCall for Contributions\n----------------------\n\nThe NumPy project welcomes your expertise and enthusiasm!\n\nSmall improvements or fixes are always appreciated. If you are considering larger contributions\nto the source code, please contact us through the [mailing\nlist](https://mail.python.org/mailman/listinfo/numpy-discussion) first.\n\nWriting code isn\u2019t the only way to contribute to NumPy. You can also:\n- review pull requests\n- help us stay on top of new and old issues\n- develop tutorials, presentations, and other educational materials\n- maintain and improve [our website](https://github.com/numpy/numpy.org)\n- develop graphic design for our brand assets and promotional materials\n- translate website content\n- help with outreach and onboard new contributors\n- write grant proposals and help with other fundraising efforts\n\nFor more information about the ways you can contribute to NumPy, visit [our website](https://numpy.org/contribute/). \nIf you\u2019re unsure where to start or how your skills fit in, reach out! You can\nask on the mailing list or here, on GitHub, by opening a new issue or leaving a\ncomment on a relevant issue that is already open.\n\nOur preferred channels of communication are all public, but if you\u2019d like to\nspeak to us in private first, contact our community coordinators at\nnumpy-team@googlegroups.com or on Slack (write numpy-team@googlegroups.com for\nan invitation).\n\nWe also have a biweekly community call, details of which are announced on the\nmailing list. You are very welcome to join.\n\nIf you are new to contributing to open source, [this\nguide](https://opensource.guide/how-to-contribute/) helps explain why, what,\nand how to successfully get involved.\n",
+      "version": "1.26.4"
+    },
+    "pyarrow": {
+      "installed_metadata": "Metadata-Version: 2.4\nName: pyarrow\nVersion: 23.0.0\nSummary: Python library for Apache Arrow\nMaintainer-email: Apache Arrow Developers <dev@arrow.apache.org>\nLicense-Expression: Apache-2.0\nProject-URL: Homepage, https://arrow.apache.org/\nProject-URL: Documentation, https://arrow.apache.org/docs/python\nProject-URL: Repository, https://github.com/apache/arrow\nProject-URL: Issues, https://github.com/apache/arrow/issues\nClassifier: Programming Language :: Python :: 3.10\nClassifier: Programming Language :: Python :: 3.11\nClassifier: Programming Language :: Python :: 3.12\nClassifier: Programming Language :: Python :: 3.13\nClassifier: Programming Language :: Python :: 3.14\nClassifier: Programming Language :: Python :: Free Threading :: 2 - Beta\nRequires-Python: >=3.10\nDescription-Content-Type: text/markdown\n\n<!---\n  Licensed to the Apache Software Foundation (ASF) under one\n  or more contributor license agreements.  See the NOTICE file\n  distributed with this work for additional information\n  regarding copyright ownership.  The ASF licenses this file\n  to you under the Apache License, Version 2.0 (the\n  \"License\"); you may not use this file except in compliance\n  with the License.  You may obtain a copy of the License at\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\n  Unless required by applicable law or agreed to in writing,\n  software distributed under the License is distributed on an\n  \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n  KIND, either express or implied.  See the License for the\n  specific language governing permissions and limitations\n  under the License.\n-->\n\n## Python library for Apache Arrow\n\n[![pypi](https://img.shields.io/pypi/v/pyarrow.svg)](https://pypi.org/project/pyarrow/) [![conda-forge](https://anaconda.org/conda-forge/pyarrow/badges/version.svg)](https://anaconda.org/conda-forge/pyarrow)\n\nThis library provides a Python API for functionality provided by the Arrow C++\nlibraries, along with tools for Arrow integration and interoperability with\npandas, NumPy, and other software in the Python ecosystem.\n\n## Installing\n\nAcross platforms, you can install a recent version of pyarrow with the conda\npackage manager:\n\n```shell\nconda install pyarrow -c conda-forge\n```\n\nOn Linux, macOS, and Windows, you can also install binary wheels from PyPI with\npip:\n\n```shell\npip install pyarrow\n```\n\nIf you encounter any issues importing the pip wheels on Windows, you may need\nto install the latest [Visual C++ Redistributable for Visual Studio][3].\n\n## Development\n\nSee [Python Development][2] in the documentation subproject.\n\n### Building the documentation\n\nSee [documentation build instructions][1] in the documentation subproject.\n\n[1]: https://github.com/apache/arrow/blob/main/docs/source/developers/documentation.rst\n[2]: https://arrow.apache.org/docs/developers/python/index.html\n[3]: https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#latest-microsoft-visual-c-redistributable-version\n",
+      "version": "23.0.0"
+    }
+  }
+}

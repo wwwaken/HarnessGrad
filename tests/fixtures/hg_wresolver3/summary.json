@@ -1,0 +1,35 @@
+{
+  "bounded_profiles": 11,
+  "bounded_profiles_resolved": 11,
+  "complete_nonempty_python_profiles": 10,
+  "meaning": "Finite source-scoped Python metadata reconstruction only, with explicit inherited successes; no scorer/runtime/native/production closure.",
+  "missing_wheel_refusals": {
+    "alfworld": 1,
+    "gsm8k": 1,
+    "hotpotqa": 1,
+    "livecodebench": 1,
+    "triviaqa": 1
+  },
+  "new_profiles_resolved": 5,
+  "no_third_party_payload": 9,
+  "not_demonstrated_at_dataset_profile_scope": 13,
+  "prior_bounded_profiles": 6,
+  "prior_bounded_profiles_resolved": 6,
+  "production_authorized": false,
+  "selected_distributions": {
+    "alfworld": 55,
+    "gsm8k": 1,
+    "hotpotqa": 1,
+    "livecodebench": 1,
+    "triviaqa": 1
+  },
+  "shared_datasets": 23,
+  "target_profiles": 5,
+  "tb_demonstrated_tasks": 1,
+  "tb_tasks": 89,
+  "untested_profiles": [
+    "appworld",
+    "ds1000",
+    "gaia"
+  ]
+}
