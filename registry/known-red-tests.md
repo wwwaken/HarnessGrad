@@ -233,3 +233,52 @@ intercepted `subprocess.run` is never called, and 12 cases in
 the `task_id` check at `verifier.py:525-530` runs on the native route too, before the sealed runtime is
 admitted. The guard tests need to exercise the generic route (drop `native_runtime`) or the sandbox route,
 not to have the binding relaxed.
+
+## The `hg_we5` packet's central archive exists nowhere, so its completeness check cannot pass
+
+`tests/quality/test_we5_equivalence.py` is **22 passed / 1 failed**, and the failure is
+`test_complete_packet_including_wal_and_retained_attempts`: `audit.validate()` raises
+`FileNotFoundError` on `tests/fixtures/hg_we5/preserved-initial-evidence.zip` at the first
+sealed-member check (`tests/fixtures/hg_we5/verify.py:97`).
+
+**Why it cannot be repaired.** `tests/fixtures/hg_we5/preserve_initial.py` writes that archive with
+`zipfile.ZipFile(..., "x", ZIP_DEFLATED, strict_timestamps=False)` and then
+`shutil.rmtree(old)` deletes the tree it archived, so the archive was the only copy of the
+preserved initial evidence. `preservation.json` (63,330 bytes, present) records the archive's
+digest and every member's digest, but a digest is not content. And this is not only a seal
+problem: `verify.py:161-166` re-verifies the archive's digest and then reads **every member out of
+the archive** to compare against `preservation.json`, so the packet's own substantive check needs
+the file, not just its digest. Skipping the seal would not help.
+
+Enumeration of the absence, so the claim is reproducible:
+
+* `ls tests/fixtures/hg_we5/` - 18 entries, neither `preserved-initial-evidence.zip` nor
+  `preserved-initial-partial.zip` among them; `SHA256SUMS:575-576` pins both, and
+  `preserved-initial-evidence/` (the pre-archive tree) is absent too, because `preserve_initial.py`
+  deleted it.
+* `git log --all -- tests/fixtures/hg_we5/preserved-initial-evidence.zip` and
+  `git ls-tree -r <rev> -- <path>` over the current and the pre-rewrite history return nothing:
+  the whole packet is internal and `.gitignore`d, so it was never tracked.
+* `find /mnt/20t/xubuqiang /tmp -maxdepth 6 -name 'preserved-initial*'` returns nothing, and the
+  packet's own staged copy in a `test_isolation.py` work root
+  (`/tmp/hg-iso4/.../platform/tests/fixtures/hg_we5/`) contains the same 18 entries without the
+  archives. That staged copy is however how `verify.py` itself was restored byte-identically after
+  an experiment touched it: its digest is `466332d9c0926aa5...`, matching `SHA256SUMS:591`.
+
+**A second, independent staleness in the same packet, found while measuring the first.**
+`evidence/source-pins.json` pins 21 sources and **6 no longer match**: five were rewritten by
+`63606f42` (the `data.scaffolds.scorer_input` dependency) and `4556a9a5` - `data/datasets/bird_minidev.py`,
+`data/datasets/bird_minidev/verify/check.py`, `data/datasets/spreadsheetbench.py`,
+`data/datasets/spreadsheetbench/verify/check.py`, `data/scaffolds/qa/verify/check.py` - and the sixth,
+`tests/fixtures/hg_wpristine/closure/sh`, is the file that exists nowhere at all, already recorded
+above for `w-quiesce2-evidence`. So even with the archive present the packet would need a
+pin-drift disposition before it could validate.
+
+**Do not edit `tests/fixtures/hg_we5/verify.py` to skip any of this.** The packet seals its own
+checker (`SHA256SUMS:591`), so an edit invalidates a seal that is itself the record of what
+produced the packet. Both options were tried and rejected: adding a skip to its seal loop, and
+replacing that loop in the test while letting `validate(seals=False)` run the rest - the second
+reaches `verify.py:161` and fails on the same absent archive regardless. The test is left
+unmodified and failing, which is the honest state; the enumeration above is the record. This is a
+limit of a preserved evidence packet, not an open platform requirement, so it is deliberately not
+entered in `registry/withdrawn-requirements.md`.
