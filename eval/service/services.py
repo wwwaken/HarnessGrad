@@ -341,6 +341,21 @@ def gateway_ip(network: str) -> str:
     return ip
 
 
+def recording_host(recordings_root: Path, task_id: str, name: str) -> Path:
+    """The **absolute** host directory a recording is written to and mounted from.
+
+    Docker refuses a relative bind source (`invalid mount path: 'runs/...'`), and the
+    documented default `--runs-root` is the CWD-relative `runs` (`driver.py`), so a run
+    started without an absolute root handed `runs/<run-id>/recordings/<task>/<service>`
+    straight to `--mount` and every service task died at start. Resolution belongs
+    here, at the mount, rather than at the caller: the recording still lands at the
+    same on-disk location, and a caller that names a relative root gets the same
+    directory made absolute. This is the one mount source the platform derives from a
+    user-supplied path; `task_dir` and the work tree are already absolute.
+    """
+    return (Path(recordings_root) / task_id / name).resolve()
+
+
 def start(services: list[dict], *, recordings_root: Path, run_id: str,
           task_id: str, run_seed: str) -> RunningServices:
     """Create the network, start every service, and wait for each to be healthy.
@@ -375,7 +390,7 @@ def start(services: list[dict], *, recordings_root: Path, run_id: str,
                 # is the record. An earlier version put it under the work root, where
                 # nothing ever removed it -- and a per-task directory that no code owns
                 # is a directory that grows for the life of the machine.
-                record_host = recordings_root / task_id / name
+                record_host = recording_host(recordings_root, task_id, name)
                 record_host.mkdir(parents=True, exist_ok=True)
                 recordings[name] = record_host
 
@@ -492,6 +507,9 @@ def mounts_for(audience: str, services: list[dict],
     for svc in services:
         path = recordings.get(svc["name"])
         if path is not None:
+            # Same rule as `recording_host`: `--mount` needs an absolute `src`, and a
+            # caller may hand this function a relative run tree directly.
+            source = Path(path).resolve()
             mounts += ["--mount",
-                       f"type=bind,src={path},dst={RECORDINGS_ROOT}/{svc['name']},readonly"]
+                       f"type=bind,src={source},dst={RECORDINGS_ROOT}/{svc['name']},readonly"]
     return mounts

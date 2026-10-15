@@ -302,6 +302,50 @@ def test_an_unknown_audience_is_refused_rather_than_defaulted(tmp_path):
         services.mounts_for("someone-else", [_service()], {})
 
 
+def test_a_recording_mount_is_absolute_even_when_the_run_tree_is_relative(tmp_path, monkeypatch):
+    """Docker refuses a relative bind `src`, and `--runs-root` defaults to the
+    CWD-relative `runs` (`driver.py`), so a diagnostic started the documented way
+    failed with `invalid mount path: 'runs/<run-id>/recordings/...'` before any task
+    ran. That is the AppWorld admission failure of 2026-10-15, and it is not
+    AppWorld-specific: every service recording mount was built this way.
+    """
+    monkeypatch.chdir(tmp_path)
+    relative = Path("runs/appworld-diag/recordings/cf6abd2_2/orders")
+    mounts = services.mounts_for("verifier", [_service()], {"orders": relative})
+    joined = " ".join(mounts)
+    assert f"src={(tmp_path / relative).resolve()}," in joined
+    assert "src=runs/" not in joined, (
+        "docker requires an absolute host path for a bind mount source")
+
+
+def test_the_service_and_check_recording_mounts_are_absolute_before_docker_sees_them(
+        tmp_path, monkeypatch):
+    """`start()` builds the service's own binding; fake docker so the assertion is on
+    the command the platform would hand the daemon, not on a running container."""
+    monkeypatch.chdir(tmp_path)
+    commands: list[tuple] = []
+
+    def docker(*args, **kwargs):
+        commands.append(args)
+        if args[:2] == ("run", "--detach"):
+            return subprocess.CompletedProcess(args, 0, "container-id\n", "")
+        return subprocess.CompletedProcess(args, 0, "", "")
+
+    monkeypatch.setattr(services.container_mod, "docker", docker)
+    service = {"name": "orders", "image": "sha256:" + "a" * 64,
+               "health": {"argv": ["true"]}, "record": True}
+    running = services.start([service], recordings_root=Path("relative-runs/rec"),
+                             run_id="abs-mount", task_id="t1", run_seed="seed")
+    run_args = next(args for args in commands if args[:2] == ("run", "--detach"))
+    mounts = [run_args[i + 1] for i, arg in enumerate(run_args) if arg == "--mount"]
+    assert mounts, "the service start command carried no recording mount"
+    assert f"src={(tmp_path / 'relative-runs/rec/t1/orders').resolve()}," in mounts[0]
+    assert "src=relative-runs" not in mounts[0]
+    assert running.recordings["orders"].is_absolute()
+    assert services.mounts_for("verifier", [service], running.recordings)[1].startswith(
+        "type=bind,src=/")
+
+
 # --------------------------------------------------------------- lifecycle ---
 
 def test_a_harness_reaches_the_service_by_the_name_it_was_told(tmp_path):
