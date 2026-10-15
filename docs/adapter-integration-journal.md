@@ -3100,3 +3100,26 @@ Complete nonempty Python scorer-import payload profiles: chessbench_puzzles and 
 All eleven sdists build into exact-version wheels offline. Initial missing-build-tool failures, an LZ4 version-mismatch attempt, three truncated native-library transfers and all DS-1000 import failures are retained; failed artifacts are not accepted payloads. Nine separate fresh venv installation profiles succeed under unshare -Urn, --no-index, --no-cache-dir, --no-deps and --require-hashes; eight initial import profiles succeed. Namespace-local routes are empty and an external-address connection returns ENETUNREACH. Imports/retries are package-only: no benchmark, scorer call, replay constructor, JVM launch, model, GPU computation or model endpoint occurs.
 
 S1 still requires complete execution-selected runtime custody and task-bound scorer inputs. S3/S4/S6 remain partial; scorer-offline-closure stays code-solvable/open, every dataset blocker/status/next_action is unchanged, and no production authorization follows. Complete Python package installation is not JRE/LibreOffice/OS ABI closure. See `reports/w-wheelhouse-payloads.md` and `reports/w-wheelhouse-validation.txt`. No historical run, frozen receipt or archive was modified.
+## Parent review and merge — w-wheelhouse — 2026-10-15
+
+- Merged `be5e51f` (w-wheelhouse). Registry valid: 28 datasets, 2 shared blockers, 11 historical
+  records, `production_authorized=false`; sequencer clean.
+- **S1's "offline installation payloads" gap is partly closed, and the partial part is named.**
+  Complete pinned Python scorer-import payloads now exist for `chessbench_puzzles` and
+  `scienceworld`, with network-denied install/import receipts and `pip check` passing. Eight
+  implemented scorers genuinely require no third-party payload, which is a result rather than a
+  gap. Nine host profiles remain partial.
+- **A real obtainability finding, recorded rather than worked around:** a compatible
+  `mkl-service==2.4.0` artifact is not obtainable from PyPI, and DS-1000 additionally lacks
+  installed TensorFlow/XGBoost versions while retaining a Gensim/SciPy incompatibility. 130
+  accepted artifacts were independently hashed twice so the payload set is auditable.
+- **S1 still is not satisfied** and the worker said so: it also requires execution-selected
+  runtime custody and task-bound scorer inputs, neither of which this produces. No blocker closed,
+  and no dataset blocker closed.
+- Still in flight at the end of this round and NOT merged: `w-quiesce` (E4 quiescence /
+  E5 pre-post-export equivalence for the pristine path) and `w-jvm` (S5 lifecycle/resource/cleanup
+  observations for the JVM, LibreOffice and child-process runtimes). Nothing about either is
+  claimed here.
+- Resource state: offline payload acquisition and network-denied installs in local containers only
+  - no benchmark task, model, GPU or endpoint call. Both GPUs stayed idle and no utilisation is
+  claimed. Historical runs, frozen receipts and archives were untouched.
