@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "docker",
+    "rm",
+    "--force",
+    "hg-run-9f20853565394bd6ab102d836afb7ba8"
+  ],
+  "kwargs": {
+    "capture_output": true,
+    "text": true,
+    "timeout": 120
+  },
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Error response from daemon: No such container: hg-run-9f20853565394bd6ab102d836afb7ba8\n"
+}

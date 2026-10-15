@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "docker",
+    "network",
+    "create",
+    "--internal",
+    "hg-w-e6fix-before-9d6a0ecfe85a41a69a6edf96146436dc-authored",
+    "--label",
+    "harnessgrad.run=w-e6fix-before-9d6a0ecfe85a41a69a6edf96146436dc",
+    "--label",
+    "harnessgrad.task=authored"
+  ],
+  "kwargs": {
+    "capture_output": true,
+    "text": true,
+    "timeout": 120
+  },
+  "returncode": 0,
+  "stdout": "0bd7604d251ad246367bdd333dae78793fbc2fc3541f6fe284dd80c6a4d9face\n",
+  "stderr": ""
+}

@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "docker",
+    "network",
+    "rm",
+    "hg-w-e6fix-before-9d6a0ecfe85a41a69a6edf96146436dc-authored"
+  ],
+  "kwargs": {
+    "capture_output": true,
+    "text": true,
+    "timeout": 60
+  },
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Error response from daemon: error while removing network: network hg-w-e6fix-before-9d6a0ecfe85a41a69a6edf96146436dc-authored has active endpoints (name:\"competent_ramanujan\" id:\"9da08c46d608\")\nexit status 1\n"
+}

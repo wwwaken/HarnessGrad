@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "docker",
+    "ps",
+    "-aq",
+    "--no-trunc",
+    "--filter",
+    "volume=/tmp/w-e6fix-after-6998065eb1404cdea0689472399b7532-trb5n3il/timeout"
+  ],
+  "kwargs": {
+    "capture_output": true,
+    "text": true,
+    "timeout": 10
+  },
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ""
+}

@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "docker",
+    "rm",
+    "--force",
+    "e04feb25dd6a6c7ca9f860d8638cb3ad25647f4c8ffeef2590e1410fd35ccb8f"
+  ],
+  "kwargs": {
+    "capture_output": true,
+    "text": true,
+    "timeout": 60
+  },
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Error response from daemon: No such container: e04feb25dd6a6c7ca9f860d8638cb3ad25647f4c8ffeef2590e1410fd35ccb8f\n"
+}

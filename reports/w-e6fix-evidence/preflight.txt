@@ -1,0 +1,82 @@
+$ git rev-parse HEAD
+4967006c601acf39c91293403d9756cc98428134
+
+exit=0
+$ git status --short
+?? reports/w-e6fix-evidence/
+
+exit=0
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+
+exit=0
+$ docker version --format {{.Server.Version}}
+29.2.1
+
+exit=0
+$ docker image inspect harnessgrad/appworld-service@sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca
+[
+    {
+        "Id": "sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca",
+        "RepoTags": [
+            "harnessgrad/appworld-service:20261009-final2"
+        ],
+        "RepoDigests": [
+            "harnessgrad/appworld-service@sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-09T11:50:50.255562866+08:00",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "LANG=C.UTF-8",
+                "GPG_KEY=A035C8C19219BA821ECEA86B64E628F8D684696D",
+                "PYTHON_VERSION=3.11.16",
+                "PYTHON_SHA256=91bcdebfdde239a003ae93738a7fce0f9230fee5c4bc2b86f6e6e8c6f98aabe8",
+                "APPWORLD_ROOT=/appworld",
+                "PYTHONUNBUFFERED=1"
+            ],
+            "Cmd": [
+                "appworld-server"
+            ],
+            "WorkingDir": "/app",
+            "ArgsEscaped": true
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 159917668,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:6f94328331290cbd81edab450664d42da7b64c191416c9346cd5d28c84f76035",
+                "sha256:275f0a9e4758b8a31c628ab748d8184bd103fb27ec8aeff6b588003a3056d082",
+                "sha256:3d7dddf62be3a47f3c072a9dc069ac228beea659375d9fff022792deaaf08d61",
+                "sha256:1a8800d1b976e9a254659bbce8213f99d55639c12cc4d2ebecafe95a163797c5",
+                "sha256:281ea28c076dd9819d42d73b620d2d3ba415533ccd9d921716bb5f076b0f70bd",
+                "sha256:27c5cd0cd930e04a1c1e423e30e06a35dbac76f56332908e9056b15b28dc8190",
+                "sha256:67772fd033238132488b71d96daf2c01a348266ec8352b7a6b27bb7beab6ae54",
+                "sha256:d9235b3113f80072e1a799de33651fa32b28d14e25bad4ea43380279e07f5f91",
+                "sha256:3dc3cfc2e2a89804d902fe2086de636b897205de96b1fea515115fc5d910d0e9",
+                "sha256:faa5c2ec7de84c80dfea9116b3aec34bb240192e657e4a2ed9331bc34296b55a"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-09T03:51:06.238733566Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca",
+            "size": 856
+        },
+        "Identity": {
+            "Build": [
+                {
+                    "Ref": "rtemtbwfz8zlbxk4zum09n8cz",
+                    "CreatedAt": "2026-10-09T11:51:11.023276078+08:00"
+                }
+            ]
+        }
+    }
+]
+
+exit=0

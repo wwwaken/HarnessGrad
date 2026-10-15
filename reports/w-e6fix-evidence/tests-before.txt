@@ -1,0 +1,212 @@
+FFFFFFF.                                                                 [100%]
+=================================== FAILURES ===================================
+_____ test_mounted_run_reaps_exact_container_and_preserves_result[normal] ______
+
+tmp_path = PosixPath('/tmp/hg-e6fix-pytest-before/test_mounted_run_reaps_exact_c0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff633413d40>
+exit_shape = 'normal'
+
+    @pytest.mark.parametrize('exit_shape', ['normal', 'nonzero', 'timeout', 'interrupt', 'launch-error'])
+    def test_mounted_run_reaps_exact_container_and_preserves_result(tmp_path, monkeypatch, exit_shape):
+        failure = {'timeout': subprocess.TimeoutExpired(['docker', 'run'], 2),
+                   'interrupt': KeyboardInterrupt(), 'launch-error': OSError('client lost')} .get(exit_shape)
+        daemon = Daemon(failure, code=7 if exit_shape == 'nonzero' else 0)
+        monkeypatch.setattr(container.subprocess, 'run', daemon.run)
+        monkeypatch.setattr(container, 'docker', daemon.docker)
+        kwargs = dict(image=PIN, task_dir=tmp_path, task_mount='/app', timeout_s=2,
+                      network='owned-test-network', task_dir_writable=False,
+                      extra_mounts=('--mount', f'type=bind,src={tmp_path},dst=/recordings/recording,readonly'))
+        if failure:
+            with pytest.raises(type(failure)) as caught:
+                container.run(['authored-command'], **kwargs)
+            assert caught.value is failure
+        else:
+            result = container.run(['authored-command'], **kwargs)
+            assert (result.returncode, result.stdout, result.stderr) == (
+                daemon.code, 'preserved stdout', 'preserved stderr')
+>       assert daemon.removed, 'client exit must remove its daemon-side container'
+E       AssertionError: client exit must remove its daemon-side container
+E       assert []
+E        +  where [] = <test_w_e6fix_cleanup.Daemon object at 0x7ff633e870e0>.removed
+
+tests/quality/test_w_e6fix_cleanup.py:69: AssertionError
+_____ test_mounted_run_reaps_exact_container_and_preserves_result[nonzero] _____
+
+tmp_path = PosixPath('/tmp/hg-e6fix-pytest-before/test_mounted_run_reaps_exact_c1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff6334de480>
+exit_shape = 'nonzero'
+
+    @pytest.mark.parametrize('exit_shape', ['normal', 'nonzero', 'timeout', 'interrupt', 'launch-error'])
+    def test_mounted_run_reaps_exact_container_and_preserves_result(tmp_path, monkeypatch, exit_shape):
+        failure = {'timeout': subprocess.TimeoutExpired(['docker', 'run'], 2),
+                   'interrupt': KeyboardInterrupt(), 'launch-error': OSError('client lost')} .get(exit_shape)
+        daemon = Daemon(failure, code=7 if exit_shape == 'nonzero' else 0)
+        monkeypatch.setattr(container.subprocess, 'run', daemon.run)
+        monkeypatch.setattr(container, 'docker', daemon.docker)
+        kwargs = dict(image=PIN, task_dir=tmp_path, task_mount='/app', timeout_s=2,
+                      network='owned-test-network', task_dir_writable=False,
+                      extra_mounts=('--mount', f'type=bind,src={tmp_path},dst=/recordings/recording,readonly'))
+        if failure:
+            with pytest.raises(type(failure)) as caught:
+                container.run(['authored-command'], **kwargs)
+            assert caught.value is failure
+        else:
+            result = container.run(['authored-command'], **kwargs)
+            assert (result.returncode, result.stdout, result.stderr) == (
+                daemon.code, 'preserved stdout', 'preserved stderr')
+>       assert daemon.removed, 'client exit must remove its daemon-side container'
+E       AssertionError: client exit must remove its daemon-side container
+E       assert []
+E        +  where [] = <test_w_e6fix_cleanup.Daemon object at 0x7ff6334de3c0>.removed
+
+tests/quality/test_w_e6fix_cleanup.py:69: AssertionError
+_____ test_mounted_run_reaps_exact_container_and_preserves_result[timeout] _____
+
+tmp_path = PosixPath('/tmp/hg-e6fix-pytest-before/test_mounted_run_reaps_exact_c2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff6334df080>
+exit_shape = 'timeout'
+
+    @pytest.mark.parametrize('exit_shape', ['normal', 'nonzero', 'timeout', 'interrupt', 'launch-error'])
+    def test_mounted_run_reaps_exact_container_and_preserves_result(tmp_path, monkeypatch, exit_shape):
+        failure = {'timeout': subprocess.TimeoutExpired(['docker', 'run'], 2),
+                   'interrupt': KeyboardInterrupt(), 'launch-error': OSError('client lost')} .get(exit_shape)
+        daemon = Daemon(failure, code=7 if exit_shape == 'nonzero' else 0)
+        monkeypatch.setattr(container.subprocess, 'run', daemon.run)
+        monkeypatch.setattr(container, 'docker', daemon.docker)
+        kwargs = dict(image=PIN, task_dir=tmp_path, task_mount='/app', timeout_s=2,
+                      network='owned-test-network', task_dir_writable=False,
+                      extra_mounts=('--mount', f'type=bind,src={tmp_path},dst=/recordings/recording,readonly'))
+        if failure:
+            with pytest.raises(type(failure)) as caught:
+                container.run(['authored-command'], **kwargs)
+            assert caught.value is failure
+        else:
+            result = container.run(['authored-command'], **kwargs)
+            assert (result.returncode, result.stdout, result.stderr) == (
+                daemon.code, 'preserved stdout', 'preserved stderr')
+>       assert daemon.removed, 'client exit must remove its daemon-side container'
+E       AssertionError: client exit must remove its daemon-side container
+E       assert []
+E        +  where [] = <test_w_e6fix_cleanup.Daemon object at 0x7ff6334df3b0>.removed
+
+tests/quality/test_w_e6fix_cleanup.py:69: AssertionError
+____ test_mounted_run_reaps_exact_container_and_preserves_result[interrupt] ____
+
+tmp_path = PosixPath('/tmp/hg-e6fix-pytest-before/test_mounted_run_reaps_exact_c3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff6334df7a0>
+exit_shape = 'interrupt'
+
+    @pytest.mark.parametrize('exit_shape', ['normal', 'nonzero', 'timeout', 'interrupt', 'launch-error'])
+    def test_mounted_run_reaps_exact_container_and_preserves_result(tmp_path, monkeypatch, exit_shape):
+        failure = {'timeout': subprocess.TimeoutExpired(['docker', 'run'], 2),
+                   'interrupt': KeyboardInterrupt(), 'launch-error': OSError('client lost')} .get(exit_shape)
+        daemon = Daemon(failure, code=7 if exit_shape == 'nonzero' else 0)
+        monkeypatch.setattr(container.subprocess, 'run', daemon.run)
+        monkeypatch.setattr(container, 'docker', daemon.docker)
+        kwargs = dict(image=PIN, task_dir=tmp_path, task_mount='/app', timeout_s=2,
+                      network='owned-test-network', task_dir_writable=False,
+                      extra_mounts=('--mount', f'type=bind,src={tmp_path},dst=/recordings/recording,readonly'))
+        if failure:
+            with pytest.raises(type(failure)) as caught:
+                container.run(['authored-command'], **kwargs)
+            assert caught.value is failure
+        else:
+            result = container.run(['authored-command'], **kwargs)
+            assert (result.returncode, result.stdout, result.stderr) == (
+                daemon.code, 'preserved stdout', 'preserved stderr')
+>       assert daemon.removed, 'client exit must remove its daemon-side container'
+E       AssertionError: client exit must remove its daemon-side container
+E       assert []
+E        +  where [] = <test_w_e6fix_cleanup.Daemon object at 0x7ff6334dfb60>.removed
+
+tests/quality/test_w_e6fix_cleanup.py:69: AssertionError
+__ test_mounted_run_reaps_exact_container_and_preserves_result[launch-error] ___
+
+tmp_path = PosixPath('/tmp/hg-e6fix-pytest-before/test_mounted_run_reaps_exact_c4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff6334dc830>
+exit_shape = 'launch-error'
+
+    @pytest.mark.parametrize('exit_shape', ['normal', 'nonzero', 'timeout', 'interrupt', 'launch-error'])
+    def test_mounted_run_reaps_exact_container_and_preserves_result(tmp_path, monkeypatch, exit_shape):
+        failure = {'timeout': subprocess.TimeoutExpired(['docker', 'run'], 2),
+                   'interrupt': KeyboardInterrupt(), 'launch-error': OSError('client lost')} .get(exit_shape)
+        daemon = Daemon(failure, code=7 if exit_shape == 'nonzero' else 0)
+        monkeypatch.setattr(container.subprocess, 'run', daemon.run)
+        monkeypatch.setattr(container, 'docker', daemon.docker)
+        kwargs = dict(image=PIN, task_dir=tmp_path, task_mount='/app', timeout_s=2,
+                      network='owned-test-network', task_dir_writable=False,
+                      extra_mounts=('--mount', f'type=bind,src={tmp_path},dst=/recordings/recording,readonly'))
+        if failure:
+            with pytest.raises(type(failure)) as caught:
+                container.run(['authored-command'], **kwargs)
+            assert caught.value is failure
+        else:
+            result = container.run(['authored-command'], **kwargs)
+            assert (result.returncode, result.stdout, result.stderr) == (
+                daemon.code, 'preserved stdout', 'preserved stderr')
+>       assert daemon.removed, 'client exit must remove its daemon-side container'
+E       AssertionError: client exit must remove its daemon-side container
+E       assert []
+E        +  where [] = <test_w_e6fix_cleanup.Daemon object at 0x7ff6334dd010>.removed
+
+tests/quality/test_w_e6fix_cleanup.py:69: AssertionError
+_______ test_verifier_timeout_releases_mount_before_service_network_stop _______
+
+tmp_path = PosixPath('/tmp/hg-e6fix-pytest-before/test_verifier_timeout_releases0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff6334dde20>
+
+    def test_verifier_timeout_releases_mount_before_service_network_stop(tmp_path, monkeypatch):
+        daemon = Daemon(subprocess.TimeoutExpired(['docker', 'run'], 2))
+        monkeypatch.setattr(container.subprocess, 'run', daemon.run)
+        monkeypatch.setattr(container, 'docker', daemon.docker)
+        work = tmp_path / 'task'
+        work.mkdir()
+        record = tmp_path / 'recordings'
+        record.mkdir()
+        svc = [{'name': 'recording', 'record': True}]
+        running = services.RunningServices(network='owned-test-network',
+            containers={'recording': 'owned-test-service'}, recordings={'recording': record}, services=svc)
+        daemon.live['owned-test-service'] = ['RW recording bind']
+        verdict = verifier._verify(work, {
+            'kind': 'command', 'argv': ['authored-check'], 'image': PIN,
+            'reward_file': '/verifier/reward.txt',
+            'scorer_bundle': {'isolation_class': 'snapshot-service'}}, '',
+            sandbox=True, timeout_s=2, env={'kind': 'exec', 'image': PIN, 'workdir': '/app'},
+            service_specs=svc, running=running)
+        assert verdict['outcome'] == 'timeout' and verdict['unmeasured']
+        assert 'score' not in verdict and not verdict['passed']
+        assert not list(tmp_path.glob('hg-verdict-*'))
+        problems = running.stop()
+>       assert problems == [], 'verifier endpoint must not block service network cleanup'
+E       AssertionError: verifier endpoint must not block service network cleanup
+E       assert ["network 'ow...ve endpoints"] == []
+E         Left contains one more item: "network 'owned-test-network': has active endpoints"
+E         Use -v to get more diff
+
+tests/quality/test_w_e6fix_cleanup.py:105: AssertionError
+___________________ test_runs_have_independent_cleanup_names ___________________
+
+tmp_path = PosixPath('/tmp/hg-e6fix-pytest-before/test_runs_have_independent_cle0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff6334ded50>
+
+    def test_runs_have_independent_cleanup_names(tmp_path, monkeypatch):
+        daemon = Daemon()
+        monkeypatch.setattr(container.subprocess, 'run', daemon.run)
+        monkeypatch.setattr(container, 'docker', daemon.docker)
+        for _ in range(2):
+            container.run(['authored-command'], image=PIN, task_dir=tmp_path, task_mount='/app')
+>       assert len(daemon.removed) == 2
+E       assert 0 == 2
+E        +  where 0 = len([])
+E        +    where [] = <test_w_e6fix_cleanup.Daemon object at 0x7ff6334decf0>.removed
+
+tests/quality/test_w_e6fix_cleanup.py:115: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_w_e6fix_cleanup.py::test_mounted_run_reaps_exact_container_and_preserves_result[normal]
+FAILED tests/quality/test_w_e6fix_cleanup.py::test_mounted_run_reaps_exact_container_and_preserves_result[nonzero]
+FAILED tests/quality/test_w_e6fix_cleanup.py::test_mounted_run_reaps_exact_container_and_preserves_result[timeout]
+FAILED tests/quality/test_w_e6fix_cleanup.py::test_mounted_run_reaps_exact_container_and_preserves_result[interrupt]
+FAILED tests/quality/test_w_e6fix_cleanup.py::test_mounted_run_reaps_exact_container_and_preserves_result[launch-error]
+FAILED tests/quality/test_w_e6fix_cleanup.py::test_verifier_timeout_releases_mount_before_service_network_stop
+FAILED tests/quality/test_w_e6fix_cleanup.py::test_runs_have_independent_cleanup_names
+7 failed, 1 passed in 0.10s

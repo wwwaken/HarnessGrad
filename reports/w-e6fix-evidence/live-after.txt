@@ -1,0 +1,28 @@
+{
+  "packet": "/tmp/hg-e6fix/reports/w-e6fix-evidence/w-e6fix-after-6998065eb1404cdea0689472399b7532",
+  "run_id": "w-e6fix-after-6998065eb1404cdea0689472399b7532",
+  "native_stop_problems": [],
+  "verdicts": {
+    "normal": {
+      "kind": "command",
+      "passed": true,
+      "score": 1.0,
+      "detail": "reward 1 from /verifier/reward.txt (exit 0)",
+      "scorer_isolation_class": "snapshot-service",
+      "scorer_isolation_declared": "snapshot-service"
+    },
+    "timeout": {
+      "kind": "command",
+      "passed": false,
+      "outcome": "timeout",
+      "unmeasured": "the verifier timed out after 3s",
+      "detail": "the verifier timed out after 3s",
+      "scorer_isolation_class": "snapshot-service",
+      "scorer_isolation_declared": "snapshot-service"
+    }
+  },
+  "final_network": {
+    "returncode": 1,
+    "stderr": "Error response from daemon: network hg-w-e6fix-after-6998065eb1404cdea0689472399b7532-authored not found\n"
+  }
+}

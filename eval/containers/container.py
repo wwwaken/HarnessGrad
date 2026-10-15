@@ -35,6 +35,7 @@ import subprocess
 import tempfile
 import threading
 import time
+import uuid
 from pathlib import Path
 from contextlib import contextmanager
 
@@ -608,7 +609,15 @@ def run(argv: list[str], *, image: str, task_dir: Path, task_mount: str,
                   env=env, network=network, read_only=read_only,
                   task_dir_writable=task_dir_writable, extra_mounts=extra_mounts,
                   readonly_paths=readonly_paths)
-    return subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_s)
+    # A client timeout kills `docker run`, not the daemon-side container. `--rm`
+    # only takes effect when that container exits, so retain an exact per-call
+    # identity and reap it before callers tear down recordings or their network.
+    name = f"hg-run-{uuid.uuid4().hex}"
+    cmd[2:2] = ["--name", name]
+    try:
+        return subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_s)
+    finally:
+        remove_container(name)
 
 
 def to_container(path: Path | str, task_dir: Path, task_mount: str) -> str:

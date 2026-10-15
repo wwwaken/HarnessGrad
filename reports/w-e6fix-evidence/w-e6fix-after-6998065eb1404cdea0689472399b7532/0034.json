@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "docker",
+    "inspect",
+    "ed200b7516d0632ebb1bdf49c3f8dc817c59c32e703dd2a8584cc630590cf919"
+  ],
+  "kwargs": {
+    "capture_output": true,
+    "text": true,
+    "timeout": 10
+  },
+  "returncode": 1,
+  "stdout": "[]\n",
+  "stderr": "error: no such object: ed200b7516d0632ebb1bdf49c3f8dc817c59c32e703dd2a8584cc630590cf919\n"
+}
