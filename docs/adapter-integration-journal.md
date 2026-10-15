@@ -3746,3 +3746,46 @@ Work was committed only in registered isolated worktrees, never main.
   source/receipt inspection and synthetic policy tests only: no benchmark scoring run, model,
   GPU, endpoint, container, runs/ change or frozen-receipt edit. Commit stays in isolated
   `/tmp/hg-s6` on `wg-s6`; no main commit or merge.
+## Parent review and merge — w-tbi2, w-mkl, w-bfclroute, w-s6 — 2026-10-15
+
+Seven workers ran concurrently this round; four have landed. Result `3a5ef07`. Registry valid:
+28 datasets, 2 shared blockers, 11 historical records, `production_authorized=false`; sequencer
+clean; all four named deliverables present.
+
+- **w-tbi2: S1's task-boundness is now complete across the survey.** **19/19 datasets have
+  task-bound scorer inputs; 0 remain**, with all seven foreign-task cases and all fifteen
+  component substitutions refused. Tests: 102 failed/7 passed before -> 109 passed after, 253
+  regressions passing. S1 stays PARTIAL only on complete execution-selected runtime custody.
+- **w-mkl corrected a previous finding.** last round's packet recorded a compatible
+  `mkl-service==2.4.0` as not obtainable; w-mkl showed **MKL IS obtainable** and pinned the exact
+  host Conda artifacts, rehashed and installed with networking denied. Eight import profiles moved
+  to complete (alfworld, gsm8k, hotpotqa, jericho, livecodebench, reasoning_gym, spreadsheetbench,
+  triviaqa): now 10 complete nonempty profiles, 8 requiring no third-party payload, and 1 partial
+  (DS-1000, on Gensim/SciPy plus unpinned TensorFlow/XGBoost). **A "not obtainable" claim from one
+  round was overturned by checking harder the next** - worth keeping as a reminder that a
+  negative result is a research finding, not a permanent fact.
+- **w-bfclroute returned an honest zero**: the complete BFCL and ChessBench module routes remain
+  blocked (BFCL lacks `tree_sitter`, ChessBench lacks `absl`), coverage **0/2 routes and 0/43
+  primary official numeric returns**, with every exception and per-input local result preserved
+  rather than substituted.
+- **w-s6 reached a structural determination, which is the most consequential result of the
+  round.** Its conclusion (b): S6 ("validate live controls before pilots") is **structurally gated
+  on the very admission it is used to withhold**. More unobserved controls cannot clear it - the
+  observation flag is hard-coded false and ordinary driver receipts lack connected lifecycle
+  evidence. It added a registry structural note and closed nothing. This is the rule-paradox shape
+  the phase has hit before, now recorded explicitly so a later round does not spend effort trying
+  to satisfy S6 with more unobserved controls. It does **not** by itself license closing anything,
+  and I am not closing anything on the strength of it.
+- Merge mechanics: four separate registry conflicts, each resolved by parsing both sides and
+  keeping **both** evidence objects (26 entries now) with the duplicated `observed` merged by
+  common prefix. The reconstruction produced malformed JSON three times - a duplicated opening
+  brace, an orphaned closing brace, and a missing object separator - and each time the checker
+  caught it with a parse position and the parent repaired exactly the offending lines. **The
+  checker has now caught my own merge damage four times in this phase, once per conflict-heavy
+  round.** The lesson is stable: never resolve a JSON array conflict by concatenation, and always
+  validate before completing the cherry-pick.
+- Still in flight and NOT merged: `w-resolver` (has finished; unread), `w-e6` and `w-e5`. Nothing
+  about their results is claimed.
+- Resource state: source-level work, local containers, offline installs and tests only - no
+  benchmark scoring run, model, GPU or endpoint call. Both GPUs stayed idle and no utilisation is
+  claimed. Historical runs, frozen receipts and archives were untouched.
