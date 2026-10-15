@@ -3034,3 +3034,36 @@ commands, checker output and retained formatting observations are in the validat
 - Resource state: offline scorer execution on bounded controlled inputs and local source
   inspection only - no benchmark task, model, GPU, endpoint or container start. Both GPUs stayed
   idle and no utilisation is claimed. Historical runs, frozen receipts and archives were untouched.
+
+## 2026-10-15 Shared blocker evidence reassessment at 56adfaf - w-reassess
+
+- Reassessed both unchanged shared next_actions against the original S1-S8/E1-E8
+  framework and newer existing pristine/prifix, AppWorld, resource-custody, digest,
+  official-execution and adversarial-verification evidence. Clause tables and exact
+  remaining work: `reports/w-reassess-shared-closures.md`.
+- Revised **S2 PARTIAL -> SATISFIED** strictly for class exercise: real completed
+  production pristine and AppWorld mounted-service controls now join ALF workdir,
+  TB actor-snapshot and Chess trusted-controller controls. This establishes neither
+  dataset/task breadth nor valid pilot admission. Revised **E1/E2 UNSATISFIED ->
+  PARTIAL** because the authored pristine task has actual authoritative export and
+  private-input contract instances; applicable dataset contracts remain missing.
+- Both blockers remain **OPEN**. Exact deciding clauses: scorer-offline-closure
+  **S1/S3/S4/S5/S6**; artifact-only-state-export **E1/E2/E3/E4/E5/E6**. S7/S8/E7/E8
+  stay satisfied. The final pristine 41-vs42 control is genuinely measured 0.0
+  (measured1/invalid0/unmeasured0); the original unreadable-export attempt stays
+  invalid, and ALF/TB/Chess/AppWorld staged publications remain unmeasured/null.
+- Updated stale supporting findings without overclaiming: GAIA/Tau defaults are
+  pinned while TB retains 89 movable tags/three absent images; official/local
+  comparison packets cover 15 named components while eight are outside them
+  (AppWorld/TB retain separate one-task official executions). New AppWorld service
+  caps are source/mocked-command evidence with no post-change live observation.
+- Read-only custody check: this checkout has 105/236 matching offscorer2 manifest
+  entries and lacks 131; registered original `/tmp/hg-offscorer2` retains all
+  236/236 matching bytes, including the missing BIRD/DS and Spreadsheet comparisons.
+  Read those originals; no copying, evidence repair, scorer replay or collection.
+- Registry, both statuses/next_actions, all 46 shared references, dataset/history
+  records and pinned tests remain unchanged. No production/adapter/frozen-receipt
+  edits, benchmark/model/GPU/endpoint/container execution or main commit occurred.
+  Validation: checker valid (28 datasets/two shared/11 historical,
+  production_authorized=false), **54 source-only registry tests passed** with an
+  external pytest basetemp. Exact outputs: `reports/w-reassess-validation.txt`.

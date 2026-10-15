@@ -1,0 +1,27 @@
+w-reassess: source-only validation; no runtime/scorer/model/container execution.
+Baseline: 56adfafb72461bb88c4c1668e45b1c6c8ae54fba
+Worktree: /tmp/hg-reassess; branch: wg-reassess
+
+$ PYTHONDONTWRITEBYTECODE=1 python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q tests/quality/test_dataset_blockers.py --basetemp=/tmp/harnessgrad-pytest-w-reassess-xk7ikrvx
+......................................................                   [100%]
+54 passed in 4.12s
+exit_code=0
+
+$ python3 tools/check_dataset_blockers.py  # final report/journal state
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+UNCHANGED byte-for-byte: docs/dataset-blockers.json; sha256=5c1236a6c89c212194cbbffbc5f4927ef9d6b100e7926408b2c6ca2a335ac7ee
+UNCHANGED byte-for-byte: tests/quality/test_dataset_blockers.py; sha256=a88a1364add0adbaf2b8e3a38ffd1b13f43750a96240bba7e923ba78a49fc663
+PASS: journal preserves original prefix; unique w-reassess heading appended at EOF
+PASS: verbatim next_action and unchanged 23 references: scorer-offline-closure
+PASS: verbatim next_action and unchanged 23 references: artifact-only-state-export
+READ-ONLY existing-byte check: tests/fixtures/hg_woffscorer2; manifest=236, present=105, missing=131, mismatches=0
+READ-ONLY existing-byte check: /tmp/hg-offscorer2/tests/fixtures/hg_woffscorer2; manifest=236, present=236, missing=0, mismatches=0
+
+$ git diff --check
+exit_code=0
