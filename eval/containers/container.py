@@ -40,11 +40,12 @@ from pathlib import Path
 from contextlib import contextmanager
 
 from ckpt.git_state import STATE_DIRNAME
+from eval.containers.immutable_runtime import ImmutableRuntimeUnavailable, targets
 
 #: The mount plan's version, in the same sense as `eval/containers/sandbox.py`'s: bump it when
 #: what the subject can see changes. A curve made under plan 1 and one made under plan
 #: 2 are measurements in two different worlds, so the number goes on the record.
-CONTAINER_PLAN = 1
+CONTAINER_PLAN = 2  # Explicit read-only task-relative immutable runtime projections.
 
 #: Where the task's files land inside the container when the dataset does not say.
 DEFAULT_WORKDIR = "/app"
@@ -538,6 +539,7 @@ def command(argv: list[str], *, image: str, task_dir: Path, task_mount: str,
             task_dir_writable: bool = True,
             extra_mounts: tuple[str, ...] = (),
             readonly_paths: tuple[Path, ...] = (),
+            immutable_runtimes: tuple[tuple[Path, str], ...] = (),
             limits: dict | None = None) -> list[str]:
     """The `docker run` argv. Split out so `self_check` and the tests can read it."""
     limits = limits or {}
@@ -562,6 +564,33 @@ def command(argv: list[str], *, image: str, task_dir: Path, task_mount: str,
     # make. Appended after the task mount so a recording can never shadow it.
     cmd += list(extra_mounts)
 
+    # Nested read-only children of the task mount, never a mount of its parent:
+    # Docker sorts by destination depth, so these exact shared runtime sources
+    # cannot shadow the task mount and remain read-only in both agent and verifier.
+    for source, target in targets(task_dir, immutable_runtimes,
+                                  writable_paths=state_dirs):
+        if any(c in str(source) + task_mount + str(target.relative_to(task_dir.resolve()))
+               for c in (",", "\n", "\r")):
+            raise ImmutableRuntimeUnavailable("immutable runtime path cannot be expressed in Docker mount syntax")
+        destination = to_container(target, task_dir.resolve(), task_mount)
+        if not Path(task_mount).is_absolute():
+            raise ImmutableRuntimeUnavailable("immutable runtime container workdir must be absolute")
+        for index, option in enumerate(extra_mounts):
+            if option != "--mount" or index + 1 == len(extra_mounts):
+                continue
+            fields = dict(part.split("=", 1) for part in extra_mounts[index + 1].split(",")
+                          if "=" in part)
+            other = Path(fields.get("dst", fields.get("destination", fields.get("target", "/"))))
+            here = Path(destination)
+            if other == here or other in here.parents or here in other.parents:
+                raise ImmutableRuntimeUnavailable("extra mount overlaps immutable runtime destination")
+            other_source = fields.get("src", fields.get("source"))
+            if other_source and "readonly" not in extra_mounts[index + 1].split(","):
+                other_source = Path(other_source).resolve()
+                if other_source == source or other_source in source.parents or source in other_source.parents:
+                    raise ImmutableRuntimeUnavailable("extra mount exposes immutable runtime source writable")
+        cmd += ["--mount", f"type=bind,src={source},dst={destination},readonly"]
+
     # Run as the invoking user rather than root, for two reasons that are both
     # correctness rather than hygiene: files the harness creates would otherwise land
     # on the host owned by root, which the platform then cannot delete (its cleanup is
@@ -582,6 +611,7 @@ def run(argv: list[str], *, image: str, task_dir: Path, task_mount: str,
         read_only: bool = True, task_dir_writable: bool = True,
         extra_mounts: tuple[str, ...] = (),
         readonly_paths: tuple[Path, ...] = (),
+        immutable_runtimes: tuple[tuple[Path, str], ...] = (),
         ) -> subprocess.CompletedProcess:
     """`subprocess.run` shape, inside a **fresh** container. Same return type.
 
@@ -600,7 +630,8 @@ def run(argv: list[str], *, image: str, task_dir: Path, task_mount: str,
     # at startup (§2.5.4: no digest, no start); this refuses anyway, because the cost
     # of being wrong is a silent pull and the cost of checking is a string compare.
     if not looks_pinned(image):
-        raise ContainerUnavailable(
+        error = ImmutableRuntimeUnavailable if immutable_runtimes else ContainerUnavailable
+        raise error(
             f"refusing to run {image!r}: it is not pinned to a content address, and "
             f"`docker run` on a tag would pull whatever the registry served today. "
             f"Resolve it with `resolve_digest` first (INTERFACE.md §2.5.4).")
@@ -608,14 +639,22 @@ def run(argv: list[str], *, image: str, task_dir: Path, task_mount: str,
                   harness_root=harness_root, state_dirs=state_dirs, cwd=cwd,
                   env=env, network=network, read_only=read_only,
                   task_dir_writable=task_dir_writable, extra_mounts=extra_mounts,
-                  readonly_paths=readonly_paths)
+                  readonly_paths=readonly_paths, immutable_runtimes=immutable_runtimes)
     # A client timeout kills `docker run`, not the daemon-side container. `--rm`
     # only takes effect when that container exits, so retain an exact per-call
     # identity and reap it before callers tear down recordings or their network.
     name = f"hg-run-{uuid.uuid4().hex}"
     cmd[2:2] = ["--name", name]
     try:
-        return subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_s)
+        try:
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_s)
+        except OSError as exc:
+            if immutable_runtimes:
+                raise ImmutableRuntimeUnavailable(str(exc)) from exc
+            raise
+        if immutable_runtimes and proc.returncode == 125:
+            raise ImmutableRuntimeUnavailable(f"immutable runtime container failed: {proc.stderr.strip()}")
+        return proc
     finally:
         remove_container(name)
 

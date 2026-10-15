@@ -30,6 +30,7 @@ from eval.containers.container_state import _run_one_container_state
 from eval.run.task_contract import runtime_task
 from eval.policy.runtime_policy import admit_native_network, phase_timeout, stage_agent_runtime
 from eval.observe.tracing import _last_identity, _last_usage, _materialize, _write_progress
+from eval.containers.immutable_runtime import ImmutableRuntimeUnavailable, projections, targets
 from eval.verification.verifier import _verify, test_rate_of
 from eval.verification.isolation import common_class, observed_class, declared_class
 from eval.verification.pristine import enforce_verdict_binding
@@ -203,6 +204,17 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
     env_spec = env or {"kind": "files"}
     is_exec = env_spec.get("kind") == "exec"
     try:
+        immutable_runtimes = projections((setup or {}).get("files"))
+        verifier_runtimes = projections((verifier or {}).get("inputs"))
+        if immutable_runtimes or verifier_runtimes:
+            if not is_exec and not sandbox:
+                raise ImmutableRuntimeUnavailable("immutable runtimes require a read-only sandbox bind")
+            if env_spec.get("state") == "container" \
+                    or ((verifier or {}).get("scorer_bundle") or {}).get("isolation_class") == "pristine-offline":
+                raise ImmutableRuntimeUnavailable("this verification boundary cannot express immutable runtime binds")
+    except (ImmutableRuntimeUnavailable, OSError) as exc:
+        return _invalid(task, exc, stage="immutable runtime admission", service=None)
+    try:
         protocol = chess_stepwise.protocol_of(task)
         stepwise_session = chess_stepwise.session_for(
             task, verifier, sandbox=sandbox, env=env_spec)
@@ -256,6 +268,10 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
     package_overlays = ()
     workdir = Path(tempfile.mkdtemp(prefix="hg-task-"))
     try:
+        try:
+            targets(workdir, (*immutable_runtimes, *verifier_runtimes))
+        except (ImmutableRuntimeUnavailable, OSError) as exc:
+            return _invalid(task, exc, stage="immutable runtime admission", service=None)
         if agent_runtime:
             runtime_dir = Path(tempfile.mkdtemp(prefix="hg-agent-runtime-"))
             package_overlays = (stage_agent_runtime(agent_runtime, runtime_dir),)
@@ -264,7 +280,10 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
         # question": a dataset had nowhere to put the thing the task is *about*.
         with phases("setup"):
             if setup:
-                _materialize(workdir, setup.get("files"), PLATFORM_ROOT)
+                try:
+                    _materialize(workdir, setup.get("files"), PLATFORM_ROOT)
+                except ImmutableRuntimeUnavailable as exc:
+                    return _invalid(task, exc, stage="immutable runtime setup", service=None)
 
             task_file = workdir / "task.json"
             actor_task = ({**task, "goal": chess_stepwise.GOAL}
@@ -468,6 +487,7 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                     # Stated rather than omitted: the harness gets **no** view of a
                     # service's recording, and the empty list is that decision.
                     readonly_paths=runtime,
+                    immutable_runtimes=immutable_runtimes,
                     extra_mounts=tuple(services_mod.mounts_for(
                         "harness", service_specs,
                         running.recordings if running else {})))
@@ -486,7 +506,8 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                                    runtime_paths=runtime_paths,
                                    visible_paths=((stepwise_dir,) if stepwise_dir else ()),
                                    network=env_spec.get("network"),
-                                   package_overlays=package_overlays)
+                                   package_overlays=package_overlays,
+                                   immutable_runtimes=immutable_runtimes)
 
         try:
             with phases("agent"):
@@ -500,16 +521,27 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
             exit_code, stderr = proc.returncode, proc.stderr[-2000:]
         except subprocess.TimeoutExpired:
             exit_code, stderr = -1, f"timeout after {timeout_s}s"
+        except ImmutableRuntimeUnavailable as exc:
+            return _invalid(task, exc, stage="immutable runtime launch", service=None)
         except OSError:
+            if immutable_runtimes:
+                return _invalid(task, "immutable runtime backend could not launch",
+                                stage="immutable runtime launch", service=None)
             if stepwise_relay is None:
                 raise
             exit_code, stderr = -1, "stepwise harness launch failed"
         except sandbox_mod.SandboxUnavailable as exc:
+            if immutable_runtimes or verifier_runtimes:
+                return _invalid(task, exc, stage="immutable runtime launch", service=None)
             # Not swallowed. A run that asked for a sandbox and silently got none
             # produces numbers that mean something other than what they say.
             raise SystemExit(f"refusing to run: sandbox requested but unavailable: "
                              f"{exc}. Pass --no-sandbox to accept that a harness "
                              f"can reach the platform.")
+        except container_mod.ContainerUnavailable as exc:
+            if immutable_runtimes or verifier_runtimes:
+                return _invalid(task, exc, stage="immutable runtime launch", service=None)
+            raise
 
         with phases("collect"):
             answer_path = workdir / "answer.txt"
@@ -527,7 +559,11 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                 verdict = _verify(workdir, verifier, answer, sandbox=sandbox, task_id=task["task_id"],
                                   run_id=run_id, trial_id=trial_id,
                                   timeout_s=verify_timeout_s, env=env_spec,
-                                  service_specs=service_specs, running=running)
+                                  service_specs=service_specs, running=running,
+                                  immutable_runtimes=immutable_runtimes)
+                if verdict.get("immutable_runtime_error"):
+                    return _invalid(task, verdict["unmeasured"],
+                                    stage="immutable runtime verification", service=None)
                 if protocol is not None:
                     verdict["protocol"] = protocol
 

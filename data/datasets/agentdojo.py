@@ -84,7 +84,7 @@ def __getattr__(name):
         return {f'agentdojo/{i}': {'kind': 'files'} for i in range(TASK_COUNT)}
     if name == 'SETUP':
         return {f'agentdojo/{i}': {'files': [
-            {'path': 'dojo_runtime', 'from': str(DATASET_ROOT / 'agent_runtime')},
+            {'path': 'dojo_runtime', 'from': str(DATASET_ROOT / 'agent_runtime'), 'immutable': True},
             {'path': 'dojo.py', 'from': str(ASSETS / 'cli/dojo')},
             {'path': 'dojo.initial.json', 'from': str(DATASET_ROOT / 'prepared' / str(i) / 'initial.json')},
         ]} for i in range(TASK_COUNT)}
@@ -96,7 +96,7 @@ def __getattr__(name):
                 {'path': 'verify/check.py', 'from': str(ASSETS / 'verify/check.py')},
                 {'path': 'verify/bridge.py', 'from': str(ASSETS / 'bridge.py')},
                 {'path': 'verify/case.json', 'from': str(DATASET_ROOT / 'prepared' / str(i) / 'case.json')},
-                {'path': 'trusted_runtime', 'from': str(DATASET_ROOT / 'runtime')},
+                {'path': 'trusted_runtime', 'from': str(DATASET_ROOT / 'runtime'), 'immutable': True},
             ], 'reward_file': '/'+REWARD_REL, 'evidence_file': '/'+EVIDENCE_REL,
         } for i in range(TASK_COUNT)}
     raise AttributeError(name)

@@ -1,0 +1,1911 @@
+w-sharedrt immutable runtime validation
+
+BASELINE REVISION: 456a8321e3fdf6d7926b158140309ca4caadfdea
+Observed with git rev-parse HEAD before this worker commit.
+BASELINE CORE ran before edits. EXTRA BEFORE and CONTRACTS BEFORE ran after temporarily restoring
+every modified tracked Python file from git show HEAD:<path>; a finally block restored each saved edit.
+No main checkout, branch, receipt or registry was changed for baseline reproduction.
+Commands below are the exact executed pytest argv, with TMPDIR=/tmp supplied in the environment;
+shell stdout/stderr redirections went to the stated retained scratch log and are omitted from the argv.
+Collection is NOT execution. Scorer/dataset/engine/oracle execution was excluded as required.
+No existing test assertion was modified. New tests use authored fixtures and synthetic Docker image sentinels.
+All outputs are observed; no production measurements or production runtime digests are asserted. Lines prefixed JSON-LINE encode exact whitespace-bearing output lines as JSON strings; decode those strings to recover the verbatim output.
+
+[BASELINE CORE]
+COMMAND: TMPDIR=/tmp python3 -m pytest -q tests/quality/test_isolation.py tests/quality/test_services.py tests/quality/test_appworld_service_diagnosis.py tests/quality/test_web_gateway.py tests/quality/test_boundaries.py tests/quality/test_sandbox.py tests/quality/test_container.py tests/quality/test_scienceworld_platform_writes_codex186.py --basetemp=/tmp/sharedrt-baseline
+OBSERVED EXIT CODE: 1
+OBSERVED OUTPUT:
+..F.........F........................................................... [ 43%]
+..................................................FFFFFFF.....F......... [ 87%]
+.....................                                                    [100%]
+=================================== FAILURES ===================================
+______________ test_snapshot_covers_the_referee_not_the_candidate ______________
+
+    def test_snapshot_covers_the_referee_not_the_candidate():
+        """The scorer is watched; the artifact under improvement is not.
+JSON-LINE: "    "
+        `base_harness/` missing from the tuple is deliberate and load-bearing: every
+        run copies it into a workspace and edits the copy. Watching it would flag the
+        only write the platform exists to make.
+        """
+        snap = snapshot(ROOT)
+        assert "driver.py" in snap, "the driver decides what a curve means"
+        assert "eval/run/integrity.py" in snap, "the checker watches itself"
+        assert "eval/run/runner.py" in snap, "the runner runs the subject"
+>       assert ".env" in snap, "the credentials pay for the measurement"
+E       AssertionError: the credentials pay for the measurement
+E       assert '.env' in {'INTERFACE.md': '6ae243fc6123bc9d4809cfa95e1fd2b8069736ec62441bb17b0bd75da02b8896', 'ckpt/git_state.py': '85ce26bc78e...b4d3e2c5d6', 'data/aggregation_policies.json': '7ca0965b47dc8a6d654b3d86fd2ef699fd88e7c4e7ec061ee039943f0562f163', ...}
+
+tests/quality/test_isolation.py:156: AssertionError
+___________ test_the_harness_cannot_read_the_platform_or_its_answers ___________
+
+tmp_path = PosixPath('/tmp/sharedrt-baseline/test_the_harness_cannot_read_t0')
+
+    def test_the_harness_cannot_read_the_platform_or_its_answers(tmp_path):
+        """harness 那一侧的实测清单。
+JSON-LINE: "    "
+        平台目录**存在但是空的**:bwrap 把平台盖成一个空 tmpfs,于是路径名留着(那是刻意的
+        停点:完全抹掉就得覆盖 work root 所在的整条分支),而里面什么都不剩。
+        """
+        probes = _run_probe_harness(tmp_path)
+        first = probes[0]
+        assert first["platform_visible"] is False, first
+>       assert first["platform_listing"] == [], (
+            f"平台的沙箱里还有东西:{first['platform_listing']}")
+E       AssertionError: 平台的沙箱里还有东西:None
+E       assert None == []
+
+tests/quality/test_isolation.py:639: AssertionError
+________________ test_the_platform_is_not_on_the_subjects_disk _________________
+
+tmp_path = PosixPath('/tmp/sharedrt-baseline/test_the_platform_is_not_on_th0')
+staged_harness = (PosixPath('/tmp/sharedrt-baseline/test_the_platform_is_not_on_th0/workroot/run-id/workspace'), PosixPath('/tmp/sharedrt-baseline/test_the_platform_is_not_on_th0/workroot/run-id/workspace/.state'))
+
+    @needs_bwrap
+    def test_the_platform_is_not_on_the_subjects_disk(tmp_path, staged_harness):
+        """The whole point: not "permission denied", but absent.
+JSON-LINE: "    "
+        This is the measurement that motivated the module, and it is asserted from
+        inside the namespace rather than inferred from the arguments handed to bwrap.
+        """
+        repo, _ = staged_harness
+>       seen = inside({}, tmp_path, (
+            "import json, os, pathlib\n"
+            f"p = pathlib.Path({str(PLATFORM)!r})\n"
+            "print(json.dumps({\n"
+            "  'env': (p / '.env').exists(),\n"
+            "  'driver': (p / 'driver.py').exists(),\n"
+            # The implementation moved out of `driver.py`; the rule is about the
+            # platform's code, so the package that holds it is probed too. A sandbox
+            # that hid the entrypoint and left the scorer readable would look fine.
+            "  'impl': (p / 'harnessgrad').exists(),\n"
+            "  'scorer': (p / 'eval' / 'run' / 'metrics.py').exists(),\n"
+            "  'methods': (p / 'methods').exists(),\n"
+            "  'listing': sorted(os.listdir(p)) if p.is_dir() else 'not-a-dir',\n"
+            "}))\n"), repo=repo)
+
+JSON-LINE: "tests/quality/test_sandbox.py:83: "
+JSON-LINE: "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+env = {}
+work_dir = PosixPath('/tmp/sharedrt-baseline/test_the_platform_is_not_on_th0')
+script = "import json, os, pathlib\np = pathlib.Path('/mnt/20t/xubuqiang/hg-wt/w-sharedrt')\nprint(json.dumps({\n  'env': (p / ...(),\n  'methods': (p / 'methods').exists(),\n  'listing': sorted(os.listdir(p)) if p.is_dir() else 'not-a-dir',\n}))\n"
+repo = PosixPath('/tmp/sharedrt-baseline/test_the_platform_is_not_on_th0/workroot/run-id/workspace')
+
+    def inside(env: dict[str, str], work_dir: Path, script: str,
+               repo: Path | None = None) -> dict:
+        """Run `script` in the sandbox and return what it saw."""
+        probe = work_dir / "probe.py"
+        probe.write_text(script)
+        proc = sandbox.run([sys.executable, str(probe)], platform=PLATFORM,
+                           work_root=WORK_ROOT, task_dir=work_dir, env=env,
+                           timeout_s=120, cwd=work_dir, repo=repo,
+                           state_dirs=(repo / ".state",) if repo else ())
+>       assert proc.returncode == 0, proc.stderr[-800:]
+E       AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON-LINE: "E         "
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+
+tests/quality/test_sandbox.py:52: AssertionError
+__________________ test_the_subject_keeps_its_own_credentials __________________
+
+tmp_path = PosixPath('/tmp/sharedrt-baseline/test_the_subject_keeps_its_own0')
+
+    @needs_bwrap
+    def test_the_subject_keeps_its_own_credentials(tmp_path):
+        """A sandboxed harness with no API key is a broken instrument, not a result.
+JSON-LINE: "    "
+        Regression for the bug that deleted `HG_AGENT_API_KEY`: the platform passed
+        `HG_AGENT_MODEL=deepseek-flash` through a path check, `Path("deepseek-flash")`
+        resolved against the platform's cwd, and the value was judged to be inside the
+        hidden tree.
+        """
+        env = {"HG_AGENT_MODEL": "deepseek-flash",
+               "HG_AGENT_BASE_URL": "https://api.deepseek.com",
+               "HG_AGENT_API_KEY": "sk-not-a-real-key"}
+>       seen = inside(env, tmp_path, (
+            "import json, os\n"
+            "print(json.dumps({k: os.environ.get(k) for k in [\n"
+            "  'HG_AGENT_MODEL', 'HG_AGENT_BASE_URL', 'HG_AGENT_API_KEY']}))\n"))
+
+JSON-LINE: "tests/quality/test_sandbox.py:119: "
+JSON-LINE: "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+env = {'HG_AGENT_API_KEY': 'sk-not-a-real-key', 'HG_AGENT_BASE_URL': 'https://api.deepseek.com', 'HG_AGENT_MODEL': 'deepseek-flash'}
+work_dir = PosixPath('/tmp/sharedrt-baseline/test_the_subject_keeps_its_own0')
+script = "import json, os\nprint(json.dumps({k: os.environ.get(k) for k in [\n  'HG_AGENT_MODEL', 'HG_AGENT_BASE_URL', 'HG_AGENT_API_KEY']}))\n"
+repo = None
+
+    def inside(env: dict[str, str], work_dir: Path, script: str,
+               repo: Path | None = None) -> dict:
+        """Run `script` in the sandbox and return what it saw."""
+        probe = work_dir / "probe.py"
+        probe.write_text(script)
+        proc = sandbox.run([sys.executable, str(probe)], platform=PLATFORM,
+                           work_root=WORK_ROOT, task_dir=work_dir, env=env,
+                           timeout_s=120, cwd=work_dir, repo=repo,
+                           state_dirs=(repo / ".state",) if repo else ())
+>       assert proc.returncode == 0, proc.stderr[-800:]
+E       AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON-LINE: "E         "
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+
+tests/quality/test_sandbox.py:52: AssertionError
+________________ test_host_variables_are_not_mistaken_for_paths ________________
+
+tmp_path = PosixPath('/tmp/sharedrt-baseline/test_host_variables_are_not_mi0')
+
+    @needs_bwrap
+    def test_host_variables_are_not_mistaken_for_paths(tmp_path):
+        """`false` is not a path. Neither is `0.1.5-rc.2`."""
+        env = {"npm_package_version": "0.1.5-rc.2",
+               "pnpm_config_verify_deps_before_run": "false"}
+>       seen = inside(env, tmp_path, (
+            "import json, os\n"
+            "print(json.dumps({k: os.environ.get(k) for k in [\n"
+            "  'npm_package_version', 'pnpm_config_verify_deps_before_run']}))\n"))
+
+JSON-LINE: "tests/quality/test_sandbox.py:134: "
+JSON-LINE: "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+env = {'npm_package_version': '0.1.5-rc.2', 'pnpm_config_verify_deps_before_run': 'false'}
+work_dir = PosixPath('/tmp/sharedrt-baseline/test_host_variables_are_not_mi0')
+script = "import json, os\nprint(json.dumps({k: os.environ.get(k) for k in [\n  'npm_package_version', 'pnpm_config_verify_deps_before_run']}))\n"
+repo = None
+
+    def inside(env: dict[str, str], work_dir: Path, script: str,
+               repo: Path | None = None) -> dict:
+        """Run `script` in the sandbox and return what it saw."""
+        probe = work_dir / "probe.py"
+        probe.write_text(script)
+        proc = sandbox.run([sys.executable, str(probe)], platform=PLATFORM,
+                           work_root=WORK_ROOT, task_dir=work_dir, env=env,
+                           timeout_s=120, cwd=work_dir, repo=repo,
+                           state_dirs=(repo / ".state",) if repo else ())
+>       assert proc.returncode == 0, proc.stderr[-800:]
+E       AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON-LINE: "E         "
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+
+tests/quality/test_sandbox.py:52: AssertionError
+____________ test_the_work_root_survives_and_the_platform_does_not _____________
+
+tmp_path = PosixPath('/tmp/sharedrt-baseline/test_the_work_root_survives_an0')
+staged_harness = (PosixPath('/tmp/sharedrt-baseline/test_the_work_root_survives_an0/workroot/run-id/workspace'), PosixPath('/tmp/sharedrt-baseline/test_the_work_root_survives_an0/workroot/run-id/workspace/.state'))
+
+    @needs_bwrap
+    def test_the_work_root_survives_and_the_platform_does_not(tmp_path, staged_harness):
+        """The harness's tree is reachable; the platform's is not.
+JSON-LINE: "    "
+        These two are siblings in a real run -- `harnessgrad_work/` next to
+        `HarnessGrad/` -- which makes this the case worth pinning: exposing one must not
+        expose the other, and hiding one must not take the other with it. The plan covers
+        the platform's own path rather than its parent precisely so the sibling survives.
+        """
+        repo, _ = staged_harness
+        env = {"HARNESSGRAD_WORK_ROOT": str(repo.parent.parent)}
+>       seen = inside(env, tmp_path, (
+            "import json, os, pathlib\n"
+            "w = pathlib.Path(os.environ['HARNESSGRAD_WORK_ROOT'])\n"
+            f"p = pathlib.Path({str(PLATFORM)!r})\n"
+            "print(json.dumps({\n"
+            "  'work_root': w.is_dir(),\n"
+            "  'harness_readable': (w / 'run-id' / 'workspace' / 'agent.py').exists(),\n"
+            "  'platform_readable': (p / 'driver.py').exists(),\n"
+            "  'impl_readable': (p / 'harnessgrad').exists(),\n"
+            "  'platform_listing': sorted(os.listdir(p)) if p.is_dir() else 'not-a-dir',\n"
+            "}))\n"), repo=repo)
+
+JSON-LINE: "tests/quality/test_sandbox.py:152: "
+JSON-LINE: "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+env = {'HARNESSGRAD_WORK_ROOT': '/tmp/sharedrt-baseline/test_the_work_root_survives_an0/workroot'}
+work_dir = PosixPath('/tmp/sharedrt-baseline/test_the_work_root_survives_an0')
+script = "import json, os, pathlib\nw = pathlib.Path(os.environ['HARNESSGRAD_WORK_ROOT'])\np = pathlib.Path('/mnt/20t/xubuqiang...le': (p / 'harnessgrad').exists(),\n  'platform_listing': sorted(os.listdir(p)) if p.is_dir() else 'not-a-dir',\n}))\n"
+repo = PosixPath('/tmp/sharedrt-baseline/test_the_work_root_survives_an0/workroot/run-id/workspace')
+
+    def inside(env: dict[str, str], work_dir: Path, script: str,
+               repo: Path | None = None) -> dict:
+        """Run `script` in the sandbox and return what it saw."""
+        probe = work_dir / "probe.py"
+        probe.write_text(script)
+        proc = sandbox.run([sys.executable, str(probe)], platform=PLATFORM,
+                           work_root=WORK_ROOT, task_dir=work_dir, env=env,
+                           timeout_s=120, cwd=work_dir, repo=repo,
+                           state_dirs=(repo / ".state",) if repo else ())
+>       assert proc.returncode == 0, proc.stderr[-800:]
+E       AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON-LINE: "E         "
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+
+tests/quality/test_sandbox.py:52: AssertionError
+_______________ test_a_harness_can_actually_work_in_its_workdir ________________
+
+tmp_path = PosixPath('/tmp/sharedrt-baseline/test_a_harness_can_actually_wo0')
+
+    @needs_bwrap
+    def test_a_harness_can_actually_work_in_its_workdir(tmp_path):
+        """The sandbox must not break the thing a harness does all day: file I/O.
+JSON-LINE: "    "
+        Read-only applies to the harness's *own tree*, never to `--workdir`. The
+        reference harness executes model-issued shell commands with `cwd=workdir`, so a
+        read-only workdir would not be a stricter sandbox -- it would be a harness that
+        cannot do any task at all, scoring zero for a reason that looks like a harness
+        defect. Verified here in the shape the real one uses: nested mkdir, redirect,
+        read back, and a subprocess.
+JSON-LINE: "    "
+        Confirmed end to end separately: three tasks whose answers are only obtainable by
+        creating and re-reading a file scored 1.000/1.000 in the sandbox, with the
+        commands visible in the collected traces.
+        """
+        script = (
+            "import json, os, pathlib, subprocess, sys\n"
+            "wd = pathlib.Path(os.environ['TD'])\n"
+            "r = {}\n"
+            "def step(label, fn):\n"
+            "    try: r[label] = fn()\n"
+            "    except OSError as e: r[label] = type(e).__name__\n"
+            "step('mkdir', lambda: (wd / 'deep' / 'nested').mkdir(parents=True) or 'ok')\n"
+            "step('write', lambda: (wd / 'deep' / 'nested' / 'v.txt').write_text('gamma') and 'ok')\n"
+            "step('read', lambda: (wd / 'deep' / 'nested' / 'v.txt').read_text())\n"
+            "step('shell', lambda: subprocess.run(\n"
+            "    \"printf beta > notes.txt && cat notes.txt\", shell=True, cwd=wd,\n"
+            "    capture_output=True, text=True).stdout)\n"
+            "step('rmdir', lambda: (wd / 'deep').rename(wd / 'moved') and 'ok')\n"
+            "print(json.dumps(r))\n")
+>       seen = inside({"TD": str(tmp_path)}, tmp_path, script)
+
+JSON-LINE: "tests/quality/test_sandbox.py:200: "
+JSON-LINE: "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+env = {'TD': '/tmp/sharedrt-baseline/test_a_harness_can_actually_wo0'}
+work_dir = PosixPath('/tmp/sharedrt-baseline/test_a_harness_can_actually_wo0')
+script = "import json, os, pathlib, subprocess, sys\nwd = pathlib.Path(os.environ['TD'])\nr = {}\ndef step(label, fn):\n    try...t=True, text=True).stdout)\nstep('rmdir', lambda: (wd / 'deep').rename(wd / 'moved') and 'ok')\nprint(json.dumps(r))\n"
+repo = None
+
+    def inside(env: dict[str, str], work_dir: Path, script: str,
+               repo: Path | None = None) -> dict:
+        """Run `script` in the sandbox and return what it saw."""
+        probe = work_dir / "probe.py"
+        probe.write_text(script)
+        proc = sandbox.run([sys.executable, str(probe)], platform=PLATFORM,
+                           work_root=WORK_ROOT, task_dir=work_dir, env=env,
+                           timeout_s=120, cwd=work_dir, repo=repo,
+                           state_dirs=(repo / ".state",) if repo else ())
+>       assert proc.returncode == 0, proc.stderr[-800:]
+E       AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON-LINE: "E         "
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+
+tests/quality/test_sandbox.py:52: AssertionError
+____________________ test_the_harness_tree_stays_read_only _____________________
+
+tmp_path = PosixPath('/tmp/sharedrt-baseline/test_the_harness_tree_stays_re0')
+
+    @needs_bwrap
+    def test_the_harness_tree_stays_read_only(tmp_path):
+        """The other half: the subject's own source is not scratch space.
+JSON-LINE: "    "
+        One copy of the harness scores every task in a round, so a subject that rewrote
+        its own `agent.py` while answering task 1 would be a different program by task 2.
+        """
+>       seen = inside({}, tmp_path, (
+            "import json, os, pathlib\n"
+            "results = {}\n"
+            "for label, victim in [\n"
+            f"    ('write_source', pathlib.Path({str(WORK_ROOT)!r})),\n"
+            "]:\n"
+            "    try:\n"
+            "        (victim / 'probe_write').write_text('x'); results[label] = 'wrote'\n"
+            "    except OSError as e:\n"
+            "        results[label] = type(e).__name__\n"
+            "print(json.dumps(results))\n"))
+
+JSON-LINE: "tests/quality/test_sandbox.py:215: "
+JSON-LINE: "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+env = {}
+work_dir = PosixPath('/tmp/sharedrt-baseline/test_the_harness_tree_stays_re0')
+script = "import json, os, pathlib\nresults = {}\nfor label, victim in [\n    ('write_source', pathlib.Path('/mnt/20t/xubuqiang...ts[label] = 'wrote'\n    except OSError as e:\n        results[label] = type(e).__name__\nprint(json.dumps(results))\n"
+repo = None
+
+    def inside(env: dict[str, str], work_dir: Path, script: str,
+               repo: Path | None = None) -> dict:
+        """Run `script` in the sandbox and return what it saw."""
+        probe = work_dir / "probe.py"
+        probe.write_text(script)
+        proc = sandbox.run([sys.executable, str(probe)], platform=PLATFORM,
+                           work_root=WORK_ROOT, task_dir=work_dir, env=env,
+                           timeout_s=120, cwd=work_dir, repo=repo,
+                           state_dirs=(repo / ".state",) if repo else ())
+>       assert proc.returncode == 0, proc.stderr[-800:]
+E       AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON-LINE: "E         "
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+
+tests/quality/test_sandbox.py:52: AssertionError
+__________ test_the_harness_gets_a_writable_hole_in_a_read_only_tree ___________
+
+tmp_path = PosixPath('/tmp/sharedrt-baseline/test_the_harness_gets_a_writab0')
+staged_harness = (PosixPath('/tmp/sharedrt-baseline/test_the_harness_gets_a_writab0/workroot/run-id/workspace'), PosixPath('/tmp/sharedrt-baseline/test_the_harness_gets_a_writab0/workroot/run-id/workspace/.state'))
+
+    @needs_bwrap
+    def test_the_harness_gets_a_writable_hole_in_a_read_only_tree(tmp_path, staged_harness):
+        """The contract a harness actually needs: read its code, write its scratch.
+JSON-LINE: "    "
+        Read-only on the whole tree was too blunt. A harness legitimately wants to put a
+        cache, a session file or an intermediate artefact next to itself, and refusing
+        that would break working harnesses to prevent a failure that is better prevented
+        precisely -- by making the *code* unwritable and one named directory writable.
+JSON-LINE: "    "
+        A tmpfs rather than a shared directory, so what it writes is per-task: a score
+        must not depend on what an earlier task left behind.
+        """
+        repo, state = staged_harness
+>       seen = inside({"HARNESSGRAD_STATE": str(state), "TD": str(tmp_path)},
+                     tmp_path,
+            "import json, os, pathlib\nrepo = pathlib.Path(os.environ['HG_REPO'])\nstate = pathlib.Path(os.environ['HARNESSGRAD_STATE'])\ndef attempt(fn):\n    try:\n        fn(); return 'ok'\n    except OSError as exc:\n        return type(exc).__name__\nprint(json.dumps({\n  'read_source': attempt(lambda: repo.joinpath('agent.py').read_text() and 'ok'),\n  'write_source': attempt(lambda: repo.joinpath('agent.py').write_text('rewritten')),\n  'delete_manifest': attempt(lambda: repo.joinpath('harness.json').unlink()),\n  'write_state': attempt(lambda: state.joinpath('cache.json').write_text('{}')),\n  'mkdir_state': attempt(lambda: state.joinpath('nested').mkdir()),\n  'write_workdir': attempt(lambda: pathlib.Path(os.environ['TD']).joinpath('out.txt').write_text('x')),\n}))\n".replace("os.environ['HG_REPO']", repr(str(repo))),
+            repo=repo)
+
+JSON-LINE: "tests/quality/test_sandbox.py:242: "
+JSON-LINE: "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+env = {'HARNESSGRAD_STATE': '/tmp/sharedrt-baseline/test_the_harness_gets_a_writab0/workroot/run-id/workspace/.state', 'TD': '/tmp/sharedrt-baseline/test_the_harness_gets_a_writab0'}
+work_dir = PosixPath('/tmp/sharedrt-baseline/test_the_harness_gets_a_writab0')
+script = "import json, os, pathlib\nrepo = pathlib.Path('/tmp/sharedrt-baseline/test_the_harness_gets_a_writab0/workroot/run-id...ir()),\n  'write_workdir': attempt(lambda: pathlib.Path(os.environ['TD']).joinpath('out.txt').write_text('x')),\n}))\n"
+repo = PosixPath('/tmp/sharedrt-baseline/test_the_harness_gets_a_writab0/workroot/run-id/workspace')
+
+    def inside(env: dict[str, str], work_dir: Path, script: str,
+               repo: Path | None = None) -> dict:
+        """Run `script` in the sandbox and return what it saw."""
+        probe = work_dir / "probe.py"
+        probe.write_text(script)
+        proc = sandbox.run([sys.executable, str(probe)], platform=PLATFORM,
+                           work_root=WORK_ROOT, task_dir=work_dir, env=env,
+                           timeout_s=120, cwd=work_dir, repo=repo,
+                           state_dirs=(repo / ".state",) if repo else ())
+>       assert proc.returncode == 0, proc.stderr[-800:]
+E       AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON-LINE: "E         "
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+
+tests/quality/test_sandbox.py:52: AssertionError
+__________________ test_self_check_notices_a_plan_that_leaks ___________________
+
+tmp_path = PosixPath('/tmp/sharedrt-baseline/test_self_check_notices_a_plan0')
+
+    @needs_bwrap
+    def test_self_check_notices_a_plan_that_leaks(tmp_path):
+        """The self-check has to be able to fail, or it is decoration.
+JSON-LINE: "    "
+        A plan that actually exposes the platform must be caught. Note what does *not*
+        qualify: deleting every `--tmpfs` from the plan still leaves the platform
+        invisible, because bwrap starts from an empty root rather than inheriting the
+        host's. The first version of this test mutated the plan that way, saw the check
+        still pass, and would have been written off as a bug in the check -- it was a bug
+        in the mutation. The property under test is "can the subject see the platform",
+        so the mutation has to be one that makes the subject able to.
+JSON-LINE: "    "
+        The leaking plan binds the host root read-only, which is the realistic mistake:
+        it is the reflex fix for "my harness cannot find its interpreter".
+        """
+>       assert sandbox.self_check(PLATFORM, WORK_ROOT)["ok"] is True
+E       assert False is True
+
+tests/quality/test_sandbox.py:338: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_isolation.py::test_snapshot_covers_the_referee_not_the_candidate
+FAILED tests/quality/test_isolation.py::test_the_harness_cannot_read_the_platform_or_its_answers
+FAILED tests/quality/test_sandbox.py::test_the_platform_is_not_on_the_subjects_disk
+FAILED tests/quality/test_sandbox.py::test_the_subject_keeps_its_own_credentials
+FAILED tests/quality/test_sandbox.py::test_host_variables_are_not_mistaken_for_paths
+FAILED tests/quality/test_sandbox.py::test_the_work_root_survives_and_the_platform_does_not
+FAILED tests/quality/test_sandbox.py::test_a_harness_can_actually_work_in_its_workdir
+FAILED tests/quality/test_sandbox.py::test_the_harness_tree_stays_read_only
+FAILED tests/quality/test_sandbox.py::test_the_harness_gets_a_writable_hole_in_a_read_only_tree
+FAILED tests/quality/test_sandbox.py::test_self_check_notices_a_plan_that_leaks
+10 failed, 155 passed in 116.42s (0:01:56)
+
+[AFTER CORE]
+COMMAND: TMPDIR=/tmp python3 -m pytest -q tests/quality/test_isolation.py tests/quality/test_services.py tests/quality/test_appworld_service_diagnosis.py tests/quality/test_web_gateway.py tests/quality/test_boundaries.py tests/quality/test_sandbox.py tests/quality/test_container.py tests/quality/test_scienceworld_platform_writes_codex186.py --basetemp=/tmp/sharedrt-after
+OBSERVED EXIT CODE: 1
+OBSERVED OUTPUT:
+..F.........F........................................................... [ 43%]
+..................................................FFFFFFF.....F......... [ 87%]
+.....................                                                    [100%]
+=================================== FAILURES ===================================
+______________ test_snapshot_covers_the_referee_not_the_candidate ______________
+
+    def test_snapshot_covers_the_referee_not_the_candidate():
+        """The scorer is watched; the artifact under improvement is not.
+JSON-LINE: "    "
+        `base_harness/` missing from the tuple is deliberate and load-bearing: every
+        run copies it into a workspace and edits the copy. Watching it would flag the
+        only write the platform exists to make.
+        """
+        snap = snapshot(ROOT)
+        assert "driver.py" in snap, "the driver decides what a curve means"
+        assert "eval/run/integrity.py" in snap, "the checker watches itself"
+        assert "eval/run/runner.py" in snap, "the runner runs the subject"
+>       assert ".env" in snap, "the credentials pay for the measurement"
+E       AssertionError: the credentials pay for the measurement
+E       assert '.env' in {'INTERFACE.md': '1fc63c3bd9ac235f06ca81ec867e0d504420309b2a3e39c9b15f4cc4fb8fc9a0', 'ckpt/git_state.py': '85ce26bc78e...b4d3e2c5d6', 'data/aggregation_policies.json': '7ca0965b47dc8a6d654b3d86fd2ef699fd88e7c4e7ec061ee039943f0562f163', ...}
+
+tests/quality/test_isolation.py:156: AssertionError
+___________ test_the_harness_cannot_read_the_platform_or_its_answers ___________
+
+tmp_path = PosixPath('/tmp/sharedrt-after/test_the_harness_cannot_read_t0')
+
+    def test_the_harness_cannot_read_the_platform_or_its_answers(tmp_path):
+        """harness 那一侧的实测清单。
+JSON-LINE: "    "
+        平台目录**存在但是空的**:bwrap 把平台盖成一个空 tmpfs,于是路径名留着(那是刻意的
+        停点:完全抹掉就得覆盖 work root 所在的整条分支),而里面什么都不剩。
+        """
+        probes = _run_probe_harness(tmp_path)
+        first = probes[0]
+        assert first["platform_visible"] is False, first
+>       assert first["platform_listing"] == [], (
+            f"平台的沙箱里还有东西:{first['platform_listing']}")
+E       AssertionError: 平台的沙箱里还有东西:None
+E       assert None == []
+
+tests/quality/test_isolation.py:639: AssertionError
+________________ test_the_platform_is_not_on_the_subjects_disk _________________
+
+tmp_path = PosixPath('/tmp/sharedrt-after/test_the_platform_is_not_on_th0')
+staged_harness = (PosixPath('/tmp/sharedrt-after/test_the_platform_is_not_on_th0/workroot/run-id/workspace'), PosixPath('/tmp/sharedrt-after/test_the_platform_is_not_on_th0/workroot/run-id/workspace/.state'))
+
+    @needs_bwrap
+    def test_the_platform_is_not_on_the_subjects_disk(tmp_path, staged_harness):
+        """The whole point: not "permission denied", but absent.
+JSON-LINE: "    "
+        This is the measurement that motivated the module, and it is asserted from
+        inside the namespace rather than inferred from the arguments handed to bwrap.
+        """
+        repo, _ = staged_harness
+>       seen = inside({}, tmp_path, (
+            "import json, os, pathlib\n"
+            f"p = pathlib.Path({str(PLATFORM)!r})\n"
+            "print(json.dumps({\n"
+            "  'env': (p / '.env').exists(),\n"
+            "  'driver': (p / 'driver.py').exists(),\n"
+            # The implementation moved out of `driver.py`; the rule is about the
+            # platform's code, so the package that holds it is probed too. A sandbox
+            # that hid the entrypoint and left the scorer readable would look fine.
+            "  'impl': (p / 'harnessgrad').exists(),\n"
+            "  'scorer': (p / 'eval' / 'run' / 'metrics.py').exists(),\n"
+            "  'methods': (p / 'methods').exists(),\n"
+            "  'listing': sorted(os.listdir(p)) if p.is_dir() else 'not-a-dir',\n"
+            "}))\n"), repo=repo)
+
+JSON-LINE: "tests/quality/test_sandbox.py:83: "
+JSON-LINE: "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+env = {}
+work_dir = PosixPath('/tmp/sharedrt-after/test_the_platform_is_not_on_th0')
+script = "import json, os, pathlib\np = pathlib.Path('/mnt/20t/xubuqiang/hg-wt/w-sharedrt')\nprint(json.dumps({\n  'env': (p / ...(),\n  'methods': (p / 'methods').exists(),\n  'listing': sorted(os.listdir(p)) if p.is_dir() else 'not-a-dir',\n}))\n"
+repo = PosixPath('/tmp/sharedrt-after/test_the_platform_is_not_on_th0/workroot/run-id/workspace')
+
+    def inside(env: dict[str, str], work_dir: Path, script: str,
+               repo: Path | None = None) -> dict:
+        """Run `script` in the sandbox and return what it saw."""
+        probe = work_dir / "probe.py"
+        probe.write_text(script)
+        proc = sandbox.run([sys.executable, str(probe)], platform=PLATFORM,
+                           work_root=WORK_ROOT, task_dir=work_dir, env=env,
+                           timeout_s=120, cwd=work_dir, repo=repo,
+                           state_dirs=(repo / ".state",) if repo else ())
+>       assert proc.returncode == 0, proc.stderr[-800:]
+E       AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON-LINE: "E         "
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+
+tests/quality/test_sandbox.py:52: AssertionError
+__________________ test_the_subject_keeps_its_own_credentials __________________
+
+tmp_path = PosixPath('/tmp/sharedrt-after/test_the_subject_keeps_its_own0')
+
+    @needs_bwrap
+    def test_the_subject_keeps_its_own_credentials(tmp_path):
+        """A sandboxed harness with no API key is a broken instrument, not a result.
+JSON-LINE: "    "
+        Regression for the bug that deleted `HG_AGENT_API_KEY`: the platform passed
+        `HG_AGENT_MODEL=deepseek-flash` through a path check, `Path("deepseek-flash")`
+        resolved against the platform's cwd, and the value was judged to be inside the
+        hidden tree.
+        """
+        env = {"HG_AGENT_MODEL": "deepseek-flash",
+               "HG_AGENT_BASE_URL": "https://api.deepseek.com",
+               "HG_AGENT_API_KEY": "sk-not-a-real-key"}
+>       seen = inside(env, tmp_path, (
+            "import json, os\n"
+            "print(json.dumps({k: os.environ.get(k) for k in [\n"
+            "  'HG_AGENT_MODEL', 'HG_AGENT_BASE_URL', 'HG_AGENT_API_KEY']}))\n"))
+
+JSON-LINE: "tests/quality/test_sandbox.py:119: "
+JSON-LINE: "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+env = {'HG_AGENT_API_KEY': 'sk-not-a-real-key', 'HG_AGENT_BASE_URL': 'https://api.deepseek.com', 'HG_AGENT_MODEL': 'deepseek-flash'}
+work_dir = PosixPath('/tmp/sharedrt-after/test_the_subject_keeps_its_own0')
+script = "import json, os\nprint(json.dumps({k: os.environ.get(k) for k in [\n  'HG_AGENT_MODEL', 'HG_AGENT_BASE_URL', 'HG_AGENT_API_KEY']}))\n"
+repo = None
+
+    def inside(env: dict[str, str], work_dir: Path, script: str,
+               repo: Path | None = None) -> dict:
+        """Run `script` in the sandbox and return what it saw."""
+        probe = work_dir / "probe.py"
+        probe.write_text(script)
+        proc = sandbox.run([sys.executable, str(probe)], platform=PLATFORM,
+                           work_root=WORK_ROOT, task_dir=work_dir, env=env,
+                           timeout_s=120, cwd=work_dir, repo=repo,
+                           state_dirs=(repo / ".state",) if repo else ())
+>       assert proc.returncode == 0, proc.stderr[-800:]
+E       AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON-LINE: "E         "
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+
+tests/quality/test_sandbox.py:52: AssertionError
+________________ test_host_variables_are_not_mistaken_for_paths ________________
+
+tmp_path = PosixPath('/tmp/sharedrt-after/test_host_variables_are_not_mi0')
+
+    @needs_bwrap
+    def test_host_variables_are_not_mistaken_for_paths(tmp_path):
+        """`false` is not a path. Neither is `0.1.5-rc.2`."""
+        env = {"npm_package_version": "0.1.5-rc.2",
+               "pnpm_config_verify_deps_before_run": "false"}
+>       seen = inside(env, tmp_path, (
+            "import json, os\n"
+            "print(json.dumps({k: os.environ.get(k) for k in [\n"
+            "  'npm_package_version', 'pnpm_config_verify_deps_before_run']}))\n"))
+
+JSON-LINE: "tests/quality/test_sandbox.py:134: "
+JSON-LINE: "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+env = {'npm_package_version': '0.1.5-rc.2', 'pnpm_config_verify_deps_before_run': 'false'}
+work_dir = PosixPath('/tmp/sharedrt-after/test_host_variables_are_not_mi0')
+script = "import json, os\nprint(json.dumps({k: os.environ.get(k) for k in [\n  'npm_package_version', 'pnpm_config_verify_deps_before_run']}))\n"
+repo = None
+
+    def inside(env: dict[str, str], work_dir: Path, script: str,
+               repo: Path | None = None) -> dict:
+        """Run `script` in the sandbox and return what it saw."""
+        probe = work_dir / "probe.py"
+        probe.write_text(script)
+        proc = sandbox.run([sys.executable, str(probe)], platform=PLATFORM,
+                           work_root=WORK_ROOT, task_dir=work_dir, env=env,
+                           timeout_s=120, cwd=work_dir, repo=repo,
+                           state_dirs=(repo / ".state",) if repo else ())
+>       assert proc.returncode == 0, proc.stderr[-800:]
+E       AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON-LINE: "E         "
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+
+tests/quality/test_sandbox.py:52: AssertionError
+____________ test_the_work_root_survives_and_the_platform_does_not _____________
+
+tmp_path = PosixPath('/tmp/sharedrt-after/test_the_work_root_survives_an0')
+staged_harness = (PosixPath('/tmp/sharedrt-after/test_the_work_root_survives_an0/workroot/run-id/workspace'), PosixPath('/tmp/sharedrt-after/test_the_work_root_survives_an0/workroot/run-id/workspace/.state'))
+
+    @needs_bwrap
+    def test_the_work_root_survives_and_the_platform_does_not(tmp_path, staged_harness):
+        """The harness's tree is reachable; the platform's is not.
+JSON-LINE: "    "
+        These two are siblings in a real run -- `harnessgrad_work/` next to
+        `HarnessGrad/` -- which makes this the case worth pinning: exposing one must not
+        expose the other, and hiding one must not take the other with it. The plan covers
+        the platform's own path rather than its parent precisely so the sibling survives.
+        """
+        repo, _ = staged_harness
+        env = {"HARNESSGRAD_WORK_ROOT": str(repo.parent.parent)}
+>       seen = inside(env, tmp_path, (
+            "import json, os, pathlib\n"
+            "w = pathlib.Path(os.environ['HARNESSGRAD_WORK_ROOT'])\n"
+            f"p = pathlib.Path({str(PLATFORM)!r})\n"
+            "print(json.dumps({\n"
+            "  'work_root': w.is_dir(),\n"
+            "  'harness_readable': (w / 'run-id' / 'workspace' / 'agent.py').exists(),\n"
+            "  'platform_readable': (p / 'driver.py').exists(),\n"
+            "  'impl_readable': (p / 'harnessgrad').exists(),\n"
+            "  'platform_listing': sorted(os.listdir(p)) if p.is_dir() else 'not-a-dir',\n"
+            "}))\n"), repo=repo)
+
+JSON-LINE: "tests/quality/test_sandbox.py:152: "
+JSON-LINE: "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+env = {'HARNESSGRAD_WORK_ROOT': '/tmp/sharedrt-after/test_the_work_root_survives_an0/workroot'}
+work_dir = PosixPath('/tmp/sharedrt-after/test_the_work_root_survives_an0')
+script = "import json, os, pathlib\nw = pathlib.Path(os.environ['HARNESSGRAD_WORK_ROOT'])\np = pathlib.Path('/mnt/20t/xubuqiang...le': (p / 'harnessgrad').exists(),\n  'platform_listing': sorted(os.listdir(p)) if p.is_dir() else 'not-a-dir',\n}))\n"
+repo = PosixPath('/tmp/sharedrt-after/test_the_work_root_survives_an0/workroot/run-id/workspace')
+
+    def inside(env: dict[str, str], work_dir: Path, script: str,
+               repo: Path | None = None) -> dict:
+        """Run `script` in the sandbox and return what it saw."""
+        probe = work_dir / "probe.py"
+        probe.write_text(script)
+        proc = sandbox.run([sys.executable, str(probe)], platform=PLATFORM,
+                           work_root=WORK_ROOT, task_dir=work_dir, env=env,
+                           timeout_s=120, cwd=work_dir, repo=repo,
+                           state_dirs=(repo / ".state",) if repo else ())
+>       assert proc.returncode == 0, proc.stderr[-800:]
+E       AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON-LINE: "E         "
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+
+tests/quality/test_sandbox.py:52: AssertionError
+_______________ test_a_harness_can_actually_work_in_its_workdir ________________
+
+tmp_path = PosixPath('/tmp/sharedrt-after/test_a_harness_can_actually_wo0')
+
+    @needs_bwrap
+    def test_a_harness_can_actually_work_in_its_workdir(tmp_path):
+        """The sandbox must not break the thing a harness does all day: file I/O.
+JSON-LINE: "    "
+        Read-only applies to the harness's *own tree*, never to `--workdir`. The
+        reference harness executes model-issued shell commands with `cwd=workdir`, so a
+        read-only workdir would not be a stricter sandbox -- it would be a harness that
+        cannot do any task at all, scoring zero for a reason that looks like a harness
+        defect. Verified here in the shape the real one uses: nested mkdir, redirect,
+        read back, and a subprocess.
+JSON-LINE: "    "
+        Confirmed end to end separately: three tasks whose answers are only obtainable by
+        creating and re-reading a file scored 1.000/1.000 in the sandbox, with the
+        commands visible in the collected traces.
+        """
+        script = (
+            "import json, os, pathlib, subprocess, sys\n"
+            "wd = pathlib.Path(os.environ['TD'])\n"
+            "r = {}\n"
+            "def step(label, fn):\n"
+            "    try: r[label] = fn()\n"
+            "    except OSError as e: r[label] = type(e).__name__\n"
+            "step('mkdir', lambda: (wd / 'deep' / 'nested').mkdir(parents=True) or 'ok')\n"
+            "step('write', lambda: (wd / 'deep' / 'nested' / 'v.txt').write_text('gamma') and 'ok')\n"
+            "step('read', lambda: (wd / 'deep' / 'nested' / 'v.txt').read_text())\n"
+            "step('shell', lambda: subprocess.run(\n"
+            "    \"printf beta > notes.txt && cat notes.txt\", shell=True, cwd=wd,\n"
+            "    capture_output=True, text=True).stdout)\n"
+            "step('rmdir', lambda: (wd / 'deep').rename(wd / 'moved') and 'ok')\n"
+            "print(json.dumps(r))\n")
+>       seen = inside({"TD": str(tmp_path)}, tmp_path, script)
+
+JSON-LINE: "tests/quality/test_sandbox.py:200: "
+JSON-LINE: "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+env = {'TD': '/tmp/sharedrt-after/test_a_harness_can_actually_wo0'}
+work_dir = PosixPath('/tmp/sharedrt-after/test_a_harness_can_actually_wo0')
+script = "import json, os, pathlib, subprocess, sys\nwd = pathlib.Path(os.environ['TD'])\nr = {}\ndef step(label, fn):\n    try...t=True, text=True).stdout)\nstep('rmdir', lambda: (wd / 'deep').rename(wd / 'moved') and 'ok')\nprint(json.dumps(r))\n"
+repo = None
+
+    def inside(env: dict[str, str], work_dir: Path, script: str,
+               repo: Path | None = None) -> dict:
+        """Run `script` in the sandbox and return what it saw."""
+        probe = work_dir / "probe.py"
+        probe.write_text(script)
+        proc = sandbox.run([sys.executable, str(probe)], platform=PLATFORM,
+                           work_root=WORK_ROOT, task_dir=work_dir, env=env,
+                           timeout_s=120, cwd=work_dir, repo=repo,
+                           state_dirs=(repo / ".state",) if repo else ())
+>       assert proc.returncode == 0, proc.stderr[-800:]
+E       AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON-LINE: "E         "
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+
+tests/quality/test_sandbox.py:52: AssertionError
+____________________ test_the_harness_tree_stays_read_only _____________________
+
+tmp_path = PosixPath('/tmp/sharedrt-after/test_the_harness_tree_stays_re0')
+
+    @needs_bwrap
+    def test_the_harness_tree_stays_read_only(tmp_path):
+        """The other half: the subject's own source is not scratch space.
+JSON-LINE: "    "
+        One copy of the harness scores every task in a round, so a subject that rewrote
+        its own `agent.py` while answering task 1 would be a different program by task 2.
+        """
+>       seen = inside({}, tmp_path, (
+            "import json, os, pathlib\n"
+            "results = {}\n"
+            "for label, victim in [\n"
+            f"    ('write_source', pathlib.Path({str(WORK_ROOT)!r})),\n"
+            "]:\n"
+            "    try:\n"
+            "        (victim / 'probe_write').write_text('x'); results[label] = 'wrote'\n"
+            "    except OSError as e:\n"
+            "        results[label] = type(e).__name__\n"
+            "print(json.dumps(results))\n"))
+
+JSON-LINE: "tests/quality/test_sandbox.py:215: "
+JSON-LINE: "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+env = {}
+work_dir = PosixPath('/tmp/sharedrt-after/test_the_harness_tree_stays_re0')
+script = "import json, os, pathlib\nresults = {}\nfor label, victim in [\n    ('write_source', pathlib.Path('/mnt/20t/xubuqiang...ts[label] = 'wrote'\n    except OSError as e:\n        results[label] = type(e).__name__\nprint(json.dumps(results))\n"
+repo = None
+
+    def inside(env: dict[str, str], work_dir: Path, script: str,
+               repo: Path | None = None) -> dict:
+        """Run `script` in the sandbox and return what it saw."""
+        probe = work_dir / "probe.py"
+        probe.write_text(script)
+        proc = sandbox.run([sys.executable, str(probe)], platform=PLATFORM,
+                           work_root=WORK_ROOT, task_dir=work_dir, env=env,
+                           timeout_s=120, cwd=work_dir, repo=repo,
+                           state_dirs=(repo / ".state",) if repo else ())
+>       assert proc.returncode == 0, proc.stderr[-800:]
+E       AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON-LINE: "E         "
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+
+tests/quality/test_sandbox.py:52: AssertionError
+__________ test_the_harness_gets_a_writable_hole_in_a_read_only_tree ___________
+
+tmp_path = PosixPath('/tmp/sharedrt-after/test_the_harness_gets_a_writab0')
+staged_harness = (PosixPath('/tmp/sharedrt-after/test_the_harness_gets_a_writab0/workroot/run-id/workspace'), PosixPath('/tmp/sharedrt-after/test_the_harness_gets_a_writab0/workroot/run-id/workspace/.state'))
+
+    @needs_bwrap
+    def test_the_harness_gets_a_writable_hole_in_a_read_only_tree(tmp_path, staged_harness):
+        """The contract a harness actually needs: read its code, write its scratch.
+JSON-LINE: "    "
+        Read-only on the whole tree was too blunt. A harness legitimately wants to put a
+        cache, a session file or an intermediate artefact next to itself, and refusing
+        that would break working harnesses to prevent a failure that is better prevented
+        precisely -- by making the *code* unwritable and one named directory writable.
+JSON-LINE: "    "
+        A tmpfs rather than a shared directory, so what it writes is per-task: a score
+        must not depend on what an earlier task left behind.
+        """
+        repo, state = staged_harness
+>       seen = inside({"HARNESSGRAD_STATE": str(state), "TD": str(tmp_path)},
+                     tmp_path,
+            "import json, os, pathlib\nrepo = pathlib.Path(os.environ['HG_REPO'])\nstate = pathlib.Path(os.environ['HARNESSGRAD_STATE'])\ndef attempt(fn):\n    try:\n        fn(); return 'ok'\n    except OSError as exc:\n        return type(exc).__name__\nprint(json.dumps({\n  'read_source': attempt(lambda: repo.joinpath('agent.py').read_text() and 'ok'),\n  'write_source': attempt(lambda: repo.joinpath('agent.py').write_text('rewritten')),\n  'delete_manifest': attempt(lambda: repo.joinpath('harness.json').unlink()),\n  'write_state': attempt(lambda: state.joinpath('cache.json').write_text('{}')),\n  'mkdir_state': attempt(lambda: state.joinpath('nested').mkdir()),\n  'write_workdir': attempt(lambda: pathlib.Path(os.environ['TD']).joinpath('out.txt').write_text('x')),\n}))\n".replace("os.environ['HG_REPO']", repr(str(repo))),
+            repo=repo)
+
+JSON-LINE: "tests/quality/test_sandbox.py:242: "
+JSON-LINE: "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ "
+
+env = {'HARNESSGRAD_STATE': '/tmp/sharedrt-after/test_the_harness_gets_a_writab0/workroot/run-id/workspace/.state', 'TD': '/tmp/sharedrt-after/test_the_harness_gets_a_writab0'}
+work_dir = PosixPath('/tmp/sharedrt-after/test_the_harness_gets_a_writab0')
+script = "import json, os, pathlib\nrepo = pathlib.Path('/tmp/sharedrt-after/test_the_harness_gets_a_writab0/workroot/run-id/wo...ir()),\n  'write_workdir': attempt(lambda: pathlib.Path(os.environ['TD']).joinpath('out.txt').write_text('x')),\n}))\n"
+repo = PosixPath('/tmp/sharedrt-after/test_the_harness_gets_a_writab0/workroot/run-id/workspace')
+
+    def inside(env: dict[str, str], work_dir: Path, script: str,
+               repo: Path | None = None) -> dict:
+        """Run `script` in the sandbox and return what it saw."""
+        probe = work_dir / "probe.py"
+        probe.write_text(script)
+        proc = sandbox.run([sys.executable, str(probe)], platform=PLATFORM,
+                           work_root=WORK_ROOT, task_dir=work_dir, env=env,
+                           timeout_s=120, cwd=work_dir, repo=repo,
+                           state_dirs=(repo / ".state",) if repo else ())
+>       assert proc.returncode == 0, proc.stderr[-800:]
+E       AssertionError: bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory
+JSON-LINE: "E         "
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/usr/bin/bwrap', '--die-with-parent', '--unshare-pid', '--proc', '/proc', '--dev', '/dev', '--...dout='', stderr="bwrap: Can't find source path /mnt/20t/xubuqiang/hg-wt/harnessgrad_work: No such file or directory\n").returncode
+
+tests/quality/test_sandbox.py:52: AssertionError
+__________________ test_self_check_notices_a_plan_that_leaks ___________________
+
+tmp_path = PosixPath('/tmp/sharedrt-after/test_self_check_notices_a_plan0')
+
+    @needs_bwrap
+    def test_self_check_notices_a_plan_that_leaks(tmp_path):
+        """The self-check has to be able to fail, or it is decoration.
+JSON-LINE: "    "
+        A plan that actually exposes the platform must be caught. Note what does *not*
+        qualify: deleting every `--tmpfs` from the plan still leaves the platform
+        invisible, because bwrap starts from an empty root rather than inheriting the
+        host's. The first version of this test mutated the plan that way, saw the check
+        still pass, and would have been written off as a bug in the check -- it was a bug
+        in the mutation. The property under test is "can the subject see the platform",
+        so the mutation has to be one that makes the subject able to.
+JSON-LINE: "    "
+        The leaking plan binds the host root read-only, which is the realistic mistake:
+        it is the reflex fix for "my harness cannot find its interpreter".
+        """
+>       assert sandbox.self_check(PLATFORM, WORK_ROOT)["ok"] is True
+E       assert False is True
+
+tests/quality/test_sandbox.py:338: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_isolation.py::test_snapshot_covers_the_referee_not_the_candidate
+FAILED tests/quality/test_isolation.py::test_the_harness_cannot_read_the_platform_or_its_answers
+FAILED tests/quality/test_sandbox.py::test_the_platform_is_not_on_the_subjects_disk
+FAILED tests/quality/test_sandbox.py::test_the_subject_keeps_its_own_credentials
+FAILED tests/quality/test_sandbox.py::test_host_variables_are_not_mistaken_for_paths
+FAILED tests/quality/test_sandbox.py::test_the_work_root_survives_and_the_platform_does_not
+FAILED tests/quality/test_sandbox.py::test_a_harness_can_actually_work_in_its_workdir
+FAILED tests/quality/test_sandbox.py::test_the_harness_tree_stays_read_only
+FAILED tests/quality/test_sandbox.py::test_the_harness_gets_a_writable_hole_in_a_read_only_tree
+FAILED tests/quality/test_sandbox.py::test_self_check_notices_a_plan_that_leaks
+10 failed, 155 passed in 113.25s (0:01:53)
+
+[EXTRA BEFORE]
+COMMAND: TMPDIR=/tmp python3 -m pytest -q tests/quality/test_identity_and_verdicts.py tests/quality/test_states.py tests/quality/test_runtime_blocker_evidence_b7.py tests/quality/test_native_runtime_hostpin.py tests/quality/test_native_runtime_hp3.py tests/quality/test_native_runtime_hp4.py -k "not actual and not parent_and_child" --basetemp=/tmp/sharedrt-extra-before
+OBSERVED EXIT CODE: 1
+OBSERVED OUTPUT:
+............F............ss.....................                         [100%]
+=================================== FAILURES ===================================
+____ test_the_default_improver_is_still_resolved_when_none_is_not_asked_for ____
+
+tmp_path = PosixPath('/tmp/sharedrt-extra-before/test_the_default_improver_is_s0')
+
+    def test_the_default_improver_is_still_resolved_when_none_is_not_asked_for(tmp_path):
+        """反向的一半:不加 `--improver none` 时,默认改进器照旧要解析出来。
+JSON-LINE: "    "
+        否则这条修法就变成了"悄悄关掉记录 improver 的能力",而那会让真正用了改进器的
+        跑道失去归因。
+        """
+        runs = tmp_path / "runs"
+        argv = [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+                "--rounds", "1", "--run-id", "default-improver", "--dataset", "demo",
+                "--sampling", "all",
+                "--runs-root", str(runs), "--work-root", str(tmp_path / "work"),
+                "--method-entrypoint", f"{sys.executable} {ROOT / 'methods/noop/run.py'}"]
+        proc = subprocess.run(argv, cwd=ROOT, capture_output=True, text=True, timeout=300,
+                              env={**os.environ, "HG_AGENT_BACKEND": "mock"})
+        assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
+        points = [json.loads(l) for l in
+                  (runs / "default-improver" / "curve.jsonl").read_text().splitlines()
+                  if l.strip()]
+>       assert points and all("improver" in p["identity"] for p in points), (
+            "默认改进器没有被记录:" + str([p["identity"].get("improver") for p in points]))
+E       AssertionError: 默认改进器没有被记录:[None, None]
+E       assert ([{'cost': {'env_generation_tokens': None, 'env_services_reported': 0, 'evaluation_trials': 4, 'generation_tokens': 0, ...{'env_generation_tokens': None, 'env_services_reported': 0, 'evaluation_trials': 4, 'generation_tokens': 0, ...}, ...}] and False)
+E        +  where False = all(<generator object test_the_default_improver_is_still_resolved_when_none_is_not_asked_for.<locals>.<genexpr> at 0x7be23412f1d0>)
+
+tests/quality/test_identity_and_verdicts.py:282: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_identity_and_verdicts.py::test_the_default_improver_is_still_resolved_when_none_is_not_asked_for
+1 failed, 45 passed, 2 skipped, 9 deselected in 87.18s (0:01:27)
+
+[EXTRA AFTER]
+COMMAND: TMPDIR=/tmp python3 -m pytest -q tests/quality/test_identity_and_verdicts.py tests/quality/test_states.py tests/quality/test_runtime_blocker_evidence_b7.py tests/quality/test_native_runtime_hostpin.py tests/quality/test_native_runtime_hp3.py tests/quality/test_native_runtime_hp4.py -k "not actual and not parent_and_child" --basetemp=/tmp/sharedrt-extra
+OBSERVED EXIT CODE: 1
+OBSERVED OUTPUT:
+............F............ss.....................                         [100%]
+=================================== FAILURES ===================================
+____ test_the_default_improver_is_still_resolved_when_none_is_not_asked_for ____
+
+tmp_path = PosixPath('/tmp/sharedrt-extra/test_the_default_improver_is_s0')
+
+    def test_the_default_improver_is_still_resolved_when_none_is_not_asked_for(tmp_path):
+        """反向的一半:不加 `--improver none` 时,默认改进器照旧要解析出来。
+JSON-LINE: "    "
+        否则这条修法就变成了"悄悄关掉记录 improver 的能力",而那会让真正用了改进器的
+        跑道失去归因。
+        """
+        runs = tmp_path / "runs"
+        argv = [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+                "--rounds", "1", "--run-id", "default-improver", "--dataset", "demo",
+                "--sampling", "all",
+                "--runs-root", str(runs), "--work-root", str(tmp_path / "work"),
+                "--method-entrypoint", f"{sys.executable} {ROOT / 'methods/noop/run.py'}"]
+        proc = subprocess.run(argv, cwd=ROOT, capture_output=True, text=True, timeout=300,
+                              env={**os.environ, "HG_AGENT_BACKEND": "mock"})
+        assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
+        points = [json.loads(l) for l in
+                  (runs / "default-improver" / "curve.jsonl").read_text().splitlines()
+                  if l.strip()]
+>       assert points and all("improver" in p["identity"] for p in points), (
+            "默认改进器没有被记录:" + str([p["identity"].get("improver") for p in points]))
+E       AssertionError: 默认改进器没有被记录:[None, None]
+E       assert ([{'cost': {'env_generation_tokens': None, 'env_services_reported': 0, 'evaluation_trials': 4, 'generation_tokens': 0, ...{'env_generation_tokens': None, 'env_services_reported': 0, 'evaluation_trials': 4, 'generation_tokens': 0, ...}, ...}] and False)
+E        +  where False = all(<generator object test_the_default_improver_is_still_resolved_when_none_is_not_asked_for.<locals>.<genexpr> at 0x7f34e345edc0>)
+
+tests/quality/test_identity_and_verdicts.py:282: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_identity_and_verdicts.py::test_the_default_improver_is_still_resolved_when_none_is_not_asked_for
+1 failed, 45 passed, 2 skipped, 9 deselected in 56.62s
+
+[CONTRACTS BEFORE]
+COMMAND: TMPDIR=/tmp python3 -m pytest -q tests/quality/test_alfworld_dataset.py tests/quality/test_jericho_dataset.py tests/quality/test_scienceworld_dataset.py -k "not check and not oracle and not walkthrough and not environment_regenerates and not cli_can and not valid_actions and not goal_is_the_environment" --basetemp=/tmp/sharedrt-contracts-before
+OBSERVED EXIT CODE: 1
+OBSERVED OUTPUT:
+...........F....s......                                                  [100%]
+=================================== FAILURES ===================================
+________________ test_the_verifier_declares_the_contract_paths _________________
+
+jericho = <module 'data.datasets.jericho' from '/mnt/20t/xubuqiang/hg-wt/w-sharedrt/data/datasets/jericho.py'>
+
+    def test_the_verifier_declares_the_contract_paths(jericho):
+        for task_id, verifier in jericho.VERIFY.items():
+            assert verifier["kind"] == "command"
+            assert verifier["reward_file"] == "/verifier/reward.txt"
+            assert verifier["evidence_file"] == "/verifier/evidence.json"
+            for entry in verifier["inputs"]:
+                if "from" in entry:
+                    assert Path(entry["from"]).is_file(), (task_id, entry)
+                else:
+>                   assert entry["content"].strip()
+E                   AssertionError: assert ''
+E                    +  where '' = <built-in method strip of str object at 0x956e70>()
+E                    +    where <built-in method strip of str object at 0x956e70> = ''.strip
+
+tests/quality/test_jericho_dataset.py:230: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_jericho_dataset.py::test_the_verifier_declares_the_contract_paths
+1 failed, 21 passed, 1 skipped, 16 deselected in 1.42s
+
+[CONTRACTS AFTER]
+COMMAND: TMPDIR=/tmp python3 -m pytest -q tests/quality/test_alfworld_dataset.py tests/quality/test_jericho_dataset.py tests/quality/test_scienceworld_dataset.py -k "not check and not oracle and not walkthrough and not environment_regenerates and not cli_can and not valid_actions and not goal_is_the_environment" --basetemp=/tmp/sharedrt-contracts
+OBSERVED EXIT CODE: 1
+OBSERVED OUTPUT:
+...........F....s......                                                  [100%]
+=================================== FAILURES ===================================
+________________ test_the_verifier_declares_the_contract_paths _________________
+
+jericho = <module 'data.datasets.jericho' from '/mnt/20t/xubuqiang/hg-wt/w-sharedrt/data/datasets/jericho.py'>
+
+    def test_the_verifier_declares_the_contract_paths(jericho):
+        for task_id, verifier in jericho.VERIFY.items():
+            assert verifier["kind"] == "command"
+            assert verifier["reward_file"] == "/verifier/reward.txt"
+            assert verifier["evidence_file"] == "/verifier/evidence.json"
+            for entry in verifier["inputs"]:
+                if "from" in entry:
+                    assert Path(entry["from"]).is_file(), (task_id, entry)
+                else:
+>                   assert entry["content"].strip()
+E                   AssertionError: assert ''
+E                    +  where '' = <built-in method strip of str object at 0x956e70>()
+E                    +    where <built-in method strip of str object at 0x956e70> = ''.strip
+
+tests/quality/test_jericho_dataset.py:230: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_jericho_dataset.py::test_the_verifier_declares_the_contract_paths
+1 failed, 21 passed, 1 skipped, 16 deselected in 1.67s
+
+[FINAL INTEGRATION]
+COMMAND: TMPDIR=/tmp python3 -m pytest -q tests/quality/test_appworld_service_diagnosis.py tests/quality/test_native_runtime_hp4.py tests/quality/test_scienceworld_platform_writes_codex186.py -k "not actual and not parent_and_child" --basetemp=/tmp/sharedrt-final-integration
+OBSERVED EXIT CODE: 0
+OBSERVED OUTPUT:
+................                                                         [100%]
+16 passed, 4 deselected in 0.66s
+
+[FINAL FOCUSED]
+COMMAND: TMPDIR=/tmp python3 -m pytest -q -s tests/quality/test_sharedrt_immutable_runtimes.py --basetemp=/tmp/sharedrt-final-focused
+OBSERVED EXIT CODE: 0
+OBSERVED OUTPUT:
+............................{"task": 0, "verification": false, "runtime_bind": ["/tmp/sharedrt-final-focused/test_live_bwrap_two_tasks_reje0/shared-source", "/tmp/sharedrt-final-focused/test_live_bwrap_two_tasks_reje0/live-task-0/dojo_runtime"], "output": "authored runtime marker\n{\"write_errno\": 30}\n", "source_digest": "2e4bc3cbf04d50781428fd23653dfa4cda4991df76f7d1a4cd037f79cae662f3"}
+{"task": 1, "verification": false, "runtime_bind": ["/tmp/sharedrt-final-focused/test_live_bwrap_two_tasks_reje0/shared-source", "/tmp/sharedrt-final-focused/test_live_bwrap_two_tasks_reje0/live-task-1/dojo_runtime"], "output": "authored runtime marker\n{\"write_errno\": 30}\n", "source_digest": "2e4bc3cbf04d50781428fd23653dfa4cda4991df76f7d1a4cd037f79cae662f3"}
+.{"task": 0, "verification": true, "runtime_bind": ["/tmp/sharedrt-final-focused/test_live_bwrap_two_tasks_reje1/shared-source", "/tmp/sharedrt-final-focused/test_live_bwrap_two_tasks_reje1/live-task-0/dojo_runtime"], "output": "authored runtime marker\n{\"write_errno\": 30}\n", "source_digest": "2e4bc3cbf04d50781428fd23653dfa4cda4991df76f7d1a4cd037f79cae662f3"}
+{"task": 1, "verification": true, "runtime_bind": ["/tmp/sharedrt-final-focused/test_live_bwrap_two_tasks_reje1/shared-source", "/tmp/sharedrt-final-focused/test_live_bwrap_two_tasks_reje1/live-task-1/dojo_runtime"], "output": "authored runtime marker\n{\"write_errno\": 30}\n", "source_digest": "2e4bc3cbf04d50781428fd23653dfa4cda4991df76f7d1a4cd037f79cae662f3"}
+..............
+43 passed in 0.83s
+
+[RELATED COLLECTION]
+COMMAND: TMPDIR=/tmp python3 -m pytest --collect-only -q $(rg -l '_materialize|readonly_paths|sandbox\.command|container\.command' tests/quality)
+OBSERVED EXIT CODE: 0
+OBSERVED OUTPUT:
+tests/quality/test_twowikimultihopqa_structured.py::test_verbatim_upstream_region_is_unchanged
+tests/quality/test_twowikimultihopqa_structured.py::test_duplicate_answer_words_and_support_sets
+tests/quality/test_twowikimultihopqa_structured.py::test_support_case_normalization_occurs_after_deduplication
+tests/quality/test_twowikimultihopqa_structured.py::test_evidence_triples_normalization_aliases_and_input_immutability
+tests/quality/test_twowikimultihopqa_structured.py::test_evidence_does_not_strip_articles_or_reverse_triples
+tests/quality/test_twowikimultihopqa_structured.py::test_joint_f1_multiplies_precision_and_recall_not_component_f1s
+tests/quality/test_twowikimultihopqa_structured.py::test_alias_variants_preserve_upstream_evidence_matching_quirk
+tests/quality/test_twowikimultihopqa_structured.py::test_answer_alias_precision_and_recall_are_maximized_independently
+tests/quality/test_twowikimultihopqa_structured.py::test_missing_predictions_keep_the_entire_gold_denominator[answer]
+tests/quality/test_twowikimultihopqa_structured.py::test_missing_predictions_keep_the_entire_gold_denominator[supporting_facts]
+tests/quality/test_twowikimultihopqa_structured.py::test_missing_predictions_keep_the_entire_gold_denominator[evidence]
+tests/quality/test_twowikimultihopqa_structured.py::test_missing_predictions_keep_the_entire_gold_denominator[row]
+tests/quality/test_twowikimultihopqa_structured.py::test_omitted_channels_differ_from_explicit_empty_sets
+tests/quality/test_twowikimultihopqa_structured.py::test_answer_normalization_and_special_answers[The CITY!-city]
+tests/quality/test_twowikimultihopqa_structured.py::test_answer_normalization_and_special_answers[yes city-yes]
+tests/quality/test_twowikimultihopqa_structured.py::test_answer_normalization_and_special_answers[yes-no]
+tests/quality/test_twowikimultihopqa_structured.py::test_answer_normalization_and_special_answers[-]
+tests/quality/test_twowikimultihopqa_structured.py::test_malformed_contract_is_rejected[bad0]
+tests/quality/test_twowikimultihopqa_structured.py::test_malformed_contract_is_rejected[bad1]
+tests/quality/test_twowikimultihopqa_structured.py::test_malformed_contract_is_rejected[bad2]
+tests/quality/test_twowikimultihopqa_structured.py::test_malformed_contract_is_rejected[bad3]
+tests/quality/test_twowikimultihopqa_structured.py::test_malformed_contract_is_rejected[bad4]
+tests/quality/test_twowikimultihopqa_structured.py::test_malformed_contract_is_rejected[bad5]
+tests/quality/test_twowikimultihopqa_structured.py::test_malformed_contract_is_rejected[bad6]
+tests/quality/test_twowikimultihopqa_structured.py::test_malformed_contract_is_rejected[bad7]
+tests/quality/test_twowikimultihopqa_structured.py::test_malformed_contract_is_rejected[bad8]
+tests/quality/test_twowikimultihopqa_structured.py::test_malformed_contract_is_rejected[bad9]
+tests/quality/test_twowikimultihopqa_structured.py::test_malformed_contract_is_rejected[bad10]
+tests/quality/test_twowikimultihopqa_structured.py::test_missing_gold_is_a_scorer_error_and_empty_pool_is_rejected
+tests/quality/test_twowikimultihopqa_structured.py::test_invalid_gold_evidence_ids_are_rejected[ids0]
+tests/quality/test_twowikimultihopqa_structured.py::test_invalid_gold_evidence_ids_are_rejected[ids1]
+tests/quality/test_twowikimultihopqa_structured.py::test_legacy_mode_is_explicit_and_has_no_joint_claim
+tests/quality/test_twowikimultihopqa_structured.py::test_public_context_indices_and_trusted_gold_boundary
+tests/quality/test_twowikimultihopqa_structured.py::test_public_cli_to_materialized_verifier[full-1.0]
+tests/quality/test_twowikimultihopqa_structured.py::test_public_cli_to_materialized_verifier[partial-0.0]
+tests/quality/test_twowikimultihopqa_structured.py::test_public_cli_to_materialized_verifier[legacy-1.0]
+tests/quality/test_twowikimultihopqa_structured.py::test_public_cli_to_materialized_verifier[noop-0.0]
+tests/quality/test_twowikimultihopqa_structured.py::test_public_cli_to_materialized_verifier[malformed-None]
+tests/quality/test_twowikimultihopqa_structured.py::test_public_cli_to_materialized_verifier[bad-type-None]
+tests/quality/test_twowikimultihopqa_structured.py::test_public_cli_to_materialized_verifier[bad-key-None]
+tests/quality/test_twowikimultihopqa_structured.py::test_public_cli_to_materialized_verifier[bad-version-None]
+tests/quality/test_twowikimultihopqa_structured.py::test_public_cli_to_materialized_verifier[loop-object-1.0]
+tests/quality/test_twowikimultihopqa_structured.py::test_public_cli_to_materialized_verifier[loop-truncated-1.0]
+tests/quality/test_appworld_service_diagnosis.py::test_aw_dispatches_init_and_action[False]
+tests/quality/test_appworld_service_diagnosis.py::test_aw_dispatches_init_and_action[True]
+tests/quality/test_appworld_service_diagnosis.py::test_runner_mounts_dependency_overlay_once
+tests/quality/test_appworld_service_diagnosis.py::test_invalid_check_keeps_actor_failure_in_progress
+tests/quality/test_appworld_service_diagnosis.py::test_service_logs_survive_teardown_and_do_not_block_cleanup[False]
+tests/quality/test_appworld_service_diagnosis.py::test_service_logs_survive_teardown_and_do_not_block_cleanup[True]
+tests/quality/test_spreadsheetbench_control_submit.py::test_materialized_oracle_submits_and_scores_one
+tests/quality/test_spreadsheetbench_control_submit.py::test_failed_submission_prints_both_streams
+tests/quality/test_identity_and_verdicts.py::test_identical_content_gets_one_identity
+tests/quality/test_identity_and_verdicts.py::test_different_content_gets_a_different_identity
+tests/quality/test_identity_and_verdicts.py::test_the_harness_s_own_scratch_cannot_change_its_identity
+tests/quality/test_identity_and_verdicts.py::test_the_identity_can_still_be_materialized
+tests/quality/test_identity_and_verdicts.py::test_content_sha_is_stable_without_a_new_commit
+tests/quality/test_identity_and_verdicts.py::test_every_task_gets_a_verdict_file_saying_why
+tests/quality/test_identity_and_verdicts.py::test_round_0_and_later_rounds_both_record_verdicts
+tests/quality/test_identity_and_verdicts.py::test_the_check_s_own_output_reaches_the_event_stream
+tests/quality/test_identity_and_verdicts.py::test_a_run_whose_harness_did_not_change_reports_one_identity
+tests/quality/test_identity_and_verdicts.py::test_a_cached_round_still_explains_its_scores
+tests/quality/test_identity_and_verdicts.py::test_the_point_names_the_skill_the_method_was_given
+tests/quality/test_identity_and_verdicts.py::test_a_method_that_carries_its_own_improver_records_none
+tests/quality/test_identity_and_verdicts.py::test_the_default_improver_is_still_resolved_when_none_is_not_asked_for
+tests/quality/test_identity_and_verdicts.py::test_the_point_names_the_method_that_produced_the_candidate
+tests/quality/test_identity_and_verdicts.py::test_a_real_run_names_its_method_on_every_point
+tests/quality/test_identity_and_verdicts.py::test_the_check_s_own_tally_becomes_a_rate
+tests/quality/test_identity_and_verdicts.py::test_the_curve_point_always_says_whether_a_tally_existed
+tests/quality/test_identity_and_verdicts.py::test_a_verdict_file_carries_the_tally_not_only_the_sentence
+tests/quality/test_sandbox.py::test_the_platform_is_not_on_the_subjects_disk
+tests/quality/test_sandbox.py::test_the_subject_keeps_its_own_credentials
+tests/quality/test_sandbox.py::test_host_variables_are_not_mistaken_for_paths
+tests/quality/test_sandbox.py::test_the_work_root_survives_and_the_platform_does_not
+tests/quality/test_sandbox.py::test_a_harness_can_actually_work_in_its_workdir
+tests/quality/test_sandbox.py::test_the_harness_tree_stays_read_only
+tests/quality/test_sandbox.py::test_the_harness_gets_a_writable_hole_in_a_read_only_tree
+tests/quality/test_sandbox.py::test_a_missing_state_directory_refuses_rather_than_degrades
+tests/quality/test_sandbox.py::test_an_overlapping_work_root_is_refused
+tests/quality/test_sandbox.py::test_a_work_root_on_another_mount_is_supported
+tests/quality/test_sandbox.py::test_the_interpreter_is_never_hidden
+tests/quality/test_sandbox.py::test_missing_bwrap_refuses_rather_than_degrades
+tests/quality/test_sandbox.py::test_self_check_notices_a_plan_that_leaks
+tests/quality/test_container.py::test_a_harness_that_declares_only_files_is_refused_for_an_exec_dataset
+tests/quality/test_container.py::test_an_image_that_is_not_local_is_refused_rather_than_pulled
+tests/quality/test_container.py::test_a_tag_is_not_accepted_as_already_pinned
+tests/quality/test_container.py::test_running_an_unpinned_image_is_refused_at_the_call
+tests/quality/test_container.py::test_the_container_boundary_holds
+tests/quality/test_container.py::test_the_platform_is_invisible_inside_the_container
+tests/quality/test_container.py::test_only_declared_variables_cross_into_the_container
+tests/quality/test_container.py::test_each_container_run_starts_fresh
+tests/quality/test_container.py::test_the_task_mount_is_read_only_for_the_check
+tests/quality/test_container.py::test_a_working_exec_harness_is_unmeasured_without_backend_observations
+tests/quality/test_container.py::test_an_idle_exec_harness_is_invalid_rather_than_zero
+tests/quality/test_container.py::test_the_check_reports_the_images_interpreter_not_the_hosts
+tests/quality/test_container.py::test_a_cheating_exec_harness_cannot_bypass_policy_admission
+tests/quality/test_container.py::test_the_cheat_would_pass_if_the_inputs_were_not_restored
+tests/quality/test_container.py::test_an_unmeasured_exec_environment_is_recorded_without_a_curve
+tests/quality/test_container.py::test_files_datasets_still_record_a_files_environment
+tests/quality/test_container.py::test_the_derived_dockerfile_bakes_the_install_in
+tests/quality/test_container.py::test_an_unrecognised_install_file_is_refused_rather_than_guessed_at
+tests/quality/test_container.py::test_a_harness_that_declares_no_install_is_not_an_error
+tests/quality/test_container.py::test_a_missing_install_file_is_refused
+tests/quality/test_container.py::test_importing_a_harness_actually_runs_its_install
+tests/quality/test_container.py::test_a_refused_run_still_records_the_resolved_image
+tests/quality/test_container.py::test_no_sandbox_does_not_bypass_exec_policy_admission
+tests/quality/test_container.py::test_snapshot_admission_rejects_writable_layer_before_commit
+tests/quality/test_container.py::test_commit_exit_137_is_classified_as_oom
+tests/quality/test_container.py::test_commit_disk_and_resource_errors_are_classified
+tests/quality/test_qa_dataset_contract.py::test_the_split_covers_every_task_exactly_once[gsm8k]
+tests/quality/test_qa_dataset_contract.py::test_the_split_covers_every_task_exactly_once[triviaqa]
+tests/quality/test_qa_dataset_contract.py::test_the_split_covers_every_task_exactly_once[strategyqa]
+tests/quality/test_qa_dataset_contract.py::test_the_split_covers_every_task_exactly_once[sportsunderstanding]
+tests/quality/test_qa_dataset_contract.py::test_the_split_covers_every_task_exactly_once[physicsquestions]
+tests/quality/test_qa_dataset_contract.py::test_the_split_covers_every_task_exactly_once[bfcl_v3]
+tests/quality/test_qa_dataset_contract.py::test_the_split_covers_every_task_exactly_once[chessbench_puzzles]
+tests/quality/test_qa_dataset_contract.py::test_the_split_covers_every_task_exactly_once[musique]
+tests/quality/test_qa_dataset_contract.py::test_the_split_covers_every_task_exactly_once[reasoning_gym]
+tests/quality/test_qa_dataset_contract.py::test_the_split_covers_every_task_exactly_once[twowikimultihopqa]
+tests/quality/test_qa_dataset_contract.py::test_the_split_covers_every_task_exactly_once[fever]
+tests/quality/test_qa_dataset_contract.py::test_the_split_covers_every_task_exactly_once[hotpotqa]
+tests/quality/test_qa_dataset_contract.py::test_every_task_has_a_goal_and_the_interface_it_needs[gsm8k]
+tests/quality/test_qa_dataset_contract.py::test_every_task_has_a_goal_and_the_interface_it_needs[triviaqa]
+tests/quality/test_qa_dataset_contract.py::test_every_task_has_a_goal_and_the_interface_it_needs[strategyqa]
+tests/quality/test_qa_dataset_contract.py::test_every_task_has_a_goal_and_the_interface_it_needs[sportsunderstanding]
+tests/quality/test_qa_dataset_contract.py::test_every_task_has_a_goal_and_the_interface_it_needs[physicsquestions]
+tests/quality/test_qa_dataset_contract.py::test_every_task_has_a_goal_and_the_interface_it_needs[bfcl_v3]
+tests/quality/test_qa_dataset_contract.py::test_every_task_has_a_goal_and_the_interface_it_needs[chessbench_puzzles]
+tests/quality/test_qa_dataset_contract.py::test_every_task_has_a_goal_and_the_interface_it_needs[musique]
+tests/quality/test_qa_dataset_contract.py::test_every_task_has_a_goal_and_the_interface_it_needs[reasoning_gym]
+tests/quality/test_qa_dataset_contract.py::test_every_task_has_a_goal_and_the_interface_it_needs[twowikimultihopqa]
+tests/quality/test_qa_dataset_contract.py::test_every_task_has_a_goal_and_the_interface_it_needs[fever]
+tests/quality/test_qa_dataset_contract.py::test_every_task_has_a_goal_and_the_interface_it_needs[hotpotqa]
+tests/quality/test_qa_dataset_contract.py::test_a_task_dict_carries_no_grade[gsm8k]
+tests/quality/test_qa_dataset_contract.py::test_a_task_dict_carries_no_grade[triviaqa]
+tests/quality/test_qa_dataset_contract.py::test_a_task_dict_carries_no_grade[strategyqa]
+tests/quality/test_qa_dataset_contract.py::test_a_task_dict_carries_no_grade[sportsunderstanding]
+tests/quality/test_qa_dataset_contract.py::test_a_task_dict_carries_no_grade[physicsquestions]
+tests/quality/test_qa_dataset_contract.py::test_a_task_dict_carries_no_grade[bfcl_v3]
+tests/quality/test_qa_dataset_contract.py::test_a_task_dict_carries_no_grade[chessbench_puzzles]
+tests/quality/test_qa_dataset_contract.py::test_a_task_dict_carries_no_grade[musique]
+tests/quality/test_qa_dataset_contract.py::test_a_task_dict_carries_no_grade[reasoning_gym]
+tests/quality/test_qa_dataset_contract.py::test_a_task_dict_carries_no_grade[twowikimultihopqa]
+tests/quality/test_qa_dataset_contract.py::test_a_task_dict_carries_no_grade[fever]
+tests/quality/test_qa_dataset_contract.py::test_a_task_dict_carries_no_grade[hotpotqa]
+tests/quality/test_qa_dataset_contract.py::test_the_verifier_declares_the_contract_paths[gsm8k]
+tests/quality/test_qa_dataset_contract.py::test_the_verifier_declares_the_contract_paths[triviaqa]
+tests/quality/test_qa_dataset_contract.py::test_the_verifier_declares_the_contract_paths[strategyqa]
+tests/quality/test_qa_dataset_contract.py::test_the_verifier_declares_the_contract_paths[sportsunderstanding]
+tests/quality/test_qa_dataset_contract.py::test_the_verifier_declares_the_contract_paths[physicsquestions]
+tests/quality/test_qa_dataset_contract.py::test_the_verifier_declares_the_contract_paths[bfcl_v3]
+tests/quality/test_qa_dataset_contract.py::test_the_verifier_declares_the_contract_paths[chessbench_puzzles]
+tests/quality/test_qa_dataset_contract.py::test_the_verifier_declares_the_contract_paths[musique]
+tests/quality/test_qa_dataset_contract.py::test_the_verifier_declares_the_contract_paths[reasoning_gym]
+tests/quality/test_qa_dataset_contract.py::test_the_verifier_declares_the_contract_paths[twowikimultihopqa]
+tests/quality/test_qa_dataset_contract.py::test_the_verifier_declares_the_contract_paths[fever]
+tests/quality/test_qa_dataset_contract.py::test_the_verifier_declares_the_contract_paths[hotpotqa]
+tests/quality/test_qa_dataset_contract.py::test_every_verifier_input_is_re_materializable[gsm8k]
+tests/quality/test_qa_dataset_contract.py::test_every_verifier_input_is_re_materializable[triviaqa]
+tests/quality/test_qa_dataset_contract.py::test_every_verifier_input_is_re_materializable[strategyqa]
+tests/quality/test_qa_dataset_contract.py::test_every_verifier_input_is_re_materializable[sportsunderstanding]
+tests/quality/test_qa_dataset_contract.py::test_every_verifier_input_is_re_materializable[physicsquestions]
+tests/quality/test_qa_dataset_contract.py::test_every_verifier_input_is_re_materializable[bfcl_v3]
+tests/quality/test_qa_dataset_contract.py::test_every_verifier_input_is_re_materializable[chessbench_puzzles]
+tests/quality/test_qa_dataset_contract.py::test_every_verifier_input_is_re_materializable[musique]
+tests/quality/test_qa_dataset_contract.py::test_every_verifier_input_is_re_materializable[reasoning_gym]
+tests/quality/test_qa_dataset_contract.py::test_every_verifier_input_is_re_materializable[twowikimultihopqa]
+tests/quality/test_qa_dataset_contract.py::test_every_verifier_input_is_re_materializable[fever]
+tests/quality/test_qa_dataset_contract.py::test_every_verifier_input_is_re_materializable[hotpotqa]
+tests/quality/test_qa_dataset_contract.py::test_the_gold_is_inside_the_package_that_travels[gsm8k]
+tests/quality/test_qa_dataset_contract.py::test_the_gold_is_inside_the_package_that_travels[triviaqa]
+tests/quality/test_qa_dataset_contract.py::test_the_gold_is_inside_the_package_that_travels[strategyqa]
+tests/quality/test_qa_dataset_contract.py::test_the_gold_is_inside_the_package_that_travels[sportsunderstanding]
+tests/quality/test_qa_dataset_contract.py::test_the_gold_is_inside_the_package_that_travels[physicsquestions]
+tests/quality/test_qa_dataset_contract.py::test_the_gold_is_inside_the_package_that_travels[bfcl_v3]
+tests/quality/test_qa_dataset_contract.py::test_the_gold_is_inside_the_package_that_travels[chessbench_puzzles]
+tests/quality/test_qa_dataset_contract.py::test_the_gold_is_inside_the_package_that_travels[musique]
+tests/quality/test_qa_dataset_contract.py::test_the_gold_is_inside_the_package_that_travels[reasoning_gym]
+tests/quality/test_qa_dataset_contract.py::test_the_gold_is_inside_the_package_that_travels[twowikimultihopqa]
+tests/quality/test_qa_dataset_contract.py::test_the_gold_is_inside_the_package_that_travels[fever]
+tests/quality/test_qa_dataset_contract.py::test_the_gold_is_inside_the_package_that_travels[hotpotqa]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_the_reference_answer_as_one[gsm8k]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_the_reference_answer_as_one[triviaqa]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_the_reference_answer_as_one[strategyqa]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_the_reference_answer_as_one[sportsunderstanding]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_the_reference_answer_as_one[physicsquestions]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_the_reference_answer_as_one[bfcl_v3]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_the_reference_answer_as_one[chessbench_puzzles]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_the_reference_answer_as_one[musique]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_the_reference_answer_as_one[reasoning_gym]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_the_reference_answer_as_one[twowikimultihopqa]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_the_reference_answer_as_one[fever]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_the_reference_answer_as_one[hotpotqa]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_no_answer_as_zero[gsm8k]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_no_answer_as_zero[triviaqa]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_no_answer_as_zero[strategyqa]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_no_answer_as_zero[sportsunderstanding]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_no_answer_as_zero[physicsquestions]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_no_answer_as_zero[bfcl_v3]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_no_answer_as_zero[chessbench_puzzles]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_no_answer_as_zero[musique]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_no_answer_as_zero[reasoning_gym]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_no_answer_as_zero[twowikimultihopqa]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_no_answer_as_zero[fever]
+tests/quality/test_qa_dataset_contract.py::test_the_check_grades_no_answer_as_zero[hotpotqa]
+tests/quality/test_qa_dataset_contract.py::test_the_check_re_materializes_the_gold[gsm8k]
+tests/quality/test_qa_dataset_contract.py::test_the_check_re_materializes_the_gold[triviaqa]
+tests/quality/test_qa_dataset_contract.py::test_the_check_re_materializes_the_gold[strategyqa]
+tests/quality/test_qa_dataset_contract.py::test_the_check_re_materializes_the_gold[sportsunderstanding]
+tests/quality/test_qa_dataset_contract.py::test_the_check_re_materializes_the_gold[physicsquestions]
+tests/quality/test_qa_dataset_contract.py::test_the_check_re_materializes_the_gold[bfcl_v3]
+tests/quality/test_qa_dataset_contract.py::test_the_check_re_materializes_the_gold[chessbench_puzzles]
+tests/quality/test_qa_dataset_contract.py::test_the_check_re_materializes_the_gold[musique]
+tests/quality/test_qa_dataset_contract.py::test_the_check_re_materializes_the_gold[reasoning_gym]
+tests/quality/test_qa_dataset_contract.py::test_the_check_re_materializes_the_gold[twowikimultihopqa]
+tests/quality/test_qa_dataset_contract.py::test_the_check_re_materializes_the_gold[fever]
+tests/quality/test_qa_dataset_contract.py::test_the_check_re_materializes_the_gold[hotpotqa]
+tests/quality/test_qa_dataset_contract.py::test_the_check_reports_unmeasured_when_its_gold_is_absent[gsm8k]
+tests/quality/test_qa_dataset_contract.py::test_the_check_reports_unmeasured_when_its_gold_is_absent[triviaqa]
+tests/quality/test_qa_dataset_contract.py::test_the_check_reports_unmeasured_when_its_gold_is_absent[strategyqa]
+tests/quality/test_qa_dataset_contract.py::test_the_check_reports_unmeasured_when_its_gold_is_absent[sportsunderstanding]
+tests/quality/test_qa_dataset_contract.py::test_the_check_reports_unmeasured_when_its_gold_is_absent[physicsquestions]
+tests/quality/test_qa_dataset_contract.py::test_the_check_reports_unmeasured_when_its_gold_is_absent[bfcl_v3]
+tests/quality/test_qa_dataset_contract.py::test_the_check_reports_unmeasured_when_its_gold_is_absent[chessbench_puzzles]
+tests/quality/test_qa_dataset_contract.py::test_the_check_reports_unmeasured_when_its_gold_is_absent[musique]
+tests/quality/test_qa_dataset_contract.py::test_the_check_reports_unmeasured_when_its_gold_is_absent[reasoning_gym]
+tests/quality/test_qa_dataset_contract.py::test_the_check_reports_unmeasured_when_its_gold_is_absent[twowikimultihopqa]
+tests/quality/test_qa_dataset_contract.py::test_the_check_reports_unmeasured_when_its_gold_is_absent[fever]
+tests/quality/test_qa_dataset_contract.py::test_the_check_reports_unmeasured_when_its_gold_is_absent[hotpotqa]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_refuses_an_empty_answer[gsm8k]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_refuses_an_empty_answer[triviaqa]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_refuses_an_empty_answer[strategyqa]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_refuses_an_empty_answer[sportsunderstanding]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_refuses_an_empty_answer[physicsquestions]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_refuses_an_empty_answer[bfcl_v3]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_refuses_an_empty_answer[chessbench_puzzles]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_refuses_an_empty_answer[musique]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_refuses_an_empty_answer[reasoning_gym]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_refuses_an_empty_answer[twowikimultihopqa]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_refuses_an_empty_answer[fever]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_refuses_an_empty_answer[hotpotqa]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_can_submit_from_a_file_and_from_stdin[gsm8k]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_can_submit_from_a_file_and_from_stdin[triviaqa]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_can_submit_from_a_file_and_from_stdin[strategyqa]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_can_submit_from_a_file_and_from_stdin[sportsunderstanding]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_can_submit_from_a_file_and_from_stdin[physicsquestions]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_can_submit_from_a_file_and_from_stdin[bfcl_v3]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_can_submit_from_a_file_and_from_stdin[chessbench_puzzles]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_can_submit_from_a_file_and_from_stdin[musique]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_can_submit_from_a_file_and_from_stdin[reasoning_gym]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_can_submit_from_a_file_and_from_stdin[twowikimultihopqa]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_can_submit_from_a_file_and_from_stdin[fever]
+tests/quality/test_qa_dataset_contract.py::test_the_cli_can_submit_from_a_file_and_from_stdin[hotpotqa]
+tests/quality/test_qa_dataset_contract.py::test_dataset_private_modules_do_not_collide_by_bare_name
+tests/quality/test_alfworld_dataset.py::test_load_returns_the_benchmark_task_list
+tests/quality/test_alfworld_dataset.py::test_the_split_covers_every_task_once
+tests/quality/test_alfworld_dataset.py::test_the_goal_is_the_environment_s_own_word_for_word
+tests/quality/test_alfworld_dataset.py::test_the_reference_solution_is_stripped_from_the_agent_s_game
+tests/quality/test_alfworld_dataset.py::test_the_verifier_declares_the_contract_paths
+tests/quality/test_alfworld_dataset.py::test_the_step_budget_is_declared_once
+tests/quality/test_alfworld_dataset.py::test_the_check_re_materializes_its_inputs
+tests/quality/test_alfworld_dataset.py::test_the_sandboxed_check_can_still_write_its_verdict
+tests/quality/test_native_runtime_hp3.py::test_admission_receipt_uses_selected_dataset[jericho]
+tests/quality/test_native_runtime_hp3.py::test_admission_receipt_uses_selected_dataset[alfworld]
+tests/quality/test_native_runtime_hp3.py::test_adapter_binds_independent_pin[jericho]
+tests/quality/test_native_runtime_hp3.py::test_adapter_binds_independent_pin[alfworld]
+tests/quality/test_native_runtime_hp3.py::test_route_mismatch_and_payload_refusal[jericho]
+tests/quality/test_native_runtime_hp3.py::test_route_mismatch_and_payload_refusal[alfworld]
+tests/quality/test_native_runtime_hp3.py::test_actual_bound_replay_and_input_refusal[jericho]
+tests/quality/test_native_runtime_hp3.py::test_actual_bound_replay_and_input_refusal[alfworld]
+tests/quality/test_native_runtime_hp3.py::test_parent_and_child_replay_only_load_admitted_bytes[jericho]
+tests/quality/test_native_runtime_hp3.py::test_parent_and_child_replay_only_load_admitted_bytes[alfworld]
+tests/quality/test_native_runtime_hp3.py::test_admitted_runtime_can_repeat_readline_startup
+tests/quality/test_scienceworld_platform_writes_codex186.py::test_native_plan_hides_platform_and_freezes_source[False]
+tests/quality/test_scienceworld_platform_writes_codex186.py::test_native_plan_hides_platform_and_freezes_source[True]
+tests/quality/test_scienceworld_platform_writes_codex186.py::test_method_plan_restores_only_readonly_program_paths
+tests/quality/test_scienceworld_platform_writes_codex186.py::test_unavailable_sandbox_refuses_before_any_process
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_selected_spec_pins_every_actual_input[alfworld]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_matching_check_records_consumed_input[alfworld]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_each_foreign_payload_is_refused_before_boundary[alfworld]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_replacing_original_after_authentication_preserves_private_inputs[alfworld]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[alfworld-missing]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[alfworld-foreign-task]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[alfworld-foreign-digest]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[alfworld-foreign-files]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[alfworld-unverified]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_foreign_spec_cannot_be_used_for_selected_task[alfworld]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_dispatch_requires_independent_selected_task[alfworld]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[alfworld-matching]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[alfworld-foreign-payload]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[alfworld-unbound-check]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_input_binding_preserves_scoring_valueerror[alfworld]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_selected_spec_pins_every_actual_input[bird_minidev]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_matching_check_records_consumed_input[bird_minidev]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_each_foreign_payload_is_refused_before_boundary[bird_minidev]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_replacing_original_after_authentication_preserves_private_inputs[bird_minidev]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[bird_minidev-missing]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[bird_minidev-foreign-task]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[bird_minidev-foreign-digest]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[bird_minidev-foreign-files]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[bird_minidev-unverified]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_foreign_spec_cannot_be_used_for_selected_task[bird_minidev]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_dispatch_requires_independent_selected_task[bird_minidev]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[bird_minidev-matching]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[bird_minidev-foreign-payload]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[bird_minidev-unbound-check]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_input_binding_preserves_scoring_valueerror[bird_minidev]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_selected_spec_pins_every_actual_input[ds1000]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_matching_check_records_consumed_input[ds1000]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_each_foreign_payload_is_refused_before_boundary[ds1000]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_replacing_original_after_authentication_preserves_private_inputs[ds1000]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[ds1000-missing]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[ds1000-foreign-task]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[ds1000-foreign-digest]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[ds1000-foreign-files]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[ds1000-unverified]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_foreign_spec_cannot_be_used_for_selected_task[ds1000]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_dispatch_requires_independent_selected_task[ds1000]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[ds1000-matching]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[ds1000-foreign-payload]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[ds1000-unbound-check]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_input_binding_preserves_scoring_valueerror[ds1000]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_selected_spec_pins_every_actual_input[jericho]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_matching_check_records_consumed_input[jericho]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_each_foreign_payload_is_refused_before_boundary[jericho]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_replacing_original_after_authentication_preserves_private_inputs[jericho]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[jericho-missing]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[jericho-foreign-task]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[jericho-foreign-digest]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[jericho-foreign-files]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[jericho-unverified]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_foreign_spec_cannot_be_used_for_selected_task[jericho]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_dispatch_requires_independent_selected_task[jericho]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[jericho-matching]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[jericho-foreign-payload]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[jericho-unbound-check]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_input_binding_preserves_scoring_valueerror[jericho]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_selected_spec_pins_every_actual_input[livecodebench]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_matching_check_records_consumed_input[livecodebench]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_each_foreign_payload_is_refused_before_boundary[livecodebench]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_replacing_original_after_authentication_preserves_private_inputs[livecodebench]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[livecodebench-missing]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[livecodebench-foreign-task]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[livecodebench-foreign-digest]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[livecodebench-foreign-files]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[livecodebench-unverified]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_foreign_spec_cannot_be_used_for_selected_task[livecodebench]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_dispatch_requires_independent_selected_task[livecodebench]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[livecodebench-matching]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[livecodebench-foreign-payload]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[livecodebench-unbound-check]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_input_binding_preserves_scoring_valueerror[livecodebench]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_selected_spec_pins_every_actual_input[scienceworld]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_matching_check_records_consumed_input[scienceworld]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_each_foreign_payload_is_refused_before_boundary[scienceworld]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_replacing_original_after_authentication_preserves_private_inputs[scienceworld]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[scienceworld-missing]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[scienceworld-foreign-task]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[scienceworld-foreign-digest]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[scienceworld-foreign-files]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[scienceworld-unverified]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_foreign_spec_cannot_be_used_for_selected_task[scienceworld]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_dispatch_requires_independent_selected_task[scienceworld]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[scienceworld-matching]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[scienceworld-foreign-payload]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[scienceworld-unbound-check]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_input_binding_preserves_scoring_valueerror[scienceworld]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_selected_spec_pins_every_actual_input[spreadsheetbench]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_matching_check_records_consumed_input[spreadsheetbench]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_each_foreign_payload_is_refused_before_boundary[spreadsheetbench]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_replacing_original_after_authentication_preserves_private_inputs[spreadsheetbench]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[spreadsheetbench-missing]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[spreadsheetbench-foreign-task]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[spreadsheetbench-foreign-digest]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[spreadsheetbench-foreign-files]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_native_dispatch_refuses_broken_consumption_receipt[spreadsheetbench-unverified]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_foreign_spec_cannot_be_used_for_selected_task[spreadsheetbench]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_dispatch_requires_independent_selected_task[spreadsheetbench]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[spreadsheetbench-matching]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[spreadsheetbench-foreign-payload]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[spreadsheetbench-unbound-check]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_input_binding_preserves_scoring_valueerror[spreadsheetbench]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_ds1000_context_is_trusted_rematerialized_input
+tests/quality/test_runtime_blocker_evidence_b7.py::test_parent_observer_detects_effective_mount_regression
+tests/quality/test_runtime_blocker_evidence_b7.py::test_jericho_selected_runtime_and_control_have_parent_receipts
+tests/quality/test_gsm8k_dataset.py::test_load_preserves_the_declared_split_labels_on_synthetic_rows
+tests/quality/test_gsm8k_dataset.py::test_the_official_evaluation_set_is_exactly_the_test_split
+tests/quality/test_gsm8k_dataset.py::test_the_declared_division_is_not_the_platform_hash_division
+tests/quality/test_gsm8k_dataset.py::test_the_split_covers_every_task_exactly_once
+tests/quality/test_gsm8k_dataset.py::test_the_goal_carries_the_question_and_no_answer
+tests/quality/test_gsm8k_dataset.py::test_the_task_dict_carries_no_grade
+tests/quality/test_gsm8k_dataset.py::test_the_verifier_declares_the_contract_paths
+tests/quality/test_gsm8k_dataset.py::test_every_verifier_input_is_re_materializable
+tests/quality/test_gsm8k_dataset.py::test_the_check_grades_the_reference_answer_as_one
+tests/quality/test_gsm8k_dataset.py::test_the_check_preserves_decimal_extraction_and_metric_identity
+tests/quality/test_gsm8k_dataset.py::test_the_check_grades_no_answer_as_zero
+tests/quality/test_gsm8k_dataset.py::test_the_check_grades_a_wrong_answer_as_zero
+tests/quality/test_gsm8k_dataset.py::test_the_check_re_materializes_the_gold
+tests/quality/test_gsm8k_dataset.py::test_the_check_reports_unmeasured_when_the_gold_is_absent
+tests/quality/test_gsm8k_dataset.py::test_the_cli_refuses_an_empty_answer
+tests/quality/test_gsm8k_dataset.py::test_a_quoted_answer_is_unwrapped_before_scoring
+tests/quality/test_states.py::test_every_round_becomes_a_directory_a_method_can_build_on
+tests/quality/test_states.py::test_the_channel_is_not_copied_into_the_states
+tests/quality/test_states.py::test_the_index_says_what_exists_and_where
+tests/quality/test_states.py::test_the_window_is_capped_and_says_so
+tests/quality/test_states.py::test_a_state_that_cannot_be_materialized_is_absent_from_the_index
+tests/quality/test_states.py::test_materialize_reads_dangling_commits
+tests/quality/test_states.py::test_the_default_skill_travels_in_the_channel
+tests/quality/test_triviaqa_identity_codex215.py::test_materialized_verifier_preserves_scorer_identity[text-Invented Blue Town-1]
+tests/quality/test_triviaqa_identity_codex215.py::test_materialized_verifier_preserves_scorer_identity[text-wrong-0]
+tests/quality/test_triviaqa_identity_codex215.py::test_materialized_verifier_preserves_scorer_identity[structured-Invented Blue Town-1]
+tests/quality/test_triviaqa_identity_codex215.py::test_materialized_verifier_preserves_scorer_identity[structured-wrong-0]
+tests/quality/test_triviaqa_identity_codex215.py::test_materialized_verifier_preserves_scorer_identity[text--0]
+tests/quality/test_triviaqa_identity_codex215.py::test_materialized_verifier_preserves_scorer_identity[missing-None-0]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_no_materialized_host_runtime_and_exact_backend_plans[False]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_no_materialized_host_runtime_and_exact_backend_plans[True]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[files-missing-setup]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[files-missing-verify]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[files-relative-setup]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[files-relative-verify]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[files-symlink-setup]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[files-symlink-verify]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[files-file-setup]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[files-file-verify]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[files-parent-symlink-setup]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[files-parent-symlink-verify]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[exec-missing-setup]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[exec-missing-verify]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[exec-relative-setup]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[exec-relative-verify]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[exec-symlink-setup]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[exec-symlink-verify]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[exec-file-setup]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[exec-file-verify]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[exec-parent-symlink-setup]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_bad_source_is_invalid_before_any_sandbox[exec-parent-symlink-verify]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_invalid_destination_is_refused[]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_invalid_destination_is_refused[.]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_invalid_destination_is_refused[../runtime]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_invalid_destination_is_refused[/runtime]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_two_task_runs_share_source_and_restore_mutable_verifier_inputs[files]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_two_task_runs_share_source_and_restore_mutable_verifier_inputs[exec]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_live_bwrap_two_tasks_reject_writes_and_keep_digest[False]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_live_bwrap_two_tasks_reject_writes_and_keep_digest[True]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_unavailable_bwrap_and_docker_mount_failure_fail_closed
+tests/quality/test_sharedrt_immutable_runtimes.py::test_verification_target_symlink_is_unmeasured_without_launch
+tests/quality/test_sharedrt_immutable_runtimes.py::test_setup_verify_same_projection_is_bound_once[files]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_setup_verify_same_projection_is_bound_once[exec]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_sealed_native_verifier_plan_projects_same_source
+tests/quality/test_sharedrt_immutable_runtimes.py::test_backend_bind_failure_makes_task_invalid[agent-files]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_backend_bind_failure_makes_task_invalid[agent-exec]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_backend_bind_failure_makes_task_invalid[verify-files]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_backend_bind_failure_makes_task_invalid[verify-exec]
+tests/quality/test_sharedrt_immutable_runtimes.py::test_four_dataset_flags_keep_runtime_paths
+tests/quality/test_sharedrt_immutable_runtimes.py::test_live_runner_keeps_mutable_antitamper_with_shared_runtimes
+tests/quality/test_scienceworld_dataset.py::test_the_task_set_is_the_official_test_fold
+tests/quality/test_scienceworld_dataset.py::test_the_split_covers_every_task_once_and_both_sides_are_not_empty
+tests/quality/test_scienceworld_dataset.py::test_no_gold_path_exceeds_the_step_budget
+tests/quality/test_scienceworld_dataset.py::test_the_test_fold_file_is_the_archive
+tests/quality/test_scienceworld_dataset.py::test_every_task_has_a_goal_naming_the_interface
+tests/quality/test_scienceworld_dataset.py::test_a_task_dict_carries_no_grade
+tests/quality/test_scienceworld_dataset.py::test_the_gold_path_is_not_in_anything_the_agent_receives
+tests/quality/test_scienceworld_dataset.py::test_the_goal_does_not_contain_the_reference_solution
+tests/quality/test_scienceworld_dataset.py::test_java_home_is_absolute
+tests/quality/test_scienceworld_dataset.py::test_a_missing_jvm_is_an_error_not_a_silent_downgrade
+tests/quality/test_scienceworld_dataset.py::test_the_oracle_gold_path_for_the_eval_task_reaches_100
+tests/quality/test_scienceworld_dataset.py::test_the_environment_regenerates_the_fold_s_own_gold
+tests/quality/test_scienceworld_dataset.py::test_the_check_grades_the_reference_actions_as_one
+tests/quality/test_scienceworld_dataset.py::test_the_check_grades_no_actions_as_zero
+tests/quality/test_scienceworld_dataset.py::test_the_check_re_materializes_the_task
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_legal_sequence
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_bad_sequence_has_explicit_verdict[e7e4-illegal_move]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_bad_sequence_has_explicit_verdict[e2e4-illegal_move]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_bad_sequence_has_explicit_verdict[0000-illegal_move]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_bad_sequence_has_explicit_verdict[not-uci-invalid_move]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_bad_sequence_has_explicit_verdict[e7e5 not-uci-invalid_move]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_bad_sequence_has_explicit_verdict[b8c6 e7e5-wrong_move]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_bad_sequence_has_explicit_verdict[e7e5 a7a6-wrong_move]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_bad_sequence_has_explicit_verdict[e7e5-missing_move]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_bad_sequence_has_explicit_verdict[-missing_move]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_illegal_move_does_not_change_board
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_self_check_is_illegal
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_invalid_setup_or_opponent_reference_is_explicit[moves0]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_invalid_setup_or_opponent_reference_is_explicit[moves1]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_invalid_setup_or_opponent_reference_is_explicit[moves2]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_invalid_setup_or_opponent_reference_is_explicit[moves3]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_invalid_reference_board_is_explicit[not-fen]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_invalid_reference_board_is_explicit[8/8/8/8/8/8/8/8 w - - 0 1]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_early_legal_mate_terminates_before_unused_reference_or_answers[g6g7-checkmate]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_early_legal_mate_terminates_before_unused_reference_or_answers[g6g8-alternate_mate_in_one]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_unused_trailing_tokens_match_engine_call_semantics
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_upstream_unchecked_push_acceptance_is_diagnostic_only
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_every_strict_push_is_legal
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_stepwise_public_contract_updates_after_each_reference_reply
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_stepwise_answer_is_exactly_one_uci_move[e7e5]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_stepwise_answer_is_exactly_one_uci_move[answer1]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_stepwise_answer_is_exactly_one_uci_move[answer2]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_stepwise_answer_is_exactly_one_uci_move[answer3]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_stepwise_answer_is_exactly_one_uci_move[answer4]
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_batch_goal_is_public_and_names_variant
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_import_never_attempts_to_read_puzzle_csv
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_explicit_pool_loading_keeps_qa_metadata_and_tasks_compatible
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_materialized_verifier_preserves_both_metrics_and_redacts_reference
+tests/quality/test_chessbench_puzzles_strict_replay.py::test_shared_qa_rematerialization_contract_with_synthetic_redacted_gold
+tests/quality/test_jericho_dataset.py::test_the_official_table_is_what_game_info_says
+tests/quality/test_jericho_dataset.py::test_the_missing_official_game_is_reported
+tests/quality/test_jericho_dataset.py::test_every_task_has_a_goal_and_the_interface_it_needs
+tests/quality/test_jericho_dataset.py::test_a_task_dict_carries_no_grade
+tests/quality/test_jericho_dataset.py::test_the_split_covers_every_task_exactly_once
+tests/quality/test_jericho_dataset.py::test_the_reduction_is_the_one_the_documentation_prints
+tests/quality/test_jericho_dataset.py::test_the_walkthrough_reaches_the_maximum_for_most_games
+tests/quality/test_jericho_dataset.py::test_the_walkthrough_is_never_written_into_the_workdir
+tests/quality/test_jericho_dataset.py::test_the_verifier_declares_the_contract_paths
+tests/quality/test_jericho_dataset.py::test_every_task_can_tell_the_agent_where_the_rom_is
+tests/quality/test_jericho_dataset.py::test_the_check_grades_the_walkthrough_as_one
+tests/quality/test_jericho_dataset.py::test_the_check_grades_no_commands_as_zero
+tests/quality/test_jericho_dataset.py::test_the_check_re_materializes_the_game_and_the_rom
+tests/quality/test_jericho_dataset.py::test_the_check_reports_unmeasured_without_a_game_file
+tests/quality/test_jericho_dataset.py::test_the_cli_can_report_the_score
+tests/quality/test_jericho_dataset.py::test_the_cli_s_valid_actions_are_best_effort
+
+519 tests collected in 1.16s
+
+[SEARCH]
+COMMAND: rg -n '_materialize|readonly_paths|sandbox\.command|container\.command' tests
+OBSERVED EXIT CODE: 0
+OBSERVED OUTPUT:
+COMMAND: ['rg', '-n', '_materialize|readonly_paths|sandbox\\.command|container\\.command', 'tests']
+EXIT: 0
+tests/quality/test_spreadsheetbench_control_submit.py:45:def test_materialized_oracle_submits_and_scores_one(control_record, tmp_path, capfd):
+tests/quality/test_sandbox.py:262:        sandbox.command(["true"], platform=PLATFORM, work_root=WORK_ROOT,
+tests/quality/test_sandbox.py:313:        sandbox.command(["true"], platform=PLATFORM, work_root=WORK_ROOT,
+tests/quality/test_sandbox.py:340:    real_command = sandbox.command
+tests/quality/test_sandbox.py:349:    sandbox.command = leaky
+tests/quality/test_sandbox.py:353:        sandbox.command = real_command
+tests/quality/test_alfworld_dataset.py:5:`test_the_check_re_materializes_its_inputs`: the dataset ships `check.py` to the agent
+tests/quality/test_alfworld_dataset.py:121:def test_the_check_re_materializes_its_inputs(alfworld, tmp_path):
+tests/quality/test_appworld_service_diagnosis.py:62:        cmd = container.command(argv, **{k: v for k, v in kw.items() if k != "timeout_s"})
+tests/quality/test_identity_and_verdicts.py:79:def test_the_identity_can_still_be_materialized(tmp_path):
+tests/quality/test_qa_dataset_contract.py:57:def _materialize(module, record: dict, workdir: Path, *, oracle: bool) -> None:
+tests/quality/test_qa_dataset_contract.py:90:               re_materialize: bool = True) -> tuple[float, dict]:
+tests/quality/test_qa_dataset_contract.py:93:    if re_materialize:
+tests/quality/test_qa_dataset_contract.py:171:    _materialize(qa, record, tmp_path, oracle=True)
+tests/quality/test_qa_dataset_contract.py:179:    _materialize(qa, record, tmp_path, oracle=False)
+tests/quality/test_qa_dataset_contract.py:185:def test_the_check_re_materializes_the_gold(qa, tmp_path):
+tests/quality/test_qa_dataset_contract.py:188:    _materialize(qa, record, tmp_path, oracle=False)
+tests/quality/test_qa_dataset_contract.py:203:    _materialize(qa, record, tmp_path, oracle=True)
+tests/quality/test_qa_dataset_contract.py:206:    _run_check(qa, record, tmp_path, re_materialize=True)
+tests/quality/test_qa_dataset_contract.py:211:    reward, evidence = _run_check(qa, record, tmp_path, re_materialize=False)
+tests/quality/test_qa_dataset_contract.py:219:    _materialize(qa, qa._RECORDS[0], tmp_path, oracle=False)
+tests/quality/test_qa_dataset_contract.py:227:    _materialize(qa, qa._RECORDS[0], tmp_path, oracle=False)
+tests/quality/test_scienceworld_platform_writes_codex186.py:81:    command = sandbox.command(
+tests/quality/test_scienceworld_platform_writes_codex186.py:108:    events = mount_events(sandbox.command(argv, env={}, **plan))
+tests/quality/test_chessbench_puzzles_strict_replay.py:228:def test_materialized_verifier_preserves_both_metrics_and_redacts_reference(tmp_path):
+tests/quality/test_chessbench_puzzles_strict_replay.py:259:    shared["test_the_check_re_materializes_the_gold"](dataset, tmp_path)
+tests/fixtures/hg_migration_site/runtime-blockers-b7.md:121:mount plans. Tests call `sandbox.command` and the real `_method_sandbox_plan`,
+tests/quality/test_native_runtime_hp3.py:143:    verifier._materialize(tmp_path, spec['inputs'], ROOT)
+tests/quality/test_task_bound_native_inputs_w_tbi2.py:385:    verifier._materialize(tmp_path, [e for e in spec["inputs"] if e["path"] == "context.json"], verifier.PLATFORM_ROOT)
+tests/quality/test_twowikimultihopqa_structured.py:289:def test_public_cli_to_materialized_verifier(submission, expected, tmp_path, monkeypatch):
+tests/quality/test_scienceworld_dataset.py:14:* `test_the_check_re_materializes_the_task` proves the grade cannot be moved by editing the
+tests/quality/test_scienceworld_dataset.py:257:               re_materialize: bool = True) -> tuple[float, dict]:
+tests/quality/test_scienceworld_dataset.py:259:    if re_materialize:
+tests/quality/test_scienceworld_dataset.py:262:            # The control's helper, so this mirrors the platform's `_materialize` in one
+tests/quality/test_scienceworld_dataset.py:359:def test_the_check_re_materializes_the_task(scienceworld, live):
+tests/quality/test_container.py:326:    from eval.run.runner import _materialize
+tests/quality/test_container.py:327:    _materialize(work, registry.load_tasks("verify_exec")[2]["e03"]["inputs"],
+tests/quality/test_jericho_dataset.py:252:               re_materialize: bool = True,
+tests/quality/test_jericho_dataset.py:262:    if re_materialize:
+tests/quality/test_jericho_dataset.py:311:def test_the_check_re_materializes_the_game_and_the_rom(jericho, live):
+tests/quality/test_jericho_dataset.py:328:    `re_materialize=False` is the point of the test: the platform *would* write the file, so
+tests/quality/test_sharedrt_immutable_runtimes.py:15:from eval.observe.tracing import _materialize
+tests/quality/test_sharedrt_immutable_runtimes.py:53:    return sandbox.command(["/bin/true"], platform=ROOT, work_root=work_root,
+tests/quality/test_sharedrt_immutable_runtimes.py:59:def test_no_materialized_host_runtime_and_exact_backend_plans(tmp_path, runtime, monkeypatch, verification):
+tests/quality/test_sharedrt_immutable_runtimes.py:68:    assert _materialize(work, [entry(runtime)], ROOT) == []
+tests/quality/test_sharedrt_immutable_runtimes.py:79:    docker = container.command(["/bin/true"], image=IMAGE, task_dir=work,
+tests/quality/test_sharedrt_immutable_runtimes.py:145:            command = sandbox.command(argv, **{k: v for k, v in kw.items()
+tests/quality/test_sharedrt_immutable_runtimes.py:149:            command = container.command(argv, **{k: v for k, v in kw.items() if k != "timeout_s"})
+tests/quality/test_sharedrt_immutable_runtimes.py:191:        assert _materialize(work, [entry(runtime)], ROOT) == []
+tests/quality/test_sharedrt_immutable_runtimes.py:261:            container.command(["true"], image=IMAGE, task_dir=work, task_mount="/app",
+tests/quality/test_sharedrt_immutable_runtimes.py:271:        container.command(["true"], image=IMAGE, task_dir=work, task_mount="/app",
+tests/quality/test_sharedrt_immutable_runtimes.py:283:        plan = sandbox.command(["true"], platform=ROOT, work_root=tmp_path,
+tests/quality/test_sharedrt_immutable_runtimes.py:287:        plan = container.command(["true"], image=IMAGE, task_dir=work,
+tests/quality/test_triviaqa_identity_codex215.py:28:def test_materialized_verifier_preserves_scorer_identity(
+tests/quality/test_runtime_blocker_evidence_b7.py:197:        plan = sandbox.command([sys.executable, str(probe)], **options)
+tests/quality/test_runtime_blocker_evidence_b7.py:227:    plan = sandbox.command([sys.executable, str(probe)], platform=ROOT,
+tests/quality/test_runtime_blocker_evidence_b7.py:348:        plan = sandbox.command([sys.executable, str(probe)], platform=ROOT, work_root=control_root,
+tests/quality/test_runtime_blocker_evidence_b7.py:366:    plan = sandbox.command([sys.executable, "-c", "import errno,json,tempfile; "
+tests/quality/test_states.py:103:def test_a_state_that_cannot_be_materialized_is_absent_from_the_index(tmp_path):
+tests/quality/test_states.py:119:def test_materialize_reads_dangling_commits(tmp_path):
+tests/quality/test_gsm8k_dataset.py:5:`test_the_check_re_materializes_the_gold`: the check is handed the gold through
+tests/quality/test_gsm8k_dataset.py:32:def _materialize(module, record: dict, workdir: Path, *, oracle: bool) -> None:
+tests/quality/test_gsm8k_dataset.py:58:               re_materialize: bool = True) -> tuple[float, dict]:
+tests/quality/test_gsm8k_dataset.py:64:    `test_the_check_re_materializes_the_gold` did exactly that.
+tests/quality/test_gsm8k_dataset.py:67:    if re_materialize:
+tests/quality/test_gsm8k_dataset.py:185:    _materialize(gsm8k, record, tmp_path, oracle=True)
+tests/quality/test_gsm8k_dataset.py:194:    _materialize(gsm8k, record, tmp_path, oracle=True)
+tests/quality/test_gsm8k_dataset.py:203:    _materialize(gsm8k, record, tmp_path, oracle=False)
+tests/quality/test_gsm8k_dataset.py:210:    _materialize(gsm8k, record, tmp_path, oracle=False)
+tests/quality/test_gsm8k_dataset.py:216:def test_the_check_re_materializes_the_gold(gsm8k, record, tmp_path):
+tests/quality/test_gsm8k_dataset.py:224:    _materialize(gsm8k, record, tmp_path, oracle=False)
+tests/quality/test_gsm8k_dataset.py:241:    _materialize(gsm8k, record, tmp_path, oracle=True)
+tests/quality/test_gsm8k_dataset.py:245:    reward, evidence = _run_check(gsm8k, record, tmp_path, re_materialize=False)
+tests/quality/test_gsm8k_dataset.py:253:    _materialize(gsm8k, gsm8k._RECORDS[0], tmp_path, oracle=False)
+
+[PROVISION CHECK]
+COMMAND: TMPDIR=/tmp python3 tools/datasets.py --check --dataset agentdojo --dataset scienceworld --json
+OBSERVED EXIT CODE: 0
+OBSERVED OUTPUT:
+{
+ "datasets": [
+  {
+   "dataset": "agentdojo",
+   "entries": [
+    {
+     "detail": "/mnt/20t/xubuqiang/datasets/agentdojo/_src/agentdojo.tar.gz (sha256 ok)",
+     "kind": "http",
+     "name": "AgentDojo source + suites",
+     "present": true,
+     "version": "089ed468cf3ed0322acc66b0211f26d9d90dbf60"
+    },
+    {
+     "detail": "agentdojo is not installed",
+     "kind": "pip",
+     "name": "AgentDojo isolated runtime",
+     "present": false,
+     "version": "0.1.35"
+    }
+   ],
+   "present": false,
+   "status": {
+    "present": true,
+    "root": "/mnt/20t/xubuqiang/datasets/agentdojo",
+    "split_dir": "/mnt/20t/xubuqiang/datasets/agentdojo",
+    "tasks": 949
+   }
+  },
+  {
+   "dataset": "scienceworld",
+   "entries": [
+    {
+     "detail": "scienceworld==1.2.3",
+     "kind": "pip",
+     "name": "scienceworld",
+     "present": true,
+     "version": "1.2.3"
+    },
+    {
+     "detail": "/mnt/20t/xubuqiang/datasets/scienceworld/_src/OpenJDK17U-jre_x64_linux_hotspot_17.0.20.1_1.tar.gz (sha256 ok)",
+     "kind": "http",
+     "name": "Temurin JRE 17 (Adoptium)",
+     "present": true,
+     "version": "17.0.20.1+1"
+    }
+   ],
+   "present": true,
+   "status": {
+    "fold_excluded_over_budget": 0,
+    "fold_file": "/mnt/20t/xubuqiang/hg-wt/w-sharedrt/data/datasets/scienceworld/test_fold.json",
+    "java": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/bin/java",
+    "jre_tarball": "/mnt/20t/xubuqiang/datasets/scienceworld/_src/OpenJDK17U-jre_x64_linux_hotspot_17.0.20.1_1.tar.gz",
+    "jre_unpacked": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre",
+    "present": true,
+    "root": "/mnt/20t/xubuqiang/datasets/scienceworld",
+    "split_dir": "/mnt/20t/xubuqiang/datasets/scienceworld",
+    "tasks": null
+   }
+  }
+ ],
+ "schema_version": 1
+}
+
+[AUDIT]
+COMMAND: python3 /mnt/20t/xubuqiang/hg-work/sharedrt/audit.py
+OBSERVED EXIT CODE: 0
+OBSERVED OUTPUT:
+SCOPE ["data/datasets/__init__.py", "data/datasets/agentdojo.py", "data/datasets/alfworld.py", "data/datasets/api_bank.py", "data/datasets/appworld.py", "data/datasets/bfcl_v3.py", "data/datasets/bird_minidev.py", "data/datasets/chessbench_puzzles.py", "data/datasets/ds1000.py", "data/datasets/fever.py", "data/datasets/gaia.py", "data/datasets/gsm8k.py", "data/datasets/hotpotqa.py", "data/datasets/jericho.py", "data/datasets/livecodebench.py", "data/datasets/musique.py", "data/datasets/nestful.py", "data/datasets/physicsquestions.py", "data/datasets/reasoning_gym.py", "data/datasets/scienceworld.py", "data/datasets/sotuqa.py", "data/datasets/sportsunderstanding.py", "data/datasets/spreadsheetbench.py", "data/datasets/strategyqa.py", "data/datasets/tau2_bench.py", "data/datasets/tau_bench.py", "data/datasets/terminal_bench.py", "data/datasets/triviaqa.py", "data/datasets/twowikimultihopqa.py"]
+data/datasets/agentdojo.py:87: {'path': 'dojo_runtime', 'from': str(DATASET_ROOT / 'agent_runtime'), 'immutable': True}
+data/datasets/agentdojo.py:88: {'path': 'dojo.py', 'from': str(ASSETS / 'cli/dojo')}
+data/datasets/agentdojo.py:89: {'path': 'dojo.initial.json', 'from': str(DATASET_ROOT / 'prepared' / str(i) / 'initial.json')}
+data/datasets/agentdojo.py:96: {'path': 'verify/check.py', 'from': str(ASSETS / 'verify/check.py')}
+data/datasets/agentdojo.py:97: {'path': 'verify/bridge.py', 'from': str(ASSETS / 'bridge.py')}
+data/datasets/agentdojo.py:98: {'path': 'verify/case.json', 'from': str(DATASET_ROOT / 'prepared' / str(i) / 'case.json')}
+data/datasets/agentdojo.py:99: {'path': 'trusted_runtime', 'from': str(DATASET_ROOT / 'runtime'), 'immutable': True}
+data/datasets/alfworld.py:324: {"path": "gym_env.py", "from": str(LIB_DIR / "gym_env.py")}
+data/datasets/alfworld.py:325: {"path": "alf", "from": str(CLI_DIR / "alf")}
+data/datasets/alfworld.py:356: {"path": "check.py", "from": str(VERIFY_DIR / "check.py")}
+data/datasets/alfworld.py:357: {"path": "gym_env.py", "from": str(LIB_DIR / "gym_env.py")}
+data/datasets/appworld.py:249: {"path": "aw", "from": str(ASSETS / "cli" / "aw")}
+data/datasets/appworld.py:291: {"path": "verify/check.py", "from": str(ASSETS / "verify" / "check.py")}
+data/datasets/bird_minidev.py:249: {"path": "bird/bin/bird", "from": str(CLI)}
+data/datasets/bird_minidev.py:263: {"path": "check.py",              "from": str(Path(__file__).resolve().parent / "bird_minidev" / "verify" / "check.py")}
+data/datasets/bird_minidev.py:266: {"path": "database.sqlite", "from": str(database)}
+data/datasets/ds1000.py:201: {"path": "verify/check.py", "from": str(CHECK_FILE)}
+data/datasets/ds1000.py:204: {"path": "execution.py", "from": str(EXECUTION_FILE)}
+data/datasets/ds1000.py:206: {"path": f"seaborn-data/{name}", "from": str(SEABORN_DIR / name)}
+data/datasets/gaia.py:189: {"path": "bin/ask", "from": str(CLI)}
+data/datasets/gaia.py:192: {"path": f"attachments/{row['attachment']}", "from": str(source)}
+data/datasets/gaia.py:205: {"dst": "/check.py", "from": str(CHECK)}
+data/datasets/gaia.py:207: {"dst": "/scorer.py", "from": str(SCORER)}
+data/datasets/jericho.py:239: {"path": "jer_env.py", "from": str(LIB_DIR / "jer_env.py")}
+data/datasets/jericho.py:240: {"path": "jer", "from": str(CLI_DIR / "jer")}
+data/datasets/jericho.py:241: {"path": record["rom"], "from": str(record["path"])}
+data/datasets/jericho.py:266: {"path": "check.py", "from": str(VERIFY_DIR / "check.py")}
+data/datasets/jericho.py:267: {"path": "jer_env.py", "from": str(LIB_DIR / "jer_env.py")}
+data/datasets/jericho.py:271: {"path": record["rom"], "from": str(record["path"])}
+data/datasets/livecodebench.py:260: {"path": "lcb/bin/lcb", "from": str(CLI)}
+data/datasets/livecodebench.py:272: {"path": "verify/check.py", "from": str(CHECK_FILE)}
+data/datasets/livecodebench.py:273: {"path": "tests.json", "from": str(_tests_path(row))}
+data/datasets/livecodebench.py:276: {"path": "testing_util.py", "from": str(DATASET_ROOT / EXECUTOR)}
+data/datasets/livecodebench.py:277: {"path": "pass_k_utils.py", "from": str(DATASET_ROOT / PASS_K)}
+data/datasets/musique.py:236: {"path": "qa/output-contract.md",                                  "from": str(base.ROOT / "docs/musique-output-contract.md")}
+data/datasets/scienceworld.py:289: {"path": "scw_env.py", "from": str(LIB_DIR / "scw_env.py")}
+data/datasets/scienceworld.py:290: {"path": "scw", "from": str(CLI_DIR / "scw")}
+data/datasets/scienceworld.py:294: {"path": f"{_LIB.JRE_RELDIR}/{_LIB.JRE_DIRNAME}", "from": str(JRE_STAGED), "immutable": True}
+data/datasets/scienceworld.py:324: {"path": "check.py", "from": str(VERIFY_DIR / "check.py")}
+data/datasets/scienceworld.py:325: {"path": "scienceworld.jar", "from": str(world_jar)}
+data/datasets/scienceworld.py:326: {"path": "scw_env.py", "from": str(LIB_DIR / "scw_env.py")}
+data/datasets/scienceworld.py:331: {"path": f"{_LIB.JRE_RELDIR}/{_LIB.JRE_DIRNAME}", "from": str(JRE_STAGED), "immutable": True}
+data/datasets/spreadsheetbench.py:216: {"path": INIT_WORKBOOK, "from": str(record["init_path"])}
+data/datasets/spreadsheetbench.py:217: {"path": "qa/bin/qa", "from": str(Path(__file__).resolve().parent.parent                                             / "scaffolds" / "qa" / "cli" / "qa")}
+data/datasets/spreadsheetbench.py:219: {"path": "qa/prediction.py", "from": str(Path(__file__).resolve().parent.parent                                                    / "scaffolds" / "qa" / "prediction.py")}
+data/datasets/spreadsheetbench.py:244: {"path": "check.py",              "from": str(Path(__file__).resolve().parent / "spreadsheetbench"                          / "verify" / "check.py")}
+data/datasets/spreadsheetbench.py:247: {"path": "golden.xlsx", "from": str(record["golden_path"])}
+data/datasets/tau_bench.py:324: {"path": "db.json",                        "from": str(_db_path(record["domain"]))}
+data/datasets/tau_bench.py:352: {"dst": GT_IN_CONTAINER, "from": str(GT_DIR / f"{tid}.json")}
+data/datasets/tau_bench.py:353: {"dst": CLEAN_DB_IN_CONTAINER,              "from": str(_db_path(record["domain"]))}
+data/datasets/tau_bench.py:355: {"dst": CHECK_IN_CONTAINER, "from": str(CHECK_SCRIPT)}
+data/datasets/tau_bench.py:356: {"dst": LIB_IN_CONTAINER, "from": str(LIB_DIR)}
+data/datasets/terminal_bench.py:238: {"dst": "/tests", "from": str(task_dir / "tests")}
+data/datasets/terminal_bench.py:229: {"path": ".oracle", "from": str(solution)}
+{"source": "/mnt/20t/xubuqiang/datasets/agentdojo/agent_runtime", "exists": true, "is_dir": true, "source_symlink": false, "symlink_components": []}
+{"path": "/mnt/20t/xubuqiang/datasets/agentdojo/agent_runtime/bin/python", "symlink": true, "link": "python3", "resolved": "/mnt/8t/xubuqiang/anaconda3/bin/python3.12"}
+{"path": "/mnt/20t/xubuqiang/datasets/agentdojo/agent_runtime/bin/python3", "symlink": true, "link": "/mnt/8t/xubuqiang/anaconda3/bin/python3", "resolved": "/mnt/8t/xubuqiang/anaconda3/bin/python3.12"}
+{"source": "/mnt/20t/xubuqiang/datasets/agentdojo/runtime", "exists": true, "is_dir": true, "source_symlink": false, "symlink_components": []}
+{"path": "/mnt/20t/xubuqiang/datasets/agentdojo/runtime/bin/python", "symlink": true, "link": "python3", "resolved": "/mnt/8t/xubuqiang/anaconda3/bin/python3.12"}
+{"path": "/mnt/20t/xubuqiang/datasets/agentdojo/runtime/bin/python3", "symlink": true, "link": "/mnt/8t/xubuqiang/anaconda3/bin/python3", "resolved": "/mnt/8t/xubuqiang/anaconda3/bin/python3.12"}
+{"source": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre", "exists": true, "is_dir": true, "source_symlink": false, "symlink_components": []}
+{"path": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/bin/java", "symlink": false, "link": null, "resolved": "/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre/bin/java"}
+{"source": "data/datasets/tau_bench/lib", "exists": true, "is_dir": true, "source_symlink": false, "symlink_components": []}
+data/datasets/agentdojo.py: AST excluding docstrings and immutable flags matches HEAD=True
+data/datasets/scienceworld.py: AST excluding docstrings and immutable flags matches HEAD=True
+COMMAND ["git", "diff", "--check"] EXIT 0
+COMMAND ["git", "diff", "--name-only", "--", "AGENTS.md", "registry/dataset-blockers.json", "docs/adapter-integration-journal.md"] EXIT 0
+COMMAND ["python3", "tools/check_dataset_blockers.py"] EXIT 0
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+TASK SCRATCH SCOPE ["/tmp/sharedrt-baseline", "/tmp/sharedrt-after", "/tmp/sharedrt-extra", "/tmp/sharedrt-extra-before", "/tmp/sharedrt-focused", "/tmp/sharedrt-final-focused", "/tmp/sharedrt-contracts", "/tmp/sharedrt-contracts-before", "/tmp/sharedrt-final-integration"]
+/tmp/sharedrt-baseline exists=False
+/tmp/sharedrt-after exists=False
+/tmp/sharedrt-extra exists=False
+/tmp/sharedrt-extra-before exists=False
+/tmp/sharedrt-focused exists=False
+/tmp/sharedrt-final-focused exists=False
+/tmp/sharedrt-contracts exists=False
+/tmp/sharedrt-contracts-before exists=False
+/tmp/sharedrt-final-integration exists=False
+
+[PYTHON PATH CONTROL]
+COMMAND: PYTHONPATH=. TMPDIR=/tmp python3 /mnt/20t/xubuqiang/hg-work/sharedrt/python-path-control.py
+OBSERVED EXIT CODE: 0
+OBSERVED OUTPUT:
+{"exit_code": 0, "stdout": "{\"executable\": \"/tmp/sharedrt-python-path-0nj5vmv9/task/dojo_runtime/bin/python\", \"prefix\": \"/tmp/sharedrt-python-path-0nj5vmv9/task/dojo_runtime\"}\n", "stderr": "", "host_runtime_files": []}
+
+[EXACT SCRIPT audit.py]
+from pathlib import Path
+import ast, json, os, subprocess
+
+paths = sorted(Path('data/datasets').glob('*.py'))
+print('SCOPE', json.dumps([str(p) for p in paths]))
+for path in paths:
+    source = path.read_text()
+    for node in ast.walk(ast.parse(source)):
+        if isinstance(node, ast.Dict) and any(isinstance(k, ast.Constant) and k.value == 'from' for k in node.keys):
+            print(f'{path}:{node.lineno}: ' + ast.get_source_segment(source, node).replace('\n', ' '))
+
+for source in ('/mnt/20t/xubuqiang/datasets/agentdojo/agent_runtime',
+               '/mnt/20t/xubuqiang/datasets/agentdojo/runtime',
+               '/mnt/20t/xubuqiang/datasets/scienceworld/jre/jdk-17.0.20.1+1-jre',
+               'data/datasets/tau_bench/lib'):
+    path = Path(source)
+    print(json.dumps({'source': source, 'exists': path.exists(), 'is_dir': path.is_dir(),
+                      'source_symlink': path.is_symlink(),
+                      'symlink_components': [str(p) for p in (path, *path.parents) if p.is_symlink()]}))
+    for rel in ('bin/python', 'bin/python3', 'bin/java'):
+        target = path / rel
+        if target.exists() or target.is_symlink():
+            print(json.dumps({'path': str(target), 'symlink': target.is_symlink(),
+                              'link': os.readlink(target) if target.is_symlink() else None,
+                              'resolved': str(target.resolve())}))
+
+class Strip(ast.NodeTransformer):
+    def visit_Dict(self, node):
+        self.generic_visit(node)
+        pairs = [(k, v) for k, v in zip(node.keys, node.values)
+                 if not (isinstance(k, ast.Constant) and k.value == 'immutable')]
+        node.keys = [k for k, v in pairs]
+        node.values = [v for k, v in pairs]
+        return node
+    def visit_Expr(self, node):
+        return None if isinstance(node.value, ast.Constant) and isinstance(node.value.value, str) else self.generic_visit(node)
+
+for name in ('agentdojo', 'scienceworld'):
+    path = f'data/datasets/{name}.py'
+    before = subprocess.run(['git', 'show', 'HEAD:' + path], capture_output=True, text=True, check=True).stdout
+    matched = ast.dump(Strip().visit(ast.parse(before))) == ast.dump(Strip().visit(ast.parse(Path(path).read_text())))
+    print(path + ': AST excluding docstrings and immutable flags matches HEAD=' + str(matched))
+    assert matched
+
+for command in (['git', 'diff', '--check'],
+                ['git', 'diff', '--name-only', '--', 'AGENTS.md', 'registry/dataset-blockers.json', 'docs/adapter-integration-journal.md'],
+                ['python3', 'tools/check_dataset_blockers.py']):
+    proc = subprocess.run(command, capture_output=True, text=True)
+    print('COMMAND', json.dumps(command), 'EXIT', proc.returncode)
+    print(proc.stdout + proc.stderr, end='')
+
+print('TASK SCRATCH SCOPE', json.dumps(['/tmp/sharedrt-baseline', '/tmp/sharedrt-after',
+      '/tmp/sharedrt-extra', '/tmp/sharedrt-extra-before', '/tmp/sharedrt-focused',
+      '/tmp/sharedrt-final-focused', '/tmp/sharedrt-contracts', '/tmp/sharedrt-contracts-before',
+      '/tmp/sharedrt-final-integration']))
+for path in ('/tmp/sharedrt-baseline', '/tmp/sharedrt-after', '/tmp/sharedrt-extra',
+             '/tmp/sharedrt-extra-before', '/tmp/sharedrt-focused', '/tmp/sharedrt-final-focused',
+             '/tmp/sharedrt-contracts', '/tmp/sharedrt-contracts-before', '/tmp/sharedrt-final-integration'):
+    print(path + ' exists=' + str(Path(path).exists()))
+
+[EXACT SCRIPT python-path-control.py]
+from pathlib import Path
+import json, tempfile
+from eval.containers import sandbox
+root = Path.cwd()
+with tempfile.TemporaryDirectory(prefix='sharedrt-python-path-', dir='/tmp') as temp:
+    base = Path(temp)
+    work_root = base / 'work'
+    task = base / 'task'
+    work_root.mkdir()
+    task.mkdir()
+    source = Path('/mnt/20t/xubuqiang/datasets/agentdojo/agent_runtime')
+    proc = sandbox.run([str(task / 'dojo_runtime/bin/python'), '-I', '-B', '-c',
+                        'import json,sys; print(json.dumps({"executable":sys.executable,"prefix":sys.prefix}))'],
+                       platform=root, work_root=work_root, task_dir=task, repo=work_root,
+                       env={'PATH':'/usr/bin:/bin'}, timeout_s=10, cwd=task,
+                       immutable_runtimes=((source,'dojo_runtime'),))
+    print(json.dumps({'exit_code':proc.returncode,'stdout':proc.stdout,'stderr':proc.stderr,
+                      'host_runtime_files':list((task/'dojo_runtime').iterdir())},default=str))
+    assert proc.returncode == 0
+
+FAILURE NODE IDS MATCH baseline.txt / after.txt = True
+FAILURE NODE IDS MATCH extra-before.txt / extra.txt = True
+FAILURE NODE IDS MATCH contracts-before.txt / contracts.txt = True
+
+[FINAL CHECKS]
+COMMAND ARGV: ["python3", "tools/check_dataset_blockers.py"]
+OBSERVED EXIT CODE: 0
+OBSERVED OUTPUT:
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+
+
+COMMAND ARGV: ["git", "diff", "--check"]
+OBSERVED EXIT CODE: 0
+OBSERVED OUTPUT:
+<empty>
+
+COMMAND ARGV: ["git", "diff", "--name-only", "--", "AGENTS.md", "registry/dataset-blockers.json", "docs/adapter-integration-journal.md"]
+OBSERVED EXIT CODE: 0
+OBSERVED OUTPUT:
+<empty>
+
+COMMAND ARGV: ["python3", "-m", "py_compile", "eval/containers/immutable_runtime.py", "eval/containers/sandbox.py", "eval/containers/container.py", "eval/observe/tracing.py", "eval/run/runner.py", "eval/verification/verifier.py", "eval/verification/native_runtime.py", "data/datasets/agentdojo.py", "data/datasets/scienceworld.py", "tests/quality/test_sharedrt_immutable_runtimes.py"]
+OBSERVED EXIT CODE: 0
+OBSERVED OUTPUT:
+<empty>
+
+[NOT VERIFIED]
+Full dataset/CLI/scorer/engine/model/GPU runs; production performance or I/O volumes; held-out answers;
+live Docker enforcement of the newly added runtime projection (Docker command plans are tested);
+sealed native verification execution with the new projection (exact plan tested, existing no-scorer controls run);
+AgentDojo CLI package imports and ScienceWorld Java/cache behavior under the bind;
+production source digests, upstream revisions beyond what existing provisioning check reports;
+concurrent external writes to declared immutable source trees; generated/dynamic directory contracts;
+every collected dataset-scoring test: explicit execution filters are given above;
+main checkout contents or operator edits; no observation or modification there;
+registry proposal application, production authorization, benchmark scores.
+
+[FILE SIZES OF EVERY COMMITTED FILE]
+COMMAND ARGV: ["python3", "-c", "from pathlib import Path; paths=['INTERFACE.md', 'data/datasets/agentdojo.py', 'data/datasets/scienceworld.py', 'eval/containers/container.py', 'eval/containers/immutable_runtime.py', 'eval/containers/sandbox.py', 'eval/observe/tracing.py', 'eval/run/runner.py', 'eval/verification/native_runtime.py', 'eval/verification/verifier.py', 'reports/w-sharedrt-immutable-runtime-validation.txt', 'reports/w-sharedrt-immutable-runtime.md', 'tests/quality/test_sharedrt_immutable_runtimes.py']; [print(str(Path(p))+\" \"+str(Path(p).stat().st_size)+\" bytes\") for p in paths]"]
+OBSERVED OUTPUT:
+INTERFACE.md 155369 bytes
+data/datasets/agentdojo.py 6229 bytes
+data/datasets/scienceworld.py 25505 bytes
+eval/containers/container.py 51709 bytes
+eval/containers/immutable_runtime.py 3725 bytes
+eval/containers/sandbox.py 30688 bytes
+eval/observe/tracing.py 21610 bytes
+eval/run/runner.py 83393 bytes
+eval/verification/native_runtime.py 8849 bytes
+eval/verification/verifier.py 45832 bytes
+reports/w-sharedrt-immutable-runtime-validation.txt 149404 bytes
+reports/w-sharedrt-immutable-runtime.md 10733 bytes
+tests/quality/test_sharedrt_immutable_runtimes.py 20321 bytes

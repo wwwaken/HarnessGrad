@@ -20,6 +20,8 @@ import shutil
 import sys
 from pathlib import Path
 
+from eval.containers.immutable_runtime import projections
+
 
 #: How a harness run ended. Named constants because the method-facing channel and the
 #: panel both branch on them, and a typo in a string literal would be a silent `unknown`.
@@ -297,7 +299,12 @@ def _clear_tree(target: Path) -> None:
 
 def _materialize(workdir: Path, entries, platform_root: Path,
                  base: Path | None = None) -> list[str]:
-    """Write a dataset's files into `workdir`. Returns the relative paths written.
+    """Write mutable dataset files into `workdir`; return the relative paths written.
+
+    ``immutable: true`` entries are runtime projections, not task state: ``from``
+    must be an absolute existing non-symlink directory. Validate, but never copy or
+    create their host targets (nor any staging/cache). The sandbox binds the exact
+    declared source read-only at ``workdir / path``; unsupported binds fail closed.
 
     Used twice per task, and the two uses are the point of the whole design:
 
@@ -312,6 +319,12 @@ def _materialize(workdir: Path, entries, platform_root: Path,
     """
     written: list[str] = []
     for entry in entries or []:
+        projections([entry])
+        if entry.get("immutable") is True:
+            # No pre-verification restoration is necessary: anti-tamper is stronger
+            # because the harness cannot modify this tree at all, rather than being
+            # allowed to change it and having those changes reverted afterwards.
+            continue
         rel = str(entry.get("path") or "")
         if not rel:
             continue

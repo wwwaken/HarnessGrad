@@ -156,11 +156,9 @@ EVIDENCE_FILE = "/verifier/evidence.json"
 REWARD_REL = "verifier/reward.txt"
 EVIDENCE_REL = "verifier/evidence.json"
 
-#: The JRE inside the dataset root. The **unpacked** tree is what travels into a task: the
-#: platform's `_materialize` copies a directory (`shutil.copytree`) and a tarball would have
-#: to be extracted by something, which during verification means the check writing into a
-#: read-only task tree -- measured, `[Errno 30] Read-only file system`. Copying the tree is
-#: also cheap (0.1 s measured) and every JVM you can copy starts, symlinks and all.
+#: The unpacked JRE is an immutable runtime projection: the platform binds this exact
+#: directory read-only at the same task path, without copying, staging or caching it.
+#: A tarball would instead need extraction into the read-only verification task tree.
 JRE_STAGED = DATASET_ROOT / "jre" / _LIB.JRE_DIRNAME
 
 #: The official evaluation split, transcribed into git. **Not a download**: the archive
@@ -280,7 +278,7 @@ def _setup(record: dict) -> dict:
     The CLI, its library and the JRE travel as `from` references into this repository; the
     task identity travels as **inline content**, so the world the agent builds is the one
     the dataset declared and not something it could have edited into a file. The JRE is the
-    136 MB directory under `jre/`: it is copied in because the verification namespace cannot
+    directory under `jre/`: it is bound read-only because the verification namespace cannot
     see the dataset root, and both the agent's CLI and the check need the same JVM.
     """
     return {"files": [
@@ -293,7 +291,7 @@ def _setup(record: dict) -> dict:
         # The runtime, as a prepared tree. `lib/scw_env.py::java_home` finds it at
         # `<workdir>/jre/<dirname>` and sets JAVA_HOME/PATH from it; py4j then launches it
         # by absolute path (a relative one breaks, because py4j passes its own cwd).
-        {"path": f"{_LIB.JRE_RELDIR}/{_LIB.JRE_DIRNAME}", "from": str(JRE_STAGED)},
+        {"path": f"{_LIB.JRE_RELDIR}/{_LIB.JRE_DIRNAME}", "from": str(JRE_STAGED), "immutable": True},
     ]}
 
 
@@ -302,8 +300,8 @@ def _verifier(record: dict) -> dict:
 
     `inputs` use `path` (relative to the workdir), not `dst`: on a `files` environment the
     platform materialises these into the workdir, and `dst` is a container path. The task
-    file, the check, the shared library and the JRE are all re-materialised at verification
-    time, so nothing the agent wrote to any of them is what runs.
+    file, check and shared library are re-materialised at verification time; the JRE
+    is shared and bound read-only, so the agent cannot change it in the first place.
     """
     # Locate package data without importing the JVM wrapper or launching Java.
     import importlib.util
@@ -330,7 +328,7 @@ def _verifier(record: dict) -> dict:
              "content": json.dumps({"task_name": record["task_name"],
                                     "variation": record["variation"],
                                     "simplifications": ""})},
-            {"path": f"{_LIB.JRE_RELDIR}/{_LIB.JRE_DIRNAME}", "from": str(JRE_STAGED)},
+            {"path": f"{_LIB.JRE_RELDIR}/{_LIB.JRE_DIRNAME}", "from": str(JRE_STAGED), "immutable": True},
         ],
         "reward_file": REWARD_FILE,
         "evidence_file": EVIDENCE_FILE,

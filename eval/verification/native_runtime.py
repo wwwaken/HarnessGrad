@@ -17,6 +17,8 @@ from pathlib import Path
 import platform
 import subprocess
 
+from eval.containers.immutable_runtime import ImmutableRuntimeUnavailable, targets
+
 ROOT = Path(__file__).resolve().parents[2]
 CHECK_PATHS = {name: 'check.py' for name in
                ('bird_minidev', 'jericho', 'alfworld', 'scienceworld')}
@@ -67,11 +69,11 @@ class FrozenRuntime:
                         'identity': manifest['identity'], 'files': len(fds)}
 
     def run(self, argv: list[str], *, workdir: Path, reward_dir: Path,
-            timeout_s: int) -> subprocess.CompletedProcess:
+            timeout_s: int, immutable_runtimes=()) -> subprocess.CompletedProcess:
         """Launch inside an empty root; no ambient /usr, /etc, PATH or Python site."""
         plan = [f'/proc/self/fd/{self.launcher}', '--unshare-all', '--die-with-parent',
                 '--new-session', '--cap-drop', 'ALL', '--proc', '/proc', '--dev', '/dev',
-                '--tmpfs', '/tmp', '--ro-bind', str(workdir), '/task',
+                '--tmpfs', '/tmp', '--bind' if immutable_runtimes else '--ro-bind', str(workdir), '/task',
                 '--bind', str(reward_dir), '/task/verifier', '--chdir', '/task', '--clearenv']
         for name, value in self.manifest['environment'].items():
             plan += ['--setenv', name, value]
@@ -83,6 +85,14 @@ class FrozenRuntime:
             if os.pread(fd, 4, 0) == b'\x7fELF':
                 plan += ['--perms', '0555']
             plan += ['--ro-bind-data', str(fd), target]
+        # Exact shared directory sources, never copied into the sealed closure or
+        # task state. As in the host bwrap plan, child read-only binds follow the
+        # writable parent; freeze the parent non-recursively so they survive.
+        for source, target in targets(workdir, immutable_runtimes,
+                                      writable_paths=(reward_dir,)):
+            plan += ['--ro-bind', str(source), '/task/' + str(target.relative_to(workdir.resolve()))]
+        if immutable_runtimes:
+            plan += ['--remount-ro', '/task']
         # Even the interpreter's first loader/cache resolution is explicit. Child
         # sys.executable launches use PT_INTERP in the same closed namespace.
         interpreter = self.manifest['interpreter']
@@ -104,9 +114,17 @@ class FrozenRuntime:
             offset = command.index(interpreter) + 1 + len(self.manifest['python_flags'])
             command[offset:] = ['-c', bootstrap, *command[offset:]]
         plan += ['--', *command]
-        return subprocess.run(plan, pass_fds=(*self.fds.values(), self.launcher),
-                              capture_output=True, text=True, timeout=timeout_s,
-                              env={'PATH': '/usr/bin:/bin', 'LANG': 'C'})
+        try:
+            proc = subprocess.run(plan, pass_fds=(*self.fds.values(), self.launcher),
+                                  capture_output=True, text=True, timeout=timeout_s,
+                                  env={'PATH': '/usr/bin:/bin', 'LANG': 'C'})
+        except OSError as exc:
+            if immutable_runtimes:
+                raise ImmutableRuntimeUnavailable(str(exc)) from exc
+            raise
+        if immutable_runtimes and proc.returncode and 'bwrap:' in proc.stderr:
+            raise ImmutableRuntimeUnavailable(f'immutable runtime sandbox failed: {proc.stderr.strip()}')
+        return proc
 
 
 @contextmanager
@@ -141,6 +159,8 @@ def admit(binding: dict):
                 raise NativeRuntimeUnavailable(f'native runtime missing entry: {required}')
         launcher = _snapshot(Path(manifest['launcher']['path']), manifest['launcher']['sha256'])
         yield FrozenRuntime(manifest, digest, fds, launcher)
+    except ImmutableRuntimeUnavailable:
+        raise
     except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
         raise NativeRuntimeUnavailable(f'native runtime refused: {exc}') from exc
     finally:

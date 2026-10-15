@@ -28,6 +28,7 @@ import eval.service.services as services_mod
 from eval.service.services import label
 from eval.run.integrity import PLATFORM_ROOT
 from eval.observe.tracing import _materialize
+from eval.containers.immutable_runtime import ImmutableRuntimeUnavailable, projections, targets
 from eval.policy.runtime_policy import phase_timeout
 from eval.verification.isolation import declared_class, record_class
 
@@ -463,6 +464,25 @@ def _copy_relative_input(name: str, entry: dict, staging: Path,
     _materialize(target, [entry], PLATFORM_ROOT)
     container_mod.cp_in(name, target / rel, f"{task_mount}/{rel}")
 def _verify(workdir: Path, verifier: dict | None, answer: str, **options) -> dict:
+    """Fail closed on runtime bind errors, then dispatch the existing scorer routes."""
+    try:
+        bindings = (*options.get("immutable_runtimes", ()),
+                    *projections((verifier or {}).get("inputs")))
+        if bindings:
+            if ((options.get("env") or {}).get("kind", "files") != "exec"
+                    and not options.get("sandbox")):
+                raise ImmutableRuntimeUnavailable("immutable runtimes require a read-only sandbox bind")
+            if declared_class(verifier or {}) == "pristine-offline":
+                raise ImmutableRuntimeUnavailable("this verification boundary cannot express immutable runtime binds")
+            targets(workdir, bindings)
+        return _verify_dispatch(workdir, verifier, answer, **options)
+    except ImmutableRuntimeUnavailable as exc:
+        return {"kind": "command", "passed": False, "score": None,
+                "outcome": "unmeasured", "unmeasured": str(exc),
+                "immutable_runtime_error": True}
+
+
+def _verify_dispatch(workdir: Path, verifier: dict | None, answer: str, **options) -> dict:
     """Bind a supported host scorer's native pin to execution and verdict."""
     spec = verifier or {}
     if "native_runtime" not in spec:
@@ -501,7 +521,7 @@ def _verify_existing(workdir: Path, verifier: dict | None, answer: str,
             service_specs: list[dict] | None = None,
             running=None, task_id: str | None = None,
             run_id: str | None = None, trial_id: str | None = None,
-            native_runtime=None) -> dict:
+            native_runtime=None, immutable_runtimes=()) -> dict:
     """Run a verifier with platform-owned output storage for exec reward checks."""
     spec = verifier or {"kind": "answer", "expected": None}
     env_spec = env or {"kind": "files"}
@@ -535,11 +555,13 @@ def _verify_existing(workdir: Path, verifier: dict | None, answer: str,
             verdict = _verify_inner(workdir, verifier, answer, sandbox=sandbox,
                                  timeout_s=timeout_s, env=env,
                                  service_specs=service_specs, running=running,
-                                 verdict_dir=Path(verdict_dir), native_runtime=native_runtime)
+                                 verdict_dir=Path(verdict_dir), native_runtime=native_runtime,
+                                 immutable_runtimes=immutable_runtimes)
             return record_class(_enforce_scorer_input(verdict, binding), spec, actual)
     verdict = _verify_inner(workdir, verifier, answer, sandbox=sandbox,
                          timeout_s=timeout_s, env=env,
-                         service_specs=service_specs, running=running, native_runtime=native_runtime)
+                         service_specs=service_specs, running=running, native_runtime=native_runtime,
+                         immutable_runtimes=immutable_runtimes)
     return record_class(_enforce_scorer_input(verdict, binding), spec, actual)
 
 
@@ -566,7 +588,8 @@ def _verify_inner(workdir: Path, verifier: dict | None, answer: str,
             *, sandbox: bool, timeout_s: int,
             env: dict | None = None,
             service_specs: list[dict] | None = None,
-            running=None, verdict_dir: Path | None = None, native_runtime=None) -> dict:
+            running=None, verdict_dir: Path | None = None, native_runtime=None,
+            immutable_runtimes=()) -> dict:
     """Decide whether the task was completed. Returns {kind, passed, detail}.
 
     `answer` is the legacy path and stays byte-for-byte what it was: stripped,
@@ -597,8 +620,13 @@ def _verify_inner(workdir: Path, verifier: dict | None, answer: str,
         raise ValueError(f"unknown verifier kind {kind!r}")
 
     # Re-materialize the check's inputs, overwriting whatever the harness left there.
+    # Immutable runtimes are skipped by _materialize: the harness could never write
+    # them, which is stronger anti-tamper protection than restoring mutable inputs.
+    immutable_runtimes = (*immutable_runtimes, *projections(spec.get("inputs")))
     try:
         _materialize(workdir, spec.get("inputs"), PLATFORM_ROOT)
+    except ImmutableRuntimeUnavailable:
+        raise
     except (ValueError, OSError) as exc:
         return {"kind": "command", "passed": False,
                 "detail": f"could not stage the verifier's inputs: {exc}"}
@@ -633,7 +661,8 @@ def _verify_inner(workdir: Path, verifier: dict | None, answer: str,
     try:
         if native_runtime is not None:
             proc = native_runtime.run(argv, workdir=workdir, reward_dir=reward_dir,
-                                      timeout_s=timeout_s)
+                                      timeout_s=timeout_s,
+                                      **({"immutable_runtimes": immutable_runtimes} if immutable_runtimes else {}))
             if proc.returncode and not host_reward_path.is_file():
                 from eval.verification.native_runtime import NativeRuntimeUnavailable
                 raise NativeRuntimeUnavailable("native runtime check did not produce a reward: "
@@ -665,6 +694,7 @@ def _verify_inner(workdir: Path, verifier: dict | None, answer: str,
                 network=(running.network if running is not None
                          else env_spec.get("network", "none")),
                 task_dir_writable=False,
+                immutable_runtimes=immutable_runtimes,
                 extra_mounts=tuple(verifier_mounts))
         elif sandbox:
             # A host check whose verdict is a file still runs sandboxed: `writable_paths`
@@ -686,6 +716,7 @@ def _verify_inner(workdir: Path, verifier: dict | None, answer: str,
                                    task_dir=workdir, env=check_env,
                                    timeout_s=timeout_s,
                                    cwd=cwd, repo=workdir, task_dir_writable=False,
+                                   immutable_runtimes=immutable_runtimes,
                                    writable_paths=(reward_dir,) if reward_dir else ())
         else:
             proc = subprocess.run(argv, capture_output=True, text=True,

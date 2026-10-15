@@ -378,6 +378,25 @@ actor receives the original task.
 
 `files` entries describe the initial filesystem:
 
+An entry in `setup.files` or `verify.inputs` may carry `"immutable": true` to
+declare an immutable runtime projection, rather than task state. Its `from` must
+be an absolute path to an existing regular directory without symlink path
+components. The exact declared directory is bound read-only at `<task_dir>/<path>`
+(or `<container_workdir>/<path>` for Docker). It is never copied into the host
+workdir, staging or a cache; there is no per-task runtime duplication. Sandbox
+engines may create empty mount points, which contain no runtime files on the host.
+The agent-visible paths and contents are the same as for a directory copy.
+
+Pre-verification re-materialization skips immutable projections: anti-tamper is
+stronger because the harness cannot modify the tree at all, rather than being
+allowed to modify it and having those edits reverted. Entries without the flag
+retain the existing per-task copy and pre-verification restoration behavior.
+Verifier-only projections remain unavailable to the harness. Invalid sources or
+a boundary that cannot express the read-only bind make the task invalid, with no
+writable-bind or copy fallback. Container-state and pristine verification routes
+currently refuse this opt-in instead of staging runtimes. The sealed native
+verifier uses the same read-only directory projection at `/task/<path>`.
+
 ```python
 {"path": "relative/path", "content": "literal text"}     # inline
 {"path": "relative/path", "from": "/abs/or/rel/source"}  # copied; a directory is copied whole

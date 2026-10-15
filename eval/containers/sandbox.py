@@ -68,6 +68,8 @@ import sys
 import tempfile
 from pathlib import Path
 
+from eval.containers.immutable_runtime import ImmutableRuntimeUnavailable, targets
+
 from ckpt.git_state import STATE_DIRNAME
 from harnessgrad.config import current as current_config
 
@@ -75,7 +77,7 @@ from harnessgrad.config import current as current_config
 #: A curve made under plan 1 and one made under plan 2 are measurements of a
 #: harness in two different worlds, so `run_meta.json` records this number and
 #: `tools/plot_curve.py` refuses to put them on the same axis without saying so.
-PLAN_VERSION = 2
+PLAN_VERSION = 3  # Explicit read-only task-relative immutable runtime projections.
 
 #: Runtime trees a subject may need, bound read-only at their host paths. Kept as
 #: a short explicit list rather than "the whole host": the point of the namespace
@@ -178,7 +180,8 @@ def command(argv: list[str], *, platform: Path, work_root: Path,
             visible_paths: tuple[Path, ...] = (),
             writable_paths: tuple[Path, ...] = (),
             network: str | None = None,
-            package_overlays: tuple[tuple[Path, Path], ...] = ()) -> list[str]:
+            package_overlays: tuple[tuple[Path, Path], ...] = (),
+            immutable_runtimes: tuple[tuple[Path, str], ...] = ()) -> list[str]:
     """Wrap `argv` so it runs with the platform off its disk.
 
     Raises rather than degrading. A sandbox that quietly did not apply would make
@@ -300,13 +303,14 @@ def command(argv: list[str], *, platform: Path, work_root: Path,
     #     of a parent wins over a writable bind of its child, which is how a method's
     #     own trajectory file came back `Read-only file system`.
     plan += ["--bind", str(task_dir), str(task_dir)]
-    plan += ["--ro-bind", str(repo), str(repo)]
+    if not (immutable_runtimes and repo == task_dir.resolve()):
+        plan += ["--ro-bind", str(repo), str(repo)]
     for path in visible_paths:
         target = Path(path)
         if target.exists():
             plan += ["--ro-bind", str(target), str(target)]
     plan += ["--ro-bind", str(work_root), str(work_root)]
-    if not task_dir_writable:
+    if not task_dir_writable and not immutable_runtimes:
         # Verification runs with the harness's artifacts frozen. Said *last*, so it is
         # the final word about this path.
         plan += ["--ro-bind", str(task_dir), str(task_dir)]
@@ -356,6 +360,18 @@ def command(argv: list[str], *, platform: Path, work_root: Path,
                 raise SandboxUnavailable("agent package projection is in writable storage")
         plan += ["--ro-bind", str(source), str(target)]
 
+    # Only in the surviving re-assert pass, after the writable task --bind and all
+    # parent mounts: bwrap is last-one-wins. These exact shared sources are read-only
+    # runtime projections, never host copies; no later mount may reopen their trees.
+    for source, target in targets(task_dir, immutable_runtimes,
+                                  writable_paths=(*writable_paths, *state_dirs)):
+        plan += ["--ro-bind", str(source), str(target)]
+    if immutable_runtimes and not task_dir_writable:
+        # New verifier-only mount points must be made while the task parent is
+        # writable. Freeze that parent without recursively replacing child mounts:
+        # runtime binds stay read-only, and the verdict directory stays writable.
+        plan += ["--remount-ro", str(task_dir)]
+
     #: Variables the platform itself sets to a filesystem path. Only these are
     #: checked against the hidden tree, and the list is explicit because guessing
     #: is what went wrong twice: `HG_AGENT_MODEL=deepseek-flash` is not a path, but
@@ -401,7 +417,8 @@ def run(argv: list[str], *, platform: Path, work_root: Path, task_dir: Path,
         writable_paths: tuple[Path, ...] = (),
         input_text: str | None = None,
         network: str | None = None,
-        package_overlays: tuple[tuple[Path, Path], ...] = ()):
+        package_overlays: tuple[tuple[Path, Path], ...] = (),
+        immutable_runtimes: tuple[tuple[Path, str], ...] = ()):
     """`subprocess.run` with the namespace in place. Same return type.
 
     `input_text` exists because a *method* is driven over stdin (it reads one JSON
@@ -409,16 +426,30 @@ def run(argv: list[str], *, platform: Path, work_root: Path, task_dir: Path,
     need the same namespace, so the namespace takes the input as a parameter rather
     than the caller reaching for `subprocess` and losing the sandbox by accident.
     """
-    wrapped = command(argv, platform=platform, work_root=work_root,
-                      task_dir=task_dir, env=env, repo=repo,
-                      state_dirs=state_dirs,
-                      task_dir_writable=task_dir_writable,
-                      runtime_paths=runtime_paths,
-                      visible_paths=visible_paths,
-                      writable_paths=writable_paths,
-                      network=network, package_overlays=package_overlays)
-    return subprocess.run(wrapped, input=input_text, capture_output=True, text=True,
-                          timeout=timeout_s, cwd=cwd, env=env)
+    try:
+        wrapped = command(argv, platform=platform, work_root=work_root,
+                          task_dir=task_dir, env=env, repo=repo,
+                          state_dirs=state_dirs,
+                          task_dir_writable=task_dir_writable,
+                          runtime_paths=runtime_paths,
+                          visible_paths=visible_paths,
+                          writable_paths=writable_paths,
+                          network=network, package_overlays=package_overlays,
+                          immutable_runtimes=immutable_runtimes)
+    except SandboxUnavailable as exc:
+        if immutable_runtimes:
+            raise ImmutableRuntimeUnavailable(str(exc)) from exc
+        raise
+    try:
+        proc = subprocess.run(wrapped, input=input_text, capture_output=True, text=True,
+                              timeout=timeout_s, cwd=cwd, env=env)
+    except OSError as exc:
+        if immutable_runtimes:
+            raise ImmutableRuntimeUnavailable(str(exc)) from exc
+        raise
+    if immutable_runtimes and proc.returncode and "bwrap:" in proc.stderr:
+        raise ImmutableRuntimeUnavailable(f"immutable runtime sandbox failed: {proc.stderr.strip()}")
+    return proc
 
 
 def self_check(platform: Path, work_root: Path) -> dict:
