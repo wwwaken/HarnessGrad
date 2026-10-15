@@ -434,6 +434,15 @@ now). Because this phase runs **no re-runs**, no archived figure has been re-mea
 `NUMBER` row, the archived value was produced by the **pre-fix instrument** and is not comparable to what
 the code computes today. That sentence is the deliverable; the rest is provenance.
 
+**Measured addendum, 2026-10-16: for four of these the `NUMBER` change alters no surviving score.**
+Replaying the pre-fix and post-fix scorers over the submission and gold recorded in every archived verdict
+reproduces the archive exactly in **both** trees - `gsm8k` 1319/1319, `physicsquestions` 53/53, `fever`
+12/12, `2Wiki` 11/12 - so the fixes change none of 1,396 archived verdicts and are **latent** on the runs we
+still hold (0 of 3,957 GSM8K trial-predictions carry a `####`; 0 of 53 PhysicsQuestions predictions end in
+`.`; 0 of 12 2Wiki verdicts used the structured channel). The labelling obligation below therefore stands as
+a *labelling* obligation, not as an observed numeric change. Method, harness validation and coverage gaps:
+`registry/rescore-measurement.md`. `gsm8k` is a full eval run; the others are probes.
+
 | dataset | blocker | effect class | what the fix changes |
 | --- | --- | --- | --- |
 | `agentdojo` | closed | NUMBER/CONDITION | NUMBER/CONDITION: warning removal and registered-attack wiring have landed. |

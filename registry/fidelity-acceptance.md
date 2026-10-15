@@ -159,6 +159,17 @@ arbitrary local address to test gateway *mapping*, where the port is the point. 
 actually tracked - the durability rule this phase learned when 47 restored B5 bodies turned out to be
 gitignored.
 
+## The metric-identity fixes are score-neutral on the surviving evidence
+
+Measured after the range C table above: replaying the pre-fix and post-fix scorers over the submission and
+gold recorded in every archived verdict reproduces the archive **exactly in both trees** - 1,396 verdicts
+across `gsm8k`, `physicsquestions`, `fever` and `2Wiki`, with the single apparent gap being the receipt
+rounding `0.142857` vs `0.142857142857`. So the `NUMBER` fixes change **no archived score**; they are latent
+because the repaired path was never exercised (0 of 3,957 GSM8K trial-predictions contain `####`, 0 of 53
+PhysicsQuestions predictions end in `.`, 0 of 12 2Wiki verdicts used the structured channel). Full method,
+harness validation, coverage gaps and the two traps that produced a plausible wrong answer on the first
+attempt: `registry/rescore-measurement.md`.
+
 ## Range D — the evidence landing
 
 | item | landed where | status |

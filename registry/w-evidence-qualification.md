@@ -4,6 +4,19 @@ Dated 2026-10-16; source snapshot `5e5441cc48f3ce79390895f8159e0666ff944587`. Th
 
 **FOUND** means source or retained record read here, not runtime execution. **ABSENT** is limited to the explicit scopes/commands in validation. **UNKNOWN** is not observed or not independently verified. Paper-side claims attributed to the parent plan/handoff are inherited claims, not fresh paper authentication; the external-source snapshot preserves the exact reviewed plan. The handoff audit was FOUND through the retained plan appendix and read at `/mnt/20t/xubuqiang/Study/HarnessGrad/docs/paper-fidelity-audit-handoff.md:1`; selected excerpts are retained in `registry/w-evidence-external-sources.md:1315`. The separate intern original remains UNKNOWN as an independent document (the plan says it was chat context). The “17 of 21” scope is inherited from the assignment; six affected datasets are marked must-fix in the handoff: physicsquestions, sportsunderstanding, hotpotqa, alfworld, agentdojo and scienceworld (`/mnt/20t/xubuqiang/Study/HarnessGrad/docs/paper-fidelity-audit-handoff.md:107`, `:249`, `:279`, `:315`, `:327`). Severity is inherited review judgment, not a fresh score measurement.
 
+**Parent note, 2026-10-16 — four of these `NUMBER` changes are now MEASURED to be score-neutral on every
+surviving run.** The per-dataset "Effect" lines below say that earlier figures must not be reused under the
+new metric name. That obligation stands, but it is a **labelling** obligation rather than an observed
+numeric change, and that is now measured rather than inferred: replaying the pre-fix and post-fix scorers
+over the submission and gold recorded in every archived verdict reproduces the archive **exactly in both
+trees** - `gsm8k` 1319/1319, `physicsquestions` 16/16 and 37/37, `fever` 12/12, `2Wiki` 11/12 (the one gap
+is the receipt rounding `0.142857`) - so the fixes change **not one** of 1,396 archived scores. Each is
+latent for a measured reason: 0 of 3,957 `gsm8k` trial-predictions carry a `####` marker, 0 of 53
+`physicsquestions` predictions end in `.`, 0 of 12 `2Wiki` verdicts used a structured `prediction.json`,
+and only 1 of 12 `fever` golds has more than one evidence group. A future submission that exercises a
+repaired path **will** score differently, correctly. Coverage, scope and the datasets that could not be
+rescored are in `registry/rescore-measurement.md`; `gsm8k` is a full eval run, the rest are probes.
+
 The registry has 28 entries, of which 21 have no active blockers; appworld, bfcl_v3 and triviaqa have existing open blockers, and four entries retain permanent refusals (validation’s registry inventory). The 17 closed entries in the affected sections below plus the four explicitly cleared sections account for those 21. Closure is source/withdrawal bookkeeping and does not establish a comparable measured score (`registry/blocker-closure-assessment.md:197-205`, `:320-324`).
 
 All scalar run means use the shared trial-mean rule in the disclosure preamble. Quotations below are exact source/record text, with conditional update instructions: a dated true observation is not rewritten as though a later fix had already existed. Where no false sentence was retrieved, that negative is scoped explicitly rather than fabricated.
