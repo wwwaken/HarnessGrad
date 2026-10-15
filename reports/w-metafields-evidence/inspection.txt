@@ -1,0 +1,41 @@
+$ git diff --check
+exit_code=0
+stdout:
+stderr:
+
+$ git diff -- driver.py harnessgrad/loops/mode_a.py harnessgrad/records.py registry/dataset-blockers.json docs/adapter-integration-journal.md AGENTS.md
+exit_code=0
+stdout:
+stderr:
+
+$ rg -n 'steps_done|steps_measured' harnessgrad/loops/mode_a.py
+exit_code=0
+stdout:
+152:    #: advances the counter** -- `r` is always `steps_done + 1`, so the curve's rounds
+233:                "epochs_measured": steps_done,
+287:    steps_done, step_attempts = 0, 0
+292:    while steps_done < args.rounds:
+294:            r = steps_done + 1
+300:            r = steps_done + 1
+349:            room = args.rounds - steps_done
+627:        steps_done += 1
+689:        steps_measured=steps_done,
+stderr:
+
+$ git diff --stat
+exit_code=0
+stdout:
+ tests/quality/test_dgm_rule.py       | 7 +++++++
+ tests/quality/test_unified_budget.py | 4 +++-
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+stderr:
+
+$ git status --short --branch
+exit_code=0
+stdout:
+## wg-w-metafields
+ M tests/quality/test_dgm_rule.py
+ M tests/quality/test_unified_budget.py
+?? reports/w-metafields-evidence/
+?? reports/w-metafields.md
+stderr:

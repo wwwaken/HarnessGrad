@@ -1,0 +1,162 @@
+w-metafields validation
+Commands below ran in /mnt/20t/xubuqiang/hg-wt/w-metafields.
+Observed test runs use synthetic demo data and the mock agent backend as configured by the assigned tests.
+
+$ TMPDIR=/tmp/metafields-tmp python3 -m pytest -q tests/quality/test_dgm_rule.py --basetemp=/tmp/metafields-before-dgm > /mnt/20t/xubuqiang/hg-work/metafields/before-dgm-pytest.txt 2>&1
+exit_code=0
+Exact captured output:
+.....                                                                    [100%]
+5 passed in 18.11s
+
+$ TMPDIR=/tmp/metafields-tmp python3 -m pytest -q tests/quality/test_unified_budget.py --basetemp=/tmp/metafields-before-budget > /mnt/20t/xubuqiang/hg-work/metafields/before-budget-pytest.txt 2>&1
+exit_code=0
+Exact captured output:
+...                                                                      [100%]
+3 passed in 22.39s
+
+$ TMPDIR=/tmp/metafields-tmp python3 -m pytest -q tests/quality/test_dgm_rule.py --basetemp=/tmp/metafields-after-dgm > /mnt/20t/xubuqiang/hg-work/metafields/after-dgm-pytest.txt 2>&1
+exit_code=0
+Exact captured output:
+.....                                                                    [100%]
+5 passed in 18.51s
+
+$ TMPDIR=/tmp/metafields-tmp python3 -m pytest -q tests/quality/test_unified_budget.py --basetemp=/tmp/metafields-after-budget > /mnt/20t/xubuqiang/hg-work/metafields/after-budget-pytest.txt 2>&1
+exit_code=0
+Exact captured output:
+...                                                                      [100%]
+3 passed in 23.20s
+
+$ TMPDIR=/tmp/metafields-tmp python3 reports/w-metafields-evidence/reproduce.py /mnt/20t/xubuqiang/hg-work/metafields > /mnt/20t/xubuqiang/hg-work/metafields/direct-reproduction.txt 2>&1
+exit_code=0
+Exact captured output:
+{"case": "batch", "argv": ["/mnt/8t/xubuqiang/anaconda3/bin/python3", "driver.py", "--harness", "loop_plain", "--mode", "A", "--rounds", "5", "--run-id", "metafields-direct-batch-zj_dxkfd", "--dataset", "demo", "--sampling", "all", "--side", "train", "--no-sandbox", "--runs-root", "/tmp/metafields-direct-batch-zj_dxkfd/runs", "--work-root", "/tmp/metafields-direct-batch-zj_dxkfd/work", "--method-entrypoint", "/mnt/8t/xubuqiang/anaconda3/bin/python3 /tmp/metafields-direct-batch-zj_dxkfd/metafields-direct-batch-zj_dxkfd.py"], "cwd": "/mnt/20t/xubuqiang/hg-wt/w-metafields", "timeout_s": 900, "environment_expression": "{**os.environ, 'HG_AGENT_BACKEND': 'mock'}", "environment_overrides": {"HG_AGENT_BACKEND": "mock"}, "inherited_TMPDIR": "/tmp/metafields-tmp", "inherited_environment_values": "not dumped; may contain credentials", "returncode": 0, "timed_out": false, "elapsed_s": 9.326331877149642, "temporary_root_removed": true}
+{"case": "single", "argv": ["/mnt/8t/xubuqiang/anaconda3/bin/python3", "driver.py", "--harness", "loop_plain", "--mode", "A", "--rounds", "3", "--run-id", "metafields-direct-single-77k6iv3n", "--dataset", "demo", "--sampling", "all", "--side", "train", "--no-sandbox", "--runs-root", "/tmp/metafields-direct-single-77k6iv3n/runs", "--work-root", "/tmp/metafields-direct-single-77k6iv3n/work", "--method-entrypoint", "/mnt/8t/xubuqiang/anaconda3/bin/python3 /tmp/metafields-direct-single-77k6iv3n/metafields-direct-single-77k6iv3n.py"], "cwd": "/mnt/20t/xubuqiang/hg-wt/w-metafields", "timeout_s": 900, "environment_expression": "{**os.environ, 'HG_AGENT_BACKEND': 'mock'}", "environment_overrides": {"HG_AGENT_BACKEND": "mock"}, "inherited_TMPDIR": "/tmp/metafields-tmp", "inherited_environment_values": "not dumped; may contain credentials", "returncode": 0, "timed_out": false, "elapsed_s": 7.6468812972307205, "temporary_root_removed": true}
+{"case": "kept", "argv": ["/mnt/8t/xubuqiang/anaconda3/bin/python3", "driver.py", "--harness", "loop_plain", "--mode", "A", "--rounds", "4", "--run-id", "metafields-direct-kept-eeq2o6yp", "--dataset", "demo", "--sampling", "all", "--side", "train", "--no-sandbox", "--runs-root", "/tmp/metafields-direct-kept-eeq2o6yp/runs", "--work-root", "/tmp/metafields-direct-kept-eeq2o6yp/work", "--method-entrypoint", "/mnt/8t/xubuqiang/anaconda3/bin/python3 /tmp/metafields-direct-kept-eeq2o6yp/metafields-direct-kept-eeq2o6yp.py"], "cwd": "/mnt/20t/xubuqiang/hg-wt/w-metafields", "timeout_s": 900, "environment_expression": "{**os.environ, 'HG_AGENT_BACKEND': 'mock'}", "environment_overrides": {"HG_AGENT_BACKEND": "mock"}, "inherited_TMPDIR": "/tmp/metafields-tmp", "inherited_environment_values": "not dumped; may contain credentials", "returncode": 0, "timed_out": false, "elapsed_s": 5.3459034236148, "temporary_root_removed": true}
+
+Full stdout/stderr for the three driver processes are retained separately as direct-{batch,single,kept}-{stdout,stderr}.txt; exact argv and explicit environment overrides are in direct-{batch,single,kept}-receipt.json. The entire inherited process environment was not dumped.
+
+$ python3 - <<'PY' > reports/w-metafields-evidence/timeout-contract.txt
+import subprocess
+import sys
+try:
+    subprocess.run([sys.executable, '-c', 'import time; time.sleep(1)'],
+                   capture_output=True, text=True, timeout=0.01)
+except subprocess.TimeoutExpired:
+    print('TimeoutExpired raised; no CompletedProcess returned')
+PY
+exit_code=0
+Exact captured output:
+TimeoutExpired raised; no CompletedProcess returned
+
+$ python3 tools/check_dataset_blockers.py > /mnt/20t/xubuqiang/hg-work/metafields/dataset-blockers-check.txt 2>&1
+exit_code=0
+Exact captured output:
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+
+Production-file diff, counter search, whitespace check and pre-staging scope inspection (exact command/output):
+$ git diff --check
+exit_code=0
+stdout:
+stderr:
+
+$ git diff -- driver.py harnessgrad/loops/mode_a.py harnessgrad/records.py registry/dataset-blockers.json docs/adapter-integration-journal.md AGENTS.md
+exit_code=0
+stdout:
+stderr:
+
+$ rg -n 'steps_done|steps_measured' harnessgrad/loops/mode_a.py
+exit_code=0
+stdout:
+152:    #: advances the counter** -- `r` is always `steps_done + 1`, so the curve's rounds
+233:                "epochs_measured": steps_done,
+287:    steps_done, step_attempts = 0, 0
+292:    while steps_done < args.rounds:
+294:            r = steps_done + 1
+300:            r = steps_done + 1
+349:            room = args.rounds - steps_done
+627:        steps_done += 1
+689:        steps_measured=steps_done,
+stderr:
+
+$ git diff --stat
+exit_code=0
+stdout:
+ tests/quality/test_dgm_rule.py       | 7 +++++++
+ tests/quality/test_unified_budget.py | 4 +++-
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+stderr:
+
+$ git status --short --branch
+exit_code=0
+stdout:
+## wg-w-metafields
+ M tests/quality/test_dgm_rule.py
+ M tests/quality/test_unified_budget.py
+?? reports/w-metafields-evidence/
+?? reports/w-metafields.md
+stderr:
+
+Temporary roots were copied for evidence then removed with shutil.rmtree: /tmp/metafields-before-dgm, /tmp/metafields-before-budget, /tmp/metafields-after-dgm, /tmp/metafields-after-budget, /tmp/metafields-tmp. The direct helper removes its three temporary roots in finally (each receipt records temporary_root_removed=true).
+
+$ python3 - <<'PY'
+from pathlib import Path
+paths = sorted(Path('/tmp').glob('metafields-*'))
+print('owned temporary paths remaining:', [str(path) for path in paths])
+evidence = Path('reports/w-metafields-evidence')
+print('evidence files:', len(list(evidence.iterdir())))
+for path in sorted(evidence.iterdir()):
+    if path.stat().st_size >= 1_000_000:
+        raise SystemExit(f'oversize file: {path}')
+print('all evidence files below 1 MB')
+PY
+exit_code=0
+Exact observed output:
+owned temporary paths remaining: []
+evidence files: 30
+all evidence files below 1 MB
+
+Validation preparation error: the first generator used the same PY heredoc delimiter inside its Python string and in the outer shell. It exited 2, with Python reporting "SyntaxError: unterminated triple-quoted string literal (detected at line 22)" and shell parse/command errors. No validation file was created and no tracked changes outside the intended two tests were observed by git status --short. Corrected using the unique outer delimiter END_METAFIELDS_VALIDATION. This did not affect any test or driver capture.
+
+NOT VERIFIED:
+- Original historical failing run revisions, environments, complete output, statuses, or receipts; no historical root cause or production fix is claimed.
+- An actual recurrence of either assigned failure: both files pass before edits.
+- Full inherited environment values (credentials may be present); explicit test overrides and effective redacted driver configs are retained.
+- The four conditional suites test_console.py, test_integrity.py, test_unobserved_diagnostic_c2.py, test_gpu_entrypoint_contract_codex242.py: not run because _write_run_meta was not modified.
+- Other quality suites, benchmark datasets, production scorers, GPU/model servers, sandboxed execution, and main-checkout integration.
+- No registry change is proposed; checker inputs were not edited.
+
+File sizes of every file to commit (bytes; generated from Path.stat().st_size):
+    3428 reports/w-metafields-evidence/after-budget-batch-run_meta.json
+      99 reports/w-metafields-evidence/after-budget-pytest.txt
+    3433 reports/w-metafields-evidence/after-budget-single-run_meta.json
+    3799 reports/w-metafields-evidence/after-dgm-batch-run_meta.json
+      99 reports/w-metafields-evidence/after-dgm-pytest.txt
+    3420 reports/w-metafields-evidence/after-kept-round-run_meta.json
+    3435 reports/w-metafields-evidence/before-budget-batch-run_meta.json
+      99 reports/w-metafields-evidence/before-budget-pytest.txt
+    3440 reports/w-metafields-evidence/before-budget-single-run_meta.json
+   12805 reports/w-metafields-evidence/before-dgm-batch-events.jsonl
+    3804 reports/w-metafields-evidence/before-dgm-batch-run_meta.json
+      99 reports/w-metafields-evidence/before-dgm-pytest.txt
+    3427 reports/w-metafields-evidence/before-kept-round-run_meta.json
+     112 reports/w-metafields-evidence/dataset-blockers-check.txt
+    1049 reports/w-metafields-evidence/direct-batch-receipt.json
+    3390 reports/w-metafields-evidence/direct-batch-run_meta.json
+    1314 reports/w-metafields-evidence/direct-batch-stderr.txt
+    3019 reports/w-metafields-evidence/direct-batch-stdout.txt
+    1042 reports/w-metafields-evidence/direct-kept-receipt.json
+    3381 reports/w-metafields-evidence/direct-kept-run_meta.json
+     657 reports/w-metafields-evidence/direct-kept-stderr.txt
+    2004 reports/w-metafields-evidence/direct-kept-stdout.txt
+    2813 reports/w-metafields-evidence/direct-reproduction.txt
+    1055 reports/w-metafields-evidence/direct-single-receipt.json
+    3401 reports/w-metafields-evidence/direct-single-run_meta.json
+     876 reports/w-metafields-evidence/direct-single-stderr.txt
+    2292 reports/w-metafields-evidence/direct-single-stdout.txt
+    1136 reports/w-metafields-evidence/inspection.txt
+    3047 reports/w-metafields-evidence/reproduce.py
+      52 reports/w-metafields-evidence/timeout-contract.txt
+   11154 reports/w-metafields-validation.txt
+    8818 reports/w-metafields.md
+   10673 tests/quality/test_dgm_rule.py
+    7613 tests/quality/test_unified_budget.py

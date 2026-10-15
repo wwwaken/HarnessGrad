@@ -193,6 +193,9 @@ def test_a_batch_becomes_one_curve_point_per_child(tmp_path):
              "HG_METHOD_PARSE_RETRIES": "1", "HG_METHOD_TIMEOUT_S": "2",
              "HG_DGM_CHILDREN": "3"})
     out = proc.stdout + proc.stderr
+    assert proc.returncode == 0, (
+        f"driver exited {proc.returncode}; argv={proc.args!r}\n"
+        f"stdout:\n{proc.stdout}\nstderr:\n{proc.stderr}")
     points = [json.loads(l) for l in
               (runs / "dgm-batch" / "curve.jsonl").read_text().splitlines() if l.strip()]
     # 没有可用的方法模型时,dgm 抽到的每个子代都会失败,于是它交回"没有改动"并继续 ——
@@ -204,3 +207,7 @@ def test_a_batch_becomes_one_curve_point_per_child(tmp_path):
     # `run_meta` 的字段是 `mode`(点上的是 `identity.run_mode`)
     assert meta.get("mode") == "unified", meta.get("mode")
     assert "steps_measured" in meta, sorted(meta)
+    # The dead endpoint produced no usable child; H0 is the only measured state.
+    # A missing field, null, and a positive count all misdescribe this run.
+    assert meta["steps_measured"] == 0, meta
+    assert [p["round"] for p in points] == [0], points

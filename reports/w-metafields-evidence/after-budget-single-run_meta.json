@@ -1,0 +1,152 @@
+{
+ "run_id": "budget-single",
+ "mode": "unified",
+ "harness": "loop_plain",
+ "dataset": "demo",
+ "sampling_policy": "all",
+ "workspace": "/tmp/metafields-after-budget/test_a_single_step_per_call_ke0/work/budget-single/workspace",
+ "work_root": "/tmp/metafields-after-budget/test_a_single_step_per_call_ke0/work",
+ "platform_root": "/mnt/20t/xubuqiang/hg-wt/w-metafields",
+ "sandbox": {
+  "requested": false,
+  "active": false,
+  "plan_version": 3
+ },
+ "config": {
+  "agent": {
+   "backend": "mock",
+   "model": null,
+   "base_url": "",
+   "api_key": {
+    "present": false
+   }
+  },
+  "method": {
+   "model": null,
+   "base_url": null,
+   "api_key": {
+    "present": false
+   },
+   "timeout_s": 180,
+   "parse_retries": 2,
+   "history_rounds": 0,
+   "dump": null,
+   "source_limit": 200000,
+   "source_total": 60000,
+   "skill_limit": 24000
+  },
+  "improver": {
+   "selection": null,
+   "name": null,
+   "model": null,
+   "effort": null,
+   "args": "",
+   "skill": null,
+   "timeout_s": 1800,
+   "skip_tool_gate": null,
+   "codex_home_source": null,
+   "api_key": {
+    "present": false
+   }
+  },
+  "environment": {
+   "model": null,
+   "base_url": null,
+   "api_key": {
+    "present": false
+   },
+   "seed": null
+  },
+  "sandbox": {
+   "bwrap": null
+  },
+  "egress": {
+   "proxy": null,
+   "bind": "172.17.0.1",
+   "port": 17890,
+   "upstream": "127.0.0.1:17891"
+  },
+  "runtime": {
+   "overlay_root": null,
+   "overlay_builder_image": null,
+   "registry_mirrors": null
+  },
+  "storage": {
+   "run_root": null,
+   "record_dir": "/recordings/orders",
+   "pull_timeout_s": 900
+  },
+  "run": {
+   "run_id": "budget-single",
+   "harness": "loop_plain",
+   "dataset": "demo",
+   "side": "train",
+   "sampling": "all",
+   "rounds": 3,
+   "trials": 1,
+   "jobs": 1,
+   "sandbox": false,
+   "mode": "unified",
+   "seed": "84ef76b160fad962",
+   "runs_root": "/tmp/metafields-after-budget/test_a_single_step_per_call_ke0/runs",
+   "work_root": "/tmp/metafields-after-budget/test_a_single_step_per_call_ke0/work",
+   "method_entrypoint": "/mnt/8t/xubuqiang/anaconda3/bin/python3 /tmp/metafields-after-budget/test_a_single_step_per_call_ke0/budget-single.py",
+   "budget_profile": null,
+   "budget_ledger": null,
+   "budget_arm": "agent",
+   "budget_profile_hash": null
+  }
+ },
+ "env": {
+  "kind": "files",
+  "image_digest": null,
+  "network": null,
+  "placement": null,
+  "services": [],
+  "model_gateway": null,
+  "model": null,
+  "seed": null
+ },
+ "split": {
+  "train": [
+   "t01",
+   "t02",
+   "t03",
+   "t04"
+  ],
+  "eval": [
+   "t05",
+   "t06",
+   "t07",
+   "t08"
+  ]
+ },
+ "split_declared": true,
+ "split_source": "declared",
+ "split_sha": "c8ea05b1d32b3f70930232f9a87dd21fb71626787024a167598e3c1da3a00aa0",
+ "oracle_source": "released",
+ "agent_backend": "mock",
+ "framework_version": "0.1.0",
+ "method_entrypoint": "/mnt/8t/xubuqiang/anaconda3/bin/python3 /tmp/metafields-after-budget/test_a_single_step_per_call_ke0/budget-single.py",
+ "trials": 1,
+ "jobs": 1,
+ "platform": {
+  "content_sha": "2704eaba02a35572f1842690a5bdfd9ee4a097aa2db8042ad0d56f125e85c3c0",
+  "git_sha": "be29c8514d8f9373a2ebe30ba42c62df1f73f59c",
+  "dirty": true
+ },
+ "trajectory_shape": "sequence",
+ "curve_drawn": "per_round",
+ "nominated": 0,
+ "acceptance_rule": {
+  "text": "none",
+  "source": "test",
+  "calibrated": false
+ },
+ "failed_steps": [],
+ "rounds_measured": 4,
+ "steps_truncated": 0,
+ "steps_measured": 3,
+ "final_score": 0.0,
+ "wall_clock_s": 7.3
+}

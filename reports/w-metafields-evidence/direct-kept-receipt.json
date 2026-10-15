@@ -1,0 +1,39 @@
+{
+  "argv": [
+    "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+    "driver.py",
+    "--harness",
+    "loop_plain",
+    "--mode",
+    "A",
+    "--rounds",
+    "4",
+    "--run-id",
+    "metafields-direct-kept-eeq2o6yp",
+    "--dataset",
+    "demo",
+    "--sampling",
+    "all",
+    "--side",
+    "train",
+    "--no-sandbox",
+    "--runs-root",
+    "/tmp/metafields-direct-kept-eeq2o6yp/runs",
+    "--work-root",
+    "/tmp/metafields-direct-kept-eeq2o6yp/work",
+    "--method-entrypoint",
+    "/mnt/8t/xubuqiang/anaconda3/bin/python3 /tmp/metafields-direct-kept-eeq2o6yp/metafields-direct-kept-eeq2o6yp.py"
+  ],
+  "cwd": "/mnt/20t/xubuqiang/hg-wt/w-metafields",
+  "timeout_s": 900,
+  "environment_expression": "{**os.environ, 'HG_AGENT_BACKEND': 'mock'}",
+  "environment_overrides": {
+    "HG_AGENT_BACKEND": "mock"
+  },
+  "inherited_TMPDIR": "/tmp/metafields-tmp",
+  "inherited_environment_values": "not dumped; may contain credentials",
+  "returncode": 0,
+  "timed_out": false,
+  "elapsed_s": 5.3459034236148,
+  "temporary_root_removed": true
+}

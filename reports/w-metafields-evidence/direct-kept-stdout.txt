@@ -1,0 +1,35 @@
+  ! no improver resolved (the 'deepseek' improver needs DEEPSEEK_API_KEY); a method that carries its own improver still runs, but this run carries no improver identity
+  ! running with --no-sandbox: the harness can read the platform and .env, and only the hash check stands between it and the scorer
+metafields-direct-kept-eeq2o6yp
+
+  harness   loop_plain 0.1.0-control
+  mode      unified · method drives its own loop
+  data      demo · 4 tasks on the train side · train 4 / eval 4
+  model     (none) · mock   ← not a live model
+  sandbox   OFF — the harness can read the driver and .env; only the hash check stands between it and the scorer
+
+  ✓ round 0 · 第 1/4 题 t01 — done (0s)
+  ✓ round 0 · 第 2/4 题 t02 — done (0s)
+  ✓ round 0 · 第 3/4 题 t03 — done (0s)
+  ✓ round 0 · 第 4/4 题 t04 — done (0s)
+  ! this run scores 4 tasks — the score moves in steps of 0.250
+  round 0  H0 (base harness)           train 0.000
+  ✓ round 1 · 第 1/4 题 t01 — done (0s)
+  ✓ round 1 · 第 2/4 题 t02 — done (0s)
+  ✓ round 1 · 第 3/4 题 t03 — done (0s)
+  ✓ round 1 · 第 4/4 题 t04 — done (0s)
+  round 1  keep step 0                 train 0.000
+  ✓ round 2 · 第 1/4 题 t01 — done (0s)
+  ✓ round 2 · 第 2/4 题 t02 — done (0s)
+  ✓ round 2 · 第 3/4 题 t03 — done (0s)
+  ✓ round 2 · 第 4/4 题 t04 — done (0s)
+  round 2  keep step 1                 train 0.000   · method asked to stop
+  results
+    round    train  95% CI           by         harness
+        0    0.000  [0.00, 0.00]     platform   3c2ff78a5696
+        1    0.000  [0.00, 0.00]     platform   1d4e6cc5c153
+        2    0.000  [0.00, 0.00]     platform   93f927a9e6b0
+
+  curve     /tmp/metafields-direct-kept-eeq2o6yp/runs/metafields-direct-kept-eeq2o6yp/curve.jsonl
+  workspace /tmp/metafields-direct-kept-eeq2o6yp/work/metafields-direct-kept-eeq2o6yp/workspace
+  events    /tmp/metafields-direct-kept-eeq2o6yp/runs/metafields-direct-kept-eeq2o6yp/events.jsonl

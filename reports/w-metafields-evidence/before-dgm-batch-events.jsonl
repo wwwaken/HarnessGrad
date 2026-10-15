@@ -1,0 +1,67 @@
+{"seq": 1, "kind": "note", "level": "warn", "message": "no improver resolved (the 'deepseek' improver needs DEEPSEEK_API_KEY); a method that carries its own improver still runs, but this run carries no improver identity"}
+{"seq": 2, "kind": "note", "level": "warn", "message": "running with --no-sandbox: the harness can read the platform and .env, and only the hash check stands between it and the scorer"}
+{"seq": 3, "kind": "header", "run_id": "dgm-batch", "harness": "loop_plain", "version": "0.1.0-control", "mode": "unified", "dataset": "demo", "n_tasks": 4, "model": null, "backend": "mock", "live": false, "sandbox": "OFF — the harness can read the driver and .env; only the hash check stands between it and the scorer", "split": {"train": ["t01", "t02", "t03", "t04"], "eval": ["t05", "t06", "t07", "t08"]}, "argv": ["driver.py", "--harness", "loop_plain", "--mode", "B", "--rounds", "6", "--run-id", "dgm-batch", "--dataset", "demo", "--sampling", "all", "--side", "train", "--no-sandbox", "--runs-root", "/tmp/metafields-before-dgm/test_a_batch_becomes_one_curve0/runs", "--work-root", "/tmp/metafields-before-dgm/test_a_batch_becomes_one_curve0/work", "--method-entrypoint", "/mnt/8t/xubuqiang/anaconda3/bin/python3 /mnt/20t/xubuqiang/hg-wt/w-metafields/methods/dgm/run.py"], "side": "train", "phase_labels": {"setup": "准备题目文件", "create": "创建容器", "prepare": "拷入 SETUP", "agent": "harness 做题", "snapshot": "停机+快照", "verify": "题目检查判分", "collect": "取回产物", "teardown": "清理容器"}}
+{"seq": 4, "kind": "task", "task": "t01", "status": "start", "round": 0, "index": 1, "total": 4}
+{"seq": 5, "kind": "phase", "phase": "setup", "status": "start", "round": 0, "task": "t01", "budget_s": 60}
+{"seq": 6, "kind": "phase", "phase": "setup", "status": "done", "round": 0, "task": "t01", "elapsed_s": 0.0, "budget_s": 60, "detail": ""}
+{"seq": 7, "kind": "phase", "phase": "agent", "status": "start", "round": 0, "task": "t01", "budget_s": null}
+{"seq": 8, "kind": "phase", "phase": "agent", "status": "done", "round": 0, "task": "t01", "elapsed_s": 0.1, "budget_s": null, "detail": ""}
+{"seq": 9, "kind": "phase", "phase": "collect", "status": "start", "round": 0, "task": "t01", "budget_s": 60}
+{"seq": 10, "kind": "phase", "phase": "collect", "status": "done", "round": 0, "task": "t01", "elapsed_s": 0.0, "budget_s": 60, "detail": ""}
+{"seq": 11, "kind": "phase", "phase": "verify", "status": "start", "round": 0, "task": "t01", "budget_s": 900}
+{"seq": 12, "kind": "phase", "phase": "verify", "status": "done", "round": 0, "task": "t01", "elapsed_s": 0.0, "budget_s": 900, "detail": ""}
+{"seq": 13, "kind": "task", "task": "t01", "status": "done", "round": 0, "index": 1, "total": 4, "elapsed_s": 0.2, "score": 0.0, "detail": ""}
+{"seq": 14, "kind": "task", "task": "t02", "status": "start", "round": 0, "index": 2, "total": 4}
+{"seq": 15, "kind": "phase", "phase": "setup", "status": "start", "round": 0, "task": "t02", "budget_s": 60}
+{"seq": 16, "kind": "phase", "phase": "setup", "status": "done", "round": 0, "task": "t02", "elapsed_s": 0.0, "budget_s": 60, "detail": ""}
+{"seq": 17, "kind": "phase", "phase": "agent", "status": "start", "round": 0, "task": "t02", "budget_s": null}
+{"seq": 18, "kind": "phase", "phase": "agent", "status": "done", "round": 0, "task": "t02", "elapsed_s": 0.1, "budget_s": null, "detail": ""}
+{"seq": 19, "kind": "phase", "phase": "collect", "status": "start", "round": 0, "task": "t02", "budget_s": 60}
+{"seq": 20, "kind": "phase", "phase": "collect", "status": "done", "round": 0, "task": "t02", "elapsed_s": 0.0, "budget_s": 60, "detail": ""}
+{"seq": 21, "kind": "phase", "phase": "verify", "status": "start", "round": 0, "task": "t02", "budget_s": 900}
+{"seq": 22, "kind": "phase", "phase": "verify", "status": "done", "round": 0, "task": "t02", "elapsed_s": 0.0, "budget_s": 900, "detail": ""}
+{"seq": 23, "kind": "task", "task": "t02", "status": "done", "round": 0, "index": 2, "total": 4, "elapsed_s": 0.1, "score": 0.0, "detail": ""}
+{"seq": 24, "kind": "task", "task": "t03", "status": "start", "round": 0, "index": 3, "total": 4}
+{"seq": 25, "kind": "phase", "phase": "setup", "status": "start", "round": 0, "task": "t03", "budget_s": 60}
+{"seq": 26, "kind": "phase", "phase": "setup", "status": "done", "round": 0, "task": "t03", "elapsed_s": 0.0, "budget_s": 60, "detail": ""}
+{"seq": 27, "kind": "phase", "phase": "agent", "status": "start", "round": 0, "task": "t03", "budget_s": null}
+{"seq": 28, "kind": "phase", "phase": "agent", "status": "done", "round": 0, "task": "t03", "elapsed_s": 0.1, "budget_s": null, "detail": ""}
+{"seq": 29, "kind": "phase", "phase": "collect", "status": "start", "round": 0, "task": "t03", "budget_s": 60}
+{"seq": 30, "kind": "phase", "phase": "collect", "status": "done", "round": 0, "task": "t03", "elapsed_s": 0.0, "budget_s": 60, "detail": ""}
+{"seq": 31, "kind": "phase", "phase": "verify", "status": "start", "round": 0, "task": "t03", "budget_s": 900}
+{"seq": 32, "kind": "phase", "phase": "verify", "status": "done", "round": 0, "task": "t03", "elapsed_s": 0.0, "budget_s": 900, "detail": ""}
+{"seq": 33, "kind": "task", "task": "t03", "status": "done", "round": 0, "index": 3, "total": 4, "elapsed_s": 0.1, "score": 0.0, "detail": ""}
+{"seq": 34, "kind": "task", "task": "t04", "status": "start", "round": 0, "index": 4, "total": 4}
+{"seq": 35, "kind": "phase", "phase": "setup", "status": "start", "round": 0, "task": "t04", "budget_s": 60}
+{"seq": 36, "kind": "phase", "phase": "setup", "status": "done", "round": 0, "task": "t04", "elapsed_s": 0.0, "budget_s": 60, "detail": ""}
+{"seq": 37, "kind": "phase", "phase": "agent", "status": "start", "round": 0, "task": "t04", "budget_s": null}
+{"seq": 38, "kind": "phase", "phase": "agent", "status": "done", "round": 0, "task": "t04", "elapsed_s": 0.1, "budget_s": null, "detail": ""}
+{"seq": 39, "kind": "phase", "phase": "collect", "status": "start", "round": 0, "task": "t04", "budget_s": 60}
+{"seq": 40, "kind": "phase", "phase": "collect", "status": "done", "round": 0, "task": "t04", "elapsed_s": 0.0, "budget_s": 60, "detail": ""}
+{"seq": 41, "kind": "phase", "phase": "verify", "status": "start", "round": 0, "task": "t04", "budget_s": 900}
+{"seq": 42, "kind": "phase", "phase": "verify", "status": "done", "round": 0, "task": "t04", "elapsed_s": 0.0, "budget_s": 900, "detail": ""}
+{"seq": 43, "kind": "task", "task": "t04", "status": "done", "round": 0, "index": 4, "total": 4, "elapsed_s": 0.2, "score": 0.0, "detail": ""}
+{"seq": 44, "kind": "note", "level": "warn", "message": "this run scores 4 tasks — the score moves in steps of 0.250"}
+{"seq": 45, "kind": "round", "round": 0, "label": "H0 (base harness)", "note": null, "level": "info", "eval": 0.0, "train": null, "side": "train", "score_kind": "training", "measured": true, "harness_sha": "3c2ff78a56963463af34a78b946ba167f51f9445", "hypothesis": null}
+{"seq": 46, "kind": "log", "source": "check", "task": "round 0 · t01", "exit_code": null, "round": 0, "detail": "answer '' vs 'alpha'", "level": "error", "body": ""}
+{"seq": 47, "kind": "log", "source": "check", "task": "round 0 · t02", "exit_code": null, "round": 0, "detail": "answer '' vs 'beta'", "level": "error", "body": ""}
+{"seq": 48, "kind": "log", "source": "check", "task": "round 0 · t03", "exit_code": null, "round": 0, "detail": "answer '' vs 'gamma'", "level": "error", "body": ""}
+{"seq": 49, "kind": "log", "source": "check", "task": "round 0 · t04", "exit_code": null, "round": 0, "detail": "answer '' vs 'delta'", "level": "error", "body": ""}
+{"seq": 50, "kind": "phase", "phase": "agent", "status": "start", "round": 1, "task": "method", "budget_s": 86400}
+{"seq": 51, "kind": "phase", "phase": "agent", "status": "done", "round": 1, "task": "method", "elapsed_s": 5.5, "budget_s": 86400, "detail": ""}
+{"seq": 52, "kind": "note", "level": "error", "message": "round 1: the step did not finish -- APIConnectionError: Connection error."}
+{"seq": 53, "kind": "round", "round": 1, "label": "step failed", "note": "APIConnectionError: Connection error.", "level": "error", "eval": null, "train": null, "side": null, "score_kind": null, "measured": false, "harness_sha": null, "hypothesis": null}
+{"seq": 54, "kind": "phase", "phase": "agent", "status": "start", "round": 1, "task": "method", "budget_s": 86400}
+{"seq": 55, "kind": "phase", "phase": "agent", "status": "done", "round": 1, "task": "method", "elapsed_s": 5.2, "budget_s": 86400, "detail": ""}
+{"seq": 56, "kind": "note", "level": "error", "message": "round 1: the step did not finish -- APIConnectionError: Connection error."}
+{"seq": 57, "kind": "round", "round": 1, "label": "step failed", "note": "APIConnectionError: Connection error.", "level": "error", "eval": null, "train": null, "side": null, "score_kind": null, "measured": false, "harness_sha": null, "hypothesis": null}
+{"seq": 58, "kind": "phase", "phase": "agent", "status": "start", "round": 1, "task": "method", "budget_s": 86400}
+{"seq": 59, "kind": "phase", "phase": "agent", "status": "done", "round": 1, "task": "method", "elapsed_s": 5.3, "budget_s": 86400, "detail": ""}
+{"seq": 60, "kind": "note", "level": "error", "message": "round 1: the step did not finish -- APIConnectionError: Connection error."}
+{"seq": 61, "kind": "round", "round": 1, "label": "step failed", "note": "APIConnectionError: Connection error.", "level": "error", "eval": null, "train": null, "side": null, "score_kind": null, "measured": false, "harness_sha": null, "hypothesis": null}
+{"seq": 62, "kind": "note", "level": "error", "message": "step 1: gave up after 3 attempts"}
+{"seq": 63, "kind": "round", "round": 1, "label": "gave up", "note": null, "level": "error", "eval": null, "train": null, "side": null, "score_kind": null, "measured": false, "harness_sha": null, "hypothesis": null}
+{"seq": 64, "kind": "results", "curve": [{"run_id": "dgm-batch", "round": 0, "label": "H0 (base harness)", "identity": {"harness_name": "loop_plain", "harness_version": "0.1.0-control", "harness_sha": "3c2ff78a56963463af34a78b946ba167f51f9445", "improve_entrypoint": null, "accept_entrypoint": null, "run_mode": "unified", "framework_version": "0.1.0", "agent_model": null, "agent_backend": "mock", "agent_model_source": "platform-env", "method_model": "n/a", "skill_sha": "0ab5bc2e006812bebcaa58389a349ef0f9f88b7ba659789fac13db0ab4753f11"}, "side": "train", "score_kind": "training", "env": {"kind": "files", "image_digest": null, "network": null, "placement": null, "services": [], "model_gateway": null, "model": null, "seed": null, "harness_runtime": [{"source": "platform", "python": null, "note": "the platform's interpreter supplies the dependencies"}]}, "sampling": {"dataset": "demo", "policy": "all", "task_ids": ["t01", "t02", "t03", "t04"], "selection_basis_round": 0, "selected_within": "train"}, "method_reported": {}, "edit_kind": null, "score": 0.0, "score_ci95": [0.0, 0.0], "scorer_isolation_class": "in-process", "scorer_isolation_comparable": true, "per_task_scorer_isolation": {"t01": "in-process", "t02": "in-process", "t03": "in-process", "t04": "in-process"}, "per_task": {"t01": 0.0, "t02": 0.0, "t03": 0.0, "t04": 0.0}, "test_rate": null, "test_rate_n_tasks": 0, "per_task_test_rate": {}, "tests_passed": 0, "tests_total": 0, "n_scored": 4, "n_passed": 0, "n_invalid": 0, "n_harness_failed": 0, "method_hypothesis": null, "edits_applied": [], "train_score": null, "train_per_task": {}, "split": {"train": ["t01", "t02", "t03", "t04"], "eval": ["t05", "t06", "t07", "t08"]}, "selection_effect": {"selected_on_reported_set": null, "selection_pool_size": null}, "cost": {"evaluation_trials": 4, "generation_tokens": 0, "method_generation_tokens": null, "method_generation_input": null, "method_generation_output": null, "method_model_calls": null, "method_model": null, "harness_tokens": 0, "harness_tokens_reported_by_tasks": 4, "harness_model_calls": 128, "env_generation_tokens": null, "env_services_reported": 0, "wall_clock_s": 1.2}, "cumulative": {"evaluation_trials": 4, "generation_tokens": 0, "env_generation_tokens": 0, "wall_clock_s": 1.2085561752319336}, "timestamp_utc": "2026-10-15T10:47:33Z", "measured_by_platform": true, "verifier_kinds": ["answer"]}], "title": "results", "split": {"train": ["t01", "t02", "t03", "t04"], "eval": ["t05", "t06", "t07", "t08"]}}
+{"seq": 65, "kind": "artifact", "label": "curve", "path": "/tmp/metafields-before-dgm/test_a_batch_becomes_one_curve0/runs/dgm-batch/curve.jsonl"}
+{"seq": 66, "kind": "artifact", "label": "workspace", "path": "/tmp/metafields-before-dgm/test_a_batch_becomes_one_curve0/work/dgm-batch/workspace"}
+{"seq": 67, "kind": "artifact", "label": "events", "path": "/tmp/metafields-before-dgm/test_a_batch_becomes_one_curve0/runs/dgm-batch/events.jsonl"}

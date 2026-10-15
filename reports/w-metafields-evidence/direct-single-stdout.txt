@@ -1,0 +1,41 @@
+  ! no improver resolved (the 'deepseek' improver needs DEEPSEEK_API_KEY); a method that carries its own improver still runs, but this run carries no improver identity
+  ! running with --no-sandbox: the harness can read the platform and .env, and only the hash check stands between it and the scorer
+metafields-direct-single-77k6iv3n
+
+  harness   loop_plain 0.1.0-control
+  mode      unified · method drives its own loop
+  data      demo · 4 tasks on the train side · train 4 / eval 4
+  model     (none) · mock   ← not a live model
+  sandbox   OFF — the harness can read the driver and .env; only the hash check stands between it and the scorer
+
+  ✓ round 0 · 第 1/4 题 t01 — done (0s)
+  ✓ round 0 · 第 2/4 题 t02 — done (0s)
+  ✓ round 0 · 第 3/4 题 t03 — done (0s)
+  ✓ round 0 · 第 4/4 题 t04 — done (0s)
+  ! this run scores 4 tasks — the score moves in steps of 0.250
+  round 0  H0 (base harness)           train 0.000
+  ✓ round 1 · 第 1/4 题 t01 — done (0s)
+  ✓ round 1 · 第 2/4 题 t02 — done (0s)
+  ✓ round 1 · 第 3/4 题 t03 — done (0s)
+  ✓ round 1 · 第 4/4 题 t04 — done (0s)
+  round 1  batch 1 step 0              train 0.000
+  ✓ round 2 · 第 1/4 题 t01 — done (0s)
+  ✓ round 2 · 第 2/4 题 t02 — done (0s)
+  ✓ round 2 · 第 3/4 题 t03 — done (0s)
+  ✓ round 2 · 第 4/4 题 t04 — done (0s)
+  round 2  batch 2 step 0              train 0.000
+  ✓ round 3 · 第 1/4 题 t01 — done (0s)
+  ✓ round 3 · 第 2/4 题 t02 — done (0s)
+  ✓ round 3 · 第 3/4 题 t03 — done (0s)
+  ✓ round 3 · 第 4/4 题 t04 — done (0s)
+  round 3  batch 3 step 0              train 0.000
+  results
+    round    train  95% CI           by         harness
+        0    0.000  [0.00, 0.00]     platform   3c2ff78a5696
+        1    0.000  [0.00, 0.00]     platform   28d2a1d11c39
+        2    0.000  [0.00, 0.00]     platform   fa8590e1a05d
+        3    0.000  [0.00, 0.00]     platform   0603df864b79
+
+  curve     /tmp/metafields-direct-single-77k6iv3n/runs/metafields-direct-single-77k6iv3n/curve.jsonl
+  workspace /tmp/metafields-direct-single-77k6iv3n/work/metafields-direct-single-77k6iv3n/workspace
+  events    /tmp/metafields-direct-single-77k6iv3n/runs/metafields-direct-single-77k6iv3n/events.jsonl

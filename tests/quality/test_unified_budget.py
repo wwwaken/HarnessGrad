@@ -77,7 +77,9 @@ def _run(tmp_path: Path, method_src: str, *, rounds: int, run_id: str):
          "--method-entrypoint", f"{sys.executable} {method}"],
         cwd=ROOT, capture_output=True, text=True, timeout=900,
         env={**os.environ, "HG_AGENT_BACKEND": "mock"})
-    assert proc.returncode == 0, f"{proc.stdout[-800:]}\n{proc.stderr[-800:]}"
+    assert proc.returncode == 0, (
+        f"driver exited {proc.returncode}; argv={proc.args!r}\n"
+        f"stdout:\n{proc.stdout}\nstderr:\n{proc.stderr}")
     points = [json.loads(l) for l in
               (runs / run_id / "curve.jsonl").read_text().splitlines() if l.strip()]
     meta = json.loads((runs / run_id / "run_meta.json").read_text())
