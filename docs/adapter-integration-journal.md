@@ -3552,3 +3552,31 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
 - Completed `tests/fixtures/hg_wsnap/SHA256SUMS` with exhaustive retained-member coverage and explicit unavailable-byte limitations: original nine unique layer blobs/27 references, four save archives, historical image payloads, inspected-only intermediate volume-base bytes and deleted original comparison files; fresh streamed archive/layer payloads were also deleted after hashing. Retained manifest/config JSON is independently rehashable; missing payloads are not.
 - Raw captures, exact file copies, source/metadata recomputations and cleanup are under `tests/fixtures/hg_wsnap/independent/`. Ten owned-name/tag/image absence observations succeed and the cached base remains. No production code, registry/gates/statuses, real run, frozen receipt, model/GPU/endpoint call or pilot changes. Reports: `reports/w-snap-integrity.md`, `reports/w-snap2-verification.md`; exact validation: `reports/w-snap2-validation.txt`.
 - Verdict: complete enough for parent review/merge **as corrected bounded evidence**, not trusted-filesystem/runtime or whole-image replay closure. Known startup integrity and direct-caller identity-admission limits, conditional volume handling, historical payload custody and broader runtime/task coverage remain; no blocker closes.
+## Parent review and merge — w-snap2 (independent confirmation) — 2026-10-15
+
+- Merged `1bea368` (w-snap2), which also carries the completed packet manifest and the update to
+  the original report. Result `f8c8e4e`. Registry valid: 28 datasets, 2 shared blockers, 11
+  historical records, `production_authorized=false`; sequencer clean; all named deliverables
+  present. `tests/fixtures/hg_wsnap/SHA256SUMS` now exists, and the parent recomputed a sample of
+  its hashes against the retained bytes rather than trusting the manifest.
+- **The blocked packet is now in, and the corrected briefing worked.** Phrasing the task as
+  "validate the binding, including by constructing the mismatched-identity case and confirming
+  whether each is refused" produced the verification the previous, attack-framed brief could not:
+  the work completed, no policy filter fired, and the packet's missing manifest was produced.
+- **The independent check confirmed five claims and corrected two, which is exactly why it was
+  worth running.** Confirmed: the normal commit-to-verifier digest flow, resistance to tag
+  substitution, the tested mount exclusion, bounded stop/write isolation, and the manifest-digest
+  `.Id` semantics on this Docker/containerd version. **Corrected:** `looks_pinned` validates
+  **syntax only** - a *different existing digest* supplied directly to the verifier was **not
+  refused** - and the "commit race" claim narrows to the tested stopping control.
+- **The headline finding stands and is now independently reproduced:** the verifier is **not**
+  bound to an unchanged committed filesystem at check time. An actor-controlled startup executable
+  changed a committed file while the image identity stayed unchanged, and **the real verifier route
+  did not refuse it**. Recorded here as a confirmed platform-integrity gap in the snapshot-service
+  route, with the packet's own limitation stated: deleted layer/archive and historical image bytes
+  are not independently recheckable, and the manifest says so rather than implying the whole image
+  is re-verifiable.
+- Resource state: local container work and docker metadata inspection only - no benchmark scoring
+  run, model, GPU or endpoint call. Both GPUs stayed idle and no utilisation is claimed. Historical
+  runs, frozen receipts and archives were untouched, and `/tmp/hg-snap` remains preserved as the
+  original packet.
