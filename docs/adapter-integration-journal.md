@@ -3971,3 +3971,38 @@ clean; all four named deliverables present.
 - Partial digest inventory is 7/7; complete execution-bound native dependency surfaces remain 0/7. The JRE archive matches its configured digest; host interpreter/libc/loader/providers and dynamic candidate/plugin/JVM loads still lack complete immutable runtime admission. No version string or static superset is treated as a complete pin.
 - Determined that a sealed content-addressed native userland closure with explicit executable/search paths and same-byte admission can pin this surface without Docker; userland hashes alone do not freeze the host kernel/CPU envelope. No production implementation or blocker is changed.
 - [Report](../reports/w-hostdeps-inventory.md), [packet](../tests/fixtures/hg_whostdeps/README.md), and [validation](../reports/w-hostdeps-validation.txt). Registry update is additive observed/evidence only at S3 native-host inventory scope; statuses, next_actions, dataset/history, gates and production authorization remain unchanged. No benchmark, model, GPU computation, endpoint, runs/ edit or frozen receipt mutation occurred.
+## Parent review and merge — w-tb89b, w-hostdeps — 2026-10-15
+
+- Merged `9f801c42` and `f7fb86e1`. Registry valid: 28 datasets, 2 shared blockers, 11 historical
+  records, `production_authorized=false`; sequencer clean; both deliverables present.
+- **w-tb89b widened real Terminal-Bench measurement coverage from 1/89 to 4/89** using the local
+  model endpoint, which last round's no-model attempt showed was required. Three real measurements:
+  `cancel-async-tasks` **0.0**, `fix-git` **1.0**, `regex-log` **0.0**; a fourth task was correctly
+  recorded **invalid** because the required CTRF was absent and was excluded rather than counted.
+  Publication remains withheld - the staged receipts still publish null - and no blocker closed.
+- **w-hostdeps measured the native host dependency surface and it is 0/7 pinned.** Seven
+  host-route datasets were inventoried with **1,004 digest-recorded files**, and the worker
+  concluded that host pinning IS feasible in principle "through an immutable native runtime closure
+  with fixed dependency resolution and execution binding", which it did not build. So S3's "native
+  host dependencies" item is now quantified (0 of 7) with a stated mechanism, rather than being an
+  unquantified gap.
+- **Merge verification that mattered again**: both workers branched before `w-wal`, so their diffs
+  appeared to delete w-wal's `data/scaffolds/scorer_input.py` change. After cherry-picking, the
+  parent confirmed the change survives (six `WAL` occurrences in that file). This is the second
+  consecutive round where a clean cherry-pick had to be checked against a peer's fix.
+- **My conflict resolver dropped a `path` field from an evidence object for the second round in a
+  row**, producing the same `fields must be ['kind','locator','path']` error; the checker caught it
+  again and the parent repaired it in a dedicated commit (60 evidence entries now, none malformed).
+  That is the sixth time the checker has caught my conflict handling. The resolver is now the
+  weakest link in the merge routine, not the merges themselves, and it should be replaced with a
+  parse-then-merge implementation rather than another textual reconstruction.
+- **An observation about the machine, not about a worker.** A second `vllm serve` instance appeared
+  on **GPU0 / port 8001** (the port AGENTS.md records as released), launched from
+  `/mnt/20t/xubuqiang` - not from the repository or any worker worktree - and a third vLLM belongs
+  to another user on this host. The parent did **not** touch it, and it had stopped by the end of
+  the round. Recorded here because GPU occupancy is part of the honesty of these reports: the
+  utilisation numbers in this entry are the samples actually taken, and a transient second server
+  is not something this phase started.
+- Resource state: w-tb89b legitimately used the local endpoint for an authorised diagnostic (three
+  real TB verifier measurements). No fabrication; GPU samples at the end of the round were 0 %.
+  Historical runs, frozen receipts and archives were untouched.
