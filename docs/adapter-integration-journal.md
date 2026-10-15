@@ -4569,3 +4569,11 @@ cases).
 - **Measured against two baselines.** `1825cd0e^` (before the bulk `reports/`/`docs/` deletion) and `db32421c` (before the withdrawal wave) each carry 28 datasets and **22** blockers; `HEAD` carries 28 and **14**. Eight blockers were removed, and `registry/withdrawn-requirements.md` has exactly eight entries, one per removal: `livecodebench/row-attestation`, `twowikimultihopqa/hub-data-provenance`, `twowikimultihopqa/ujson-native-offline-closure`, `bird_minidev/sql-coverage-reconciliation`, `ds1000/host-slice-archive-review`, `gaia/frozen-lifecycle-receipt`, `tau_bench/local-state-lifecycle` and `chessbench_puzzles/interruption-closure`.
 - **A mechanical check found zero removals not explained** by either a withdrawal entry or the separately recorded `twowikimultihopqa/recovery-comparability` review closure. The other seven cleared datasets - `agentdojo`, `alfworld`, `gsm8k`, `jericho`, `musique`, `scienceworld`, `terminal_bench` - carried no blocker at either baseline, so their clearance predates this phase's registry rather than resulting from anything removed here. `22 - 8 = 14` accounts for every removal.
 - Recorded as a section in `registry/blocker-closure-assessment.md`; the document's three pinning tests still pass. Checker valid. Merged as f10d83ab.
+
+## 2026-10-15 — GPU state record
+
+- Both A100s report `0 %` utilisation and the `http://127.0.0.1:8002/v1` endpoint answers `200`. No
+  diagnostic or pilot is authorized for any dataset in this phase, so an idle loaded server is the
+  correct state; it is recorded rather than filled. No model call, scorer run, container or server was
+  started or stopped by the parent this round, and no utilisation figure is claimed. The `147 GB` free
+  on `/` is unchanged apart from normal churn.
