@@ -178,7 +178,11 @@ def git_stub(monkeypatch, *, status="", head="a" * 40, records=None, object_type
     def run(argv, **kwargs):
         calls.append(argv)
         assert argv[:2] == ["git", "--no-replace-objects"]
-        assert kwargs == {"check": True, "capture_output": True, "text": True, "timeout": 30}
+        # `errors="replace"`: git metadata can carry a path that is not valid UTF-8, and the
+        # attestation's own decode must not end a run. Pinned here so the decoding policy is part
+        # of the call shape this stub enforces, not an extra the stub tolerates.
+        assert kwargs == {"check": True, "capture_output": True, "text": True,
+                          "errors": "replace", "timeout": 30}
         args = argv[6:]
         if args == ["rev-parse", "HEAD"]:
             out = head + "\n"

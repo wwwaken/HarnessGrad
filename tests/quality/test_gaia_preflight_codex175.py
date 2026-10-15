@@ -158,14 +158,17 @@ def test_fixed_probe_matches_gaia_source_policy_presence():
     keys = {key.value for key in env.keys}
     receipt = preflight._runner_refusal()
     fields = {"env." + key for key in keys & {
-        "cpus", "memory_mb", "agent_timeout_s", "verify_timeout_s", "network",
+        "cpus", "memory_mb", "network",
         "resources", "filesystems", "resource_policy", "network_policy", "artifact_policy"}}
-    # `verifier.timeout_s` is absent on purpose: the platform enforces that deadline
-    # itself and records expiry, so it is not a backend-observation trigger. GAIA is
-    # still refused through its exec defaults, container state and service network.
+    # `agent_timeout_s`, `verify_timeout_s` and `verifier.timeout_s` are absent on purpose: all
+    # three flow through `phase_timeout` to the platform's own subprocess deadlines and record
+    # their expiry, so none is a backend-observation trigger (eval/run/runner.py:41-72, corrected
+    # by w-jerichoadm). GAIA is still refused through its exec defaults, container state and
+    # service network.
     assert set(receipt["policy_fields"]) == fields | {
         "env.exec_defaults", "env.state=container"}
-    assert "verifier.timeout_s" not in receipt["policy_fields"]
+    assert not {"verifier.timeout_s", "env.agent_timeout_s",
+                "env.verify_timeout_s"} & set(receipt["policy_fields"])
     values = dict(zip((key.value for key in env.keys), env.values))
     assert ast.literal_eval(values["kind"]) == "exec"
     assert ast.literal_eval(values["state"]) == "container"

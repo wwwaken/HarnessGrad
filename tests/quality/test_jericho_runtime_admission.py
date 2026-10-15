@@ -50,9 +50,16 @@ def test_live_backend_is_refused_before_staging_or_execution(tmp_path, monkeypat
         pytest.fail("admission must happen before allocating task storage")
 
     monkeypatch.setattr("eval.run.runner.tempfile.mkdtemp", unexpected)
+    # The declaration has to be one this process does **not** apply. `network: "none"` used to
+    # serve here, but a native files task's network is isolated by the platform itself
+    # (`--unshare-net`), so since w-jerichoadm it is admitted instead of refused - see
+    # `test_network_none_admits_controls_and_mock_but_leaves_ordinary_tasks_alone` below. A native
+    # files task's `cpus` is still only a declaration: nothing here enforces it, so it must refuse
+    # before any task storage is allocated. Naming a genuinely unapplied field is what keeps this
+    # guard from passing for the wrong reason.
     result = run_one(repo, {"task_id": "synthetic", "goal": "synthetic"},
-                     env={"kind": "files", "network": "none"})
-    assert_policy_refusal(result, ("env.network",))
+                     env={"kind": "files", "network": "none", "cpus": 2})
+    assert_policy_refusal(result, ("env.cpus",))
 
 
 def test_network_none_admits_controls_and_mock_but_leaves_ordinary_tasks_alone():
