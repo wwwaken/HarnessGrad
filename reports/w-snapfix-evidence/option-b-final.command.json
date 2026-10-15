@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "python3",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/quality/test_scorer_isolation_option_b.py",
+    "--basetemp=/tmp/harnessgrad-pytest-w-snapfix-option-b"
+  ],
+  "returncode": 0
+}

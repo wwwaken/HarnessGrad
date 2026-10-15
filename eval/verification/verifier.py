@@ -14,6 +14,8 @@ how per-task scores become a curve -- those stay in `eval/run/runner.py`.
 """
 from __future__ import annotations
 
+from contextlib import ExitStack
+
 import json
 import os
 import subprocess
@@ -240,15 +242,22 @@ def _verify_container_state(snapshot: str, verifier, *, task_mount: str,
                             staging: Path, timeout_s: int, run_id: str,
                             task_id: str, network: str = "none",
                             declared_network: str = "none",
-                            limits: dict | None = None) -> dict:
+                            limits: dict | None = None,
+                            expected_snapshot: str | None = None) -> dict:
     if declared_class(verifier) not in ("unknown", "snapshot-service"):
         return record_class({"kind": "command", "passed": False, "score": None,
                              "unmeasured": "scorer declaration cannot run on actor snapshot"},
                             verifier, "unknown")
-    verdict = _verify_container_state_inner(
-        snapshot, verifier, task_mount=task_mount, staging=staging, timeout_s=timeout_s,
-        run_id=run_id, task_id=task_id, network=network,
-        declared_network=declared_network, limits=limits)
+    try:
+        container_mod.require_snapshot_identity(snapshot, expected_snapshot)
+        verdict = _verify_container_state_inner(
+            snapshot, verifier, task_mount=task_mount, staging=staging, timeout_s=timeout_s,
+            run_id=run_id, task_id=task_id, network=network,
+            declared_network=declared_network, limits=limits,
+            expected_snapshot=expected_snapshot)
+    except container_mod.SnapshotUnavailable as exc:
+        verdict = {"kind": "command", "passed": False, "score": None,
+                   "outcome": "unmeasured", "unmeasured": str(exc)}
     return record_class(verdict, verifier, "snapshot-service")
 
 
@@ -256,7 +265,8 @@ def _verify_container_state_inner(snapshot: str, verifier, *, task_mount: str,
                                   staging: Path, timeout_s: int, run_id: str,
                                   task_id: str, network: str = "none",
                                   declared_network: str = "none",
-                                  limits: dict | None = None) -> dict:
+                                  limits: dict | None = None,
+                                  expected_snapshot: str) -> dict:
     """Steps 5-9: a fresh container from the snapshot, the check's inputs copied in
     afterwards, and the score read from the file the check writes.
 
@@ -269,6 +279,7 @@ def _verify_container_state_inner(snapshot: str, verifier, *, task_mount: str,
     timeout_s = phase_timeout(timeout_s, spec.get("timeout_s"))
     name = label(f"hg-verify-{run_id}-{task_id}")
     created = False
+    startup = ExitStack()
     verdict_dir: Path | None = None
     try:
         reward_file = spec.get("reward_file")
@@ -287,10 +298,13 @@ def _verify_container_state_inner(snapshot: str, verifier, *, task_mount: str,
         # `apt-get install` or `pip install` before running anything -- so a check given
         # no network cannot run at all, and reports a reward of 0 that looks exactly like
         # a harness that failed the task. The oracle control is what found this.
+        entrypoint, idle_mounts = startup.enter_context(container_mod.snapshot_startup())
         container_mod.create(name, image=snapshot, limits=limits or {},
-                            network=network, extra_mounts=extra_mounts,
+                            network=network, extra_mounts=extra_mounts + idle_mounts,
+                            startup_entrypoint=entrypoint,
                             run_id=run_id or "", task_id=task_id or "")
         created = True
+        container_mod.require_snapshot_container(name, expected_snapshot)
         # Match the actor's declared-network attachment in
         # eval/containers/container_state.py:111-112: its internal model network alone
         # hid declared bridge egress from the verifier. Keep that network, adding bridge
@@ -302,14 +316,8 @@ def _verify_container_state_inner(snapshot: str, verifier, *, task_mount: str,
 
         container_mod.start(name)
 
-        # Step 7. The reward directory exists only now -- and it is created *after*
-        # `start` because `mkdir_in` is a `docker exec`, which needs a running
-        # container. The ordering that matters is the one the contract states (after
-        # the harness has stopped); this is only about which docker verb can do it.
-        if reward_file:
-            # The destination is the fresh bind mount above.  It exists before the
-            # container starts, so no snapshot directory is reused.
-            container_mod.mkdir_in(name, str(Path(reward_file).parent), "0755")
+        # Step 7's directory already exists via the fresh bind. Do not exec an
+        # actor-owned `mkdir` before the checker: it could mutate committed inputs.
         argv = [str(a) for a in spec.get("argv") or []]
         if not argv:
             return {"kind": kind, "passed": False,
@@ -404,6 +412,7 @@ def _verify_container_state_inner(snapshot: str, verifier, *, task_mount: str,
     finally:
         if created:
             container_mod.remove_container(name)
+        startup.close()
 def _input_source(entry: dict, staging: Path) -> Path:
     """The host path behind a verifier input, for `docker cp`."""
     if "content" in entry and entry["content"] is not None:

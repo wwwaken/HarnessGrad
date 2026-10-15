@@ -232,6 +232,9 @@ def test_different_class_executes_and_is_recorded_without_changing_service_mount
 
 
 def test_snapshot_verifier_keeps_dependency_network_and_records_actual_class(tmp_path, monkeypatch):
+    snapshot = (Path(__file__).resolve().parents[2] / "tests/fixtures/hg_wsnap/raw/015.stdout.txt").read_text().strip()
+    monkeypatch.setattr(verifier.container_mod, "docker",
+                        lambda *a, **k: subprocess.CompletedProcess(a, 0, snapshot, ""))
     seen = {}
     monkeypatch.setattr(verifier.container_mod, "create", lambda _name, **kw: seen.update(kw))
     monkeypatch.setattr(verifier.container_mod, "start", lambda *_: None)
@@ -239,10 +242,10 @@ def test_snapshot_verifier_keeps_dependency_network_and_records_actual_class(tmp
     monkeypatch.setattr(verifier.container_mod, "exec_in", lambda *_a, **_kw: subprocess.CompletedProcess([], 0, "", ""))
     spec = dict(kind="command", argv=["bash", "/tests/test.sh"],
                 scorer_bundle=dict(isolation_class="snapshot-service"))
-    verdict = verifier._verify_container_state("actor-snapshot", spec, task_mount="/app", staging=tmp_path,
+    verdict = verifier._verify_container_state(snapshot, spec, expected_snapshot=snapshot, task_mount="/app", staging=tmp_path,
         timeout_s=5, run_id="fixture", task_id="t", network="bridge")
     assert verdict["passed"] and verdict["scorer_isolation_class"] == "snapshot-service"
-    assert seen["image"] == "actor-snapshot" and seen["network"] == "bridge"
+    assert seen["image"] == snapshot and seen["network"] == "bridge"
 
 
 def test_pristine_declaration_cannot_relabel_snapshot(tmp_path, monkeypatch):

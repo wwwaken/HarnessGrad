@@ -1,0 +1,231 @@
+{
+  "mode": "before",
+  "run_id": "w-snapfix-before-20261015T022137Z-886469d1",
+  "limits": {
+    "cpus": "1",
+    "memory": "256m",
+    "pids": 64
+  },
+  "commands": [
+    {
+      "stem": "001-baseline-head",
+      "returncode": 0
+    },
+    {
+      "stem": "002-docker-version",
+      "returncode": 0
+    },
+    {
+      "stem": "003-base-inspect",
+      "returncode": 0
+    },
+    {
+      "stem": "004-create-service-network",
+      "returncode": 0
+    },
+    {
+      "stem": "005-helper-create",
+      "returncode": 0
+    },
+    {
+      "stem": "006-helper-start",
+      "returncode": 0
+    },
+    {
+      "stem": "007-install-startup-mutation",
+      "returncode": 0
+    },
+    {
+      "stem": "008-helper-stop",
+      "returncode": 0
+    },
+    {
+      "stem": "009-helper-inspect",
+      "returncode": 0
+    },
+    {
+      "stem": "010-helper-info",
+      "returncode": 0
+    },
+    {
+      "stem": "011-helper-commit",
+      "returncode": 0
+    },
+    {
+      "stem": "012-snapshot-inspect",
+      "returncode": 0
+    },
+    {
+      "stem": "013-helper-create",
+      "returncode": 0
+    },
+    {
+      "stem": "014-verifier-before-start-inspect",
+      "returncode": 0
+    },
+    {
+      "stem": "015-helper-start",
+      "returncode": 0
+    },
+    {
+      "stem": "016-verifier-after-start-inspect",
+      "returncode": 0
+    },
+    {
+      "stem": "017-helper-exec",
+      "returncode": 1
+    },
+    {
+      "stem": "018-helper-rm",
+      "returncode": 0
+    },
+    {
+      "stem": "019-helper-create",
+      "returncode": 0
+    },
+    {
+      "stem": "020-verifier-before-start-inspect",
+      "returncode": 0
+    },
+    {
+      "stem": "021-verifier-before-start-file",
+      "returncode": 0
+    },
+    {
+      "stem": "022-helper-start",
+      "returncode": 0
+    },
+    {
+      "stem": "023-verifier-after-start-inspect",
+      "returncode": 0
+    },
+    {
+      "stem": "024-verifier-after-start-file",
+      "returncode": 0
+    },
+    {
+      "stem": "025-helper-exec",
+      "returncode": 0
+    },
+    {
+      "stem": "026-helper-rm",
+      "returncode": 0
+    },
+    {
+      "stem": "027-snapshot-still-same",
+      "returncode": 0
+    },
+    {
+      "stem": "028-cleanup-container",
+      "returncode": 0
+    },
+    {
+      "stem": "029-container-absence",
+      "returncode": 1
+    },
+    {
+      "stem": "030-cleanup-container",
+      "returncode": 0
+    },
+    {
+      "stem": "031-container-absence",
+      "returncode": 1
+    },
+    {
+      "stem": "032-cleanup-container",
+      "returncode": 0
+    },
+    {
+      "stem": "033-container-absence",
+      "returncode": 1
+    },
+    {
+      "stem": "034-cleanup-image",
+      "returncode": 0
+    },
+    {
+      "stem": "035-image-absence",
+      "returncode": 1
+    },
+    {
+      "stem": "036-cleanup-image",
+      "returncode": 1
+    },
+    {
+      "stem": "037-image-absence",
+      "returncode": 1
+    },
+    {
+      "stem": "038-cleanup-network",
+      "returncode": 0
+    },
+    {
+      "stem": "039-network-absence",
+      "returncode": 1
+    },
+    {
+      "stem": "040-cached-base-still-present",
+      "returncode": 0
+    }
+  ],
+  "cleanup": [
+    {
+      "kind": "container",
+      "name": "hg-verify-w-snapfix-before-20261015T022137Z-886469d1-changed",
+      "absence_rc": 1
+    },
+    {
+      "kind": "container",
+      "name": "hg-verify-w-snapfix-before-20261015T022137Z-886469d1-foreign",
+      "absence_rc": 1
+    },
+    {
+      "kind": "container",
+      "name": "w-snapfix-before-20261015T022137Z-886469d1-actor",
+      "absence_rc": 1
+    },
+    {
+      "kind": "image",
+      "name": "hg-wsnapfix:w-snapfix-before-20261015T022137Z-886469d1",
+      "absence_rc": 1
+    },
+    {
+      "kind": "image",
+      "name": "sha256:1674632a90dfb4982b3830ab817c869bf4a454da843fbf450d6c7615763cd8c5",
+      "absence_rc": 1
+    },
+    {
+      "kind": "network",
+      "name": "w-snapfix-before-20261015T022137Z-886469d1-service",
+      "absence_rc": 1
+    }
+  ],
+  "benchmark_scores": 0,
+  "model_gpu_endpoint_calls": 0,
+  "source_sha256": {
+    "eval/containers/container.py": "8f08c33eeb48607d9ae67be72dbc499f16b59c4cdd2baeb5ffd41d2e13f9d61b",
+    "eval/verification/verifier.py": "94453f0c345c21c528c9797b70db3b05d64bb716f5590dbd9a80090c901faa34"
+  },
+  "snapshot": "sha256:1674632a90dfb4982b3830ab817c869bf4a454da843fbf450d6c7615763cd8c5",
+  "base": "sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+  "foreign_verdict": {
+    "kind": "command",
+    "passed": false,
+    "detail": "exit 1, stdout '' vs 'committed-before-start'",
+    "scorer_isolation_class": "snapshot-service",
+    "scorer_isolation_declared": "unknown"
+  },
+  "foreign_refused": false,
+  "changed_verdict": {
+    "kind": "command",
+    "passed": false,
+    "detail": "exit 0, stdout 'changed-during-start' vs 'committed-before-start' | changed-during-start",
+    "scorer_isolation_class": "snapshot-service",
+    "scorer_isolation_declared": "unknown"
+  },
+  "committed_file_preserved": false,
+  "before-start_sha256": "e20d5194a8a7696b3ff0fa1a66b60b56126757c5d5da8eaf1cd8d1e39ba19afe",
+  "after-start_sha256": "4ec1d6dee07abeade8dbb1e0549219a9e3482b66cac15deaa9dd5e910dbfe4b0",
+  "checks_passed": 0,
+  "checks_failed": 2
+}

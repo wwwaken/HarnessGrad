@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "docker",
+    "inspect",
+    "--format",
+    "{{.Image}}",
+    "hg-verify-w-snapfix-after-20261015T022147Z-276b5bd4-changed"
+  ],
+  "cwd": "/tmp/hg-snapfix",
+  "timeout_s": 60,
+  "started_utc": "2026-10-15T02:21:55.674287+00:00",
+  "returncode": 0
+}

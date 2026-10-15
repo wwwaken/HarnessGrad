@@ -35,13 +35,16 @@ def expired_verdict(request, monkeypatch, tmp_path):
     monkeypatch.setattr(verifier.container_mod, "run", denied)
     monkeypatch.setattr(verifier.container_mod, "create", denied)
     if mode == "snapshot":
+        snapshot = (ROOT / "tests/fixtures/hg_wsnap/raw/015.stdout.txt").read_text().strip()
+        monkeypatch.setattr(verifier.container_mod, "docker",
+                            lambda *a, **k: subprocess.CompletedProcess(a, 0, snapshot, ""))
         monkeypatch.setattr(verifier.container_mod, "create", lambda *a, **k: None)
         monkeypatch.setattr(verifier.container_mod, "start", lambda *a, **k: None)
         monkeypatch.setattr(verifier.container_mod, "mkdir_in", lambda *a, **k: None)
         monkeypatch.setattr(verifier.container_mod, "remove_container", removed.append)
         monkeypatch.setattr(verifier.container_mod, "exec_in", timeout)
         verdict = verifier._verify_container_state(
-            "synthetic-snapshot", spec, task_mount="/app", staging=tmp_path,
+            snapshot, spec, expected_snapshot=snapshot, task_mount="/app", staging=tmp_path,
             timeout_s=10, run_id="synthetic-w-hotpot", task_id="synthetic-timeout")
         assert len(removed) == 1
     else:

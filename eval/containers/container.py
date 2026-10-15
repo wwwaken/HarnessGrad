@@ -30,11 +30,13 @@ from __future__ import annotations
 
 import os
 import shutil
+import struct
 import subprocess
 import tempfile
 import threading
 import time
 from pathlib import Path
+from contextlib import contextmanager
 
 from ckpt.git_state import STATE_DIRNAME
 
@@ -755,9 +757,78 @@ def self_check(platform: Path, image: str) -> dict:
 # **commits** the result, and verifies against a fresh container from that snapshot.
 # Every function here is one step of that, and `eval/run/runner.py` owns the order.
 
+def require_snapshot_identity(image: str, expected: str | None) -> None:
+    """Trusted-daemon/caller consistency, not publisher provenance or a byte rehash."""
+    if (not expected or not looks_pinned(expected) or not looks_pinned(image)
+            or digest_of(image) != digest_of(expected)):
+        raise SnapshotUnavailable("snapshot identity mismatch or missing pinned expected identity")
+
+
+def require_snapshot_container(name: str, expected: str) -> None:
+    """Compare the image actually consumed by Docker before any snapshot code runs."""
+    try:
+        proc = docker("inspect", "--format", "{{.Image}}", name,
+                      timeout=SNAPSHOT_INSPECT_TIMEOUT_S)
+    except (subprocess.TimeoutExpired, OSError) as exc:
+        raise _snapshot_failure("identity inspect", exc=exc) from exc
+    if proc.returncode:
+        raise _snapshot_failure("identity inspect", proc)
+    require_snapshot_identity(proc.stdout.strip(), expected)
+
+
+def _require_static_elf(path: Path) -> None:
+    """Reject loaders and dynamic dependencies in the platform's idle executable.
+
+    An absolute image path alone is unsafe: its executable, ELF loader and preloads
+    can all belong to the actor. Validate the copied host binary, not image tools.
+    """
+    raw = path.read_bytes()
+    try:
+        if raw[:4] != b"\x7fELF" or raw[4] not in (1, 2) or raw[5] not in (1, 2):
+            raise ValueError("not ELF")
+        endian = "<" if raw[5] == 1 else ">"
+        layout = "16sHHIIIIIHHHHHH" if raw[4] == 1 else "16sHHIQQQIHHHHHH"
+        header = struct.unpack_from(endian + layout, raw)
+        offset, stride, count = header[5], header[9], header[10]
+        if (header[1] != 2 or not 0 < count <= 4096
+                or stride < (32 if raw[4] == 1 else 56)
+                or offset + stride * count > len(raw)):
+            raise ValueError("invalid executable headers")
+        for i in range(count):
+            kind, = struct.unpack_from(endian + "I", raw, offset + i * stride)
+            if kind in (2, 3):  # PT_DYNAMIC / PT_INTERP
+                raise ValueError("dynamic executable")
+    except (IndexError, struct.error, ValueError) as exc:
+        raise SnapshotUnavailable("snapshot startup requires a static ELF BusyBox") from exc
+
+
+@contextmanager
+def snapshot_startup():
+    """A trusted idle PID 1; no actor entrypoint, PATH, loader or healthcheck.
+
+    Requires a static BusyBox on the trusted host; absence fails closed. The private
+    copy remains mounted read-only until verifier removal. Scorer execution itself
+    still uses the snapshot runtime and is outside this startup guarantee.
+    """
+    source = shutil.which("busybox")
+    if not source:
+        raise SnapshotUnavailable("snapshot startup requires host static BusyBox")
+    with tempfile.TemporaryDirectory(prefix="hg-snapshot-idle-") as tmp:
+        binary = Path(tmp) / "busybox"
+        try:
+            shutil.copyfile(source, binary)
+            _require_static_elf(binary)
+            binary.chmod(0o755)
+        except OSError as exc:
+            raise SnapshotUnavailable(f"snapshot startup unavailable: {exc}") from exc
+        target = "/" + Path(tmp).name
+        yield target + "/busybox", ("--mount", f"type=bind,src={tmp},dst={target},readonly")
+
+
 def create(name: str, *, image: str, limits: dict | None = None,
            network: str = "none", extra_mounts: tuple[str, ...] = (),
-           tmpfs: tuple[str, ...] = (), run_id: str = "", task_id: str = "") -> str:
+           tmpfs: tuple[str, ...] = (), run_id: str = "", task_id: str = "",
+           startup_entrypoint: str | None = None) -> str:
     """Create a stopped container that stays behind, so it can be committed.
 
     `sleep infinity` as the command because the image is the task's, and a task image
@@ -789,8 +860,12 @@ def create(name: str, *, image: str, limits: dict | None = None,
            "--cpus", str(limits.get("cpus", "2"))]
     for path in tmpfs:
         cmd += ["--tmpfs", path]
+    if startup_entrypoint is not None:
+        cmd += ["--entrypoint", startup_entrypoint, "--no-healthcheck", "--workdir", "/"]
     cmd += list(extra_mounts)
-    cmd += [image, "sleep", "infinity"]
+    # Numeric duration works with static BusyBox versions that reject "infinity".
+    # The verifier's own timeout/teardown bounds its lifetime, not this idle timer.
+    cmd += [image, "sleep", "2147483647" if startup_entrypoint else "infinity"]
     proc = docker(*cmd, timeout=180)
     if proc.returncode != 0:
         raise ContainerUnavailable(

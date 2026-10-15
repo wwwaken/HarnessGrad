@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "docker",
+    "create",
+    "--name",
+    "hg-verify-w-snapfix-before-20261015T022137Z-886469d1-foreign",
+    "--network",
+    "w-snapfix-before-20261015T022137Z-886469d1-service",
+    "--label",
+    "harnessgrad.run=w-snapfix-before-20261015T022137Z-886469d1",
+    "--label",
+    "harnessgrad.task=foreign",
+    "--pids-limit",
+    "64",
+    "--memory",
+    "256m",
+    "--cpus",
+    "1",
+    "sha256:4c948a4e630af2435ae0a19108fc0814a946ac2fa29a512469e0fc77b38c8c12",
+    "sleep",
+    "infinity"
+  ],
+  "cwd": "/tmp/hg-snapfix",
+  "timeout_s": 180,
+  "started_utc": "2026-10-15T02:21:44.688878+00:00",
+  "returncode": 0
+}

@@ -211,7 +211,8 @@ def _run_one_container_state(repo: Path, task: dict, *, env_spec: dict, setup,
             # Steps 5-9.
             with phases("verify"):
                 verdict = _verify_container_state(
-                    snapshot, verifier, task_mount=task_mount, staging=staging,
+                    snapshot, verifier, expected_snapshot=snapshot,
+                    task_mount=task_mount, staging=staging,
                     timeout_s=verify_timeout_s, run_id=run_id or "run", task_id=tid,
                     network=(network_name if network_name is not None
                              else env_spec.get("network", "none")),

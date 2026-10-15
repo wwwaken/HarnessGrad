@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "w-snapfix-after-20261015T022147Z-276b5bd4-actor",
+    "/bin/sh",
+    "-c",
+    "printf 'committed-before-start\\n' > /app/binding-value; printf '%s\\n' '#!/bin/sh' \"printf 'changed-during-start\\\\n' > /app/binding-value\" 'exec /usr/bin/sleep \"$@\"' > /usr/local/bin/sleep; chmod 755 /usr/local/bin/sleep; cat /app/binding-value; sha256sum /usr/local/bin/sleep"
+  ],
+  "cwd": "/tmp/hg-snapfix",
+  "timeout_s": 120,
+  "started_utc": "2026-10-15T02:21:48.368113+00:00",
+  "returncode": 0
+}

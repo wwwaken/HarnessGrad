@@ -116,11 +116,14 @@ def test_verifier_declaration_reaches_every_launch_path(tmp_path, monkeypatch, m
         raise subprocess.TimeoutExpired("synthetic", captured[-1])
 
     if mode == "snapshot":
+        snapshot = (ROOT / "tests/fixtures/hg_wsnap/raw/015.stdout.txt").read_text().strip()
+        monkeypatch.setattr("eval.verification.verifier.container_mod.docker",
+                            lambda *a, **k: subprocess.CompletedProcess(a, 0, snapshot, ""))
         monkeypatch.setattr("eval.verification.verifier.container_mod.create", lambda *a, **k: "fixture")
         monkeypatch.setattr("eval.verification.verifier.container_mod.exec_in", timeout)
         monkeypatch.setattr("eval.verification.verifier.container_mod.start", lambda *a, **k: None)
         monkeypatch.setattr("eval.verification.verifier.container_mod.remove_container", lambda *a, **k: None)
-        verdict = _verify_container_state("fixture", spec, task_mount="/app", staging=tmp_path,
+        verdict = _verify_container_state(snapshot, spec, expected_snapshot=snapshot, task_mount="/app", staging=tmp_path,
                                           timeout_s=900, run_id="synthetic", task_id="synthetic")
     else:
         target = {"host": "subprocess.run", "sandbox": "sandbox_mod.run", "exec": "container_mod.run"}[mode]

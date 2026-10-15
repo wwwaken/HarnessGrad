@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "-w",
+    "/app",
+    "hg-verify-w-snapfix-after-20261015T022340Z-f3694101-changed",
+    "/bin/cat",
+    "/app/binding-value"
+  ],
+  "cwd": "/tmp/hg-snapfix",
+  "timeout_s": 15,
+  "started_utc": "2026-10-15T02:23:49.113420+00:00",
+  "returncode": 0
+}
