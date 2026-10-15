@@ -1,0 +1,42 @@
+{
+  "docker_attach_exit": 0,
+  "container_exit": 0,
+  "oom_killed": false,
+  "artifacts": {
+    "evidence.json": "{\"task_id\": \"82e2fac_1\", \"source_split\": \"train\", \"metric\": \"appworld.task_goal_completion\", \"metric_name\": \"TGC\", \"measured\": true, \"success\": false, \"num_tests\": 2, \"passes\": [{\"requirement\": \"assert no model changes.\", \"label\": \"no_op_pass\"}], \"failures\": [{\"requirement\": \"assert answers match.\", \"trace\": \"```python\\nwith test(\\n    \\\"\\\"\\\"\\n    assert answers match.\\n    \\\"\\\"\\\"\\n):\\n    test.answer(predicted_answer, ground_truth_answer)\\n```\\n----------\\nAssertionError:  'hg_wawp_wrong_sentinel' == 'a love that never was'\", \"label\": \"no_op_fail\"}]}",
+    "reward.txt": "0.0\n"
+  },
+  "receipts": [
+    {
+      "case": "82e2fac_1--wrong-answer",
+      "mode": "local",
+      "identity": {
+        "predicate_path": "/tmp/hg-wawp-_98e76pj/data/tasks/82e2fac_1/ground_truth/evaluation.py",
+        "predicate_sha256": "66b1f382e038d71d35ef80799922303236568b755315cde514c1727ec4ee5496",
+        "local_check_sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5",
+        "input_sha256": "90ec49110d12b1dcfa8853275bf534a9e84dd1a5927de7321a76413f44e4044f"
+      },
+      "network": {
+        "interfaces": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n",
+        "routes": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n",
+        "probe_error": "OSError",
+        "errno": 101,
+        "message": "[Errno 101] Network is unreachable",
+        "namespace": "net:[4026535627]"
+      },
+      "predicate_calls": [
+        {
+          "file": "/tmp/hg-wawp-_98e76pj/data/tasks/82e2fac_1/ground_truth/evaluation.py",
+          "line": 18,
+          "symbol": "evaluate"
+        }
+      ],
+      "exit_code": 0
+    }
+  ],
+  "measured": true,
+  "reward": 0.0,
+  "num_tests": 2,
+  "passes": 1,
+  "failures": 1
+}

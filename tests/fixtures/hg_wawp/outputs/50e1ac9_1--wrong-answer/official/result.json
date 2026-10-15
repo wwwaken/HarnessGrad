@@ -1,0 +1,28 @@
+{
+  "measured": true,
+  "reward": 0.0,
+  "tracker": {
+    "success": false,
+    "difficulty": 2,
+    "num_tests": 2,
+    "passes": [
+      {
+        "requirement": "Assert no model changes",
+        "label": "no_op_pass"
+      }
+    ],
+    "failures": [
+      {
+        "requirement": "assert answers match.",
+        "trace": "```python\nwith test(\n    \"\"\"\n    assert answers match.\n    \"\"\"\n):\n    ground_truth_song_titles = ground_truth_answer.split(\",\")\n    predicted_song_titles = predicted_answer.split(\",\")\n    test.case(\n```\n----------\nAssertionError:\n['crimson veil', 'fire and ice', 'haunted memories', 'mysteries of the silent sea']\n==\n['hg_wawp_wrong_sentinel']\n\nIn left but not right:\n['crimson veil', 'fire and ice', 'haunted memories', 'mysteries of the silent sea']\n\nIn right but not left:\n['hg_wawp_wrong_sentinel']\n\nOriginal values:\n['Mysteries of the Silent Sea', 'Crimson Veil', 'Haunted Memories', 'Fire and Ice']\n==\n['HG_WAWP_WRONG_SENTINEL']",
+        "label": "no_op_fail"
+      }
+    ]
+  },
+  "responses": [
+    {
+      "message": "Marked the active task complete."
+    }
+  ],
+  "task_completed": true
+}

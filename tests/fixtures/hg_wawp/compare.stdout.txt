@@ -1,0 +1,260 @@
+{
+  "counts": {
+    "controlled_inputs": 9,
+    "released_predicates_exist": 732,
+    "released_predicates_exercised": 3,
+    "numeric_comparisons": 9,
+    "numeric_agreements": 9,
+    "numeric_divergences": 0,
+    "tracker_agreements": 9,
+    "tracker_divergences": 0,
+    "official_unmeasured": 0,
+    "local_unmeasured": 0,
+    "official_exit_failures": 0,
+    "local_exit_failures": 0,
+    "official_num_tests": 36,
+    "official_passes": 12,
+    "official_failures": 24,
+    "local_num_tests": 36,
+    "local_passes": 12,
+    "local_failures": 24
+  },
+  "comparisons": [
+    {
+      "id": "82e2fac_1--no-calls",
+      "task_id": "82e2fac_1",
+      "control": "no-calls",
+      "official": {
+        "measured": true,
+        "reward": 0.0,
+        "container_exit": 0,
+        "docker_attach_exit": 0,
+        "num_tests": 2,
+        "passes": 1,
+        "failures": 1
+      },
+      "local": {
+        "measured": true,
+        "reward": 0.0,
+        "container_exit": 0,
+        "docker_attach_exit": 0,
+        "num_tests": 2,
+        "passes": 1,
+        "failures": 1
+      },
+      "numeric_comparison": true,
+      "numeric_agreement": true,
+      "tracker_agreement": true
+    },
+    {
+      "id": "82e2fac_1--wrong-answer",
+      "task_id": "82e2fac_1",
+      "control": "wrong-answer",
+      "official": {
+        "measured": true,
+        "reward": 0.0,
+        "container_exit": 0,
+        "docker_attach_exit": 0,
+        "num_tests": 2,
+        "passes": 1,
+        "failures": 1
+      },
+      "local": {
+        "measured": true,
+        "reward": 0.0,
+        "container_exit": 0,
+        "docker_attach_exit": 0,
+        "num_tests": 2,
+        "passes": 1,
+        "failures": 1
+      },
+      "numeric_comparison": true,
+      "numeric_agreement": true,
+      "tracker_agreement": true
+    },
+    {
+      "id": "82e2fac_1--gold-answer-only",
+      "task_id": "82e2fac_1",
+      "control": "gold-answer-only",
+      "official": {
+        "measured": true,
+        "reward": 1.0,
+        "container_exit": 0,
+        "docker_attach_exit": 0,
+        "num_tests": 2,
+        "passes": 2,
+        "failures": 0
+      },
+      "local": {
+        "measured": true,
+        "reward": 1.0,
+        "container_exit": 0,
+        "docker_attach_exit": 0,
+        "num_tests": 2,
+        "passes": 2,
+        "failures": 0
+      },
+      "numeric_comparison": true,
+      "numeric_agreement": true,
+      "tracker_agreement": true
+    },
+    {
+      "id": "50e1ac9_1--no-calls",
+      "task_id": "50e1ac9_1",
+      "control": "no-calls",
+      "official": {
+        "measured": true,
+        "reward": 0.0,
+        "container_exit": 0,
+        "docker_attach_exit": 0,
+        "num_tests": 2,
+        "passes": 1,
+        "failures": 1
+      },
+      "local": {
+        "measured": true,
+        "reward": 0.0,
+        "container_exit": 0,
+        "docker_attach_exit": 0,
+        "num_tests": 2,
+        "passes": 1,
+        "failures": 1
+      },
+      "numeric_comparison": true,
+      "numeric_agreement": true,
+      "tracker_agreement": true
+    },
+    {
+      "id": "50e1ac9_1--wrong-answer",
+      "task_id": "50e1ac9_1",
+      "control": "wrong-answer",
+      "official": {
+        "measured": true,
+        "reward": 0.0,
+        "container_exit": 0,
+        "docker_attach_exit": 0,
+        "num_tests": 2,
+        "passes": 1,
+        "failures": 1
+      },
+      "local": {
+        "measured": true,
+        "reward": 0.0,
+        "container_exit": 0,
+        "docker_attach_exit": 0,
+        "num_tests": 2,
+        "passes": 1,
+        "failures": 1
+      },
+      "numeric_comparison": true,
+      "numeric_agreement": true,
+      "tracker_agreement": true
+    },
+    {
+      "id": "50e1ac9_1--gold-answer-only",
+      "task_id": "50e1ac9_1",
+      "control": "gold-answer-only",
+      "official": {
+        "measured": true,
+        "reward": 1.0,
+        "container_exit": 0,
+        "docker_attach_exit": 0,
+        "num_tests": 2,
+        "passes": 2,
+        "failures": 0
+      },
+      "local": {
+        "measured": true,
+        "reward": 1.0,
+        "container_exit": 0,
+        "docker_attach_exit": 0,
+        "num_tests": 2,
+        "passes": 2,
+        "failures": 0
+      },
+      "numeric_comparison": true,
+      "numeric_agreement": true,
+      "tracker_agreement": true
+    },
+    {
+      "id": "cf6abd2_2--no-calls",
+      "task_id": "cf6abd2_2",
+      "control": "no-calls",
+      "official": {
+        "measured": true,
+        "reward": 0.0,
+        "container_exit": 0,
+        "docker_attach_exit": 0,
+        "num_tests": 8,
+        "passes": 1,
+        "failures": 7
+      },
+      "local": {
+        "measured": true,
+        "reward": 0.0,
+        "container_exit": 0,
+        "docker_attach_exit": 0,
+        "num_tests": 8,
+        "passes": 1,
+        "failures": 7
+      },
+      "numeric_comparison": true,
+      "numeric_agreement": true,
+      "tracker_agreement": true
+    },
+    {
+      "id": "cf6abd2_2--wrong-answer",
+      "task_id": "cf6abd2_2",
+      "control": "wrong-answer",
+      "official": {
+        "measured": true,
+        "reward": 0.0,
+        "container_exit": 0,
+        "docker_attach_exit": 0,
+        "num_tests": 8,
+        "passes": 1,
+        "failures": 7
+      },
+      "local": {
+        "measured": true,
+        "reward": 0.0,
+        "container_exit": 0,
+        "docker_attach_exit": 0,
+        "num_tests": 8,
+        "passes": 1,
+        "failures": 7
+      },
+      "numeric_comparison": true,
+      "numeric_agreement": true,
+      "tracker_agreement": true
+    },
+    {
+      "id": "cf6abd2_2--gold-answer-only",
+      "task_id": "cf6abd2_2",
+      "control": "gold-answer-only",
+      "official": {
+        "measured": true,
+        "reward": 0.0,
+        "container_exit": 0,
+        "docker_attach_exit": 0,
+        "num_tests": 8,
+        "passes": 2,
+        "failures": 6
+      },
+      "local": {
+        "measured": true,
+        "reward": 0.0,
+        "container_exit": 0,
+        "docker_attach_exit": 0,
+        "num_tests": 8,
+        "passes": 2,
+        "failures": 6
+      },
+      "numeric_comparison": true,
+      "numeric_agreement": true,
+      "tracker_agreement": true
+    }
+  ],
+  "coverage_fraction": "3/732",
+  "not_actor_or_benchmark_evidence": true
+}

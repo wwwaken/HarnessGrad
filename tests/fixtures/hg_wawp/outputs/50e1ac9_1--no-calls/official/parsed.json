@@ -1,0 +1,41 @@
+{
+  "docker_attach_exit": 0,
+  "container_exit": 0,
+  "oom_killed": false,
+  "artifacts": {
+    "result.json": "{\n  \"measured\": true,\n  \"reward\": 0.0,\n  \"tracker\": {\n    \"success\": false,\n    \"difficulty\": 2,\n    \"num_tests\": 2,\n    \"passes\": [\n      {\n        \"requirement\": \"Assert no model changes\",\n        \"label\": \"no_op_pass\"\n      }\n    ],\n    \"failures\": [\n      {\n        \"requirement\": \"assert answers match.\",\n        \"trace\": \"```python\\nwith test(\\n    \\\"\\\"\\\"\\n    assert answers match.\\n    \\\"\\\"\\\"\\n):\\n    ground_truth_song_titles = ground_truth_answer.split(\\\",\\\")\\n    predicted_song_titles = predicted_answer.split(\\\",\\\")\\n    test.case(\\n```\\n----------\\nAssertionError:\\n['crimson veil', 'fire and ice', 'haunted memories', 'mysteries of the silent sea']\\n==\\n['<<not_given>>']\\n\\nIn left but not right:\\n['crimson veil', 'fire and ice', 'haunted memories', 'mysteries of the silent sea']\\n\\nIn right but not left:\\n['<<not_given>>']\\n\\nOriginal values:\\n['Mysteries of the Silent Sea', 'Crimson Veil', 'Haunted Memories', 'Fire and Ice']\\n==\\n['<<NOT_GIVEN>>']\",\n        \"label\": \"no_op_fail\"\n      }\n    ]\n  },\n  \"responses\": [],\n  \"task_completed\": false\n}\n"
+  },
+  "receipts": [
+    {
+      "case": "50e1ac9_1--no-calls",
+      "mode": "official",
+      "identity": {
+        "predicate_path": "/tmp/hg-wawp-f8d3okw3/data/tasks/50e1ac9_1/ground_truth/evaluation.py",
+        "predicate_sha256": "047963fcd71ed0d71ea747aa5e9713933758c22c929d7f23f8a6e03766eb890d",
+        "local_check_sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5",
+        "input_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "network": {
+        "interfaces": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n",
+        "routes": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n",
+        "probe_error": "OSError",
+        "errno": 101,
+        "message": "[Errno 101] Network is unreachable",
+        "namespace": "net:[4026535623]"
+      },
+      "predicate_calls": [
+        {
+          "file": "/tmp/hg-wawp-f8d3okw3/data/tasks/50e1ac9_1/ground_truth/evaluation.py",
+          "line": 18,
+          "symbol": "evaluate"
+        }
+      ],
+      "exit_code": 0
+    }
+  ],
+  "measured": true,
+  "reward": 0.0,
+  "num_tests": 2,
+  "passes": 1,
+  "failures": 1
+}

@@ -1,0 +1,45 @@
+{
+  "entrypoint_definition": "one task-specific released ground_truth/evaluation.py:evaluate",
+  "released_evaluate_entrypoints": 732,
+  "unique_evaluation_file_sha256": 226,
+  "split_counts": {
+    "dev": 57,
+    "test_challenge": 417,
+    "test_normal": 168,
+    "train": 90
+  },
+  "executed": [
+    "50e1ac9_1",
+    "82e2fac_1",
+    "cf6abd2_2"
+  ],
+  "unexercised_by_split": {
+    "dev": 56,
+    "test_challenge": 417,
+    "test_normal": 168,
+    "train": 88
+  },
+  "static_missing_from_image": 0,
+  "static_bundle_image_digest_mismatches": 0,
+  "selected_base_db_members": 13,
+  "final_counts": {
+    "controlled_inputs": 9,
+    "released_predicates_exist": 732,
+    "released_predicates_exercised": 3,
+    "numeric_comparisons": 9,
+    "numeric_agreements": 9,
+    "numeric_divergences": 0,
+    "tracker_agreements": 9,
+    "tracker_divergences": 0,
+    "official_unmeasured": 0,
+    "local_unmeasured": 0,
+    "official_exit_failures": 0,
+    "local_exit_failures": 0,
+    "official_num_tests": 36,
+    "official_passes": 12,
+    "official_failures": 24,
+    "local_num_tests": 36,
+    "local_passes": 12,
+    "local_failures": 24
+  }
+}

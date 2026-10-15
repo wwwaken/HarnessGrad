@@ -1,0 +1,236 @@
+[
+  {
+    "case": "82e2fac_1--no-calls",
+    "mode": "official",
+    "container_name": "hg-wawp-7c4d5f5a1da3",
+    "commands": [
+      "docker create --pull=never --name hg-wawp-7c4d5f5a1da3 --network none --read-only --tmpfs /tmp:rw,nosuid,size=512m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 2g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-awp/tests/fixtures/hg_wawp,dst=/fixture,readonly --mount type=bind,src=/tmp/hg-awp/data/datasets/appworld/verify/check.py,dst=/adapter/check.py,readonly --mount type=bind,src=/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/base_dbs,dst=/base-dbs,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/run_case.py official 82e2fac_1--no-calls",
+      "docker inspect hg-wawp-7c4d5f5a1da3",
+      "docker start -a hg-wawp-7c4d5f5a1da3",
+      "docker inspect hg-wawp-7c4d5f5a1da3",
+      "docker rm -f hg-wawp-7c4d5f5a1da3",
+      "docker inspect hg-wawp-7c4d5f5a1da3"
+    ]
+  },
+  {
+    "case": "82e2fac_1--no-calls",
+    "mode": "local",
+    "container_name": "hg-wawp-ea5bbe7a124c",
+    "commands": [
+      "docker create --pull=never --name hg-wawp-ea5bbe7a124c --network none --read-only --tmpfs /tmp:rw,nosuid,size=512m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 2g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-awp/tests/fixtures/hg_wawp,dst=/fixture,readonly --mount type=bind,src=/tmp/hg-awp/data/datasets/appworld/verify/check.py,dst=/adapter/check.py,readonly --mount type=bind,src=/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/base_dbs,dst=/base-dbs,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/run_case.py local 82e2fac_1--no-calls",
+      "docker inspect hg-wawp-ea5bbe7a124c",
+      "docker start -a hg-wawp-ea5bbe7a124c",
+      "docker inspect hg-wawp-ea5bbe7a124c",
+      "docker rm -f hg-wawp-ea5bbe7a124c",
+      "docker inspect hg-wawp-ea5bbe7a124c"
+    ]
+  },
+  {
+    "case": "82e2fac_1--wrong-answer",
+    "mode": "official",
+    "container_name": "hg-wawp-b029f46ad4b9",
+    "commands": [
+      "docker create --pull=never --name hg-wawp-b029f46ad4b9 --network none --read-only --tmpfs /tmp:rw,nosuid,size=512m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 2g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-awp/tests/fixtures/hg_wawp,dst=/fixture,readonly --mount type=bind,src=/tmp/hg-awp/data/datasets/appworld/verify/check.py,dst=/adapter/check.py,readonly --mount type=bind,src=/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/base_dbs,dst=/base-dbs,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/run_case.py official 82e2fac_1--wrong-answer",
+      "docker inspect hg-wawp-b029f46ad4b9",
+      "docker start -a hg-wawp-b029f46ad4b9",
+      "docker inspect hg-wawp-b029f46ad4b9",
+      "docker rm -f hg-wawp-b029f46ad4b9",
+      "docker inspect hg-wawp-b029f46ad4b9"
+    ]
+  },
+  {
+    "case": "82e2fac_1--wrong-answer",
+    "mode": "local",
+    "container_name": "hg-wawp-fba5a7003130",
+    "commands": [
+      "docker create --pull=never --name hg-wawp-fba5a7003130 --network none --read-only --tmpfs /tmp:rw,nosuid,size=512m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 2g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-awp/tests/fixtures/hg_wawp,dst=/fixture,readonly --mount type=bind,src=/tmp/hg-awp/data/datasets/appworld/verify/check.py,dst=/adapter/check.py,readonly --mount type=bind,src=/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/base_dbs,dst=/base-dbs,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/run_case.py local 82e2fac_1--wrong-answer",
+      "docker inspect hg-wawp-fba5a7003130",
+      "docker start -a hg-wawp-fba5a7003130",
+      "docker inspect hg-wawp-fba5a7003130",
+      "docker rm -f hg-wawp-fba5a7003130",
+      "docker inspect hg-wawp-fba5a7003130"
+    ]
+  },
+  {
+    "case": "82e2fac_1--gold-answer-only",
+    "mode": "official",
+    "container_name": "hg-wawp-f313bca10496",
+    "commands": [
+      "docker create --pull=never --name hg-wawp-f313bca10496 --network none --read-only --tmpfs /tmp:rw,nosuid,size=512m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 2g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-awp/tests/fixtures/hg_wawp,dst=/fixture,readonly --mount type=bind,src=/tmp/hg-awp/data/datasets/appworld/verify/check.py,dst=/adapter/check.py,readonly --mount type=bind,src=/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/base_dbs,dst=/base-dbs,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/run_case.py official 82e2fac_1--gold-answer-only",
+      "docker inspect hg-wawp-f313bca10496",
+      "docker start -a hg-wawp-f313bca10496",
+      "docker inspect hg-wawp-f313bca10496",
+      "docker rm -f hg-wawp-f313bca10496",
+      "docker inspect hg-wawp-f313bca10496"
+    ]
+  },
+  {
+    "case": "82e2fac_1--gold-answer-only",
+    "mode": "local",
+    "container_name": "hg-wawp-3ccffd300e93",
+    "commands": [
+      "docker create --pull=never --name hg-wawp-3ccffd300e93 --network none --read-only --tmpfs /tmp:rw,nosuid,size=512m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 2g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-awp/tests/fixtures/hg_wawp,dst=/fixture,readonly --mount type=bind,src=/tmp/hg-awp/data/datasets/appworld/verify/check.py,dst=/adapter/check.py,readonly --mount type=bind,src=/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/base_dbs,dst=/base-dbs,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/run_case.py local 82e2fac_1--gold-answer-only",
+      "docker inspect hg-wawp-3ccffd300e93",
+      "docker start -a hg-wawp-3ccffd300e93",
+      "docker inspect hg-wawp-3ccffd300e93",
+      "docker rm -f hg-wawp-3ccffd300e93",
+      "docker inspect hg-wawp-3ccffd300e93"
+    ]
+  },
+  {
+    "case": "50e1ac9_1--no-calls",
+    "mode": "official",
+    "container_name": "hg-wawp-db024425a6cb",
+    "commands": [
+      "docker create --pull=never --name hg-wawp-db024425a6cb --network none --read-only --tmpfs /tmp:rw,nosuid,size=512m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 2g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-awp/tests/fixtures/hg_wawp,dst=/fixture,readonly --mount type=bind,src=/tmp/hg-awp/data/datasets/appworld/verify/check.py,dst=/adapter/check.py,readonly --mount type=bind,src=/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/base_dbs,dst=/base-dbs,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/run_case.py official 50e1ac9_1--no-calls",
+      "docker inspect hg-wawp-db024425a6cb",
+      "docker start -a hg-wawp-db024425a6cb",
+      "docker inspect hg-wawp-db024425a6cb",
+      "docker rm -f hg-wawp-db024425a6cb",
+      "docker inspect hg-wawp-db024425a6cb"
+    ]
+  },
+  {
+    "case": "50e1ac9_1--no-calls",
+    "mode": "local",
+    "container_name": "hg-wawp-84723a285806",
+    "commands": [
+      "docker create --pull=never --name hg-wawp-84723a285806 --network none --read-only --tmpfs /tmp:rw,nosuid,size=512m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 2g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-awp/tests/fixtures/hg_wawp,dst=/fixture,readonly --mount type=bind,src=/tmp/hg-awp/data/datasets/appworld/verify/check.py,dst=/adapter/check.py,readonly --mount type=bind,src=/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/base_dbs,dst=/base-dbs,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/run_case.py local 50e1ac9_1--no-calls",
+      "docker inspect hg-wawp-84723a285806",
+      "docker start -a hg-wawp-84723a285806",
+      "docker inspect hg-wawp-84723a285806",
+      "docker rm -f hg-wawp-84723a285806",
+      "docker inspect hg-wawp-84723a285806"
+    ]
+  },
+  {
+    "case": "50e1ac9_1--wrong-answer",
+    "mode": "official",
+    "container_name": "hg-wawp-f015b1188710",
+    "commands": [
+      "docker create --pull=never --name hg-wawp-f015b1188710 --network none --read-only --tmpfs /tmp:rw,nosuid,size=512m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 2g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-awp/tests/fixtures/hg_wawp,dst=/fixture,readonly --mount type=bind,src=/tmp/hg-awp/data/datasets/appworld/verify/check.py,dst=/adapter/check.py,readonly --mount type=bind,src=/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/base_dbs,dst=/base-dbs,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/run_case.py official 50e1ac9_1--wrong-answer",
+      "docker inspect hg-wawp-f015b1188710",
+      "docker start -a hg-wawp-f015b1188710",
+      "docker inspect hg-wawp-f015b1188710",
+      "docker rm -f hg-wawp-f015b1188710",
+      "docker inspect hg-wawp-f015b1188710"
+    ]
+  },
+  {
+    "case": "50e1ac9_1--wrong-answer",
+    "mode": "local",
+    "container_name": "hg-wawp-d1781a3ff6e8",
+    "commands": [
+      "docker create --pull=never --name hg-wawp-d1781a3ff6e8 --network none --read-only --tmpfs /tmp:rw,nosuid,size=512m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 2g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-awp/tests/fixtures/hg_wawp,dst=/fixture,readonly --mount type=bind,src=/tmp/hg-awp/data/datasets/appworld/verify/check.py,dst=/adapter/check.py,readonly --mount type=bind,src=/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/base_dbs,dst=/base-dbs,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/run_case.py local 50e1ac9_1--wrong-answer",
+      "docker inspect hg-wawp-d1781a3ff6e8",
+      "docker start -a hg-wawp-d1781a3ff6e8",
+      "docker inspect hg-wawp-d1781a3ff6e8",
+      "docker rm -f hg-wawp-d1781a3ff6e8",
+      "docker inspect hg-wawp-d1781a3ff6e8"
+    ]
+  },
+  {
+    "case": "50e1ac9_1--gold-answer-only",
+    "mode": "official",
+    "container_name": "hg-wawp-839b64218bfe",
+    "commands": [
+      "docker create --pull=never --name hg-wawp-839b64218bfe --network none --read-only --tmpfs /tmp:rw,nosuid,size=512m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 2g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-awp/tests/fixtures/hg_wawp,dst=/fixture,readonly --mount type=bind,src=/tmp/hg-awp/data/datasets/appworld/verify/check.py,dst=/adapter/check.py,readonly --mount type=bind,src=/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/base_dbs,dst=/base-dbs,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/run_case.py official 50e1ac9_1--gold-answer-only",
+      "docker inspect hg-wawp-839b64218bfe",
+      "docker start -a hg-wawp-839b64218bfe",
+      "docker inspect hg-wawp-839b64218bfe",
+      "docker rm -f hg-wawp-839b64218bfe",
+      "docker inspect hg-wawp-839b64218bfe"
+    ]
+  },
+  {
+    "case": "50e1ac9_1--gold-answer-only",
+    "mode": "local",
+    "container_name": "hg-wawp-465a36f5c506",
+    "commands": [
+      "docker create --pull=never --name hg-wawp-465a36f5c506 --network none --read-only --tmpfs /tmp:rw,nosuid,size=512m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 2g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-awp/tests/fixtures/hg_wawp,dst=/fixture,readonly --mount type=bind,src=/tmp/hg-awp/data/datasets/appworld/verify/check.py,dst=/adapter/check.py,readonly --mount type=bind,src=/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/base_dbs,dst=/base-dbs,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/run_case.py local 50e1ac9_1--gold-answer-only",
+      "docker inspect hg-wawp-465a36f5c506",
+      "docker start -a hg-wawp-465a36f5c506",
+      "docker inspect hg-wawp-465a36f5c506",
+      "docker rm -f hg-wawp-465a36f5c506",
+      "docker inspect hg-wawp-465a36f5c506"
+    ]
+  },
+  {
+    "case": "cf6abd2_2--no-calls",
+    "mode": "official",
+    "container_name": "hg-wawp-7cbd67dfc8b0",
+    "commands": [
+      "docker create --pull=never --name hg-wawp-7cbd67dfc8b0 --network none --read-only --tmpfs /tmp:rw,nosuid,size=512m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 2g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-awp/tests/fixtures/hg_wawp,dst=/fixture,readonly --mount type=bind,src=/tmp/hg-awp/data/datasets/appworld/verify/check.py,dst=/adapter/check.py,readonly --mount type=bind,src=/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/base_dbs,dst=/base-dbs,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/run_case.py official cf6abd2_2--no-calls",
+      "docker inspect hg-wawp-7cbd67dfc8b0",
+      "docker start -a hg-wawp-7cbd67dfc8b0",
+      "docker inspect hg-wawp-7cbd67dfc8b0",
+      "docker rm -f hg-wawp-7cbd67dfc8b0",
+      "docker inspect hg-wawp-7cbd67dfc8b0"
+    ]
+  },
+  {
+    "case": "cf6abd2_2--no-calls",
+    "mode": "local",
+    "container_name": "hg-wawp-1fa5566c2a6d",
+    "commands": [
+      "docker create --pull=never --name hg-wawp-1fa5566c2a6d --network none --read-only --tmpfs /tmp:rw,nosuid,size=512m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 2g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-awp/tests/fixtures/hg_wawp,dst=/fixture,readonly --mount type=bind,src=/tmp/hg-awp/data/datasets/appworld/verify/check.py,dst=/adapter/check.py,readonly --mount type=bind,src=/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/base_dbs,dst=/base-dbs,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/run_case.py local cf6abd2_2--no-calls",
+      "docker inspect hg-wawp-1fa5566c2a6d",
+      "docker start -a hg-wawp-1fa5566c2a6d",
+      "docker inspect hg-wawp-1fa5566c2a6d",
+      "docker rm -f hg-wawp-1fa5566c2a6d",
+      "docker inspect hg-wawp-1fa5566c2a6d"
+    ]
+  },
+  {
+    "case": "cf6abd2_2--wrong-answer",
+    "mode": "official",
+    "container_name": "hg-wawp-3befcb101419",
+    "commands": [
+      "docker create --pull=never --name hg-wawp-3befcb101419 --network none --read-only --tmpfs /tmp:rw,nosuid,size=512m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 2g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-awp/tests/fixtures/hg_wawp,dst=/fixture,readonly --mount type=bind,src=/tmp/hg-awp/data/datasets/appworld/verify/check.py,dst=/adapter/check.py,readonly --mount type=bind,src=/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/base_dbs,dst=/base-dbs,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/run_case.py official cf6abd2_2--wrong-answer",
+      "docker inspect hg-wawp-3befcb101419",
+      "docker start -a hg-wawp-3befcb101419",
+      "docker inspect hg-wawp-3befcb101419",
+      "docker rm -f hg-wawp-3befcb101419",
+      "docker inspect hg-wawp-3befcb101419"
+    ]
+  },
+  {
+    "case": "cf6abd2_2--wrong-answer",
+    "mode": "local",
+    "container_name": "hg-wawp-febb76f87569",
+    "commands": [
+      "docker create --pull=never --name hg-wawp-febb76f87569 --network none --read-only --tmpfs /tmp:rw,nosuid,size=512m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 2g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-awp/tests/fixtures/hg_wawp,dst=/fixture,readonly --mount type=bind,src=/tmp/hg-awp/data/datasets/appworld/verify/check.py,dst=/adapter/check.py,readonly --mount type=bind,src=/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/base_dbs,dst=/base-dbs,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/run_case.py local cf6abd2_2--wrong-answer",
+      "docker inspect hg-wawp-febb76f87569",
+      "docker start -a hg-wawp-febb76f87569",
+      "docker inspect hg-wawp-febb76f87569",
+      "docker rm -f hg-wawp-febb76f87569",
+      "docker inspect hg-wawp-febb76f87569"
+    ]
+  },
+  {
+    "case": "cf6abd2_2--gold-answer-only",
+    "mode": "official",
+    "container_name": "hg-wawp-47d47ee3be89",
+    "commands": [
+      "docker create --pull=never --name hg-wawp-47d47ee3be89 --network none --read-only --tmpfs /tmp:rw,nosuid,size=512m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 2g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-awp/tests/fixtures/hg_wawp,dst=/fixture,readonly --mount type=bind,src=/tmp/hg-awp/data/datasets/appworld/verify/check.py,dst=/adapter/check.py,readonly --mount type=bind,src=/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/base_dbs,dst=/base-dbs,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/run_case.py official cf6abd2_2--gold-answer-only",
+      "docker inspect hg-wawp-47d47ee3be89",
+      "docker start -a hg-wawp-47d47ee3be89",
+      "docker inspect hg-wawp-47d47ee3be89",
+      "docker rm -f hg-wawp-47d47ee3be89",
+      "docker inspect hg-wawp-47d47ee3be89"
+    ]
+  },
+  {
+    "case": "cf6abd2_2--gold-answer-only",
+    "mode": "local",
+    "container_name": "hg-wawp-dd38f7636574",
+    "commands": [
+      "docker create --pull=never --name hg-wawp-dd38f7636574 --network none --read-only --tmpfs /tmp:rw,nosuid,size=512m --tmpfs /appworld:ro,size=1m --cpus 1 --memory 2g --pids-limit 128 --ulimit cpu=120:120 --ulimit nofile=256:256 -e PYTHONDONTWRITEBYTECODE=1 -e CUDA_VISIBLE_DEVICES= --mount type=bind,src=/tmp/hg-awp/tests/fixtures/hg_wawp,dst=/fixture,readonly --mount type=bind,src=/tmp/hg-awp/data/datasets/appworld/verify/check.py,dst=/adapter/check.py,readonly --mount type=bind,src=/mnt/20t/xubuqiang/datasets/appworld/_src/unpacked/data/base_dbs,dst=/base-dbs,readonly --entrypoint python sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca /fixture/run_case.py local cf6abd2_2--gold-answer-only",
+      "docker inspect hg-wawp-dd38f7636574",
+      "docker start -a hg-wawp-dd38f7636574",
+      "docker inspect hg-wawp-dd38f7636574",
+      "docker rm -f hg-wawp-dd38f7636574",
+      "docker inspect hg-wawp-dd38f7636574"
+    ]
+  }
+]

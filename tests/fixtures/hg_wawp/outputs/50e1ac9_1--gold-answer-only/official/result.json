@@ -1,0 +1,26 @@
+{
+  "measured": true,
+  "reward": 1.0,
+  "tracker": {
+    "success": true,
+    "difficulty": 2,
+    "num_tests": 2,
+    "passes": [
+      {
+        "requirement": "assert answers match.",
+        "label": "no_op_fail"
+      },
+      {
+        "requirement": "Assert no model changes",
+        "label": "no_op_pass"
+      }
+    ],
+    "failures": []
+  },
+  "responses": [
+    {
+      "message": "Marked the active task complete."
+    }
+  ],
+  "task_completed": true
+}

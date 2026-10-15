@@ -1,0 +1,42 @@
+{
+  "docker_attach_exit": 0,
+  "container_exit": 0,
+  "oom_killed": false,
+  "artifacts": {
+    "evidence.json": "{\"task_id\": \"50e1ac9_1\", \"source_split\": \"dev\", \"metric\": \"appworld.task_goal_completion\", \"metric_name\": \"TGC\", \"measured\": true, \"success\": true, \"num_tests\": 2, \"passes\": [{\"requirement\": \"assert answers match.\", \"label\": \"no_op_fail\"}, {\"requirement\": \"Assert no model changes\", \"label\": \"no_op_pass\"}], \"failures\": []}",
+    "reward.txt": "1.0\n"
+  },
+  "receipts": [
+    {
+      "case": "50e1ac9_1--gold-answer-only",
+      "mode": "local",
+      "identity": {
+        "predicate_path": "/tmp/hg-wawp-p0fy0p0s/data/tasks/50e1ac9_1/ground_truth/evaluation.py",
+        "predicate_sha256": "047963fcd71ed0d71ea747aa5e9713933758c22c929d7f23f8a6e03766eb890d",
+        "local_check_sha256": "0271f08e42199bcc417222b896979408161392743271d5d9479983d4602a0ca5",
+        "input_sha256": "0e086a4ae3e74ecde925c280fe2864ce8f50de5abbffbe046729d0e1cbb1a9dd"
+      },
+      "network": {
+        "interfaces": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n",
+        "routes": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n",
+        "probe_error": "OSError",
+        "errno": 101,
+        "message": "[Errno 101] Network is unreachable",
+        "namespace": "net:[4026535623]"
+      },
+      "predicate_calls": [
+        {
+          "file": "/tmp/hg-wawp-p0fy0p0s/data/tasks/50e1ac9_1/ground_truth/evaluation.py",
+          "line": 18,
+          "symbol": "evaluate"
+        }
+      ],
+      "exit_code": 0
+    }
+  ],
+  "measured": true,
+  "reward": 1.0,
+  "num_tests": 2,
+  "passes": 2,
+  "failures": 0
+}

@@ -1,0 +1,122 @@
+{
+  "cases": [
+    {
+      "calls": [],
+      "control": "no-calls",
+      "id": "82e2fac_1--no-calls",
+      "source_split": "train",
+      "task_id": "82e2fac_1"
+    },
+    {
+      "calls": [
+        {
+          "data": {
+            "answer": "HG_WAWP_WRONG_SENTINEL"
+          },
+          "method": "post",
+          "url": "/supervisor/message"
+        }
+      ],
+      "control": "wrong-answer",
+      "id": "82e2fac_1--wrong-answer",
+      "source_split": "train",
+      "task_id": "82e2fac_1"
+    },
+    {
+      "calls": [
+        {
+          "data": {
+            "answer": "A Love That Never Was"
+          },
+          "method": "post",
+          "url": "/supervisor/message"
+        }
+      ],
+      "control": "gold-answer-only",
+      "id": "82e2fac_1--gold-answer-only",
+      "source_split": "train",
+      "task_id": "82e2fac_1"
+    },
+    {
+      "calls": [],
+      "control": "no-calls",
+      "id": "50e1ac9_1--no-calls",
+      "source_split": "dev",
+      "task_id": "50e1ac9_1"
+    },
+    {
+      "calls": [
+        {
+          "data": {
+            "answer": "HG_WAWP_WRONG_SENTINEL"
+          },
+          "method": "post",
+          "url": "/supervisor/message"
+        }
+      ],
+      "control": "wrong-answer",
+      "id": "50e1ac9_1--wrong-answer",
+      "source_split": "dev",
+      "task_id": "50e1ac9_1"
+    },
+    {
+      "calls": [
+        {
+          "data": {
+            "answer": "Mysteries of the Silent Sea,Crimson Veil,Haunted Memories,Fire and Ice"
+          },
+          "method": "post",
+          "url": "/supervisor/message"
+        }
+      ],
+      "control": "gold-answer-only",
+      "id": "50e1ac9_1--gold-answer-only",
+      "source_split": "dev",
+      "task_id": "50e1ac9_1"
+    },
+    {
+      "calls": [],
+      "control": "no-calls",
+      "id": "cf6abd2_2--no-calls",
+      "source_split": "train",
+      "task_id": "cf6abd2_2"
+    },
+    {
+      "calls": [
+        {
+          "data": {
+            "answer": "HG_WAWP_WRONG_SENTINEL"
+          },
+          "method": "post",
+          "url": "/supervisor/message"
+        }
+      ],
+      "control": "wrong-answer",
+      "id": "cf6abd2_2--wrong-answer",
+      "source_split": "train",
+      "task_id": "cf6abd2_2"
+    },
+    {
+      "calls": [
+        {
+          "data": {
+            "answer": null
+          },
+          "method": "post",
+          "url": "/supervisor/message"
+        }
+      ],
+      "control": "gold-answer-only",
+      "id": "cf6abd2_2--gold-answer-only",
+      "source_split": "train",
+      "task_id": "cf6abd2_2"
+    }
+  ],
+  "not_benchmark_or_actor_evidence": true,
+  "selected_tasks": [
+    "82e2fac_1",
+    "50e1ac9_1",
+    "cf6abd2_2"
+  ],
+  "selection": "first released train, first released dev, prior mounted-service train task"
+}
