@@ -1,9 +1,0 @@
-{
-  "command": [
-    "/tmp/hg-wwheelhouse-install-sa29ixrb/scienceworld/bin/python",
-    "-c",
-    "import importlib, json; mods=['scienceworld']; [importlib.import_module(x) for x in mods]; print(json.dumps({\"imports\":mods,\"ok\":True}))"
-  ],
-  "exit_code": 0,
-  "elapsed_seconds": 0.059
-}

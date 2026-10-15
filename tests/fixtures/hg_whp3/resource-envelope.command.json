@@ -1,8 +1,0 @@
-{
-  "argv": [
-    "python3",
-    "-c",
-    "import json,resource,platform; from pathlib import Path; print(json.dumps({\"machine\":platform.machine(),\"kernel\":platform.release(),\"limits\":{n:resource.getrlimit(getattr(resource,n)) for n in [\"RLIMIT_AS\",\"RLIMIT_CPU\",\"RLIMIT_NOFILE\",\"RLIMIT_NPROC\",\"RLIMIT_FSIZE\",\"RLIMIT_CORE\"]},\"cpuinfo\":Path(\"/proc/cpuinfo\").read_text().split(\"\\n\\n\")[0]},indent=2))"
-  ],
-  "returncode": 0
-}

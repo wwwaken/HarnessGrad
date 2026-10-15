@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "/tmp/hg-journalcov/tests/fixtures/hg_wprov/verify.py", line 62, in <module>
-    print(json.dumps(verify(), indent=2))
-                     ^^^^^^^^
-  File "/tmp/hg-journalcov/tests/fixtures/hg_wprov/verify.py", line 31, in verify
-    assert raw == (REPO / name).read_bytes(), f"source changed: {name}"
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError: source changed: data/scaffolds/qa/base.py

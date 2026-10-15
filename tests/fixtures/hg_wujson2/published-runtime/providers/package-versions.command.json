@@ -1,8 +1,0 @@
-{
-  "argv": [
-    "dpkg-query",
-    "-W",
-    "-f=${Package}\t${Version}\t${Architecture}\n"
-  ],
-  "returncode": 0
-}

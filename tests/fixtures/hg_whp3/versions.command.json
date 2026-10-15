@@ -1,9 +1,0 @@
-{
-  "argv": [
-    "python3",
-    "-I",
-    "-c",
-    "import sys,sysconfig,platform,importlib.metadata as m,json; print(json.dumps(dict(python=sys.version,executable=sys.executable,soabi=sysconfig.get_config_var(\"SOABI\"),kernel=platform.release(),machine=platform.machine(),packages={n:m.version(n) for n in [\"jericho\",\"numpy\",\"mkl-service\",\"textworld\",\"alfworld\",\"fast-downward-textworld\"]}),indent=2,sort_keys=True))"
-  ],
-  "returncode": 0
-}

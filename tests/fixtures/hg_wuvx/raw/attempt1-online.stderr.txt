@@ -1,8 +1,0 @@
-+ export UV_CACHE_DIR=/root/wuvx-cache
-+ UV_CACHE_DIR=/root/wuvx-cache
-+ printf 'Binary::apt-get::APT::Keep-Downloaded-Packages "true";\n'
-+ apt-get update
-+ apt-get install -y curl
-debconf: delaying package configuration, since apt-utils is not installed
-+ cp '/var/cache/apt/archives/*.deb' /packet/artifacts/apt/
-cp: cannot stat '/var/cache/apt/archives/*.deb': No such file or directory

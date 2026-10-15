@@ -1,1 +1,0 @@
-select value from t order by value desc

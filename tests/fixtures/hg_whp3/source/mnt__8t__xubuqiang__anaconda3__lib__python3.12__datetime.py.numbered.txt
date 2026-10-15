@@ -1,9 +1,0 @@
-     1	try:
-     2	    from _datetime import *
-     3	    from _datetime import __doc__
-     4	except ImportError:
-     5	    from _pydatetime import *
-     6	    from _pydatetime import __doc__
-     7	
-     8	__all__ = ("date", "datetime", "time", "timedelta", "timezone", "tzinfo",
-     9	           "MINYEAR", "MAXYEAR", "UTC")

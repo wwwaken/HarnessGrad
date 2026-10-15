@@ -1,3 +1,0 @@
-Command: PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_woffscorer3/gaia_tau/verify.py > tests/fixtures/hg_woffscorer3/gaia_tau/verification.json
-Observed first validator exception: json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-The validator attempted json.loads(lines[-1]) on ignored asyncio finalization stderr; raw scoring outputs were not changed.

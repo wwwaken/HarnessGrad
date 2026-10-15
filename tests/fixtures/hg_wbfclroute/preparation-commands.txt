@@ -1,9 +1,0 @@
-Executed from /tmp/hg-bfclroute. Source preparation read only code/license/spec archive members.
-PYTHONPATH=. PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_wbfclroute/prepare.py > tests/fixtures/hg_wbfclroute/prepare.stdout.txt 2> tests/fixtures/hg_wbfclroute/prepare.stderr.txt
-PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_wbfclroute/collect.py > tests/fixtures/hg_wbfclroute/collect.stdout.txt 2> tests/fixtures/hg_wbfclroute/collect.stderr.txt
-PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_wbfclroute/supplement.py > tests/fixtures/hg_wbfclroute/supplement.stdout.txt 2> tests/fixtures/hg_wbfclroute/supplement.stderr.txt
-PYTHONDONTWRITEBYTECODE=1 python3 tests/fixtures/hg_wbfclroute/compare.py > tests/fixtures/hg_wbfclroute/compare.stdout.txt 2> tests/fixtures/hg_wbfclroute/compare.stderr.txt
-The collector records exact child argv, cwd, environment overrides, returncodes and stdout/stderr filenames in commands.json.
-The import-order supplement records its exact command in ordered-import.command.json.
-Scorer/runtime collection cannot overwrite a previous commands.json or existing raw output file.
-Reproduce in a new uniquely named packet/worktree; never overwrite or resume this evidence collection.

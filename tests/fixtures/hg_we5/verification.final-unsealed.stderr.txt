@@ -1,9 +1,0 @@
-Traceback (most recent call last):
-  File "/tmp/hg-e5/tests/fixtures/hg_we5/verify.py", line 162, in <module>
-    print(json.dumps(validate(seals="--no-seals" not in sys.argv), indent=2, sort_keys=True))
-                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/tmp/hg-e5/tests/fixtures/hg_we5/verify.py", line 140, in validate
-    artifacts.verify_state_export(packet / "sqlite-wal-dependency" / rootname, receipt,
-  File "/tmp/hg-e5/eval/admission/artifact_admission.py", line 424, in verify_state_export
-    raise AdmissionError("state projection differs from data allowlist")
-eval.admission.pilot_admission.AdmissionError: state projection differs from data allowlist
