@@ -3844,3 +3844,16 @@ clean; all four named deliverables present.
 - Eighteen selected-byte mutations refuse before scoring; bound private-gold and outside-workbook-pointer changes produce no reward. Eight structurally valid incomplete projections demonstrate four score changes. A genuine SQLite WAL dependency demonstrates EX 0 → 1 when only the unchanged main bytes are copied, then EX 0 after an orderly last-writer close/checkpoint and fresh export. The exporter cannot infer a missing semantic dependency from its declared allowlist.
 - `reports/w-e5-equivalence.md`, `tests/fixtures/hg_we5/` and `reports/w-e5-validation.txt` preserve source+line inventory, bounded contracts, remaining coverage, exact commands, packet verification and focused regressions. Initial complete evidence is retained in a member-verified archive; the first audit-test exception expectation error and incomplete ZIP attempt are preserved separately. Only shared artifact-only-state-export observed detail/evidence is appended; statuses, next_actions, dataset/history records, gates and production authorization remain unchanged.
 - E4/E5/E6 remain PARTIAL; neither shared blocker nor any dataset blocker closes. No benchmark scoring run, released task payload, production H0, model, GPU, endpoint, paid API or Docker executes. No `runs/`, frozen receipt or production source is changed. Commit is confined to registered `/tmp/hg-e5` on `wg-e5` for parent review.
+## Parent review and merge — w-e5 — 2026-10-15
+
+- Merged `939e7326` (w-e5). Result `4967006c`. Registry valid: 28 datasets, 2 shared blockers, 11
+  historical records, `production_authorized=false`; sequencer clean.
+- E5 advanced with bounded, two-direction evidence: **18/18 authored pairs preserve scores across 9 of
+  24 implemented routes**, covering parts of 5 of 12 scorer-input shapes, and **18 tamper checks
+  refuse**. 163 tests pass.
+- **And it surfaced a new finding rather than only agreement**: incomplete projections and
+  **SQLite WAL** expose score-changing dependency loss. That is the same productive shape as the
+  DS-1000 scratch leak and the AppWorld recording-mount leak - a real state-integrity risk found by
+  running the route. E4/E5/E6 remain PARTIAL; no blocker closed.
+- Resource state: local containers and tests only - no benchmark scoring run, model, GPU or endpoint
+  call. Historical runs, frozen receipts and archives were untouched.
