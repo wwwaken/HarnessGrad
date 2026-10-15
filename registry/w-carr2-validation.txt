@@ -1,0 +1,69 @@
+Parent integration validation - give every document the registry cites a readable carrier.
+
+Defect
+------
+The registry cites evidence documents two ways. `external-reference` evidence entries carry an
+absolute path that `tools/check_dataset_blockers.py:109,:111,:112` deliberately does not check for
+existence, and the `observed`/`next_action` prose cites ordinary repo-relative paths. Neither form
+was checked, and after `reports/` and `docs/` were deleted (1825cd0e) 32 of 36 `/site/...` paths and
+12 of 13 repo-relative paths had no readable carrier anywhere. A reader following the registry's own
+pointer, e.g. "Per-clause satisfied/unmet findings ... are in reports/w-journalcov-review.md", found
+nothing.
+
+Measured before this change
+---------------------------
+$ python3 - <<'PY'  # resolver in the transcript: strip trailing .,;:) while the shorter form is known
+distinct repo-relative citations: 13
+EXISTS: docs/adapter-integration-journal.md
+RECOVERABLE: 12 (all present at 1825cd0e^)
+DEAD: 0
+$ python3 -m pytest tests/quality/test_site_evidence_carriers.py -q
+2 failed, 2 passed
+$ python3 tools/check_dataset_blockers.py   # in a fresh worktree, before w-citefix
+{"valid": false, "error": "bfcl_v3: missing evidence tests/fixtures/hg_bfcl/README.md"}
+
+Change
+------
+1. Restored the 12 repo-relative documents from `1825cd0e^` to the exact paths the registry cites
+   (`docs/enforcement-proof-decision.md`, `docs/independent-review-deferred.md`,
+   `docs/w-fix-unknown-isolation-records.md`, `docs/w-obs-runtime-review.md`,
+   `docs/w-shared-verifier-review.md`, `reports/w-chess2-evidence/actor-command-line-19.sh`,
+   `reports/w-chess3-evidence/corrected-blocker-before-run.json`, `reports/w-chess3-receipts.md`,
+   `reports/w-fix-validation.txt`, `reports/w-jc2-review.md`, `reports/w-journalcov-review.md`,
+   `reports/w-obs-validation.txt`). Largest 67,005 bytes; total 183 KB. Every one is
+   `git check-ignore`-clean and tracked.
+2. `tests/fixtures/hg_migration_site/PROVENANCE.json` now has 48 entries and an explicit `carrier`
+   field per entry: 36 `/site/...` entries resolve through `tests/fixtures/hg_migration_site/`
+   (`tests/quality/conftest.py:24`), 12 relative entries resolve at their own cited path. Each entry
+   records `reference`, `carrier`, `source_path`, `source_commit`, `bytes` and `sha256`.
+3. `tests/quality/test_site_evidence_carriers.py` generalised: it enumerates both citation forms,
+   trims sentence punctuation only when the shorter form is a known document (so `.md`/`.json`/`.sh`
+   survive), and asserts (a) every cited document resolves to an in-repo file or a recorded carrier,
+   (b) every citation without an in-repo path has a provenance entry and the packet's files are
+   described exactly, (c) every carrier is byte-identical to its recorded recovery, and (d) the
+   packet stays text-only, under 4 MB, with no file at or above 1 MB.
+
+Measured after
+--------------
+$ python3 -m pytest tests/quality/test_site_evidence_carriers.py -q
+4 passed in 0.04s
+$ python3 -m pytest tests/quality/test_dataset_blockers.py tests/quality/test_dataset_journal_coverage.py \
+    tests/quality/test_b6_blocker_evidence.py tests/quality/test_measurement_coverage_hg_b3.py \
+    tests/quality/test_site_evidence_carriers.py -q
+101 passed, 15 skipped, 3 xfailed
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+
+Scope limits (what this does NOT do)
+------------------------------------
+- It does not re-add the ~5,300 uncited `reports/` files or the 144 uncited `docs/` files; only the
+  13 documents the registry actually cites are restored.
+- It does not re-authenticate any citation, does not edit a single registry field, does not change a
+  blocker status, `observed`, `next_action`, historical record, frozen receipt or run ID, and does not
+  claim that a present carrier makes its citation correct. A present carrier only means the document
+  the registry points at can be read.
+- It does not resolve the two dead absolute archive citations that sit inside frozen `historical_runs`
+  (`.../codex/qa-h0-archive-v4/index.json`, `.../codex/qa-h0-incomplete-index.json`): those are not
+  repo-relative, the archive never held them, and historical records are pinned whole by the checker.
+- It does not restore the seven B6 `hop-*.body` upstream payloads (see registry/w-citefix-validation.txt).
+- `docs/` and `reports/` remain deleted as bulk trees; `.gitignore` is unchanged by this commit.

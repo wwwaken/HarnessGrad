@@ -1,0 +1,49 @@
+{
+  "id": "trusted-stepwise-transport",
+  "family": "official-scorer-execution",
+  "status": "runtime",
+  "observed": "The trusted stepwise relay is wired and a fresh authorized released-task attempt now has live execution evidence: chessbench_puzzles/test/1287 received its initial board under chessbench_puzzles.stepwise.v1, but the actor disconnected without a move. The controller receipt records status=incomplete, measured=false, reason=answer_receive_failed, submissions=0, scorer_isolation_class=in-process and successful relay cleanup; the staged receipt has score=null, invalid_trials=0 and unmeasured_trials=1. No delivered terminal exchange or model-driven interactive puzzle measurement exists. The offline strict-replay protocol remains the only measured path; no mixed-protocol comparison or curve point was produced. Follow-up w-chess2 diagnosed the original short-lived actor process as case (b), correct single-connection relay behavior, and selected the unmodified codex_agent harness for a fresh authorized local-model diagnostic. The AGENT'S OWN GENERATED SCRIPT, reports/w-chess2-evidence/actor-command-line-19.sh:25, gated sending on if data.get('solver_turn'): and therefore skipped the first submission when the public counter was integer 0; the actor attempted rejected reconnects and the CLI timed out. Repository search confirms that falsy-zero gate is in preserved generated actor scripts, not platform code: eval/run/chess_stepwise.py allowlists solver_turn, eval/service/stepwise_transport.py dispatches on status, and data/datasets/chessbench_puzzles.py initializes/exports/increments the counter. This is an actor-script bug, not platform mishandling of solver_turn=0; no platform behavior or gate needs changing. Run w-chess2-stepwise-20261014T220158Z-ca40c19f records exit_code=1, outer reason=actor_exit_before_clean_completion, transport reason=answer_receive_failed, submissions=0, measured=false, in-process isolation and successful relay cleanup; staged coverage is 0 invalid / 1 unmeasured. Still missing: a real solver submission and delivered terminal exchange with clean actor completion. No production or actor code was patched and no score was assigned.",
+  "evidence": [
+    {
+      "kind": "repository",
+      "path": "docs/adapter-integration-journal.md",
+      "locator": "## ChessBench Puzzles — strict replay"
+    },
+    {
+      "kind": "repository",
+      "path": "reports/preserved-lifecycle-review-b8.md",
+      "locator": "## chessbench_puzzles / trusted-stepwise-transport"
+    },
+    {
+      "kind": "repository",
+      "path": "docs/chessbench-puzzles-evaluation.md",
+      "locator": "## Opt-in runner wiring"
+    },
+    {
+      "kind": "repository",
+      "path": "data/datasets/chessbench_puzzles.py",
+      "locator": "class StepwisePuzzle:"
+    },
+    {
+      "kind": "repository",
+      "path": "reports/chessbench-stepwise-c1-report.md",
+      "locator": "# ChessBench live stepwise runner wiring (c1)"
+    },
+    {
+      "kind": "repository",
+      "path": "eval/run/runner.py",
+      "locator": "from eval.run import chess_stepwise"
+    },
+    {
+      "kind": "repository",
+      "path": "reports/w-chess-receipts.md",
+      "locator": "## Released-task stepwise diagnostic — incomplete"
+    },
+    {
+      "kind": "repository",
+      "path": "reports/w-chess2-receipts.md",
+      "locator": "## Released-task stepwise diagnostic — unmeasured"
+    }
+  ],
+  "next_action": "Run one authorized gated interactive chessbench task through the live stepwise relay and record its receipt, so the stepwise protocol has execution evidence rather than only wiring. Keep the offline-only claim until then: a wired transport is not a measurement. Reject any point that mixes the stepwise and strict-replay protocols in one comparison."
+}
