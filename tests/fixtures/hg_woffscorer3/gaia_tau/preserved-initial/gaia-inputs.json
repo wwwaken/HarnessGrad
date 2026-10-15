@@ -1,0 +1,121 @@
+{
+  "cases": [
+    {
+      "answer": "1234",
+      "gold": "1234",
+      "id": "number-exact"
+    },
+    {
+      "answer": "$1,234",
+      "gold": "1234",
+      "id": "currency-comma"
+    },
+    {
+      "answer": "42%",
+      "gold": "42",
+      "id": "percent-unscaled"
+    },
+    {
+      "answer": "12.1",
+      "gold": "12",
+      "id": "number-wrong"
+    },
+    {
+      "answer": "twelve",
+      "gold": "12",
+      "id": "number-invalid"
+    },
+    {
+      "answer": "words",
+      "gold": "inf",
+      "id": "float-inf-invalid"
+    },
+    {
+      "answer": "nan",
+      "gold": "nan",
+      "id": "float-nan"
+    },
+    {
+      "answer": " SEA GULL! ",
+      "gold": "seagull",
+      "id": "text-case-space"
+    },
+    {
+      "answer": "other",
+      "gold": "seagull",
+      "id": "text-wrong"
+    },
+    {
+      "answer": "sea\ngull",
+      "gold": "seagull",
+      "id": "text-internal-newline"
+    },
+    {
+      "answer": "alpha; beta",
+      "gold": "alpha,beta",
+      "id": "list-separator"
+    },
+    {
+      "answer": "beta,alpha",
+      "gold": "alpha,beta",
+      "id": "list-order"
+    },
+    {
+      "answer": "alpha!, beta",
+      "gold": "alpha,beta",
+      "id": "list-punctuation"
+    },
+    {
+      "answer": "1.0;$2",
+      "gold": "1;2",
+      "id": "list-numeric"
+    },
+    {
+      "answer": "alpha",
+      "gold": "alpha,beta",
+      "id": "list-length"
+    },
+    {
+      "answer": "alpha,",
+      "gold": "alpha,",
+      "id": "list-empty-item"
+    },
+    {
+      "answer": "  alpha , BETA  ",
+      "gold": "alpha,beta",
+      "id": "list-space"
+    },
+    {
+      "answer": "",
+      "gold": "text",
+      "id": "blank-answer"
+    },
+    {
+      "answer": "   ",
+      "gold": "text",
+      "id": "whitespace-answer"
+    },
+    {
+      "answer": "",
+      "gold": "",
+      "id": "empty-gold"
+    },
+    {
+      "answer": "?",
+      "gold": "?",
+      "id": "placeholder-gold"
+    },
+    {
+      "answer": "!",
+      "gold": "",
+      "id": "punctuation-empty"
+    },
+    {
+      "answer": "",
+      "gold": "text",
+      "id": "missing-answer",
+      "missing_answer": true
+    }
+  ],
+  "kind": "authored synthetic scorer controls"
+}

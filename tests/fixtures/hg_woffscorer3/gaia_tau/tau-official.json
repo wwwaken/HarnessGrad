@@ -1,0 +1,1119 @@
+{
+  "cases": [
+    {
+      "error": null,
+      "id": "address-correct",
+      "return": {
+        "actions_after": [
+          {
+            "kwargs": {
+              "summary": "authored end"
+            },
+            "name": "transfer_to_human_agents"
+          },
+          {
+            "kwargs": {
+              "address1": "New",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "user_id": "synthetic_user",
+              "zip": "12345"
+            },
+            "name": "modify_user_address"
+          }
+        ],
+        "final_replayed_database": {
+          "orders": {},
+          "products": {},
+          "users": {
+            "synthetic_user": {
+              "address": {
+                "address1": "New",
+                "address2": "",
+                "city": "City",
+                "country": "Synthetic",
+                "state": "XX",
+                "zip": "12345"
+              },
+              "user_id": "synthetic_user"
+            }
+          }
+        },
+        "response": {
+          "done": true,
+          "info": {
+            "reward_info": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "synthetic_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                }
+              ],
+              "info": {
+                "gt_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+                "r_actions": 1.0
+              },
+              "reward": 1.0
+            },
+            "source": "transfer_to_human_agents",
+            "task": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "synthetic_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                }
+              ],
+              "instruction": "authored scorer control",
+              "outputs": [],
+              "user_id": "synthetic_user"
+            },
+            "user_cost": 0
+          },
+          "observation": "Transfer successful",
+          "reward": 1.0
+        },
+        "user_class": "HumanUserSimulationEnv"
+      },
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "error": null,
+      "id": "address-wrong",
+      "return": {
+        "actions_after": [
+          {
+            "kwargs": {
+              "summary": "authored end"
+            },
+            "name": "transfer_to_human_agents"
+          },
+          {
+            "kwargs": {
+              "address1": "New",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "user_id": "synthetic_user",
+              "zip": "12345"
+            },
+            "name": "modify_user_address"
+          }
+        ],
+        "final_replayed_database": {
+          "orders": {},
+          "products": {},
+          "users": {
+            "synthetic_user": {
+              "address": {
+                "address1": "New",
+                "address2": "",
+                "city": "City",
+                "country": "Synthetic",
+                "state": "XX",
+                "zip": "12345"
+              },
+              "user_id": "synthetic_user"
+            }
+          }
+        },
+        "response": {
+          "done": true,
+          "info": {
+            "reward_info": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "synthetic_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                }
+              ],
+              "info": {
+                "gt_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+                "r_actions": 0.0
+              },
+              "reward": 0.0
+            },
+            "source": "transfer_to_human_agents",
+            "task": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "synthetic_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                }
+              ],
+              "instruction": "authored scorer control",
+              "outputs": [],
+              "user_id": "synthetic_user"
+            },
+            "user_cost": 0
+          },
+          "observation": "Transfer successful",
+          "reward": 0.0
+        },
+        "user_class": "HumanUserSimulationEnv"
+      },
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "error": null,
+      "id": "output-present",
+      "return": {
+        "actions_after": [
+          {
+            "kwargs": {
+              "content": "ZIP: 12,345"
+            },
+            "name": "respond"
+          },
+          {
+            "kwargs": {
+              "summary": "authored end"
+            },
+            "name": "transfer_to_human_agents"
+          },
+          {
+            "kwargs": {
+              "address1": "New",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "user_id": "synthetic_user",
+              "zip": "12345"
+            },
+            "name": "modify_user_address"
+          }
+        ],
+        "final_replayed_database": {
+          "orders": {},
+          "products": {},
+          "users": {
+            "synthetic_user": {
+              "address": {
+                "address1": "New",
+                "address2": "",
+                "city": "City",
+                "country": "Synthetic",
+                "state": "XX",
+                "zip": "12345"
+              },
+              "user_id": "synthetic_user"
+            }
+          }
+        },
+        "response": {
+          "done": true,
+          "info": {
+            "reward_info": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "synthetic_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                }
+              ],
+              "info": {
+                "outputs": {
+                  "12345": true
+                },
+                "r_outputs": 1.0
+              },
+              "reward": 1.0
+            },
+            "source": "transfer_to_human_agents",
+            "task": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "synthetic_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                }
+              ],
+              "instruction": "authored scorer control",
+              "outputs": [
+                "12345"
+              ],
+              "user_id": "synthetic_user"
+            },
+            "user_cost": 0
+          },
+          "observation": "Transfer successful",
+          "reward": 1.0
+        },
+        "user_class": "HumanUserSimulationEnv"
+      },
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "error": null,
+      "id": "output-missing",
+      "return": {
+        "actions_after": [
+          {
+            "kwargs": {
+              "summary": "authored end"
+            },
+            "name": "transfer_to_human_agents"
+          },
+          {
+            "kwargs": {
+              "address1": "New",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "user_id": "synthetic_user",
+              "zip": "12345"
+            },
+            "name": "modify_user_address"
+          }
+        ],
+        "final_replayed_database": {
+          "orders": {},
+          "products": {},
+          "users": {
+            "synthetic_user": {
+              "address": {
+                "address1": "New",
+                "address2": "",
+                "city": "City",
+                "country": "Synthetic",
+                "state": "XX",
+                "zip": "12345"
+              },
+              "user_id": "synthetic_user"
+            }
+          }
+        },
+        "response": {
+          "done": true,
+          "info": {
+            "reward_info": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "synthetic_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                }
+              ],
+              "info": {
+                "outputs": {
+                  "12345": false
+                },
+                "r_outputs": 0.0
+              },
+              "reward": 0.0
+            },
+            "source": "transfer_to_human_agents",
+            "task": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "synthetic_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                }
+              ],
+              "instruction": "authored scorer control",
+              "outputs": [
+                "12345"
+              ],
+              "user_id": "synthetic_user"
+            },
+            "user_cost": 0
+          },
+          "observation": "Transfer successful",
+          "reward": 0.0
+        },
+        "user_class": "HumanUserSimulationEnv"
+      },
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "error": null,
+      "id": "output-case",
+      "return": {
+        "actions_after": [
+          {
+            "kwargs": {
+              "content": "Complete"
+            },
+            "name": "respond"
+          },
+          {
+            "kwargs": {
+              "summary": "authored end"
+            },
+            "name": "transfer_to_human_agents"
+          },
+          {
+            "kwargs": {
+              "address1": "New",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "user_id": "synthetic_user",
+              "zip": "12345"
+            },
+            "name": "modify_user_address"
+          }
+        ],
+        "final_replayed_database": {
+          "orders": {},
+          "products": {},
+          "users": {
+            "synthetic_user": {
+              "address": {
+                "address1": "New",
+                "address2": "",
+                "city": "City",
+                "country": "Synthetic",
+                "state": "XX",
+                "zip": "12345"
+              },
+              "user_id": "synthetic_user"
+            }
+          }
+        },
+        "response": {
+          "done": true,
+          "info": {
+            "reward_info": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "synthetic_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                }
+              ],
+              "info": {
+                "outputs": {
+                  "COMPLETE": true
+                },
+                "r_outputs": 1.0
+              },
+              "reward": 1.0
+            },
+            "source": "transfer_to_human_agents",
+            "task": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "synthetic_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                }
+              ],
+              "instruction": "authored scorer control",
+              "outputs": [
+                "COMPLETE"
+              ],
+              "user_id": "synthetic_user"
+            },
+            "user_cost": 0
+          },
+          "observation": "Transfer successful",
+          "reward": 1.0
+        },
+        "user_class": "HumanUserSimulationEnv"
+      },
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "error": null,
+      "id": "output-comma-asymmetric",
+      "return": {
+        "actions_after": [
+          {
+            "kwargs": {
+              "content": "12,345"
+            },
+            "name": "respond"
+          },
+          {
+            "kwargs": {
+              "summary": "authored end"
+            },
+            "name": "transfer_to_human_agents"
+          },
+          {
+            "kwargs": {
+              "address1": "New",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "user_id": "synthetic_user",
+              "zip": "12345"
+            },
+            "name": "modify_user_address"
+          }
+        ],
+        "final_replayed_database": {
+          "orders": {},
+          "products": {},
+          "users": {
+            "synthetic_user": {
+              "address": {
+                "address1": "New",
+                "address2": "",
+                "city": "City",
+                "country": "Synthetic",
+                "state": "XX",
+                "zip": "12345"
+              },
+              "user_id": "synthetic_user"
+            }
+          }
+        },
+        "response": {
+          "done": true,
+          "info": {
+            "reward_info": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "synthetic_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                }
+              ],
+              "info": {
+                "outputs": {
+                  "12,345": false
+                },
+                "r_outputs": 0.0
+              },
+              "reward": 0.0
+            },
+            "source": "transfer_to_human_agents",
+            "task": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "synthetic_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                }
+              ],
+              "instruction": "authored scorer control",
+              "outputs": [
+                "12,345"
+              ],
+              "user_id": "synthetic_user"
+            },
+            "user_cost": 0
+          },
+          "observation": "Transfer successful",
+          "reward": 0.0
+        },
+        "user_class": "HumanUserSimulationEnv"
+      },
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "error": null,
+      "id": "unfinished",
+      "return": {
+        "actions_after": [
+          {
+            "kwargs": {},
+            "name": "not_a_tool"
+          }
+        ],
+        "final_replayed_database": {
+          "orders": {},
+          "products": {},
+          "users": {
+            "synthetic_user": {
+              "address": {
+                "address1": "New",
+                "address2": "",
+                "city": "City",
+                "country": "Synthetic",
+                "state": "XX",
+                "zip": "12345"
+              },
+              "user_id": "synthetic_user"
+            }
+          }
+        },
+        "response": {
+          "done": false,
+          "info": {
+            "reward_info": null,
+            "source": "not_a_tool",
+            "task": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "synthetic_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                }
+              ],
+              "instruction": "authored scorer control",
+              "outputs": [],
+              "user_id": "synthetic_user"
+            },
+            "user_cost": null
+          },
+          "observation": "Unknown action not_a_tool",
+          "reward": 0.0
+        },
+        "user_class": "HumanUserSimulationEnv"
+      },
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "error": null,
+      "id": "unknown-ground-truth-tool",
+      "return": {
+        "actions_after": [
+          {
+            "kwargs": {
+              "summary": "authored end"
+            },
+            "name": "transfer_to_human_agents"
+          },
+          {
+            "kwargs": {},
+            "name": "not_a_tool"
+          }
+        ],
+        "final_replayed_database": {
+          "orders": {},
+          "products": {},
+          "users": {
+            "synthetic_user": {
+              "address": {
+                "address1": "Old",
+                "address2": "",
+                "city": "City",
+                "country": "Synthetic",
+                "state": "XX",
+                "zip": "00000"
+              },
+              "user_id": "synthetic_user"
+            }
+          }
+        },
+        "response": {
+          "done": true,
+          "info": {
+            "reward_info": {
+              "actions": [
+                {
+                  "kwargs": {},
+                  "name": "not_a_tool"
+                }
+              ],
+              "info": {
+                "gt_data_hash": "f96ca73d01ff53ecc25db5b854ae4b3977dd18f5cf9294647d38fa5ded9df2bc",
+                "r_actions": 1.0
+              },
+              "reward": 1.0
+            },
+            "source": "transfer_to_human_agents",
+            "task": {
+              "actions": [
+                {
+                  "kwargs": {},
+                  "name": "not_a_tool"
+                }
+              ],
+              "instruction": "authored scorer control",
+              "outputs": [],
+              "user_id": "synthetic_user"
+            },
+            "user_cost": 0
+          },
+          "observation": "Transfer successful",
+          "reward": 1.0
+        },
+        "user_class": "HumanUserSimulationEnv"
+      },
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "error": null,
+      "id": "ground-truth-tool-error-noop",
+      "return": {
+        "actions_after": [
+          {
+            "kwargs": {
+              "summary": "authored end"
+            },
+            "name": "transfer_to_human_agents"
+          },
+          {
+            "kwargs": {
+              "address1": "New",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "user_id": "absent_user",
+              "zip": "12345"
+            },
+            "name": "modify_user_address"
+          }
+        ],
+        "final_replayed_database": {
+          "orders": {},
+          "products": {},
+          "users": {
+            "synthetic_user": {
+              "address": {
+                "address1": "Old",
+                "address2": "",
+                "city": "City",
+                "country": "Synthetic",
+                "state": "XX",
+                "zip": "00000"
+              },
+              "user_id": "synthetic_user"
+            }
+          }
+        },
+        "response": {
+          "done": true,
+          "info": {
+            "reward_info": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "absent_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                }
+              ],
+              "info": {
+                "gt_data_hash": "f96ca73d01ff53ecc25db5b854ae4b3977dd18f5cf9294647d38fa5ded9df2bc",
+                "r_actions": 1.0
+              },
+              "reward": 1.0
+            },
+            "source": "transfer_to_human_agents",
+            "task": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "absent_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                }
+              ],
+              "instruction": "authored scorer control",
+              "outputs": [],
+              "user_id": "synthetic_user"
+            },
+            "user_cost": 0
+          },
+          "observation": "Transfer successful",
+          "reward": 1.0
+        },
+        "user_class": "HumanUserSimulationEnv"
+      },
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "error": null,
+      "id": "terminate-skip",
+      "return": {
+        "actions_after": [
+          {
+            "kwargs": {
+              "summary": "authored end"
+            },
+            "name": "transfer_to_human_agents"
+          },
+          {
+            "kwargs": {
+              "address1": "New",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "user_id": "synthetic_user",
+              "zip": "12345"
+            },
+            "name": "modify_user_address"
+          }
+        ],
+        "final_replayed_database": {
+          "orders": {},
+          "products": {},
+          "users": {
+            "synthetic_user": {
+              "address": {
+                "address1": "New",
+                "address2": "",
+                "city": "City",
+                "country": "Synthetic",
+                "state": "XX",
+                "zip": "12345"
+              },
+              "user_id": "synthetic_user"
+            }
+          }
+        },
+        "response": {
+          "done": true,
+          "info": {
+            "reward_info": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "synthetic_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                },
+                {
+                  "kwargs": {
+                    "summary": "synthetic"
+                  },
+                  "name": "transfer_to_human_agents"
+                }
+              ],
+              "info": {
+                "gt_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+                "r_actions": 1.0
+              },
+              "reward": 1.0
+            },
+            "source": "transfer_to_human_agents",
+            "task": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "synthetic_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                },
+                {
+                  "kwargs": {
+                    "summary": "synthetic"
+                  },
+                  "name": "transfer_to_human_agents"
+                }
+              ],
+              "instruction": "authored scorer control",
+              "outputs": [],
+              "user_id": "synthetic_user"
+            },
+            "user_cost": 0
+          },
+          "observation": "Transfer successful",
+          "reward": 1.0
+        },
+        "user_class": "HumanUserSimulationEnv"
+      },
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "error": null,
+      "id": "ground-truth-respond-output",
+      "return": {
+        "actions_after": [
+          {
+            "kwargs": {
+              "summary": "authored end"
+            },
+            "name": "transfer_to_human_agents"
+          },
+          {
+            "kwargs": {
+              "address1": "New",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "user_id": "synthetic_user",
+              "zip": "12345"
+            },
+            "name": "modify_user_address"
+          },
+          {
+            "kwargs": {
+              "content": "secret"
+            },
+            "name": "respond"
+          }
+        ],
+        "final_replayed_database": {
+          "orders": {},
+          "products": {},
+          "users": {
+            "synthetic_user": {
+              "address": {
+                "address1": "New",
+                "address2": "",
+                "city": "City",
+                "country": "Synthetic",
+                "state": "XX",
+                "zip": "12345"
+              },
+              "user_id": "synthetic_user"
+            }
+          }
+        },
+        "response": {
+          "done": true,
+          "info": {
+            "reward_info": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "synthetic_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                }
+              ],
+              "info": {
+                "outputs": {
+                  "secret": true
+                },
+                "r_outputs": 1.0
+              },
+              "reward": 1.0
+            },
+            "source": "transfer_to_human_agents",
+            "task": {
+              "actions": [
+                {
+                  "kwargs": {
+                    "address1": "New",
+                    "address2": "",
+                    "city": "City",
+                    "country": "Synthetic",
+                    "state": "XX",
+                    "user_id": "synthetic_user",
+                    "zip": "12345"
+                  },
+                  "name": "modify_user_address"
+                },
+                {
+                  "kwargs": {
+                    "content": "secret"
+                  },
+                  "name": "respond"
+                }
+              ],
+              "instruction": "authored scorer control",
+              "outputs": [
+                "secret"
+              ],
+              "user_id": "synthetic_user"
+            },
+            "user_cost": 0
+          },
+          "observation": "Transfer successful",
+          "reward": 1.0
+        },
+        "user_class": "HumanUserSimulationEnv"
+      },
+      "stderr": "",
+      "stdout": "secret\n"
+    }
+  ],
+  "dataset": "tau",
+  "inputs_sha256": "f69d29c99570ce6ee5b563da3c8e13d2e00f61da19df9ecadd70db937c33de24",
+  "loaded_modules": [
+    {
+      "module": "tau_bench.envs.tool",
+      "path": "/tmp/hg-offscorer3/tests/fixtures/hg_woffscorer3/gaia_tau/source/tau_bench/envs/tool.py",
+      "sha256": "0a158be298092fc64862ae8843f35f57cfba139aa02c2ee8fbe87b1e4a1de0fc"
+    },
+    {
+      "module": "pydantic",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pydantic/__init__.py",
+      "sha256": "e62127278c07bf5384cdd2903f368a69929f3b8a524000bae4e0eb608ebf4bc6"
+    },
+    {
+      "module": "litellm",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/litellm/__init__.py",
+      "sha256": "25465af2065f5b0f37ddc53235b65d7537e3ce7ef913ab064abaa66d463415f2"
+    },
+    {
+      "module": "tau_bench.envs.user",
+      "path": "/tmp/hg-offscorer3/tests/fixtures/hg_woffscorer3/gaia_tau/source/tau_bench/envs/user.py",
+      "sha256": "ab24eeed85e6261eb2f45420432d84a390cc39b82fc5910b8a4ccd3cee36f07e"
+    },
+    {
+      "module": "tau_bench.types",
+      "path": "/tmp/hg-offscorer3/tests/fixtures/hg_woffscorer3/gaia_tau/source/tau_bench/types.py",
+      "sha256": "38c2e79f48f9ac87fbdd7bb763c3ef7e8a825cd3de3998f51b12ecf55733b9db"
+    },
+    {
+      "module": "tau_bench.envs.base",
+      "path": "/tmp/hg-offscorer3/tests/fixtures/hg_woffscorer3/gaia_tau/source/tau_bench/envs/base.py",
+      "sha256": "1ad0402073f0ac9ca6b527efa0706e2aa8836dd2e5c1d453ed414ecb768c6d21"
+    },
+    {
+      "module": "tau_bench.envs",
+      "path": "/tmp/hg-offscorer3/tests/fixtures/hg_woffscorer3/gaia_tau/source/tau_bench/envs/__init__.py",
+      "sha256": "a11d9a4de44b931c111ca32042278bdbbda0902364b2a85386f20e30499d6ffe"
+    },
+    {
+      "module": "tau_bench.agents",
+      "path": "/tmp/hg-offscorer3/tests/fixtures/hg_woffscorer3/gaia_tau/source/tau_bench/agents/__init__.py",
+      "sha256": "48747a78fd49944aaef6f540269b5b77e558b8b996cb0f7210b80317769bc032"
+    },
+    {
+      "module": "tau_bench.agents.base",
+      "path": "/tmp/hg-offscorer3/tests/fixtures/hg_woffscorer3/gaia_tau/source/tau_bench/agents/base.py",
+      "sha256": "d9c5b6e76048777db644039b40aba76ea1d57694d9604d1df2571947450308d1"
+    },
+    {
+      "module": "tau_bench",
+      "path": "/tmp/hg-offscorer3/tests/fixtures/hg_woffscorer3/gaia_tau/source/tau_bench/__init__.py",
+      "sha256": "be00bb8ea6d5a3bf99b20ae7cc35dd9839acf837e8577f1a8c8cbfd67e45edf9"
+    },
+    {
+      "module": "upstream_modify",
+      "path": "/tmp/hg-offscorer3/tests/fixtures/hg_woffscorer3/gaia_tau/source/tau_bench/envs/retail/tools/modify_user_address.py",
+      "sha256": "b1f8ac2141056ccee668824d6ab124ce659ea3574e7b186b39af3f558c07ac61"
+    },
+    {
+      "module": "upstream_transfer",
+      "path": "/tmp/hg-offscorer3/tests/fixtures/hg_woffscorer3/gaia_tau/source/tau_bench/envs/retail/tools/transfer_to_human_agents.py",
+      "sha256": "2b6d4685da53f72709b28b60e14e1897947ac366bc7ecee6d2b7c7169a3d95a6"
+    }
+  ],
+  "mode": "official",
+  "production_runtime_observation": false
+}

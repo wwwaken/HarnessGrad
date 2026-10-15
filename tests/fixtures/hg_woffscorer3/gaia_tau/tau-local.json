@@ -1,0 +1,968 @@
+{
+  "cases": [
+    {
+      "argv": [
+        "--gt",
+        "/tmp/hg-woffscorer3-tau-l6_4zsbt/gt.json",
+        "--clean-db",
+        "/tmp/hg-woffscorer3-tau-l6_4zsbt/clean.json",
+        "--db",
+        "/tmp/hg-woffscorer3-tau-l6_4zsbt/agent.json",
+        "--lib",
+        "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "--call-log",
+        "/tmp/hg-woffscorer3-tau-l6_4zsbt/log.jsonl",
+        "--reward",
+        "/tmp/hg-woffscorer3-tau-l6_4zsbt/reward.txt",
+        "--evidence",
+        "/tmp/hg-woffscorer3-tau-l6_4zsbt/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "agent_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+        "agent_db_bytes": 209,
+        "agent_db_file": "/tmp/hg-woffscorer3-tau-l6_4zsbt/agent.json",
+        "agent_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "agent_declared_done": true,
+        "agent_events": 1,
+        "agent_say_count": 0,
+        "agent_says": [],
+        "agent_tool_call_counts": {},
+        "agent_tool_calls": 0,
+        "clean_data_hash": "f96ca73d01ff53ecc25db5b854ae4b3977dd18f5cf9294647d38fa5ded9df2bc",
+        "clean_db_file": "/tmp/hg-woffscorer3-tau-l6_4zsbt/clean.json",
+        "database_hash_matched": true,
+        "domain": "retail",
+        "ground_truth_actions": 1,
+        "ground_truth_changes_database": true,
+        "ground_truth_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+        "ground_truth_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "gt_file": "/tmp/hg-woffscorer3-tau-l6_4zsbt/gt.json",
+        "log_file": "/tmp/hg-woffscorer3-tau-l6_4zsbt/log.jsonl",
+        "log_present": true,
+        "outputs": {},
+        "outputs_required": 0,
+        "outputs_satisfied": true,
+        "r_outputs": 1.0,
+        "replay_errors": [],
+        "replay_tool_errors": [],
+        "replayed_actions": 1,
+        "reward": 1,
+        "sections": {
+          "orders": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "products": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "users": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          }
+        },
+        "skipped_terminate_actions": [],
+        "task_id": "address-correct",
+        "tool_lib": "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "user_id": "synthetic_user"
+      },
+      "id": "address-correct",
+      "return": 0,
+      "reward": 1.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 1: database hash matches the ground truth (2ad986120ebd..., 1 actions replayed), the agent declared done, and all 0 required output(s) were said\n"
+    },
+    {
+      "argv": [
+        "--gt",
+        "/tmp/hg-woffscorer3-tau-g0jl1do_/gt.json",
+        "--clean-db",
+        "/tmp/hg-woffscorer3-tau-g0jl1do_/clean.json",
+        "--db",
+        "/tmp/hg-woffscorer3-tau-g0jl1do_/agent.json",
+        "--lib",
+        "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "--call-log",
+        "/tmp/hg-woffscorer3-tau-g0jl1do_/log.jsonl",
+        "--reward",
+        "/tmp/hg-woffscorer3-tau-g0jl1do_/reward.txt",
+        "--evidence",
+        "/tmp/hg-woffscorer3-tau-g0jl1do_/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "agent_data_hash": "f96ca73d01ff53ecc25db5b854ae4b3977dd18f5cf9294647d38fa5ded9df2bc",
+        "agent_db_bytes": 209,
+        "agent_db_file": "/tmp/hg-woffscorer3-tau-g0jl1do_/agent.json",
+        "agent_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "agent_declared_done": true,
+        "agent_events": 1,
+        "agent_say_count": 0,
+        "agent_says": [],
+        "agent_tool_call_counts": {},
+        "agent_tool_calls": 0,
+        "clean_data_hash": "f96ca73d01ff53ecc25db5b854ae4b3977dd18f5cf9294647d38fa5ded9df2bc",
+        "clean_db_file": "/tmp/hg-woffscorer3-tau-g0jl1do_/clean.json",
+        "database_hash_matched": false,
+        "domain": "retail",
+        "ground_truth_actions": 1,
+        "ground_truth_changes_database": true,
+        "ground_truth_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+        "ground_truth_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "gt_file": "/tmp/hg-woffscorer3-tau-g0jl1do_/gt.json",
+        "log_file": "/tmp/hg-woffscorer3-tau-g0jl1do_/log.jsonl",
+        "log_present": true,
+        "outputs": {},
+        "outputs_required": 0,
+        "outputs_satisfied": true,
+        "r_outputs": 1.0,
+        "replay_errors": [],
+        "replay_tool_errors": [],
+        "replayed_actions": 1,
+        "reward": 0,
+        "sections": {
+          "orders": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "products": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "users": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": false
+          }
+        },
+        "skipped_terminate_actions": [],
+        "task_id": "address-wrong",
+        "tool_lib": "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "user_id": "synthetic_user"
+      },
+      "id": "address-wrong",
+      "return": 0,
+      "reward": 0.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 0: database hash differs (agent f96ca73d01ff... vs ground truth 2ad986120ebd...); differing tables: ['users']; replay errors: []\n"
+    },
+    {
+      "argv": [
+        "--gt",
+        "/tmp/hg-woffscorer3-tau-0izzx0le/gt.json",
+        "--clean-db",
+        "/tmp/hg-woffscorer3-tau-0izzx0le/clean.json",
+        "--db",
+        "/tmp/hg-woffscorer3-tau-0izzx0le/agent.json",
+        "--lib",
+        "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "--call-log",
+        "/tmp/hg-woffscorer3-tau-0izzx0le/log.jsonl",
+        "--reward",
+        "/tmp/hg-woffscorer3-tau-0izzx0le/reward.txt",
+        "--evidence",
+        "/tmp/hg-woffscorer3-tau-0izzx0le/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "agent_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+        "agent_db_bytes": 209,
+        "agent_db_file": "/tmp/hg-woffscorer3-tau-0izzx0le/agent.json",
+        "agent_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "agent_declared_done": true,
+        "agent_events": 2,
+        "agent_say_count": 1,
+        "agent_says": [
+          "ZIP: 12,345"
+        ],
+        "agent_tool_call_counts": {},
+        "agent_tool_calls": 0,
+        "clean_data_hash": "f96ca73d01ff53ecc25db5b854ae4b3977dd18f5cf9294647d38fa5ded9df2bc",
+        "clean_db_file": "/tmp/hg-woffscorer3-tau-0izzx0le/clean.json",
+        "database_hash_matched": true,
+        "domain": "retail",
+        "ground_truth_actions": 1,
+        "ground_truth_changes_database": true,
+        "ground_truth_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+        "ground_truth_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "gt_file": "/tmp/hg-woffscorer3-tau-0izzx0le/gt.json",
+        "log_file": "/tmp/hg-woffscorer3-tau-0izzx0le/log.jsonl",
+        "log_present": true,
+        "outputs": {
+          "12345": true
+        },
+        "outputs_required": 1,
+        "outputs_satisfied": true,
+        "r_outputs": 1.0,
+        "replay_errors": [],
+        "replay_tool_errors": [],
+        "replayed_actions": 1,
+        "reward": 1,
+        "sections": {
+          "orders": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "products": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "users": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          }
+        },
+        "skipped_terminate_actions": [],
+        "task_id": "output-present",
+        "tool_lib": "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "user_id": "synthetic_user"
+      },
+      "id": "output-present",
+      "return": 0,
+      "reward": 1.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 1: database hash matches the ground truth (2ad986120ebd..., 1 actions replayed), the agent declared done, and all 1 required output(s) were said\n"
+    },
+    {
+      "argv": [
+        "--gt",
+        "/tmp/hg-woffscorer3-tau-x5uxiel9/gt.json",
+        "--clean-db",
+        "/tmp/hg-woffscorer3-tau-x5uxiel9/clean.json",
+        "--db",
+        "/tmp/hg-woffscorer3-tau-x5uxiel9/agent.json",
+        "--lib",
+        "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "--call-log",
+        "/tmp/hg-woffscorer3-tau-x5uxiel9/log.jsonl",
+        "--reward",
+        "/tmp/hg-woffscorer3-tau-x5uxiel9/reward.txt",
+        "--evidence",
+        "/tmp/hg-woffscorer3-tau-x5uxiel9/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "agent_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+        "agent_db_bytes": 209,
+        "agent_db_file": "/tmp/hg-woffscorer3-tau-x5uxiel9/agent.json",
+        "agent_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "agent_declared_done": true,
+        "agent_events": 1,
+        "agent_say_count": 0,
+        "agent_says": [],
+        "agent_tool_call_counts": {},
+        "agent_tool_calls": 0,
+        "clean_data_hash": "f96ca73d01ff53ecc25db5b854ae4b3977dd18f5cf9294647d38fa5ded9df2bc",
+        "clean_db_file": "/tmp/hg-woffscorer3-tau-x5uxiel9/clean.json",
+        "database_hash_matched": true,
+        "domain": "retail",
+        "ground_truth_actions": 1,
+        "ground_truth_changes_database": true,
+        "ground_truth_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+        "ground_truth_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "gt_file": "/tmp/hg-woffscorer3-tau-x5uxiel9/gt.json",
+        "log_file": "/tmp/hg-woffscorer3-tau-x5uxiel9/log.jsonl",
+        "log_present": true,
+        "outputs": {
+          "12345": false
+        },
+        "outputs_required": 1,
+        "outputs_satisfied": false,
+        "r_outputs": 0.0,
+        "replay_errors": [],
+        "replay_tool_errors": [],
+        "replayed_actions": 1,
+        "reward": 0,
+        "sections": {
+          "orders": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "products": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "users": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          }
+        },
+        "skipped_terminate_actions": [],
+        "task_id": "output-missing",
+        "tool_lib": "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "user_id": "synthetic_user"
+      },
+      "id": "output-missing",
+      "return": 0,
+      "reward": 0.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 0: required output(s) not said: ['12345']\n"
+    },
+    {
+      "argv": [
+        "--gt",
+        "/tmp/hg-woffscorer3-tau-i50xs03c/gt.json",
+        "--clean-db",
+        "/tmp/hg-woffscorer3-tau-i50xs03c/clean.json",
+        "--db",
+        "/tmp/hg-woffscorer3-tau-i50xs03c/agent.json",
+        "--lib",
+        "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "--call-log",
+        "/tmp/hg-woffscorer3-tau-i50xs03c/log.jsonl",
+        "--reward",
+        "/tmp/hg-woffscorer3-tau-i50xs03c/reward.txt",
+        "--evidence",
+        "/tmp/hg-woffscorer3-tau-i50xs03c/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "agent_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+        "agent_db_bytes": 209,
+        "agent_db_file": "/tmp/hg-woffscorer3-tau-i50xs03c/agent.json",
+        "agent_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "agent_declared_done": true,
+        "agent_events": 2,
+        "agent_say_count": 1,
+        "agent_says": [
+          "Complete"
+        ],
+        "agent_tool_call_counts": {},
+        "agent_tool_calls": 0,
+        "clean_data_hash": "f96ca73d01ff53ecc25db5b854ae4b3977dd18f5cf9294647d38fa5ded9df2bc",
+        "clean_db_file": "/tmp/hg-woffscorer3-tau-i50xs03c/clean.json",
+        "database_hash_matched": true,
+        "domain": "retail",
+        "ground_truth_actions": 1,
+        "ground_truth_changes_database": true,
+        "ground_truth_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+        "ground_truth_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "gt_file": "/tmp/hg-woffscorer3-tau-i50xs03c/gt.json",
+        "log_file": "/tmp/hg-woffscorer3-tau-i50xs03c/log.jsonl",
+        "log_present": true,
+        "outputs": {
+          "COMPLETE": true
+        },
+        "outputs_required": 1,
+        "outputs_satisfied": true,
+        "r_outputs": 1.0,
+        "replay_errors": [],
+        "replay_tool_errors": [],
+        "replayed_actions": 1,
+        "reward": 1,
+        "sections": {
+          "orders": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "products": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "users": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          }
+        },
+        "skipped_terminate_actions": [],
+        "task_id": "output-case",
+        "tool_lib": "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "user_id": "synthetic_user"
+      },
+      "id": "output-case",
+      "return": 0,
+      "reward": 1.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 1: database hash matches the ground truth (2ad986120ebd..., 1 actions replayed), the agent declared done, and all 1 required output(s) were said\n"
+    },
+    {
+      "argv": [
+        "--gt",
+        "/tmp/hg-woffscorer3-tau-a3cnjv_h/gt.json",
+        "--clean-db",
+        "/tmp/hg-woffscorer3-tau-a3cnjv_h/clean.json",
+        "--db",
+        "/tmp/hg-woffscorer3-tau-a3cnjv_h/agent.json",
+        "--lib",
+        "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "--call-log",
+        "/tmp/hg-woffscorer3-tau-a3cnjv_h/log.jsonl",
+        "--reward",
+        "/tmp/hg-woffscorer3-tau-a3cnjv_h/reward.txt",
+        "--evidence",
+        "/tmp/hg-woffscorer3-tau-a3cnjv_h/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "agent_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+        "agent_db_bytes": 209,
+        "agent_db_file": "/tmp/hg-woffscorer3-tau-a3cnjv_h/agent.json",
+        "agent_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "agent_declared_done": true,
+        "agent_events": 2,
+        "agent_say_count": 1,
+        "agent_says": [
+          "12,345"
+        ],
+        "agent_tool_call_counts": {},
+        "agent_tool_calls": 0,
+        "clean_data_hash": "f96ca73d01ff53ecc25db5b854ae4b3977dd18f5cf9294647d38fa5ded9df2bc",
+        "clean_db_file": "/tmp/hg-woffscorer3-tau-a3cnjv_h/clean.json",
+        "database_hash_matched": true,
+        "domain": "retail",
+        "ground_truth_actions": 1,
+        "ground_truth_changes_database": true,
+        "ground_truth_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+        "ground_truth_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "gt_file": "/tmp/hg-woffscorer3-tau-a3cnjv_h/gt.json",
+        "log_file": "/tmp/hg-woffscorer3-tau-a3cnjv_h/log.jsonl",
+        "log_present": true,
+        "outputs": {
+          "12,345": false
+        },
+        "outputs_required": 1,
+        "outputs_satisfied": false,
+        "r_outputs": 0.0,
+        "replay_errors": [],
+        "replay_tool_errors": [],
+        "replayed_actions": 1,
+        "reward": 0,
+        "sections": {
+          "orders": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "products": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "users": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          }
+        },
+        "skipped_terminate_actions": [],
+        "task_id": "output-comma-asymmetric",
+        "tool_lib": "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "user_id": "synthetic_user"
+      },
+      "id": "output-comma-asymmetric",
+      "return": 0,
+      "reward": 0.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 0: required output(s) not said: ['12,345']\n"
+    },
+    {
+      "argv": [
+        "--gt",
+        "/tmp/hg-woffscorer3-tau-r7z3vv2a/gt.json",
+        "--clean-db",
+        "/tmp/hg-woffscorer3-tau-r7z3vv2a/clean.json",
+        "--db",
+        "/tmp/hg-woffscorer3-tau-r7z3vv2a/agent.json",
+        "--lib",
+        "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "--call-log",
+        "/tmp/hg-woffscorer3-tau-r7z3vv2a/log.jsonl",
+        "--reward",
+        "/tmp/hg-woffscorer3-tau-r7z3vv2a/reward.txt",
+        "--evidence",
+        "/tmp/hg-woffscorer3-tau-r7z3vv2a/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "agent_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+        "agent_db_bytes": 209,
+        "agent_db_file": "/tmp/hg-woffscorer3-tau-r7z3vv2a/agent.json",
+        "agent_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "agent_declared_done": false,
+        "agent_events": 0,
+        "agent_say_count": 0,
+        "agent_says": [],
+        "agent_tool_call_counts": {},
+        "agent_tool_calls": 0,
+        "clean_data_hash": "f96ca73d01ff53ecc25db5b854ae4b3977dd18f5cf9294647d38fa5ded9df2bc",
+        "clean_db_file": "/tmp/hg-woffscorer3-tau-r7z3vv2a/clean.json",
+        "database_hash_matched": true,
+        "domain": "retail",
+        "ground_truth_actions": 1,
+        "ground_truth_changes_database": true,
+        "ground_truth_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+        "ground_truth_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "gt_file": "/tmp/hg-woffscorer3-tau-r7z3vv2a/gt.json",
+        "log_file": "/tmp/hg-woffscorer3-tau-r7z3vv2a/log.jsonl",
+        "log_present": true,
+        "outputs": {},
+        "outputs_required": 0,
+        "outputs_satisfied": true,
+        "r_outputs": 1.0,
+        "replay_errors": [],
+        "replay_tool_errors": [],
+        "replayed_actions": 1,
+        "reward": 0,
+        "sections": {
+          "orders": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "products": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "users": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          }
+        },
+        "skipped_terminate_actions": [],
+        "task_id": "unfinished",
+        "tool_lib": "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "user_id": "synthetic_user"
+      },
+      "id": "unfinished",
+      "return": 0,
+      "reward": 0.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 0: the agent never declared done (no `tau done` in /tmp/hg-woffscorer3-tau-r7z3vv2a/log.jsonl)\n"
+    },
+    {
+      "argv": [
+        "--gt",
+        "/tmp/hg-woffscorer3-tau-xommix9h/gt.json",
+        "--clean-db",
+        "/tmp/hg-woffscorer3-tau-xommix9h/clean.json",
+        "--db",
+        "/tmp/hg-woffscorer3-tau-xommix9h/agent.json",
+        "--lib",
+        "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "--call-log",
+        "/tmp/hg-woffscorer3-tau-xommix9h/log.jsonl",
+        "--reward",
+        "/tmp/hg-woffscorer3-tau-xommix9h/reward.txt",
+        "--evidence",
+        "/tmp/hg-woffscorer3-tau-xommix9h/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "agent_data_hash": "f96ca73d01ff53ecc25db5b854ae4b3977dd18f5cf9294647d38fa5ded9df2bc",
+        "agent_db_bytes": 209,
+        "agent_db_file": "/tmp/hg-woffscorer3-tau-xommix9h/agent.json",
+        "agent_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "agent_declared_done": true,
+        "agent_events": 1,
+        "agent_say_count": 0,
+        "agent_says": [],
+        "agent_tool_call_counts": {},
+        "agent_tool_calls": 0,
+        "clean_data_hash": "f96ca73d01ff53ecc25db5b854ae4b3977dd18f5cf9294647d38fa5ded9df2bc",
+        "clean_db_file": "/tmp/hg-woffscorer3-tau-xommix9h/clean.json",
+        "database_hash_matched": true,
+        "domain": "retail",
+        "ground_truth_actions": 1,
+        "ground_truth_changes_database": false,
+        "ground_truth_data_hash": "f96ca73d01ff53ecc25db5b854ae4b3977dd18f5cf9294647d38fa5ded9df2bc",
+        "ground_truth_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "gt_file": "/tmp/hg-woffscorer3-tau-xommix9h/gt.json",
+        "log_file": "/tmp/hg-woffscorer3-tau-xommix9h/log.jsonl",
+        "log_present": true,
+        "outputs": {},
+        "outputs_required": 0,
+        "outputs_satisfied": true,
+        "r_outputs": 1.0,
+        "replay_errors": [
+          "unknown ground-truth tool 'not_a_tool'"
+        ],
+        "replay_tool_errors": [],
+        "replayed_actions": 0,
+        "reward": 1,
+        "sections": {
+          "orders": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "products": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "users": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          }
+        },
+        "skipped_terminate_actions": [],
+        "task_id": "unknown-ground-truth-tool",
+        "tool_lib": "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "user_id": "synthetic_user"
+      },
+      "id": "unknown-ground-truth-tool",
+      "return": 0,
+      "reward": 1.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 1: database hash matches the ground truth (f96ca73d01ff..., 0 actions replayed), the agent declared done, and all 0 required output(s) were said\n"
+    },
+    {
+      "argv": [
+        "--gt",
+        "/tmp/hg-woffscorer3-tau-9asv0xlh/gt.json",
+        "--clean-db",
+        "/tmp/hg-woffscorer3-tau-9asv0xlh/clean.json",
+        "--db",
+        "/tmp/hg-woffscorer3-tau-9asv0xlh/agent.json",
+        "--lib",
+        "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "--call-log",
+        "/tmp/hg-woffscorer3-tau-9asv0xlh/log.jsonl",
+        "--reward",
+        "/tmp/hg-woffscorer3-tau-9asv0xlh/reward.txt",
+        "--evidence",
+        "/tmp/hg-woffscorer3-tau-9asv0xlh/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "agent_data_hash": "f96ca73d01ff53ecc25db5b854ae4b3977dd18f5cf9294647d38fa5ded9df2bc",
+        "agent_db_bytes": 209,
+        "agent_db_file": "/tmp/hg-woffscorer3-tau-9asv0xlh/agent.json",
+        "agent_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "agent_declared_done": true,
+        "agent_events": 1,
+        "agent_say_count": 0,
+        "agent_says": [],
+        "agent_tool_call_counts": {},
+        "agent_tool_calls": 0,
+        "clean_data_hash": "f96ca73d01ff53ecc25db5b854ae4b3977dd18f5cf9294647d38fa5ded9df2bc",
+        "clean_db_file": "/tmp/hg-woffscorer3-tau-9asv0xlh/clean.json",
+        "database_hash_matched": true,
+        "domain": "retail",
+        "ground_truth_actions": 1,
+        "ground_truth_changes_database": false,
+        "ground_truth_data_hash": "f96ca73d01ff53ecc25db5b854ae4b3977dd18f5cf9294647d38fa5ded9df2bc",
+        "ground_truth_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "gt_file": "/tmp/hg-woffscorer3-tau-9asv0xlh/gt.json",
+        "log_file": "/tmp/hg-woffscorer3-tau-9asv0xlh/log.jsonl",
+        "log_present": true,
+        "outputs": {},
+        "outputs_required": 0,
+        "outputs_satisfied": true,
+        "r_outputs": 1.0,
+        "replay_errors": [],
+        "replay_tool_errors": [
+          "modify_user_address: Error: user not found"
+        ],
+        "replayed_actions": 1,
+        "reward": 1,
+        "sections": {
+          "orders": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "products": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "users": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          }
+        },
+        "skipped_terminate_actions": [],
+        "task_id": "ground-truth-tool-error-noop",
+        "tool_lib": "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "user_id": "synthetic_user"
+      },
+      "id": "ground-truth-tool-error-noop",
+      "return": 0,
+      "reward": 1.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 1: database hash matches the ground truth (f96ca73d01ff..., 1 actions replayed), the agent declared done, and all 0 required output(s) were said\n"
+    },
+    {
+      "argv": [
+        "--gt",
+        "/tmp/hg-woffscorer3-tau-3dbtr_99/gt.json",
+        "--clean-db",
+        "/tmp/hg-woffscorer3-tau-3dbtr_99/clean.json",
+        "--db",
+        "/tmp/hg-woffscorer3-tau-3dbtr_99/agent.json",
+        "--lib",
+        "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "--call-log",
+        "/tmp/hg-woffscorer3-tau-3dbtr_99/log.jsonl",
+        "--reward",
+        "/tmp/hg-woffscorer3-tau-3dbtr_99/reward.txt",
+        "--evidence",
+        "/tmp/hg-woffscorer3-tau-3dbtr_99/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "agent_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+        "agent_db_bytes": 209,
+        "agent_db_file": "/tmp/hg-woffscorer3-tau-3dbtr_99/agent.json",
+        "agent_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "agent_declared_done": true,
+        "agent_events": 1,
+        "agent_say_count": 0,
+        "agent_says": [],
+        "agent_tool_call_counts": {},
+        "agent_tool_calls": 0,
+        "clean_data_hash": "f96ca73d01ff53ecc25db5b854ae4b3977dd18f5cf9294647d38fa5ded9df2bc",
+        "clean_db_file": "/tmp/hg-woffscorer3-tau-3dbtr_99/clean.json",
+        "database_hash_matched": true,
+        "domain": "retail",
+        "ground_truth_actions": 2,
+        "ground_truth_changes_database": true,
+        "ground_truth_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+        "ground_truth_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "gt_file": "/tmp/hg-woffscorer3-tau-3dbtr_99/gt.json",
+        "log_file": "/tmp/hg-woffscorer3-tau-3dbtr_99/log.jsonl",
+        "log_present": true,
+        "outputs": {},
+        "outputs_required": 0,
+        "outputs_satisfied": true,
+        "r_outputs": 1.0,
+        "replay_errors": [],
+        "replay_tool_errors": [],
+        "replayed_actions": 1,
+        "reward": 1,
+        "sections": {
+          "orders": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "products": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "users": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          }
+        },
+        "skipped_terminate_actions": [
+          "transfer_to_human_agents"
+        ],
+        "task_id": "terminate-skip",
+        "tool_lib": "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "user_id": "synthetic_user"
+      },
+      "id": "terminate-skip",
+      "return": 0,
+      "reward": 1.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 1: database hash matches the ground truth (2ad986120ebd..., 1 actions replayed), the agent declared done, and all 0 required output(s) were said\n"
+    },
+    {
+      "argv": [
+        "--gt",
+        "/tmp/hg-woffscorer3-tau-6mrowulh/gt.json",
+        "--clean-db",
+        "/tmp/hg-woffscorer3-tau-6mrowulh/clean.json",
+        "--db",
+        "/tmp/hg-woffscorer3-tau-6mrowulh/agent.json",
+        "--lib",
+        "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "--call-log",
+        "/tmp/hg-woffscorer3-tau-6mrowulh/log.jsonl",
+        "--reward",
+        "/tmp/hg-woffscorer3-tau-6mrowulh/reward.txt",
+        "--evidence",
+        "/tmp/hg-woffscorer3-tau-6mrowulh/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "agent_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+        "agent_db_bytes": 209,
+        "agent_db_file": "/tmp/hg-woffscorer3-tau-6mrowulh/agent.json",
+        "agent_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "agent_declared_done": true,
+        "agent_events": 1,
+        "agent_say_count": 0,
+        "agent_says": [],
+        "agent_tool_call_counts": {},
+        "agent_tool_calls": 0,
+        "clean_data_hash": "f96ca73d01ff53ecc25db5b854ae4b3977dd18f5cf9294647d38fa5ded9df2bc",
+        "clean_db_file": "/tmp/hg-woffscorer3-tau-6mrowulh/clean.json",
+        "database_hash_matched": true,
+        "domain": "retail",
+        "ground_truth_actions": 2,
+        "ground_truth_changes_database": true,
+        "ground_truth_data_hash": "2ad986120ebd1b13f905c2027db495c851ecc129e5be7c8c19a6b2a1bf620781",
+        "ground_truth_db_keys": [
+          "orders",
+          "products",
+          "users"
+        ],
+        "gt_file": "/tmp/hg-woffscorer3-tau-6mrowulh/gt.json",
+        "log_file": "/tmp/hg-woffscorer3-tau-6mrowulh/log.jsonl",
+        "log_present": true,
+        "outputs": {
+          "secret": false
+        },
+        "outputs_required": 1,
+        "outputs_satisfied": false,
+        "r_outputs": 0.0,
+        "replay_errors": [
+          "unknown ground-truth tool 'respond'"
+        ],
+        "replay_tool_errors": [],
+        "replayed_actions": 1,
+        "reward": 0,
+        "sections": {
+          "orders": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "products": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          },
+          "users": {
+            "in_agent": true,
+            "in_ground_truth": true,
+            "matched": true
+          }
+        },
+        "skipped_terminate_actions": [],
+        "task_id": "ground-truth-respond-output",
+        "tool_lib": "/tmp/hg-offscorer3/data/datasets/tau_bench/lib",
+        "user_id": "synthetic_user"
+      },
+      "id": "ground-truth-respond-output",
+      "return": 0,
+      "reward": 0.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 0: required output(s) not said: ['secret']\n"
+    }
+  ],
+  "dataset": "tau",
+  "inputs_sha256": "f69d29c99570ce6ee5b563da3c8e13d2e00f61da19df9ecadd70db937c33de24",
+  "loaded_modules": [],
+  "mode": "local",
+  "production_runtime_observation": false
+}

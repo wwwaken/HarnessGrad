@@ -1,0 +1,689 @@
+{
+  "cases": [
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-ela6e501/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-ela6e501/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-ela6e501/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-ela6e501/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "answer": "1234",
+        "gold": "1234",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 1.0,
+        "scorer_said": "Evaluating 1234 as a number.",
+        "task_id": "number-exact",
+        "why": "exact match after the official normalization"
+      },
+      "id": "number-exact",
+      "return": 0,
+      "reward": 1.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 1: exact match after the official normalization\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-xlf4d5gn/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-xlf4d5gn/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-xlf4d5gn/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-xlf4d5gn/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "answer": "$1,234",
+        "gold": "1234",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 1.0,
+        "scorer_said": "Evaluating $1,234 as a number.",
+        "task_id": "currency-comma",
+        "why": "exact match after the official normalization"
+      },
+      "id": "currency-comma",
+      "return": 0,
+      "reward": 1.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 1: exact match after the official normalization\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-986qfndr/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-986qfndr/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-986qfndr/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-986qfndr/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "answer": "42%",
+        "gold": "42",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 1.0,
+        "scorer_said": "Evaluating 42% as a number.",
+        "task_id": "percent-unscaled",
+        "why": "exact match after the official normalization"
+      },
+      "id": "percent-unscaled",
+      "return": 0,
+      "reward": 1.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 1: exact match after the official normalization\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-u5fz4ta8/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-u5fz4ta8/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-u5fz4ta8/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-u5fz4ta8/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "answer": "12.1",
+        "gold": "12",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 0.0,
+        "scorer_said": "Evaluating 12.1 as a number.",
+        "task_id": "number-wrong",
+        "why": "no match after the official normalization"
+      },
+      "id": "number-wrong",
+      "return": 0,
+      "reward": 0.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 0: no match after the official normalization\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-a1kzfx1g/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-a1kzfx1g/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-a1kzfx1g/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-a1kzfx1g/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "answer": "twelve",
+        "gold": "12",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 0.0,
+        "scorer_said": "Evaluating twelve as a number.\nString twelve cannot be normalized to number str.",
+        "task_id": "number-invalid",
+        "why": "no match after the official normalization"
+      },
+      "id": "number-invalid",
+      "return": 0,
+      "reward": 0.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 0: no match after the official normalization\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-gal4zqk0/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-gal4zqk0/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-gal4zqk0/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-gal4zqk0/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "answer": "words",
+        "gold": "inf",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 1.0,
+        "scorer_said": "Evaluating words as a number.\nString words cannot be normalized to number str.",
+        "task_id": "float-inf-invalid",
+        "why": "exact match after the official normalization"
+      },
+      "id": "float-inf-invalid",
+      "return": 0,
+      "reward": 1.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 1: exact match after the official normalization\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-v90l3_gy/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-v90l3_gy/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-v90l3_gy/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-v90l3_gy/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "answer": "nan",
+        "gold": "nan",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 0.0,
+        "scorer_said": "Evaluating nan as a number.",
+        "task_id": "float-nan",
+        "why": "no match after the official normalization"
+      },
+      "id": "float-nan",
+      "return": 0,
+      "reward": 0.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 0: no match after the official normalization\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-37bn4974/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-37bn4974/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-37bn4974/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-37bn4974/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "answer": "SEA GULL!",
+        "gold": "seagull",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 1.0,
+        "scorer_said": "Evaluating SEA GULL! as a string.",
+        "task_id": "text-case-space",
+        "why": "exact match after the official normalization"
+      },
+      "id": "text-case-space",
+      "return": 0,
+      "reward": 1.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 1: exact match after the official normalization\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-c5or5sdp/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-c5or5sdp/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-c5or5sdp/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-c5or5sdp/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "answer": "other",
+        "gold": "seagull",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 0.0,
+        "scorer_said": "Evaluating other as a string.",
+        "task_id": "text-wrong",
+        "why": "no match after the official normalization"
+      },
+      "id": "text-wrong",
+      "return": 0,
+      "reward": 0.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 0: no match after the official normalization\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-ho6p796z/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-ho6p796z/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-ho6p796z/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-ho6p796z/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "answer": "sea\ngull",
+        "gold": "seagull",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 1.0,
+        "scorer_said": "Evaluating sea\ngull as a string.",
+        "task_id": "text-internal-newline",
+        "why": "exact match after the official normalization"
+      },
+      "id": "text-internal-newline",
+      "return": 0,
+      "reward": 1.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 1: exact match after the official normalization\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-h7ubxbpj/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-h7ubxbpj/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-h7ubxbpj/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-h7ubxbpj/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "answer": "alpha; beta",
+        "gold": "alpha,beta",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 1.0,
+        "scorer_said": "Evaluating alpha; beta as a comma separated list.",
+        "task_id": "list-separator",
+        "why": "exact match after the official normalization"
+      },
+      "id": "list-separator",
+      "return": 0,
+      "reward": 1.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 1: exact match after the official normalization\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-9df7j6i3/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-9df7j6i3/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-9df7j6i3/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-9df7j6i3/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "answer": "beta,alpha",
+        "gold": "alpha,beta",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 0.0,
+        "scorer_said": "Evaluating beta,alpha as a comma separated list.",
+        "task_id": "list-order",
+        "why": "no match after the official normalization"
+      },
+      "id": "list-order",
+      "return": 0,
+      "reward": 0.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 0: no match after the official normalization\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-26_4aoje/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-26_4aoje/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-26_4aoje/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-26_4aoje/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "answer": "alpha!, beta",
+        "gold": "alpha,beta",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 0.0,
+        "scorer_said": "Evaluating alpha!, beta as a comma separated list.",
+        "task_id": "list-punctuation",
+        "why": "no match after the official normalization"
+      },
+      "id": "list-punctuation",
+      "return": 0,
+      "reward": 0.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 0: no match after the official normalization\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-rtuqyy8p/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-rtuqyy8p/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-rtuqyy8p/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-rtuqyy8p/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "answer": "1.0;$2",
+        "gold": "1;2",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 1.0,
+        "scorer_said": "Evaluating 1.0;$2 as a comma separated list.",
+        "task_id": "list-numeric",
+        "why": "exact match after the official normalization"
+      },
+      "id": "list-numeric",
+      "return": 0,
+      "reward": 1.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 1: exact match after the official normalization\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-_bjpjbhu/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-_bjpjbhu/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-_bjpjbhu/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-_bjpjbhu/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "answer": "alpha",
+        "gold": "alpha,beta",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 0.0,
+        "scorer_said": "Evaluating alpha as a comma separated list.",
+        "task_id": "list-length",
+        "why": "no match after the official normalization"
+      },
+      "id": "list-length",
+      "return": 0,
+      "reward": 0.0,
+      "scratch_removed": true,
+      "stderr": "/tmp/hg-offscorer3/tests/fixtures/hg_woffscorer3/gaia_tau/source/scorer.py:59: UserWarning: Answer lists have different lengths, returning False.\n  warnings.warn(\n",
+      "stdout": "reward 0: no match after the official normalization\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-aalfo6q2/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-aalfo6q2/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-aalfo6q2/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-aalfo6q2/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "answer": "alpha,",
+        "gold": "alpha,",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 1.0,
+        "scorer_said": "Evaluating alpha, as a comma separated list.",
+        "task_id": "list-empty-item",
+        "why": "exact match after the official normalization"
+      },
+      "id": "list-empty-item",
+      "return": 0,
+      "reward": 1.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 1: exact match after the official normalization\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-5zpcj237/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-5zpcj237/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-5zpcj237/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-5zpcj237/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "answer": "alpha , BETA",
+        "gold": "alpha,beta",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 1.0,
+        "scorer_said": "Evaluating alpha , BETA as a comma separated list.",
+        "task_id": "list-space",
+        "why": "exact match after the official normalization"
+      },
+      "id": "list-space",
+      "return": 0,
+      "reward": 1.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 1: exact match after the official normalization\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-b_p7hfvl/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-b_p7hfvl/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-b_p7hfvl/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-b_p7hfvl/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "gold": "text",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 0.0,
+        "task_id": "blank-answer",
+        "why": "no answer (measured zero): answer.txt is missing or empty"
+      },
+      "id": "blank-answer",
+      "return": 0,
+      "reward": 0.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 0: no answer (measured zero): answer.txt is missing or empty\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-vaonudpd/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-vaonudpd/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-vaonudpd/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-vaonudpd/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "gold": "text",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 0.0,
+        "task_id": "whitespace-answer",
+        "why": "no answer (measured zero): answer.txt is missing or empty"
+      },
+      "id": "whitespace-answer",
+      "return": 0,
+      "reward": 0.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 0: no answer (measured zero): answer.txt is missing or empty\n"
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-84fzbv3m/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-84fzbv3m/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-84fzbv3m/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-84fzbv3m/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "error": "gold is the placeholder '' (the test split's sentinel): this task cannot be scored",
+        "measured": false,
+        "metric": "GAIA exact match"
+      },
+      "id": "empty-gold",
+      "return": 3,
+      "reward": null,
+      "scratch_removed": true,
+      "stderr": "check cannot measure: gold is the placeholder '' (the test split's sentinel): this task cannot be scored\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-mw3_cgem/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-mw3_cgem/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-mw3_cgem/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-mw3_cgem/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "error": "gold is the placeholder '?' (the test split's sentinel): this task cannot be scored",
+        "measured": false,
+        "metric": "GAIA exact match"
+      },
+      "id": "placeholder-gold",
+      "return": 3,
+      "reward": null,
+      "scratch_removed": true,
+      "stderr": "check cannot measure: gold is the placeholder '?' (the test split's sentinel): this task cannot be scored\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-7vhdnkar/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-7vhdnkar/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-7vhdnkar/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-7vhdnkar/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "error": "gold is the placeholder '' (the test split's sentinel): this task cannot be scored",
+        "measured": false,
+        "metric": "GAIA exact match"
+      },
+      "id": "punctuation-empty",
+      "return": 3,
+      "reward": null,
+      "scratch_removed": true,
+      "stderr": "check cannot measure: gold is the placeholder '' (the test split's sentinel): this task cannot be scored\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "check.py",
+        "--answer",
+        "/tmp/hg-woffscorer3-gaia-puq7o5ay/answer.txt",
+        "--gold",
+        "/tmp/hg-woffscorer3-gaia-puq7o5ay/gold.json",
+        "--reward-file",
+        "/tmp/hg-woffscorer3-gaia-puq7o5ay/reward.txt",
+        "--evidence-file",
+        "/tmp/hg-woffscorer3-gaia-puq7o5ay/evidence.json"
+      ],
+      "error": null,
+      "evidence": {
+        "gold": "text",
+        "measured": true,
+        "metric": "GAIA exact match (official question_scorer)",
+        "reward": 0.0,
+        "task_id": "missing-answer",
+        "why": "no answer (measured zero): answer.txt is missing or empty"
+      },
+      "id": "missing-answer",
+      "return": 0,
+      "reward": 0.0,
+      "scratch_removed": true,
+      "stderr": "",
+      "stdout": "reward 0: no answer (measured zero): answer.txt is missing or empty\n"
+    }
+  ],
+  "dataset": "gaia",
+  "inputs_sha256": "7991840a7ed48fdcebd66a4cf3a8e4a58cdcd7fc705df34f53a132921b66e360",
+  "loaded_modules": [
+    {
+      "module": "scorer",
+      "path": "/tmp/hg-offscorer3/tests/fixtures/hg_woffscorer3/gaia_tau/source/scorer.py",
+      "sha256": "0d44c07f3046eec521697c22e3eaca8719cc81e422a8eaf32695c5f22bdac6e2"
+    },
+    {
+      "module": "numpy",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/__init__.py",
+      "sha256": "22cd1535fa14d74ef6f457cca149ffdc80875f460be313b8f895273f78bc402e"
+    }
+  ],
+  "mode": "local",
+  "production_runtime_observation": false
+}

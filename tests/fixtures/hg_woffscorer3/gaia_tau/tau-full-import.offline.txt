@@ -1,0 +1,26 @@
+{"cpu_limit_seconds": 120, "denied_syscalls": ["socket", "socketpair", "connect", "bind", "listen", "accept", "accept4", "sendto", "recvfrom", "sendmsg", "recvmsg", "sendmmsg", "recvmmsg", "shutdown", "getsockname", "getpeername", "setsockopt", "getsockopt", "io_uring_setup"], "guard": "kernel seccomp EPERM; no inherited socket fd > 2", "interpreter": "/mnt/8t/xubuqiang/anaconda3/bin/python3.12", "interpreter_sha256": "0eb25a387ef43f21492b659f4865eae5bdaf8da30d6357097b2d9bb24873ebfb", "libseccomp": "/usr/lib/x86_64-linux-gnu/libseccomp.so.2.5.3", "libseccomp_sha256": "d60148325d84cab666b226676c5009a61eea24f3902598829fe714da87ef3587", "machine": "x86_64", "nofile_limit": 256, "production_runtime_observation": false, "python": "3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]", "socket_probes": {"1": {"errno": 1, "result": "denied"}, "10": {"errno": 1, "result": "denied"}, "2": {"errno": 1, "result": "denied"}}}
+{"blocked_external_dataset_reads": []}
+Exception ignored in: <function BaseEventLoop.__del__ at 0x7e99c71cee80>
+Traceback (most recent call last):
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/base_events.py", line 728, in __del__
+    self.close()
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/unix_events.py", line 68, in close
+    super().close()
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/selector_events.py", line 104, in close
+    self._close_self_pipe()
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/selector_events.py", line 111, in _close_self_pipe
+    self._remove_reader(self._ssock.fileno())
+                        ^^^^^^^^^^^
+AttributeError: '_UnixSelectorEventLoop' object has no attribute '_ssock'
+Exception ignored in: <function BaseEventLoop.__del__ at 0x7e99c71cee80>
+Traceback (most recent call last):
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/base_events.py", line 728, in __del__
+    self.close()
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/unix_events.py", line 68, in close
+    super().close()
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/selector_events.py", line 104, in close
+    self._close_self_pipe()
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/asyncio/selector_events.py", line 111, in _close_self_pipe
+    self._remove_reader(self._ssock.fileno())
+                        ^^^^^^^^^^^
+AttributeError: '_UnixSelectorEventLoop' object has no attribute '_ssock'

@@ -1,0 +1,181 @@
+{
+  "cases": [
+    {
+      "error": null,
+      "id": "number-exact",
+      "return": true,
+      "stderr": "",
+      "stdout": "Evaluating 1234 as a number.\n"
+    },
+    {
+      "error": null,
+      "id": "currency-comma",
+      "return": true,
+      "stderr": "",
+      "stdout": "Evaluating $1,234 as a number.\n"
+    },
+    {
+      "error": null,
+      "id": "percent-unscaled",
+      "return": true,
+      "stderr": "",
+      "stdout": "Evaluating 42% as a number.\n"
+    },
+    {
+      "error": null,
+      "id": "number-wrong",
+      "return": false,
+      "stderr": "",
+      "stdout": "Evaluating 12.1 as a number.\n"
+    },
+    {
+      "error": null,
+      "id": "number-invalid",
+      "return": false,
+      "stderr": "",
+      "stdout": "Evaluating twelve as a number.\nString twelve cannot be normalized to number str.\n"
+    },
+    {
+      "error": null,
+      "id": "float-inf-invalid",
+      "return": true,
+      "stderr": "",
+      "stdout": "Evaluating words as a number.\nString words cannot be normalized to number str.\n"
+    },
+    {
+      "error": null,
+      "id": "float-nan",
+      "return": false,
+      "stderr": "",
+      "stdout": "Evaluating nan as a number.\n"
+    },
+    {
+      "error": null,
+      "id": "text-case-space",
+      "return": true,
+      "stderr": "",
+      "stdout": "Evaluating  SEA GULL!  as a string.\n"
+    },
+    {
+      "error": null,
+      "id": "text-wrong",
+      "return": false,
+      "stderr": "",
+      "stdout": "Evaluating other as a string.\n"
+    },
+    {
+      "error": null,
+      "id": "text-internal-newline",
+      "return": true,
+      "stderr": "",
+      "stdout": "Evaluating sea\ngull as a string.\n"
+    },
+    {
+      "error": null,
+      "id": "list-separator",
+      "return": true,
+      "stderr": "",
+      "stdout": "Evaluating alpha; beta as a comma separated list.\n"
+    },
+    {
+      "error": null,
+      "id": "list-order",
+      "return": false,
+      "stderr": "",
+      "stdout": "Evaluating beta,alpha as a comma separated list.\n"
+    },
+    {
+      "error": null,
+      "id": "list-punctuation",
+      "return": false,
+      "stderr": "",
+      "stdout": "Evaluating alpha!, beta as a comma separated list.\n"
+    },
+    {
+      "error": null,
+      "id": "list-numeric",
+      "return": true,
+      "stderr": "",
+      "stdout": "Evaluating 1.0;$2 as a comma separated list.\n"
+    },
+    {
+      "error": null,
+      "id": "list-length",
+      "return": false,
+      "stderr": "/tmp/hg-offscorer3/tests/fixtures/hg_woffscorer3/gaia_tau/source/scorer.py:59: UserWarning: Answer lists have different lengths, returning False.\n  warnings.warn(\n",
+      "stdout": "Evaluating alpha as a comma separated list.\n"
+    },
+    {
+      "error": null,
+      "id": "list-empty-item",
+      "return": true,
+      "stderr": "",
+      "stdout": "Evaluating alpha, as a comma separated list.\n"
+    },
+    {
+      "error": null,
+      "id": "list-space",
+      "return": true,
+      "stderr": "",
+      "stdout": "Evaluating   alpha , BETA   as a comma separated list.\n"
+    },
+    {
+      "error": null,
+      "id": "blank-answer",
+      "return": false,
+      "stderr": "",
+      "stdout": "Evaluating  as a string.\n"
+    },
+    {
+      "error": null,
+      "id": "whitespace-answer",
+      "return": false,
+      "stderr": "",
+      "stdout": "Evaluating     as a string.\n"
+    },
+    {
+      "error": null,
+      "id": "empty-gold",
+      "return": true,
+      "stderr": "",
+      "stdout": "Evaluating  as a string.\n"
+    },
+    {
+      "error": null,
+      "id": "placeholder-gold",
+      "return": true,
+      "stderr": "",
+      "stdout": "Evaluating ? as a string.\n"
+    },
+    {
+      "error": null,
+      "id": "punctuation-empty",
+      "return": true,
+      "stderr": "",
+      "stdout": "Evaluating ! as a string.\n"
+    },
+    {
+      "error": null,
+      "id": "missing-answer",
+      "return": false,
+      "stderr": "",
+      "stdout": "Evaluating  as a string.\n"
+    }
+  ],
+  "dataset": "gaia",
+  "inputs_sha256": "7991840a7ed48fdcebd66a4cf3a8e4a58cdcd7fc705df34f53a132921b66e360",
+  "loaded_modules": [
+    {
+      "module": "scorer",
+      "path": "/tmp/hg-offscorer3/tests/fixtures/hg_woffscorer3/gaia_tau/source/scorer.py",
+      "sha256": "0d44c07f3046eec521697c22e3eaca8719cc81e422a8eaf32695c5f22bdac6e2"
+    },
+    {
+      "module": "numpy",
+      "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/numpy/__init__.py",
+      "sha256": "22cd1535fa14d74ef6f457cca149ffdc80875f460be313b8f895273f78bc402e"
+    }
+  ],
+  "mode": "official",
+  "production_runtime_observation": false
+}

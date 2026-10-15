@@ -1,0 +1,557 @@
+{
+  "cases": [
+    {
+      "actions": [
+        {
+          "arguments": {
+            "address1": "New",
+            "address2": "",
+            "city": "City",
+            "country": "Synthetic",
+            "state": "XX",
+            "user_id": "synthetic_user",
+            "zip": "12345"
+          },
+          "name": "modify_user_address"
+        }
+      ],
+      "agent_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "New",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "12345"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "clean_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "Old",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "00000"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "done": true,
+      "id": "address-correct",
+      "outputs": [],
+      "says": []
+    },
+    {
+      "actions": [
+        {
+          "arguments": {
+            "address1": "New",
+            "address2": "",
+            "city": "City",
+            "country": "Synthetic",
+            "state": "XX",
+            "user_id": "synthetic_user",
+            "zip": "12345"
+          },
+          "name": "modify_user_address"
+        }
+      ],
+      "agent_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "Old",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "00000"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "clean_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "Old",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "00000"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "done": true,
+      "id": "address-wrong",
+      "outputs": [],
+      "says": []
+    },
+    {
+      "actions": [
+        {
+          "arguments": {
+            "address1": "New",
+            "address2": "",
+            "city": "City",
+            "country": "Synthetic",
+            "state": "XX",
+            "user_id": "synthetic_user",
+            "zip": "12345"
+          },
+          "name": "modify_user_address"
+        }
+      ],
+      "agent_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "New",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "12345"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "clean_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "Old",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "00000"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "done": true,
+      "id": "output-present",
+      "outputs": [
+        "12345"
+      ],
+      "says": [
+        "ZIP: 12,345"
+      ]
+    },
+    {
+      "actions": [
+        {
+          "arguments": {
+            "address1": "New",
+            "address2": "",
+            "city": "City",
+            "country": "Synthetic",
+            "state": "XX",
+            "user_id": "synthetic_user",
+            "zip": "12345"
+          },
+          "name": "modify_user_address"
+        }
+      ],
+      "agent_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "New",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "12345"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "clean_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "Old",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "00000"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "done": true,
+      "id": "output-missing",
+      "outputs": [
+        "12345"
+      ],
+      "says": []
+    },
+    {
+      "actions": [
+        {
+          "arguments": {
+            "address1": "New",
+            "address2": "",
+            "city": "City",
+            "country": "Synthetic",
+            "state": "XX",
+            "user_id": "synthetic_user",
+            "zip": "12345"
+          },
+          "name": "modify_user_address"
+        }
+      ],
+      "agent_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "New",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "12345"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "clean_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "Old",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "00000"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "done": true,
+      "id": "output-case",
+      "outputs": [
+        "COMPLETE"
+      ],
+      "says": [
+        "Complete"
+      ]
+    },
+    {
+      "actions": [
+        {
+          "arguments": {
+            "address1": "New",
+            "address2": "",
+            "city": "City",
+            "country": "Synthetic",
+            "state": "XX",
+            "user_id": "synthetic_user",
+            "zip": "12345"
+          },
+          "name": "modify_user_address"
+        }
+      ],
+      "agent_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "New",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "12345"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "clean_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "Old",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "00000"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "done": true,
+      "id": "output-comma-asymmetric",
+      "outputs": [
+        "12,345"
+      ],
+      "says": [
+        "12,345"
+      ]
+    },
+    {
+      "actions": [
+        {
+          "arguments": {
+            "address1": "New",
+            "address2": "",
+            "city": "City",
+            "country": "Synthetic",
+            "state": "XX",
+            "user_id": "synthetic_user",
+            "zip": "12345"
+          },
+          "name": "modify_user_address"
+        }
+      ],
+      "agent_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "New",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "12345"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "clean_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "Old",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "00000"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "done": false,
+      "id": "unfinished",
+      "outputs": [],
+      "says": []
+    },
+    {
+      "actions": [
+        {
+          "arguments": {},
+          "name": "not_a_tool"
+        }
+      ],
+      "agent_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "Old",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "00000"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "clean_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "Old",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "00000"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "done": true,
+      "id": "unknown-ground-truth-tool",
+      "outputs": [],
+      "says": []
+    },
+    {
+      "actions": [
+        {
+          "arguments": {
+            "address1": "New",
+            "address2": "",
+            "city": "City",
+            "country": "Synthetic",
+            "state": "XX",
+            "user_id": "absent_user",
+            "zip": "12345"
+          },
+          "name": "modify_user_address"
+        }
+      ],
+      "agent_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "Old",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "00000"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "clean_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "Old",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "00000"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "done": true,
+      "id": "ground-truth-tool-error-noop",
+      "outputs": [],
+      "says": []
+    },
+    {
+      "actions": [
+        {
+          "arguments": {
+            "address1": "New",
+            "address2": "",
+            "city": "City",
+            "country": "Synthetic",
+            "state": "XX",
+            "user_id": "synthetic_user",
+            "zip": "12345"
+          },
+          "name": "modify_user_address"
+        },
+        {
+          "arguments": {
+            "summary": "synthetic"
+          },
+          "name": "transfer_to_human_agents"
+        }
+      ],
+      "agent_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "New",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "12345"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "clean_db": {
+        "orders": {},
+        "products": {},
+        "users": {
+          "synthetic_user": {
+            "address": {
+              "address1": "Old",
+              "address2": "",
+              "city": "City",
+              "country": "Synthetic",
+              "state": "XX",
+              "zip": "00000"
+            },
+            "user_id": "synthetic_user"
+          }
+        }
+      },
+      "done": true,
+      "id": "terminate-skip",
+      "outputs": [],
+      "says": []
+    }
+  ],
+  "kind": "wholly authored retail state, task actions and utterances"
+}
