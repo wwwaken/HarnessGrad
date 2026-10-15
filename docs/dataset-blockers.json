@@ -63,7 +63,7 @@
           "id": "successful-task-evidence",
           "family": "actor-protocol",
           "status": "measurement",
-          "observed": "Task-facing source review DONE: a generic init/action, persistent service Python/API discovery/state-change/final-answer protocol exists. Retain the journal's 16/32-step measured-zero receipts (15/26 API calls) and unresolved successful-task gate; API activity and synthetic protocol controls are not successful-task evidence. External receipt bodies were not opened or reverified; no authentic successful measured actor-task receipt is established from repository evidence. Fresh authorized w-appworld diagnostic w-appworld-20261014T225023Z-f02d7cd5 selected train task cf6abd2_2 and executed a separate mounted-recording verifier: raw TGC measured=true, success=false, score=0.0 (8 official tests; assert answers match. failed). The staged receipt retains score=null, measured_trials=0, unmeasured_trials=1, invalid_trials=0 for policy_enforcement_not_observed. This failed task adds lifecycle/resource/cleanup evidence but no authentic successful measured actor-task receipt; successful-task-evidence remains open.",
+          "observed": "Task-facing source review DONE: a generic init/action, persistent service Python/API discovery/state-change/final-answer protocol exists. Retain the journal's 16/32-step measured-zero receipts (15/26 API calls) and unresolved successful-task gate; API activity and synthetic protocol controls are not successful-task evidence. External receipt bodies were not opened or reverified; no authentic successful measured actor-task receipt is established from repository evidence. Fresh authorized w-appworld diagnostic w-appworld-20261014T225023Z-f02d7cd5 selected train task cf6abd2_2 and executed a separate mounted-recording verifier: raw TGC measured=true, success=false, score=0.0 (8 official tests; assert answers match. failed). The staged receipt retains score=null, measured_trials=0, unmeasured_trials=1, invalid_trials=0 for policy_enforcement_not_observed. This failed task adds lifecycle/resource/cleanup evidence but no authentic successful measured actor-task receipt; successful-task-evidence remains open. Fresh unchanged-budget diagnostic w-appworld2-20261015T050036Z-a6d55a63 selected deterministic study task cf6abd2_2 from 147 eligible, one trial/jobs=1/rounds=0 on http://127.0.0.1:8002/v1 (qwen3.5-9b-local). Raw official TGC was measured=true, success=false, score=0.0, six passes/two failures across eight requirements; the actor made an incorrect note edit and omitted supervisor completion. The actor submitted at step 15 after 16 model calls within its unchanged 32-step/2048-output-token budget; spare budget demonstrates action reachability but neither success nor impossibility. Formal staged score remains null, measured=0/unmeasured=1/invalid=0 for policy_enforcement_not_observed. No successful actor-task receipt exists in this attempt; successful-task-evidence remains OPEN. No shared blocker closes and no expansion is authorized.",
           "evidence": [
             {
               "kind": "repository",
@@ -79,6 +79,16 @@
               "kind": "repository",
               "path": "reports/w-appworld-receipts.md",
               "locator": "AppWorld successful-task-evidence remains open."
+            },
+            {
+              "kind": "repository",
+              "path": "reports/w-appworld2-receipts.md",
+              "locator": "AppWorld successful-task-evidence remains OPEN."
+            },
+            {
+              "kind": "repository",
+              "path": "docs/adapter-integration-journal.md",
+              "locator": "## 2026-10-15 AppWorld unchanged-budget actor diagnostic - w-appworld2"
             }
           ],
           "next_action": "Retain the measured-zero receipts and unresolved gate; review task-facing protocol evidence without tuning to the selected task or increasing its budget."

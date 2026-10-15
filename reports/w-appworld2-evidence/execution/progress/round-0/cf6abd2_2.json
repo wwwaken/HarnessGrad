@@ -1,0 +1,31 @@
+{
+ "task_id": "cf6abd2_2",
+ "round": 0,
+ "score": 0.0,
+ "scorer_isolation_class": "snapshot-service",
+ "scorer_isolation_comparable": true,
+ "trial_scorer_isolation": [
+  "snapshot-service"
+ ],
+ "trial_scores": [
+  0.0
+ ],
+ "n_trials": 1,
+ "passed": false,
+ "kind": "command",
+ "detail": "reward 0 from /verifier/reward.txt (exit 0) | stdout 0.0",
+ "tests": null,
+ "wall_clock_s": 71.8,
+ "complete": true,
+ "enforcement": {
+  "stage": "diagnostic",
+  "run_id": "w-appworld2-20261015T050036Z-a6d55a63",
+  "task_id": "cf6abd2_2",
+  "operator_authorization": "User explicitly requests ONE fresh AppWorld diagnostic to attempt authentic successful measured actor-task evidence with the unchanged generic loop and existing budget. Dataset/shared gates remain unresolved and enforcement unobserved; preserve raw scorer outcome and formal publication refusal separately. No tuning, budget increase, expansion or production authorization.",
+  "policy_enforcement_observed": false,
+  "measured": false,
+  "production_authorized": false,
+  "comparable": false,
+  "non_comparable_reason": "policy_enforcement_not_observed"
+ }
+}

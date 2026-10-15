@@ -1,0 +1,17 @@
+{
+  "url": "http://127.0.0.1:8002/v1/chat/completions",
+  "body": {
+    "model": "qwen3.5-9b-local",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with OK."
+      }
+    ],
+    "max_tokens": 16,
+    "temperature": 0
+  },
+  "status": 200,
+  "observed_at": "2026-10-15T05:00:38.408689+00:00",
+  "purpose": "generic connectivity probe, no task content"
+}

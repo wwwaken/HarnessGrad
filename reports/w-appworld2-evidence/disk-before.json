@@ -1,0 +1,12 @@
+{
+  "command": [
+    "df",
+    "-h",
+    "/tmp",
+    "/var/lib/docker"
+  ],
+  "observed_at": "2026-10-15T05:00:36.878439+00:00",
+  "returncode": 0,
+  "stdout": "\u6587\u4ef6\u7cfb\u7edf        \u5927\u5c0f  \u5df2\u7528  \u53ef\u7528 \u5df2\u7528% \u6302\u8f7d\u70b9\n/dev/nvme0n1p2  1.8T  1.7T   40G   98% /\n/dev/nvme0n1p2  1.8T  1.7T   40G   98% /\n",
+  "stderr": ""
+}

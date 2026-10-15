@@ -1,0 +1,62 @@
+{
+  "blockers": [
+    {
+      "id": "successful-task-evidence",
+      "family": "actor-protocol",
+      "status": "measurement",
+      "observed": "Task-facing source review DONE: a generic init/action, persistent service Python/API discovery/state-change/final-answer protocol exists. Retain the journal's 16/32-step measured-zero receipts (15/26 API calls) and unresolved successful-task gate; API activity and synthetic protocol controls are not successful-task evidence. External receipt bodies were not opened or reverified; no authentic successful measured actor-task receipt is established from repository evidence. Fresh authorized w-appworld diagnostic w-appworld-20261014T225023Z-f02d7cd5 selected train task cf6abd2_2 and executed a separate mounted-recording verifier: raw TGC measured=true, success=false, score=0.0 (8 official tests; assert answers match. failed). The staged receipt retains score=null, measured_trials=0, unmeasured_trials=1, invalid_trials=0 for policy_enforcement_not_observed. This failed task adds lifecycle/resource/cleanup evidence but no authentic successful measured actor-task receipt; successful-task-evidence remains open.",
+      "evidence": [
+        {
+          "kind": "repository",
+          "path": "docs/adapter-integration-journal.md",
+          "locator": "### AppWorld thirty-two-step smoke"
+        },
+        {
+          "kind": "repository",
+          "path": "reports/b9-appworld-protocol-and-pilot-guidance-review.md",
+          "locator": "AppWorld: source review DONE; successful-task gate remains measurement"
+        },
+        {
+          "kind": "repository",
+          "path": "reports/w-appworld-receipts.md",
+          "locator": "AppWorld successful-task-evidence remains open."
+        }
+      ],
+      "next_action": "Retain the measured-zero receipts and unresolved gate; review task-facing protocol evidence without tuning to the selected task or increasing its budget."
+    }
+  ],
+  "dataset": "appworld",
+  "demand": "tool_use",
+  "exercises": [
+    "context",
+    "tools",
+    "control",
+    "recovery"
+  ],
+  "historical_runs": [
+    {
+      "record_id": "appworld-initial-infrastructure-smoke",
+      "run_id": null,
+      "status": "incomplete",
+      "effect": null,
+      "observation": "Original actor launch failed with Docker exit 125. Later repaired smokes measured zero; they do not replace this incomplete attempt. Original failed run ID is not specified.",
+      "evidence": [
+        {
+          "kind": "repository",
+          "path": "docs/adapter-integration-journal.md",
+          "locator": "### AppWorld real-model smoke blocker"
+        },
+        {
+          "kind": "external-reference",
+          "path": "/mnt/20t/xubuqiang/Study/HarnessGrad-evidence-archive/codex/101/deliverables/receipt.md",
+          "locator": "Journal citation only; external receipt not opened during this review."
+        }
+      ]
+    }
+  ],
+  "shared_blockers": [
+    "scorer-offline-closure",
+    "artifact-only-state-export"
+  ],
+  "surface": "tool_dialogue"
+}

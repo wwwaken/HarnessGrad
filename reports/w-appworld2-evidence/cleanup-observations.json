@@ -1,0 +1,91 @@
+{
+  "run_id": "w-appworld2-20261015T050036Z-a6d55a63",
+  "observed_at": "2026-10-15T05:02:13.515259+00:00",
+  "containers": [
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "320faecb491c76b28eb404cc432f0dbbfc3c5616a2bf205202ed7ffd49516377"
+      ],
+      "observed_at": "2026-10-15T05:02:13.553910+00:00",
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "error: no such object: 320faecb491c76b28eb404cc432f0dbbfc3c5616a2bf205202ed7ffd49516377\n"
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "197642c60a8eccf947517d8ef776c69ee93c5f1c6816ae8d61a0e6c52ff54769"
+      ],
+      "observed_at": "2026-10-15T05:02:13.598576+00:00",
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "error: no such object: 197642c60a8eccf947517d8ef776c69ee93c5f1c6816ae8d61a0e6c52ff54769\n"
+    },
+    {
+      "command": [
+        "docker",
+        "inspect",
+        "bc0bd9baada9ed710fe3412f572828bcead44be7393ee9d9e091226768190fcc"
+      ],
+      "observed_at": "2026-10-15T05:02:13.634465+00:00",
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "error: no such object: bc0bd9baada9ed710fe3412f572828bcead44be7393ee9d9e091226768190fcc\n"
+    }
+  ],
+  "networks": [
+    {
+      "command": [
+        "docker",
+        "network",
+        "inspect",
+        "hg-w-appworld2-20261015T050036Z-a6d55a63-cf6abd2_2"
+      ],
+      "observed_at": "2026-10-15T05:02:13.654345+00:00",
+      "returncode": 1,
+      "stdout": "[]\n",
+      "stderr": "Error response from daemon: network hg-w-appworld2-20261015T050036Z-a6d55a63-cf6abd2_2 not found\n"
+    }
+  ],
+  "temporary_paths": [
+    {
+      "path": "/tmp/hg-task-dj8jeno7",
+      "exists": false
+    },
+    {
+      "path": "/tmp/hg-verdict-4mf75dyd",
+      "exists": false
+    }
+  ],
+  "scoped_containers": {
+    "command": [
+      "docker",
+      "ps",
+      "-a",
+      "--filter",
+      "label=harnessgrad.run=w-appworld2-20261015T050036Z-a6d55a63",
+      "--no-trunc"
+    ],
+    "observed_at": "2026-10-15T05:02:13.673643+00:00",
+    "returncode": 0,
+    "stdout": "CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES\n",
+    "stderr": ""
+  },
+  "scoped_networks": {
+    "command": [
+      "docker",
+      "network",
+      "ls",
+      "--filter",
+      "label=harnessgrad.run=w-appworld2-20261015T050036Z-a6d55a63",
+      "--no-trunc"
+    ],
+    "observed_at": "2026-10-15T05:02:13.691659+00:00",
+    "returncode": 0,
+    "stdout": "NETWORK ID   NAME      DRIVER    SCOPE\n",
+    "stderr": ""
+  }
+}
