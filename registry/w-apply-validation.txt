@@ -1,0 +1,52 @@
+Parent integration validation - apply w-stalepoint's clause-level reconciliation to the registry.
+
+Source
+------
+Worker commit 219c1108 (branch wg-stalepoint), cherry-picked here as 4b599784 on top of parent
+main 7d9dbaa2. The worker produced three files and deliberately did not edit the registry.
+
+Independent parent verification of the worker's claims (not taken on report)
+--------------------------------------------------------------------------
+1. Every quoted clause exists verbatim in the corresponding blocker's current `next_action`:
+   $ python3 - <<'PY'   # script in the transcript; asserts c["quoted_clause"] in b["next_action"]
+   quote mismatches: 0 of 17
+2. Each (dataset, blocker) pair has exactly ONE distinct replacement string, so the 17 clause
+   entries collapse to 8 field values and no entry overwrites another with different text:
+   fever/hotpotqa/physicsquestions/reasoning_gym/sportsunderstanding/spreadsheetbench/
+   strategyqa/triviaqa -> 8 applied.
+3. `registry["shared_blockers"] == []` and neither `scorer-offline-closure` nor
+   `artifact-only-state-export` is present, corroborating the `withdrawn-shared` classification.
+4. Every fixture file the replacements cite exists and is git-tracked:
+   tests/fixtures/hg_wsel/{fever,hotpotqa,physicsquestions,reasoning_gym,sportsunderstanding,
+   spreadsheetbench,strategyqa,triviaqa}.json
+5. The only test reference to `next_action` is a mutation at
+   tests/quality/test_dataset_blockers.py:254 (it blanks the field); no test pins the text.
+
+Applied change
+--------------
+Exactly 8 lines changed in registry/dataset-blockers.json, one `next_action` per blocker:
+$ git diff --numstat registry/dataset-blockers.json
+8	8	registry/dataset-blockers.json
+Character lengths before -> after: fever 627->1317, hotpotqa 574->897, physicsquestions
+673->1088, reasoning_gym 888->1382, sportsunderstanding 580->950, spreadsheetbench 757->1291,
+strategyqa 591->991, triviaqa 702->955. No status, family, `observed`, evidence, history,
+shared-blocker or permanent-refusal field is touched.
+
+Validation
+----------
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+$ python3 -m pytest tests/quality/test_dataset_blockers.py tests/quality/test_b6_blocker_evidence.py -q
+75 passed, 11 skipped in 4.45s
+
+What this does NOT do
+---------------------
+- It closes no blocker. All 8 stay open with their dataset-specific obligations intact
+  (producing conversion, generation provenance, historical receipts, metric comparability,
+  row-level gradability, unchanged).
+- It does not touch appworld or bfcl_v3; those are separate workstreams.
+- It does not re-impose or resurrect any withdrawn shared gate, and it does not remove any
+  obligation that is genuinely still open - the replacements were written to keep each one and
+  the parent re-read them against the original text.
+- The 11 B6 skips remain and are expected (see registry/w-citefix-validation.txt: the packet's
+  seven upstream `hop-*.body` payloads were removed by the payload-strip pass).

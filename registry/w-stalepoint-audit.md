@@ -359,6 +359,30 @@ This evidence kind is **unverifiable from the repository alone**: the checker re
 | `/site/w-spread2-reconciliation.md` | 1 | registry/dataset-blockers.json:813 | UNREADABLE errno=2 No such file or directory |
 | `/site/w-trivia-review.md` | 1 | registry/dataset-blockers.json:986 | UNREADABLE errno=2 No such file or directory |
 
+### Parent addendum (applied at merge time, 2026-10-15)
+
+Section B above was measured against the tree at `219c1108` and is left as written. Two facts
+changed in the parent commit `2f2fe43a` that landed before this audit was merged, and neither
+alters the audit's conclusion:
+
+* The 22 unreadable `/site/...` paths now have readable **carriers**. `2f2fe43a` restored all 36
+  cited documents into `tests/fixtures/hg_migration_site/` from `1825cd0e^` (the commit that
+  deleted `reports/` and `docs/`), with per-file source path, source commit and SHA-256 in
+  `tests/fixtures/hg_migration_site/PROVENANCE.json`. The resolver is
+  `tests/quality/conftest.py:24`, so `/site/X` still does not exist as an absolute path and the
+  audit's `open("/site/X")` measurement still fails; the content is reachable through the
+  fixture. Section B's "unverifiable from the repository alone" statement is still correct for
+  the `external-reference` **kind** and for the checker, which still bypasses existence checks
+  (`tools/check_dataset_blockers.py:109`, `:111`, `:112`).
+* The two remaining unreadable absolute paths
+  (`HarnessGrad-evidence-archive/codex/qa-h0-archive-v4/index.json`,
+  `.../codex/qa-h0-incomplete-index.json`) were independently re-searched by the parent and are
+  absent from the archive: `HarnessGrad-evidence-archive/codex/` holds only numbered task
+  directories and no `index.json` at any depth. Both citations sit inside frozen
+  `historical_runs`, whose locator text already declares them "Journal citation only; external
+  receipt not opened during this review", and historical records are pinned whole by the
+  checker, so they are retained as declared un-opened citations rather than edited.
+
 ## C. Test-pin audit
 
 **ABSENT in the enumerated scope:** no assertion in the complete 657-line `tests/quality/test_dataset_blockers.py` requires a withdrawn shared ID to be present, or asserts that the eight first-five selections/manifests/run IDs are still absent. Scope and reproduction: the full-file AST assertion inventory in validation (`inspect.py` source and stdout). Below are all assertions that pin the relevant withdrawn/closed shared IDs, their retained evidence, empty sets, or earlier withdrawn shared IDs. They currently **pass** in the requested file; pass does not extend to skipped tests or external evidence.
