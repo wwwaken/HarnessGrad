@@ -4195,3 +4195,27 @@ clean; all four named deliverables present.
   whole-registry baseline, which predates parent Resolver/AppWorld merges. Its
   failure stays raw; independent inventory comparison and this task's exact
   starting-HEAD scope check remain separate. No inherited evidence is rewritten.
+## Parent review and merge — w-resolver4, w-jc2 — 2026-10-15
+
+- Merged `wg-resolver4` (one commit) and the four commits of `wg-jc2`. Result `0c210b31`. Registry
+  valid: 28 datasets, 2 shared blockers, 11 historical records, `production_authorized=false`;
+  sequencer clean; both deliverables present.
+- **w-resolver4: offline resolution is now 13/13 bounded profiles and 12/23 complete nonempty
+  dataset Python metadata profiles** (from 11/11 and 10/23), adding GAIA and AppWorld, with
+  hash-required installation and required-wheel refusal still enforced. It also **disclosed a lost
+  receipt** - its first bootstrap attempt's runtime receipt is gone and only the successful retry's
+  evidence is complete - which is the right way to handle a gap rather than silently presenting the
+  retry as if it were the first run.
+- **w-jc2 executed the next actions the previous round identified, for all six priority-1
+  datasets, and invented no selection.** SpreadsheetBench: the canonical release and **all 800
+  workbook members** authenticated. FEVER: original-row/group correspondence established, with
+  **concrete singleton-semantic gaps** named. Reasoning Gym: historical pins and carried-date
+  evidence recovered. PhysicsQuestions, SportsUnderstanding and StrategyQA: exact gold-input hashes
+  added, with independent selection packets still required. **All six dataset blockers and both
+  shared blockers remain open**, which is the correct outcome given that the missing input is an
+  authorization artefact rather than something an agent can conjure.
+- Still in flight and NOT merged: `w-hp3` (sealed native closure beyond 1/7, the retry of the
+  provider-403 failure) and `w-tb89d` (Terminal-Bench coverage beyond 9/89).
+- Resource state: local source, payload and test work only - no model, GPU or endpoint call. GPU
+  samples stayed at 0 % and no utilisation is claimed. Historical runs, frozen receipts and
+  archives were untouched.
