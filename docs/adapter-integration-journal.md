@@ -5046,3 +5046,73 @@ custom attack, FEVER's flat singletons, GSM8K's last-number rule, BFCL's non-cal
 actor-visible `code_context`), and the parent has verified each of those eight against the code and handed
 `w-evidence2` the file:line for every one - the worker's job is to check them rather than trust them, and
 to mark `UNVERIFIABLE` anything it did not check.
+
+## 2026-10-16 (round 7) — What "apply the qualification to the registry" actually means, and the stale set is 10, not 8
+
+**The stale set is ten entries, not eight, and two of them I had not listed.** Verified against the code in
+`main`, both of these describe behaviour that no longer exists:
+
+* **`scienceworld`** — the qualification says "under local **1000** moves
+  (`data/datasets/scienceworld/lib/scw_env.py:42-46`)". It is now `STEP_BUDGET = 100` at `:45`, and
+  `data/datasets/scienceworld.py:239` adds an `aggregate()` that reports micro **and** unweighted macro
+  over observed task types. Both the budget and the aggregation moved, so its `NUMBER/CONDITION` effect is
+  now realised rather than hypothetical.
+* **`twowikimultihopqa`** — it says the shared `prediction.json` path "takes only `structured["answer"]`
+  because `EVIDENCE_AWARE` is not declared". `EVIDENCE_AWARE = True` is now at
+  `data/datasets/twowikimultihopqa.py:90`, and a pair-schema `prediction.json` is refused
+  (`twowiki_prediction_json_pair_schema_unsupported`).
+
+With the eight from round 5 that is **ten** disclosure rows and qualification passages written against the
+pre-fix tree: gsm8k, hotpotqa, livebench is *livecodebench*, fever, ds1000, alfworld, agentdojo, bfcl_v3,
+plus scienceworld and twowikimultihopqa. `w-evidence2` was told to check all 28 rows against `main` rather
+than to trust my list, which is why it exists; the two extra entries are the reason that instruction
+matters. The eight fixes land on 2026-10-16 and are citable per file: `cdb43ac4` (alfworld budget 50),
+`2cdd859a` (hotpotqa answer F1), `74f47680` (livecodebench cap and the GSM8K first-`####` rule),
+`87a8450a` (agentdojo registered attack; DS-1000 `context.json` out of actor `SETUP`), `28e5dc67` (FEVER
+conjunctive group), `6b0c78ea` (BFCL name filter).
+
+**D18 does not mean what the plan said, and this is worth recording before someone tries it.** The plan
+read "apply per-dataset qualification sentences for the 17 affected closed blockers into the registry".
+The registry has **no closed blocker records at all**: `registry/dataset-blockers.json` has
+`datasets[*].blockers` holding exactly **7** entries, all open (four permanent refusals, appworld, bfcl_v3,
+triviaqa), plus 11 `historical_runs` records and 22 `review.notes`. `agentdojo`, `alfworld`, `gsm8k` and
+`musique` each carry `blockers: []`. So the closures live in **`registry/blocker-closure-assessment.md`**
+(404 lines, dated "Closed under reading A"), and there is nothing in the registry to append a
+qualification to. `w-evidence` reached the same conclusion independently and said so in its own
+`Registry application boundary` section: a fragment for a closed dataset would either be refused by
+`tools/apply_blocker_proposal.py` or would reopen a closure. The honest landing is therefore a **dated
+section in the closure assessment** naming the qualification per dataset and pointing at
+`registry/w-evidence-qualification.md`, plus a `review.notes` line — never a status change. It is held
+until `w-evidence2` lands, because writing it now would bake in the ten stale mechanisms and produce a
+second artifact with the same defect.
+
+**Scope of the qualification, measured from the landed record:** 20 of 28 datasets carry a finding
+(`FOUND, qualification required`), 4 are `FOUND, no new finding`, 4 are the excluded refusals. Of the 20,
+**19 are classified `NUMBER`** — the fix changes the number — and 1 (`musique`) is `LABEL` only. Since
+this phase runs **no re-runs**, no archived figure has been re-measured, so for those 19 every archived
+number was produced by the pre-fix instrument and must not be reported under the new metric name. That
+sentence is the deliverable; the rest is provenance.
+
+**Two operator-owned documents corrected in place (both gitignored or otherwise out of the commit path):**
+`docs/paper-fidelity-audit-handoff.md` §3.4 said "MuSiQue's and 2Wiki's reward is joint F1 (answer F1 ×
+support F1)". That conflates two formulas and `w-evidence` was right to flag it: MuSiQue is
+`f1 * support["f1"]` (`data/datasets/musique.py:106`), while 2Wiki multiplies **three** channel precisions
+and three recalls and takes their **harmonic mean**
+(`data/datasets/twowikimultihopqa.py:476-482`, and its own docstring at `:30-32` says Joint F1 "is their
+harmonic mean, **not** the product of the three component F1s"). §4.4 and decision 5 also claimed the
+census originals survive because "the backup was made by copying"; `w-evidence` counted instead — the
+three AgentDojo fold sources are **absent** at the exact census paths and GSM8K `train-full` plus three
+MuSiQue sources retain zero verdicts — so the census is a partial substitute and the wording now says so.
+
+**One present-tense sentence in the closure assessment is stale for the same reason as everything else
+here.** It says the shipped SpreadsheetBench checker "is now SHA-256
+`98dd625481f091a8684dd4d7a66c17f07cf7a36c8bba160e27353e06988b1af7`"; the file's digest is now
+`4476b574c511898f7c88f20e95d5fd7f216ff9908813502b46b03b37abce16c8` after `f5af0f78`. The digest is
+recorded correctly in `registry/dataset-blockers.json`, so this is a stale sentence in one document rather
+than a lost binding — but it is the third instance today of a *present-tense claim* outliving the thing it
+describes, after the B5 packet and the eight disclosure rows.
+
+**Workers running:** `w-evidence2` (re-verify all 28 disclosure rows), `w-provresidue` (the other five
+evidence packets' residue by class), `w-knownred` (re-derive every standing number in the red-test
+ledger, or mark it proxy-only), `w-decisionpack` (the three open blockers as answerable choices for the
+operator). `w-evidence` itself is merged as `27d2efaa`.
