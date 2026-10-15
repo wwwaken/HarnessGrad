@@ -108,3 +108,33 @@ reproduced fault injection and the corrected assertions are in `registry/w-vfix-
 `test_exec_verdict_missing_new_reward_is_zero` was renamed to `..._is_unmeasured_not_zero`, and three
 security-property tests that had asserted `score == 0.0` incidentally now assert the property they were
 written for. Reverting any of those to `0.0` would restore an infrastructure-failure-as-zero defect.
+
+## Sweep 1 continued - the `docs/` deletion and a stale copy list, both fixed
+
+The sweep's later batches found **21 more failures** that turned out to be two mechanical regressions
+rather than mysteries, and both are now fixed (see `registry/w-docs2-validation.txt` and the
+`docs:` commit):
+
+* **The bulk `docs/` deletion contradicted the `.gitignore` whitelist.** `.gitignore` narrows `/docs/*`
+  to 23 whitelisted paths meant to be kept; 17 of them had been deleted, leaving the ignore rules
+  disagreeing with the tree. Sixteen distinct files are restored from `1825cd0e^`, which took
+  `test_onboarding_doc.py` from 11 failed to **11 passed**.
+* **One more deliverable was not whitelisted at all.** `docs/musique-output-contract.md` is opened by
+  `test_musique_official_scorer.py` as a contract but was neither present nor whitelisted, which is why
+  the sixteen-file pass missed it; it is restored, whitelisted and force-added, taking that file from
+  10 failed to **106 passed**.
+* **A staged-platform copy list was stale.** `test_parallel_tasks.py` copies an explicit list of
+  `data/scaffolds/` modules into a minimal platform and never gained `scorer_isolation.py`, which
+  `2c7e4ca7` added *before* this phase; the staged platform could not import
+  `eval/verification/isolation.py`. The list now names it: 1 failed -> **12 passed**.
+
+**Method warning for the scan that finds these.** A naive scan for referenced-but-missing `docs/*`
+paths returns 168 hits and most are **false positives**: `docs/openapi/*`, `docs/standard/*`,
+`docs/function_call*/*` and `docs/tutorial/*` are *third-party package* paths inside AppWorld and
+friends, and `docs/dataset-blockers.json` / `docs/dataset-reviews/*` appear in historical records that
+describe the registry's **old** location. Restore only what a test proves it needs, one file at a time,
+and re-run that test.
+* **Worktree runs lie about payload-dependent tests.** Running the same files in a fresh worktree
+  produced `test_ordinary_run_receipt_codex237: 1 failed, 78 errors` where the sweep saw a single
+  failure, because gitignored fixtures do not exist there. Triage in the main checkout, or copy the
+  packets in first.
