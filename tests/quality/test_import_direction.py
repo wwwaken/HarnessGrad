@@ -138,7 +138,8 @@ def _adapter_namespace(module: str) -> str | None:
 def _rule(edge: ImportEdge) -> str | None:
     adapter = _adapter_namespace(edge.source)
     if (adapter and _within(edge.target, "data")
-            and not _within(edge.target, "data.scaffolds")
+            and not any(_within(edge.target, shared)
+                        for shared in ("data.scaffolds", "data.runtimes"))
             and not _within(edge.target, adapter)):
         return "adapter-data"
     if (any(_within(edge.source, name) for name in
@@ -200,7 +201,11 @@ class ImportDirectionTests(unittest.TestCase):
                     if any(isinstance(t, ast.Name) and t.id == "KIND" for t in targets):
                         self.assertNotEqual(ast.literal_eval(node.value), "dataset", str(path))
         # pinchbench is unclassified inventory, deliberately not adapter assets.
-        infrastructure = {"scaffolds", "datasets", "__pycache__", "pinchbench"}
+        # `data.runtimes` holds the platform's own sealed-runtime closure pins: pure data, no
+        # imports, shared by adapters exactly like `data.scaffolds`. It was added by the sealed
+        # native-runtime work and never classified here, which made every adapter that imports
+        # `data.runtimes.NATIVE_PINS` an unclassified data directory / a forbidden edge.
+        infrastructure = {"scaffolds", "datasets", "__pycache__", "pinchbench", "runtimes"}
         for directory in (ROOT / "data").iterdir():
             if directory.is_dir():
                 self.assertIn(directory.name, infrastructure, f"unclassified data directory: {directory}")

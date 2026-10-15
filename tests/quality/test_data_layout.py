@@ -206,10 +206,13 @@ def test_adapter_imports_only_use_scaffolds_stdlib_or_third_party():
                     errors.append(
                         f"{_relative(path)}:{node.lineno}: {statement} "
                         f"[forbidden dependency: adapter {name!r} imports adapter {other!r}]")
-                elif target.startswith("data.") and not target.startswith("data.scaffolds."):
+                elif (target.startswith("data.")
+                      and not target.startswith(("data.scaffolds.", "data.runtimes."))):
+                    # `data.runtimes` is pure shared platform data (sealed-runtime pins), the same
+                    # category as `data.scaffolds`; adapters may import either, nothing else under data.
                     errors.append(
                         f"{_relative(path)}:{node.lineno}: {statement} "
-                        f"[forbidden dependency: {target} is not data.scaffolds.*]")
+                        f"[forbidden dependency: {target} is not data.scaffolds.* or data.runtimes.*]")
     _check(errors)
 
 

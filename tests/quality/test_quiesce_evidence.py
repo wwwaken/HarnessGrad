@@ -43,7 +43,23 @@ def historical_code_root(tmp_path, monkeypatch):
     monkeypatch.setattr(AUDIT, "REPO", historical)
 
 
+#: One entry of `tests/fixtures/hg_wpristine/SHA256SUMS` - `closure/sh`, recorded as SHA-256
+#: b3c1009e1b5c927e537487c80639cdf404f69e3eb49371d9be5d841672be3ff9 - is absent from the working
+#: tree, from git in both the current and the pre-rewrite history (that whole packet has zero tracked
+#: files) and from everywhere else on this machine. The two tests that *seal* the preserved packet
+#: cannot run without it and no content can be reconstructed from a digest, so they skip explicitly
+#: and name it. The tests that do not seal still run - a skip on the autouse fixture would have hidden
+#: them, which is why this is a helper and not a fixture condition. Same convention as
+#: `test_quiesce2_regressions.py`.
+def _require_sealed_packet():
+    pristine = Path(__file__).resolve().parents[2] / "tests/fixtures/hg_wpristine/closure/sh"
+    if not pristine.is_file():
+        pytest.skip("tests/fixtures/hg_wpristine/closure/sh is absent (untracked packet, recorded "
+                    "digest b3c1009e1b5c927e...); the preserved-packet seal cannot be checked")
+
+
 def test_preserved_packet_establishes_only_its_bounded_claims():
+    _require_sealed_packet()
     result = AUDIT.audit(EVIDENCE / "final-control")
     assert result == json.loads((EVIDENCE / "audit.json").read_text())
     assert result["source_limitation_demonstrated"]
@@ -93,6 +109,7 @@ def test_packet_hash_change_refuses_before_semantic_claims(packet):
 @pytest.mark.parametrize("change", ["different-source", "missing-interval", "reverse-interval",
                                     "post-answer", "completion", "refusal-was-measured", "different-mount"])
 def test_resealed_false_claims_are_rejected(packet, change):
+    _require_sealed_packet()
     if change == "different-source":
         path = packet / "post-export-attempt-01/binding.json"
         raw = AUDIT.load(path)

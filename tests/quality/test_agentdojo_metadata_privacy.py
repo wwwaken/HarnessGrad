@@ -104,7 +104,10 @@ def test_selected_lookup_has_only_fixed_metadata(name, index, monkeypatch, adapt
             assert metadata == {"kind": "files"}
         elif name == "SETUP":
             assert metadata == {"files": [
-                {"path": "dojo_runtime", "from": str(module.DATASET_ROOT / "agent_runtime")},
+                # `immutable` is the platform contract flag (INTERFACE.md), not task data: the two
+                # runtime projections are marked read-only instead of being copied per task.
+                {"path": "dojo_runtime", "from": str(module.DATASET_ROOT / "agent_runtime"),
+                 "immutable": True},
                 {"path": "dojo.py", "from": str(module.ASSETS / "cli/dojo")},
                 {"path": "dojo.initial.json",
                  "from": str(module.DATASET_ROOT / "prepared" / str(index) / "initial.json")},
@@ -118,7 +121,8 @@ def test_selected_lookup_has_only_fixed_metadata(name, index, monkeypatch, adapt
                 {"path": "verify/bridge.py", "from": str(module.ASSETS / "bridge.py")},
                 {"path": "verify/case.json",
                  "from": str(module.DATASET_ROOT / "prepared" / str(index) / "case.json")},
-                {"path": "trusted_runtime", "from": str(module.DATASET_ROOT / "runtime")},
+                {"path": "trusted_runtime", "from": str(module.DATASET_ROOT / "runtime"),
+                 "immutable": True},
             ]
             assert metadata["reward_file"] == "/verifier/reward.txt"
             assert metadata["evidence_file"] == "/verifier/evidence.json"

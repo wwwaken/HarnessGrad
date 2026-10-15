@@ -226,8 +226,14 @@ def test_the_verifier_declares_the_contract_paths(jericho):
         for entry in verifier["inputs"]:
             if "from" in entry:
                 assert Path(entry["from"]).is_file(), (task_id, entry)
+            elif entry["path"].endswith("__init__.py"):
+                # The scorer-input shim ships two deliberately **empty** package markers
+                # (`data/__init__.py`, `data/scaffolds/__init__.py`, added by 63606f42). An empty file
+                # is the whole content of a package marker, so this is the one legitimate exception to
+                # "every content entry carries a payload" - and it is stated rather than skipped.
+                assert entry["content"] == "", (task_id, entry)
             else:
-                assert entry["content"].strip()
+                assert entry["content"].strip(), (task_id, entry)
 
 
 def test_every_task_can_tell_the_agent_where_the_rom_is(jericho):
@@ -334,7 +340,11 @@ def test_the_check_reports_unmeasured_without_a_game_file(jericho, live):
                                   skip={jericho.GAME_FILE})
     assert reward == -1.0, "no reward file when the check cannot measure"
     assert evidence["measured"] is False
-    assert "game file" in evidence["error"]
+    # Since 63606f42 the check binds the inputs it consumes *before* it scores, so a workdir missing
+    # the game file is refused by the input binding and the message names the file. The property this
+    # test exists for is that the outcome is unmeasured rather than a zero, and the message must still
+    # name what is missing, so both phrasings are accepted and neither is dropped.
+    assert jericho.GAME_FILE in evidence["error"] or "game file" in evidence["error"], evidence
 
 
 def test_the_cli_can_report_the_score(jericho, live):
