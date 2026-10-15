@@ -44,7 +44,9 @@ import subprocess
 import sys
 import tempfile
 import traceback
+import zipfile
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 # Native staging supplies this dependency at the task root.
 sys.path.insert(0, str(Path.cwd()))
@@ -227,21 +229,58 @@ def soffice_path() -> str | None:
 def recalculate(workbook: Path, *, scratch: Path, soffice: str) -> tuple[bool, str]:
     """Re-evaluate `workbook`'s formulas and cache the results, in place.
 
-    LibreOffice's converter writes a file whose cells carry the computed values, which is what
-    `data_only=True` then reads. A private `UserInstallation` keeps concurrent checks from
-    fighting over one profile lock -- measured: without it, two LibreOffice runs on one host
-    can make the second fail.
+    Conversion alone can preserve stale caches. Force recalculation on OOXML load, remove
+    formula caches from a private ZIP copy, and require the engine to repopulate them. Thus
+    success observes fresh caches rather than inferring evaluation from a successful exit.
     """
     profile = scratch / "lo-profile"
-    profile.mkdir(parents=True, exist_ok=True)
+    (profile / "user").mkdir(parents=True)
+    (profile / "user" / "registrymodifications.xcu").write_text(
+        '<oor:items xmlns:oor="http://openoffice.org/2001/registry">'
+        '<item oor:path="/org.openoffice.Office.Calc/Formula/Load">'
+        '<prop oor:name="OOXMLRecalcMode" oor:op="fuse"><value>0</value></prop>'
+        '</item></oor:items>', encoding="utf-8")
+    incoming = scratch / "input"
+    incoming.mkdir()
+    prepared = incoming / workbook.name
+    ns = {"s": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
+    cache_tags = {"{" + ns["s"] + "}" + name for name in ("v", "is")}
+    formula_cells = {}
+    # Preserve package entries instead of round-tripping styles/content through openpyxl.
+    with zipfile.ZipFile(workbook) as source, zipfile.ZipFile(
+            prepared, "w", zipfile.ZIP_DEFLATED) as target:
+        for entry in source.infolist():
+            content = source.read(entry)
+            if entry.filename.startswith("xl/worksheets/") and entry.filename.endswith(".xml"):
+                sheet = ET.fromstring(content)
+                coordinates = []
+                for cell in sheet.findall(".//s:sheetData/s:row/s:c", ns):
+                    formula = cell.find("s:f", ns)
+                    if formula is None:
+                        continue
+                    # Shared/array/data-table formulas can carry caches in non-formula
+                    # cells. Refuse until their entire dependent region can be invalidated.
+                    if formula.get("t", "normal") != "normal":
+                        return False, "cannot observe fresh caches for non-scalar formulas"
+                    coordinates.append(cell.attrib["r"])
+                    for cache in list(cell):
+                        if cache.tag in cache_tags:
+                            cell.remove(cache)
+                    cell.attrib.pop("t", None)
+                if coordinates:
+                    formula_cells[entry.filename] = coordinates
+                    content = ET.tostring(sheet, encoding="utf-8", xml_declaration=True)
+            target.writestr(entry, content)
+    if not formula_cells:
+        return False, "no OOXML formula cells available for freshness observation"
     outdir = scratch / "conv"
     outdir.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ, HOME=str(scratch),
                TMPDIR=str(scratch))
     cmd = [soffice, "--headless", "--calc", "--norestore", "--nolockcheck",
-           f"-env:UserInstallation=file://{profile}",
+           f"-env:UserInstallation={profile.resolve().as_uri()}",
            "--convert-to", "xlsx:Calc MS Excel 2007 XML",
-           "--outdir", str(outdir), str(workbook)]
+           "--outdir", str(outdir), str(prepared)]
     try:
         proc = subprocess.run(cmd, capture_output=True, text=True, timeout=180, env=env)
     except subprocess.TimeoutExpired:
@@ -251,6 +290,18 @@ def recalculate(workbook: Path, *, scratch: Path, soffice: str) -> tuple[bool, s
     converted = outdir / (workbook.stem + ".xlsx")
     if not converted.is_file():
         return False, (f"LibreOffice produced no file (stderr: {proc.stderr.strip()[:200]})")
+    with zipfile.ZipFile(converted) as output:
+        for sheet_name, coordinates in formula_cells.items():
+            sheet = ET.fromstring(output.read(sheet_name))
+            cells = {cell.attrib["r"]: cell
+                     for cell in sheet.findall(".//s:sheetData/s:row/s:c", ns)}
+            for coordinate in coordinates:
+                cell = cells.get(coordinate)
+                cache = cell.find("s:v", ns) if cell is not None else None
+                if (cell is None or cell.find("s:f", ns) is None or cache is None
+                        or (cache.text is None and cell.get("t") != "str")):
+                    return False, ("LibreOffice did not populate a fresh formula cache: "
+                                   f"{sheet_name}!{coordinate}")
     shutil.move(str(converted), str(workbook))
     return True, ""
 
@@ -267,7 +318,8 @@ def workbook_has_formulas(path: Path) -> bool:
     for ws in wb.worksheets:
         for row in ws.iter_rows():
             for cell in row:
-                if isinstance(cell.value, str) and cell.value.startswith("="):
+                if cell.data_type == "f" or (
+                        isinstance(cell.value, str) and cell.value.startswith("=")):
                     return True
     return False
 
@@ -362,6 +414,7 @@ def _score(args, inputs, receipt) -> int:
         return 1
 
     phase = "formula detection"
+    evidence["recalculated"] = False
     try:
         # Recalculate before comparing: data_only=True reads cached formula values.
         if workbook_has_formulas(candidate):

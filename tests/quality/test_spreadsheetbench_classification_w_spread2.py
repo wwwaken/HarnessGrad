@@ -5,11 +5,15 @@ from contextlib import contextmanager, redirect_stderr, redirect_stdout
 import importlib.util
 import io
 import json
+import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
 from types import SimpleNamespace
+import zipfile
+from xml.etree import ElementTree as ET
 
 import openpyxl
 import pytest
@@ -41,6 +45,9 @@ CASES = [
     ("recalc-timeout", None, "LibreOffice timed out"),
     ("recalc-exit", None, "LibreOffice exited 7"),
     ("recalc-no-output", None, "LibreOffice produced no file"),
+    ("recalc-unevaluated-copy", None, "did not populate a fresh formula cache"),
+    ("recalc-partial-cache", None, "did not populate a fresh formula cache"),
+    ("recalc-array-cache", None, "cannot observe fresh caches for non-scalar formulas"),
     ("recalc-launch", None, "LibreOffice recalculation"),
     ("recalc-copy", None, "LibreOffice recalculation"),
     ("recalc-scratch", None, "LibreOffice recalculation"),
@@ -72,11 +79,22 @@ def scenario(request, monkeypatch, tmp_path):
         wb.active["A1"] = 2
     elif case.startswith("recalc-") or case == "formula-no-runtime":
         wb.active["A1"] = "=1"
+        if case == "recalc-partial-cache":
+            wb.active["A2"] = "=2"
     if case == "result-sheet-absent":
         wb.active.title = "Other"
     if case != "result-absent":
         wb.save(work / "result.xlsx")
     wb.close()
+    if case == "recalc-array-cache":
+        candidate = work / "result.xlsx"
+        with zipfile.ZipFile(candidate) as src:
+            entries = {name: src.read(name) for name in src.namelist()}
+        entries["xl/worksheets/sheet1.xml"] = entries[
+            "xl/worksheets/sheet1.xml"].replace(b"<f>", b'<f t="array" ref="A1:A2">')
+        with zipfile.ZipFile(candidate, "w") as dst:
+            for name, content in entries.items():
+                dst.writestr(name, content)
     if case == "golden-load":
         golden.write_bytes(b"synthetic unreadable workbook")
     if case == "result-load":
@@ -160,13 +178,41 @@ def scenario(request, monkeypatch, tmp_path):
                 raise subprocess.TimeoutExpired(cmd, 180)
             if case == "recalc-launch":
                 raise OSError("synthetic LibreOffice launch failure")
-            if case == "recalc-copy":
-                # A produced but unreadable conversion makes the move fail locally.
+            if case in {"recalc-unevaluated-copy", "recalc-partial-cache"}:
                 outdir = Path(cmd[cmd.index("--outdir") + 1])
-                (outdir / "result.xlsx").symlink_to(outdir / "absent-conversion")
+                source = Path(cmd[-1])
+                if case == "recalc-unevaluated-copy":
+                    shutil.copyfile(source, outdir / "result.xlsx")
+                else:
+                    with zipfile.ZipFile(source) as src, zipfile.ZipFile(
+                            outdir / "result.xlsx", "w") as dst:
+                        for entry in src.infolist():
+                            content = src.read(entry)
+                            if entry.filename == "xl/worksheets/sheet1.xml":
+                                sheet = ET.fromstring(content)
+                                ns = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
+                                first = sheet.find(f".//{ns}c[@r='A1']")
+                                value = first.find(ns + "v")
+                                if value is None:
+                                    value = ET.SubElement(first, ns + "v")
+                                value.text = "1"
+                                content = ET.tostring(sheet)
+                            dst.writestr(entry, content)
+            if case == "recalc-copy":
+                # Populate a valid cache first, then fail only the final publication move.
+                outdir = Path(cmd[cmd.index("--outdir") + 1])
+                workbook = openpyxl.Workbook()
+                workbook.active["A1"] = "=1"
+                workbook.save(outdir / "result.xlsx")
+                workbook.close()
+                with zipfile.ZipFile(outdir / "result.xlsx") as src:
+                    entries = {name: src.read(name) for name in src.namelist()}
+                entries["xl/worksheets/sheet1.xml"] = entries[
+                    "xl/worksheets/sheet1.xml"].replace(b"<v></v>", b"<v>1</v>")
+                with zipfile.ZipFile(outdir / "result.xlsx", "w") as dst:
+                    for name, content in entries.items():
+                        dst.writestr(name, content)
                 monkeypatch.setattr(check.shutil, "move", denied_move)
-                # is_file must pass before the deliberately failed move.
-                (outdir / "absent-conversion").write_bytes(b"synthetic conversion")
             return subprocess.CompletedProcess(cmd, 7 if case == "recalc-exit" else 0,
                                                "", "synthetic recalculation stderr")
         assert cmd[:2] == ["python3", "check.py"], cmd
@@ -194,6 +240,8 @@ def test_checker_classifies_failures_and_completed_comparisons(scenario):
     if score is None:
         assert proc.returncode == 3
         assert evidence["measured"] is False
+        if reason.startswith(("did not populate", "cannot observe fresh")):
+            assert evidence["recalculated"] is False
         assert reason in evidence["error"]
         assert not {"score", "reward", "correct"}.intersection(evidence)
         assert not (work / "reward.txt").exists()
@@ -232,3 +280,52 @@ def test_classification_survives_verifier_persistence_and_aggregation(
         assert result["invalid"] == {}
         assert persisted["complete"] is True and persisted["score"] == score
         assert len(cache) == 1
+
+
+@pytest.mark.skipif(os.environ.get("HG_SPREADCACHE_ENGINE_CONTROL") != "1",
+                    reason="opt-in authored real LibreOffice control (no dataset/model)")
+def test_real_engine_replaces_authored_stale_caches(tmp_path):
+    """The original failing mathematical assertion, under explicit network isolation."""
+    assert shutil.which("bwrap") and shutil.which("soffice")
+    wb = openpyxl.Workbook()
+    wb.active.title = "Synthetic"
+    wb.active["A1"], wb.active["A2"] = 2, 3
+    wb.active["B1"], wb.active["B2"] = "=SUM(A1:A2)", "=B1*2"
+    candidate = tmp_path / "result.xlsx"
+    wb.save(candidate)
+    with zipfile.ZipFile(candidate) as src:
+        entries = {n: src.read(n) for n in src.namelist()}
+    ns = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
+    sheet = ET.fromstring(entries["xl/worksheets/sheet1.xml"])
+    for name, stale in (("B1", 999), ("B2", 888)):
+        sheet.find(f".//{ns}c[@r='{name}']/{ns}v").text = str(stale)
+    entries["xl/worksheets/sheet1.xml"] = ET.tostring(sheet)
+    with zipfile.ZipFile(candidate, "w", zipfile.ZIP_DEFLATED) as dst:
+        for name, content in entries.items():
+            dst.writestr(name, content)
+    wb.active["B1"], wb.active["B2"] = 5, 10
+    wb.save(tmp_path / "golden.xlsx")
+    wb.close()
+    cached = openpyxl.load_workbook(candidate, data_only=True)
+    assert [cached.active["B1"].value, cached.active["B2"].value] == [999, 888]
+    cached.close()
+    (tmp_path / "task.json").write_text(json.dumps({
+        "task_id": "spreadcache-authored", "answer_position": "Synthetic!B1:B2"}))
+    (tmp_path / "answer.txt").write_text("result.xlsx\n")
+    scratch = tmp_path / "scratch"
+    scratch.mkdir()
+    cmd = [shutil.which("bwrap"), "--unshare-net", "--ro-bind", "/", "/",
+           "--bind", str(tmp_path), "/tmp",
+           "--proc", "/proc", "--", sys.executable,
+           str(ROOT / "data/datasets/spreadsheetbench/verify/check.py"),
+           "--workdir", "/tmp", "--reward-file", "/tmp/reward.txt",
+           "--evidence-file", "/tmp/evidence.json"]
+    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=240,
+                          env=dict(os.environ, TMPDIR="/tmp/scratch", PYTHONDONTWRITEBYTECODE="1"))
+    assert proc.returncode == 0, (proc.stdout, proc.stderr)
+    cached = openpyxl.load_workbook(candidate, data_only=True)
+    assert [cached.active["B1"].value, cached.active["B2"].value] == [5, 10]
+    cached.close()
+    evidence = json.loads((tmp_path / "evidence.json").read_text())
+    assert evidence["recalculated"] is True and evidence["measured"] is True
+    assert evidence["score"] == 1.0 and (tmp_path / "reward.txt").read_text() == "1\n"
