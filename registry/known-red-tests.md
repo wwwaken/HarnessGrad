@@ -567,3 +567,63 @@ cannot be committed by accident.
 whole platform into it, which makes an old `--basetemp` the last surviving copy of an untracked internal
 document. Before concluding that a deleted untracked file is unrecoverable, enumerate the basetemps -
 `/mnt/20t/xubuqiang/.hg-pytest/` held three.
+
+## Correction: the per-file pass's "14 red files, all accounted for" is not what its own log says
+
+The definitive sweep (191/191, above) forced a re-read of the per-file pass that preceded it. That pass is
+`/tmp/hg-allper.sh`, still on disk: one `timeout 300 python3 -m pytest -q` per file, appending any non-zero
+exit to `/tmp/hg-allper.log`, which ends `ALLPER_DONE`. Its log holds **14 non-zero entries** - 12 `rc=1`,
+1 `rc=124`, 1 `rc=5` - and the entry for `test_appworld_official_scorer.py` is:
+
+```
+tests/quality/test_appworld_official_scorer.py | rc=124 | .......
+```
+
+That is a **300 s timeout after 7 passing tests**, not a failure, and it is the same signature the sweep saw
+at its own 400 s cap. The narrative written at the time ("Fourteen red files, all accounted for: twelve
+fixed...; one recorded limit - `test_we5_equivalence.py`; one explained - `test_unified_budget.py`") does not
+match: the timeout and the `rc=5` skip are not in that accounting, and `test_external_provenance_b5.py` and
+`test_isolation.py` - both `rc=1` in the log - are instead described in a later section as deliberately
+red. So the pass's *count* was right and its *accounting* was not.
+
+The lesson is the same one the sweep tool exists for, one level down: **a bounded per-file pass cannot
+distinguish "this file is red" from "this file did not finish", and a summary that folds the two together
+reads clean.** Anything a pass timed out must be re-run with a cap larger than its runtime before it is
+called green. Both timeouts in this history needed that, and one of them had a real defect behind it.
+
+## `test_appworld_official_scorer.py::test_platform_control_arms` - 2 long-standing failures, policy-level
+
+With a cap large enough to finish (5400 s; the file needs **1264 s**), the file is `2 failed, 30 passed`:
+
+```
+FAILED test_appworld_official_scorer.py::test_platform_control_arms[--oracle-1.0]
+FAILED test_appworld_official_scorer.py::test_platform_control_arms[--noop-0.0]
+control refused: verifier did not produce a measured official test result
+```
+
+**Not a regression from this phase's merges.** The same command fails identically in a worktree at
+`207c5224`, which is *before* both `w-jerichoadm` (which narrowed the refusal table) and `w-decode2`. It
+was also invisible to the pass above because it timed out there.
+
+The cause is structural, not a bug in either file. The test runs
+`data/datasets/appworld/control.py --oracle|--noop --task-id e85d92a_1 --platform --no-sandbox`, and
+AppWorld's `ENV` declares `kind: "exec"`, `cpus`, `memory_mb` and `network: "services"`. Admission refuses
+every one of those on the native path, so `run_one` returns no verdict at all:
+
+```
+policy_fields: ["env.cpus", "env.exec_defaults", "env.memory_mb", "env.network"]
+stage: admission, reason: backend_observation_unavailable, measured: false
+```
+
+`--no-sandbox` is what makes it unsatisfiable: a service-backed `exec` task cannot be run without the
+container and service machinery that the very same declarations describe. Three honest resolutions, none
+taken here because choosing between them is a judgement about what the control is for:
+
+1. run the arm with the sandbox (the images are pinned by digest, so this is the real path the control is
+   meant to exercise);
+2. assert the refusal instead of a score, which turns the test into a guard on admission rather than on the
+   scorer; or
+3. pass a diagnostic authorization, which makes it a staged diagnostic rather than an ordinary control.
+
+It is left **red and unmodified** on purpose: rewriting a guard to match a refusal would hide the fact that
+the platform can no longer run this control shape at all, and that is the thing a reader needs to see.
