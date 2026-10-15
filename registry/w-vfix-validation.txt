@@ -1,0 +1,72 @@
+Parent fix: a lost reward file must never be published as a measured zero.
+
+The defect, reproduced first-hand by the parent
+-----------------------------------------------
+`eval/verification/verifier.py`, the native/files branch reached when the check wrote no
+`reward_file`, published:
+
+    {"kind": ..., "passed": False, "score": 0.0, "detail": ...}
+
+and added `unmeasured` only when the bound evidence said `measured: false`. A real check can do
+everything right and still lose only the reward file. Reproduced in an isolated temporary tree: a check
+that writes `verify/evidence.json` with `{"measured": true, "score": 1.0, "reward": 1.0}`, prints
+`reward 1: authored`, exits 0, and deliberately writes no reward file produced
+
+    verdict score      : 0.0
+    verdict passed     : False
+    verdict unmeasured : None
+    verdict outcome    : None
+    evidence measured  : True | evidence score: 1.0
+
+so the verdict published `score: 0.0` **while its own bound evidence carried `score: 1.0`**, with no
+`unmeasured` flag. That is an infrastructure failure published as a measured zero and a verdict that
+contradicts its own evidence.
+
+The branch's own comment claimed it drew "the same distinction the container path draws". It did not:
+`_verify_container_state_inner` returns a verdict with **no score key at all** when `cp_out` fails, and
+`runner.py:1120-1131` states the rule in prose - "A check that never ran is not a zero ... recording 0.0
+would blame the harness for a task nobody measured."
+
+The fix
+-------
+`score: None`, `outcome: "unmeasured"` and `unmeasured: <reason>` in that branch, with the check's own
+more specific `evidence["error"]` kept when it says it could not measure the task at all. The comment is
+corrected and records the measurement above. No other branch changes.
+
+Tests changed, and why each change preserves its intent
+-------------------------------------------------------
+* `test_exec_verdict_missing_new_reward_is_zero` -> renamed
+  `test_exec_verdict_missing_new_reward_is_unmeasured_not_zero`, asserting `score is None`,
+  `outcome == "unmeasured"` and the reason text. The old name and assertion required the defect.
+* Three security-property tests asserted `score == 0.0` incidentally, to show a pre-planted / stale /
+  symlinked `reward.txt` containing `1.0` was not adopted: `test_exec_verdict_ignores_precreated_reward_and_evidence`,
+  `test_exec_verdict_does_not_follow_subject_symlink`, `test_host_verdict_clears_precreated_files_and_rejects_symlink_parent`.
+  Their property is "the planted value is not adopted", which under the corrected branch shows as **no
+  published score plus an unmeasured outcome**; each assertion now says that, with a comment, and each
+  still asserts the planted `1.0\n` file is untouched or cleared as before. No assertion was deleted.
+* New `test_a_measured_result_is_never_published_as_zero_when_only_the_reward_is_lost` pins the
+  reproduced case directly: `score is None`, `outcome == "unmeasured"`, and the bound evidence is
+  preserved with `measured: true, score: 1.0`.
+
+Validation
+----------
+$ python3 -m pytest tests/quality/test_verifier.py -q
+23 passed
+$ python3 -m pytest tests/quality/test_verifier.py tests/quality/test_trials_and_unmeasured.py \
+    tests/quality/test_isolation.py tests/quality/test_dataset_blockers.py \
+    tests/quality/test_adapters.py tests/quality/test_aggregation_policies.py -q
+170 passed, 9 skipped, 2 failed
+
+The two failures are **not** from this change, and both were checked against `main` directly:
+* `test_snapshot_covers_the_referee_not_the_candidate` needs the gitignored `.env`, which does not exist
+  in a fresh worktree; it passes on `main`.
+* `test_the_harness_cannot_read_the_platform_or_its_answers` fails on `main` as well
+  (`AssertionError: 平台的沙箱里还有东西:None`), so it is pre-existing.
+
+What this does NOT do
+---------------------
+* It does not touch the `reward_file`-present path, the container path, aggregation, admission or any
+  blocker, and it does not reclassify any historical receipt.
+* It does not claim the SpreadsheetBench synthetic stale-cache failure is fixed: a real LibreOffice
+  conversion that retains authored stale caches and still publishes `measured: true, score: 0.0`
+  remains an open question recorded by `w-spreadrt`, separate from this reward-transport defect.

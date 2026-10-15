@@ -45,7 +45,11 @@ def test_exec_verdict_ignores_precreated_reward_and_evidence(tmp_path, monkeypat
         verdict = __import__("eval.verification.verifier", fromlist=["_verify"])._verify(
             work, _exec_file_spec(), "", sandbox=True, timeout_s=2,
             env={"kind": "exec", "image": "repo@sha256:" + "a" * 64, "workdir": "/app"})
-    assert verdict["score"] == 0.0 and verdict["passed"] is False
+    # The property under test is that the pre-planted `1.0` is NOT adopted. That used to be
+    # asserted as score == 0.0, which also published a zero for a task nobody judged; under
+    # the corrected branch it shows as *no published score* plus an unmeasured outcome.
+    assert verdict["score"] is None and verdict["passed"] is False
+    assert verdict["outcome"] == "unmeasured"
     assert stale.exists() and (stale / "reward.txt").read_text() == "1.0\n"
 
 
@@ -63,11 +67,13 @@ def test_exec_verdict_does_not_follow_subject_symlink(tmp_path):
         verdict = __import__("eval.verification.verifier", fromlist=["_verify"])._verify(
             work, _exec_file_spec(), "", sandbox=True, timeout_s=2,
             env={"kind": "exec", "image": "repo@sha256:" + "b" * 64, "workdir": "/app"})
-    assert verdict["score"] == 0.0
+    # Same property: the symlinked reward outside the subject is not adopted, which now
+    # means no published score rather than a published zero.
+    assert verdict["score"] is None and verdict["outcome"] == "unmeasured"
     assert (outside / "reward.txt").read_text() == "1.0\n"
 
 
-def test_exec_verdict_missing_new_reward_is_zero(tmp_path):
+def test_exec_verdict_missing_new_reward_is_unmeasured_not_zero(tmp_path):
     from unittest.mock import patch
     work = tmp_path / "task"
     work.mkdir()
@@ -77,7 +83,42 @@ def test_exec_verdict_missing_new_reward_is_zero(tmp_path):
         verdict = __import__("eval.verification.verifier", fromlist=["_verify"])._verify(
             work, _exec_file_spec(), "", sandbox=True, timeout_s=2,
             env={"kind": "exec", "image": "repo@sha256:" + "c" * 64, "workdir": "/app"})
-    assert verdict["score"] == 0.0 and "wrote no" in verdict["detail"]
+    # A missing reward file is an infrastructure outcome, never a zero. This assertion used
+    # to require score == 0.0, which published a zero for a task the platform could not
+    # judge; the container path already draws the line by returning no score at all.
+    assert verdict["score"] is None
+    assert verdict["outcome"] == "unmeasured" and "wrote no" in verdict["unmeasured"]
+    assert "wrote no" in verdict["detail"]
+
+
+def test_a_measured_result_is_never_published_as_zero_when_only_the_reward_is_lost(tmp_path):
+    """Regression for the synthetic reward-transport fault injection, 2026-10-15.
+
+    A real check can exit 0, print `reward 1`, and write evidence carrying
+    `measured: true, score: 1.0`, while the reward *file* is lost. The old branch published
+    `score: 0.0` with no `unmeasured` flag, so the verdict contradicted its own bound
+    evidence. It must instead refuse to publish a score.
+    """
+    import json as _json
+    import subprocess as _subprocess
+    from unittest.mock import patch
+    work = tmp_path / "loss"
+    (work / "verify").mkdir(parents=True)
+    (work / "verify" / "check.py").write_text(
+        "import json, pathlib\n"
+        "ev = pathlib.Path('verify/evidence.json')\n"
+        "ev.write_text(json.dumps({'measured': True, 'score': 1.0, 'reward': 1.0}))\n"
+        "print('reward 1: authored')\n", encoding="utf-8")
+    spec = {"kind": "command", "argv": ["python3", "verify/check.py"],
+            "reward_file": "/verify/reward.txt", "evidence_file": "/verify/evidence.json",
+            "timeout_s": 30}
+    import eval.verification.verifier as V
+    verdict = V._verify(work, spec, "", sandbox=False, timeout_s=30, env={"kind": "files"})
+    assert verdict["score"] is None, "a lost reward must not become a published zero"
+    assert verdict["outcome"] == "unmeasured"
+    assert verdict["unmeasured"] and "wrote no" in verdict["unmeasured"]
+    assert verdict["evidence"]["measured"] is True
+    assert verdict["evidence"]["score"] == 1.0, "the bound evidence is preserved as-is"
 
 
 def test_exec_verdict_timeout_is_not_a_forged_score(tmp_path):
@@ -106,7 +147,9 @@ def test_host_verdict_clears_precreated_files_and_rejects_symlink_parent(tmp_pat
                return_value=subprocess.CompletedProcess(["python3"], 0, "", "")):
         verdict = __import__("eval.verification.verifier", fromlist=["_verify"])._verify(
             work, verifier, "", sandbox=False, timeout_s=2, env={"kind": "files"})
-    assert verdict["passed"] is False and verdict["score"] == 0.0
+    # Same property for the host/files path: the pre-created reward is cleared, not adopted.
+    assert verdict["passed"] is False and verdict["score"] is None
+    assert verdict["outcome"] == "unmeasured"
 
     outside = tmp_path / "outside"
     outside.mkdir()

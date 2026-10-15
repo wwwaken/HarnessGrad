@@ -725,21 +725,33 @@ def _verify_inner(workdir: Path, verifier: dict | None, answer: str,
                     else _read_json(evidence_file))
 
         if got is None or got.is_symlink() or not got.is_file():
-            # No reward file: the check did not reach a verdict. If it also left no
-            # evidence, the platform cannot say what happened; if it left evidence that
-            # says `measured: false`, the task was not measured rather than failed --
-            # the same distinction the container path draws, and the reason a bare 0 is
-            # not an acceptable output.
+            # No reward file: the check did not reach a publishable verdict. **That is an
+            # infrastructure outcome and never a zero.**
+            #
+            # This branch used to publish `score: 0.0` and add `unmeasured` only when the
+            # evidence said `measured: false`, and its comment claimed it drew "the same
+            # distinction the container path draws". Both were wrong. The container path
+            # draws that line by returning a verdict with **no score at all**
+            # (`_verify_container_state_inner`, the `cp_out` failure above), and a missing
+            # reward file says nothing about the artifact: a real check can exit 0, print
+            # `reward 1`, write evidence with `measured: true, score: 1.0`, and lose only
+            # the reward file. Measured 2026-10-15 by a synthetic reward-transport fault
+            # injection: that case produced `score: 0.0, passed: false`, no `unmeasured`,
+            # and a verdict whose own bound evidence still carried `score: 1.0` -- a
+            # published zero for a task that was measured successfully.
             why = f"the check wrote no {spec['reward_file']} (looked for {got}), exit {code}"
-            verdict = {"kind": kind, "passed": False, "score": 0.0,
+            reason = why
+            if isinstance(evidence, dict) and evidence.get("measured") is False:
+                # Keep the check's own, more specific reason when it says it could not
+                # measure the task at all.
+                reason = str(evidence.get("error") or why)
+            verdict = {"kind": kind, "passed": False, "score": None,
+                       "outcome": "unmeasured", "unmeasured": reason,
                        "detail": " | ".join(p for p in
                                             [why, _check_output_detail(out, proc.stderr)]
                                             if p)[:VERDICT_DETAIL_LIMIT]}
             if evidence is not None:
                 verdict["evidence"] = evidence
-                if evidence.get("measured") is False:
-                    verdict["unmeasured"] = str(
-                        evidence.get("error") or "the check could not measure the task")
             return verdict
 
         raw = got.read_text().strip()
