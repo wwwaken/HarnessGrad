@@ -4235,3 +4235,38 @@ clean; all four named deliverables present.
 - Every launched task used a fresh ID and external work root, unchanged loop/train diagnostic admission, rounds=0/trials=1/jobs=1, HG_TB_SPLIT=none and HG_EGRESS_PROXY=http://172.17.0.1:17890. Worker concurrency stayed one with direct qwen3.5-9b-local at http://127.0.0.1:8002/v1; pre-existing operator proxy sharing was observed and permitted. No operator process or model server was changed. Native publication receipts available=6, missing=1; observed native publication measured=0, invalid=5, unmeasured=1, scores null. Missing publication is not fabricated; unknown enforcement stays unknown.
 - Complete retained artifact roots: `/tmp/w-tb89d-runs-20261015T051838Z-f0b311e1`, `/tmp/w-tb89d-supplement-runs-20261015T054835Z-c6d5f501`. The hash-bound packet, source/image/scorer/manifest/model identities, resource/snapshot/cleanup observations and raw invalid/interruption evidence are indexed in reports/w-tb89d-receipts.md and reports/w-tb89d-evidence/. No complete offline transitive closure, comparable performance or trusted production admission follows.
 - Only scorer-offline-closure observed/evidence is appended at this precise S4 scope. S4 remains PARTIAL; no shared or dataset blocker closes. All statuses, next_actions, dataset/history records, gates and production_authorized=false remain unchanged. Runtime/task/test/reference/method code, repository runs/ and frozen receipts are untouched. Validation: reports/w-tb89d-validation.txt. Commit only in registered /tmp/hg-tb89d for parent review; main is untouched.
+## Repository hygiene repair — 516 MB of downloaded payloads removed from history — 2026-10-15
+
+- **What went wrong, stated plainly.** Across this phase the live-evidence workers downloaded real
+  packages and saved upstream HTTP bodies, and the parent merged every packet without ever bounding
+  the repository footprint. `.git` reached **542 MB**; 57 tracked files exceeded 1 MB and totalled
+  **516 MB** (a 171.5 MB Intel MKL conda package, a 45.4 MB PyArrow wheel, a 42.5 MB saved archive
+  body, a 33.9 MB spaCy wheel, a 20.4 MB uv tarball, and more). My briefs said to preserve raw
+  evidence but never said the downloaded *payload* must stay out of git, and my merge routine ran
+  only the registry checker and focused tests - never a size or binary-content check. Both halves of
+  that omission are mine.
+- **Nothing was pushed.** `origin/main` was 205 commits behind and contained none of the large
+  blobs, so the damage was local to this checkout.
+- **The repair.** Worktrees were handled first: `/tmp/hg-hostpin2`'s interrupted, unreviewed work was
+  committed to its branch so cleanup could not destroy it, then 112 registered worktrees were
+  removed (all 120 branches kept). Two `git filter-repo` passes: `--strip-blobs-bigger-than 1M`
+  (542 MB -> 52 MB) and `--invert-paths` over the payload classes `whl|conda|deb|tar.gz|tar.bz2|
+  tgz|zip|body|body.gz|strace.txt|readelf.stdout.txt|incomplete` under `tests/fixtures/` and
+  `reports/` (52 MB -> 32 MB). `.gitignore` now covers every removed class and was tested against
+  real paths. **`.git` is 32 MB; zero payload-class files remain in history.**
+- **Consequences the record must carry.** Every commit SHA changed, including the operator's
+  commits - content preserved, identity not. filter-repo also removed the `origin` remote by design;
+  it was restored as a fetch remote and **nothing was pushed**, because a normal push would now be
+  non-fast-forward and a forced push would rewrite public history. The payloads were also removed
+  from the working tree by the rewrite's checkout (`tests/fixtures` 723 MB -> 177 MB); they are
+  reproducible from the recorded URLs and digests, and the *evidence* - the recomputed digest lists
+  and verification scripts - is intact.
+- **A new standing check.** Every merge from now on reports the largest blob added by each commit
+  and refuses to proceed silently if one exceeds 1 MB. It was exercised on the two merges below.
+- Merged after the rewrite: `3f1c9713`/`eaa47ac6` (w-hp3) and `41ca773b` (w-tb89d), both passing
+  the size check. **w-hp3** extended the sealed native closure from BIRD to Jericho and ALFWorld,
+  taking pinned native userland from 1/7 to **3/7** with mismatch refusal intact (124 tests plus 4
+  traced controls). **w-tb89d** raised Terminal-Bench verifier coverage from 9/89 to **10/89** by
+  running seven tasks serially and **excluding six** - four missing CTRF, one interruption, one
+  timeout - rather than counting them. Result `6fe44a7d`; registry valid, sequencer clean, 56
+  focused tests passed.
