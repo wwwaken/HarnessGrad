@@ -71,6 +71,14 @@ locator `## Exact registry wording`; its carrier was the withdrawn shared blocke
 
 ## Dataset requirements withdrawn as unobtainable
 
+### reasoning_gym / original-generation-process-receipt
+Asked for: original pool generation invocation, interpreter/build and dependency-artifact lock, effective clock/timezone/date and hash state/order bound to c0ff4eaef318cd59afcc61472ebe206362fc0211c4b589ed0d53946a569bd177, and exact reproduction from recorded original inputs.
+Searched: 733 enumerated Codex session snapshots plus ~/.codex/history.jsonl, ~/.bash_history and 5 archived files; 137 local branches and all 23773 stored main Git objects, reflogs/stash; 395197 enumerated Study regular files (393833 permitted raw files), 2149 resolved symlinks, 180 independent Study Git stores, 2 backup dot-git stores, 2 nested main Git stores and 985 magic-detected archives; own/main runs, discarded runs, state and fixtures;64859 census files. Scope excludes 1364 prohibited-dataset payload paths and 6 encrypted GPQA archive members; these contents remain UNKNOWN. Exact commands, per-scope hits/misses, manifests and explicit exclusions/errors are in registry/w-recgym-receipts.md and registry/w-recgym-validation.txt.
+Result: the retained records did not capture the required original process fields; no original launch receipt is present in the searched readable/permitted corpus. The documented generator recipe and digest pin exist, but the original invocation, environment, clock/timezone and hash state remain UNKNOWN. Whether a record was never captured or later deleted is UNKNOWN; no historical or unrestricted-machine absence is asserted. Withdraw only the requirement to produce original records unavailable from this corpus; preserve the installed pool, seed/families/order, failed 84-row/six-family regeneration evidence and all independent behavioral/metric/runtime uncertainties. No exact reproduction, zero score, scorer closure, shared-gate reinstatement or diagnostic authorization is inferred.
+**Why it cannot be advanced here:** the pool was generated **on this machine** from a declared recipe and seed; no upstream or third-party publication can hold the producing process record, and the entire readable/permitted on-machine corpus has been enumerated and is empty. The entry does not assert that the fields were never captured, and it does not assert any historical or unrestricted-machine absence.
+**Retained:** the installed pool and its `c0ff4eae...` digest, the declared seed/families/order, the 84-row/six-family failed-regeneration evidence, and every independent behavioural, metric and runtime uncertainty remain recorded. No exact reproduction, zero score, scorer closure, shared-gate reinstatement or diagnostic authorization is inferred.
+
+
 ### `hotpotqa / historical-comparison-receipts / original-v4-receipts`
 **Former status:** `measurement` within an active blocker that stays open; this sub-requirement is
 withdrawn.

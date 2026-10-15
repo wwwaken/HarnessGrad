@@ -34,10 +34,10 @@ the artefact.
 | `appworld / successful-task-evidence` | measurement | open, diagnostic AUTHORIZED | `PENDING-RUN` |
 | `spreadsheetbench / dataset-journal-gap` | measurement | open | `PENDING-RUN`, `PENDING-WORK` |
 | `bfcl_v3 / simple-ast-contract` | external | open | `PENDING-WORK`, then `PENDING-RUN` |
-| `fever / dataset-journal-gap` | measurement | open | `PENDING-UPSTREAM`, one naming decision |
-| `strategyqa / dataset-journal-gap` | measurement | open | `PENDING-UPSTREAM` |
-| `reasoning_gym / dataset-journal-gap` | measurement | open | `PENDING-UPSTREAM`, `PENDING-WORK` |
-| `triviaqa / hub-export-scorer-linkage` | external | open | `PENDING-UPSTREAM`, `PENDING-WORK` |
+| `fever / dataset-journal-gap` | measurement | open | `PENDING-UPSTREAM` (w-fevhub in flight) |
+| `strategyqa / dataset-journal-gap` | measurement | open | original scorer FOUND and DIFFERENT; split membership `PENDING-UPSTREAM` |
+| `reasoning_gym / dataset-journal-gap` | measurement | open | generation receipt `LIMIT-RECORDED`; behavioural eligibility DONE |
+| `triviaqa / hub-export-scorer-linkage` | external | open | membership/scorer/denominator review DONE; execution receipt `PENDING-UPSTREAM` |
 | `hotpotqa / historical-comparison-receipts` | measurement | open | `LIMIT-RECORDED` |
 
 ## The four permanent refusals

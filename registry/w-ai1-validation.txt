@@ -1,0 +1,78 @@
+Parent integration of four worker results: reasoning_gym eligibility + generation limit, strategyqa
+scorer, triviaqa metadata review.
+
+Commits cherry-picked onto main 0ee86ef3: 59f2afcb (w-gymelig), 734c3aa2 (w-stratqa),
+1be5d2d5 (w-trivia2), e974112b (w-recgym). All four are additive text packets; every packet is fully
+tracked (`git ls-files` count equals the on-disk count for hg_gymelig/hg_stratqa/hg_trivia2) and no
+added blob is >= 1 MB.
+
+Independent parent verification of the load-bearing claims
+----------------------------------------------------------
+* w-stratqa's scorer identity: `sha256sum tests/fixtures/hg_stratqa/original-eval.py.txt` recomputes
+  `68c0edcd2fd26daf2cec368302d9f564cbf351288aa4a2c265f47bdc00704044`, exactly the digest the
+  proposal binds to `allenai/strategyqa-evaluator@49b88ed2b2f1b57385c13e8a0699dee1d227f83e`.
+* w-gymelig's control: `tests/fixtures/hg_gymelig/verdicts.json` records
+  `pool_before == pool_after == {bytes 3315981, sha256 c0ff4eae...}` (the registry's own pool pin, so
+  the frozen pool was not overwritten), `summary = {families_tested 89, rows_tested 1780,
+  score_calls 3560, reference_full_credit 89, empty_zero 89, exceptions 0, refusals 0,
+  constructor_exceptions 0, non_eligible []}`, `guards = {package_getitem_forbidden true,
+  network_and_child_processes_forbidden true, writes_outside_scratch_forbidden true,
+  cuda_visible_devices ""}`, `model_outputs_scored 0`, `production_authorized false`, and bounded
+  resource limits (300 s soft CPU, 4 GiB address space, single affinity).
+* w-recgym and w-trivia2 both state their own limits rather than overstating: w-recgym asserts
+  "never-captured versus later-deleted is not established" and no historical or unrestricted-machine
+  absence, and w-trivia2 reports `execution_receipt_outcome: unknown` with
+  `withdrawal_entry: null` plus "no standing-limit withdrawal is justified".
+
+Applied changes
+---------------
+* `reasoning_gym / dataset-journal-gap`: `next_action` 1382 -> 2196 chars, `observed` 5058 -> 7864.
+  Two workers touched this blocker, so their drafts were **merged**, not applied in sequence (a
+  sequential apply would have let the second overwrite the first). The merged value keeps the exact
+  frozen-pool custody and 84-row/six-family failed-regeneration evidence, records the original
+  generation-process metadata and seed-only reproduction as unavailable limits, records the
+  behavioural eligibility control at its exact scope (89 families / 1780 rows / 3560 calls, explicitly
+  NOT pristine-verifier behaviour, arbitrary-answer robustness, measured execution or authorization),
+  and keeps every diagnostic-time obligation and the first-five packet caveat.
+* `strategyqa / dataset-journal-gap`: `next_action` 1615 -> 2121, `observed` 4963 -> 6597. The original
+  answer scorer is now **FOUND and bound**; the comparability determination is **different** (raw
+  Python equality with a full supplied-gold denominator versus local normalized whole-answer EM). The
+  original split membership stays **undetermined** - the code README calls its own 90/10 split
+  unofficial while the paper describes annotator-based Train/Test - and the blocker stays open on it.
+* `triviaqa / hub-export-scorer-linkage`: `next_action` 955 -> 1731, `observed` 2774 -> 3837. The
+  metadata-only membership/scorer-key/denominator review is discharged. The worker's replacement
+  dropped two factual cautions the parent judged load-bearing, so the parent **strengthened** it with
+  "The inspected authoritative public record supplies ancestry and output declarations but no immutable
+  execution receipt." before applying; the remaining acknowledged drop is carried by the worker's own
+  "Do not infer execution, member equality, unique-key denominator or HumanAnswers redundancy from
+  ancestry, predecessor blobs, counts, filenames, ETags or converter names."
+* `registry/withdrawn-requirements.md`: new entry
+  `### reasoning_gym / original-generation-process-receipt`, using the worker's Asked-for/Searched/
+  Result text plus a parent Why/Retained tail. The pool was generated on this machine, so no upstream
+  source can hold the producing record; the entry explicitly declines to assert never-captured and
+  declines any unrestricted-machine absence.
+
+Acknowledged drops (each read; the replacement carries the substance unless noted)
+---------------------------------------------------------------------------------
+reasoning_gym (2): the "recover ... and reproduce" clause is intentionally replaced by a recorded
+limit - that is the withdrawal itself; "the operator selection packet is separate evidence" is carried
+by the retained first-five sentence.
+strategyqa (1): "metric and split comparability ... remains undetermined" is superseded - the metric is
+now determined as different and the split remains undetermined, which the replacement states.
+triviaqa (1): the ancestry/predecessor-blob caution, carried as quoted above.
+
+Validation
+----------
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+$ python3 -m pytest <the nine registry-reading guard modules> -q
+150 passed, 12 skipped, 0 failed
+
+What this does NOT do
+---------------------
+* No blocker closes here. Open blockers remain **12**: the four permanent refusals plus `appworld`,
+  `bfcl_v3`, `fever`, `hotpotqa`, `reasoning_gym`, `spreadsheetbench`, `strategyqa`, `triviaqa`.
+* No scorer, model, benchmark, dataset row or GPU was used by the parent; all four workers are
+  source-only or CPU-only controls and each says so.
+* No historical record, frozen receipt or run ID is touched, and no withdrawn shared gate is
+  reinstated.
