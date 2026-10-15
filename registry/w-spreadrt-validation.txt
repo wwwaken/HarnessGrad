@@ -1,0 +1,1328 @@
+w-spreadrt validation: worker evidence only; branch wg-spreadrt.
+Worktree: /mnt/20t/xubuqiang/hg-wt/w-spreadrt
+Scratch/TMPDIR: /mnt/20t/xubuqiang/hg-work/spreadrt/tmp (outside / and platform tree).
+Exact evidence-generation invocations and exact observed outputs follow. Internal subprocess argv/output are also embedded verbatim in referenced JSON/text receipts.
+Initial failed executions are retained separately; no historical receipt/run ID was reused.
+Initial packet citation validation command: python3 tests/fixtures/hg_spreadrt/validate_packet.py; exit 1. Observed final exception: AssertionError: [['registry/w-spreadrt-runtime.md', 'tests/fixtures/hg_spreadrt/checker-only-tests.txt', '1', '14']]. Read-only wc -l confirmed 12 lines; the report citation endpoint was corrected to 12.
+Read-only exploration: pwd; cat AGENTS.md; git status --short --branch; git worktree list --porcelain; nl -ba source files; rg source/fixture filenames. No main checkout content was modified.
+Initial pwd output: /mnt/20t/xubuqiang/hg-wt/w-spreadrt; git status output: ## wg-spreadrt
+
+COMMAND: export TMPDIR=/mnt/20t/xubuqiang/hg-work/spreadrt/tmp; export PYTHONDONTWRITEBYTECODE=1; python3 tests/fixtures/hg_spreadrt/inventory.py > tests/fixtures/hg_spreadrt/inventory-output.txt 2>&1
+OBSERVED EXIT: 0
+EXACT OUTPUT (inventory-output.txt):
+inventory=tests/fixtures/hg_spreadrt/dependency-inventory.json
+python=3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]
+abi=cpython-312-x86_64-linux-gnu
+openpyxl_flags={"DEFUSEDXML": true, "LXML": true, "NUMPY": true}
+conda_closure_packages=54
+matching_cached_archives=281
+search_errors=[{"error": "[Errno 13] Permission denied: '/opt/containerd'", "scope": "/opt"}, {"error": "root does not exist", "scope": "/tmp/hg-wwheelhouse-payloads-e5uywviu"}, {"error": "[Errno 13] Permission denied: '/tmp/pip-ephem-wheel-cache-hh0ewg2_'", "scope": "/tmp/pip-ephem-wheel-cache-hh0ewg2_"}, {"error": "[Errno 13] Permission denied: '/tmp/pip-ephem-wheel-cache-u3quqp9h'", "scope": "/tmp/pip-ephem-wheel-cache-u3quqp9h"}, {"error": "[Errno 13] Permission denied: '/tmp/pip-ephem-wheel-cache-xpe4fqg5'", "scope": "/tmp/pip-ephem-wheel-cache-xpe4fqg5"}]
+
+COMMAND: Same inventory command before egg-info correction; output preserved by mv inventory-output.txt inventory-initial-output.txt
+OBSERVED EXIT: 1
+EXACT OUTPUT (inventory-initial-output.txt):
+Traceback (most recent call last):
+  File "/mnt/20t/xubuqiang/hg-wt/w-spreadrt/tests/fixtures/hg_spreadrt/inventory.py", line 75, in <module>
+    'metadata': file_record(Path(d._path) / 'METADATA')}
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/20t/xubuqiang/hg-wt/w-spreadrt/tests/fixtures/hg_spreadrt/inventory.py", line 29, in file_record
+    return {'path': str(p), 'resolved': str(p.resolve()), 'bytes': p.stat().st_size,
+                                                                   ^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py", line 840, in stat
+    return os.stat(self, follow_symlinks=follow_symlinks)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/mkl_service-2.4.0-py3.12.egg-info/METADATA'
+
+COMMAND: export TMPDIR=/mnt/20t/xubuqiang/hg-work/spreadrt/tmp; export PYTHONDONTWRITEBYTECODE=1; python3 tests/fixtures/hg_spreadrt/summarize.py > tests/fixtures/hg_spreadrt/summary-output.txt 2>&1
+OBSERVED EXIT: 0
+EXACT OUTPUT (summary-output.txt):
+dependency_summary=tests/fixtures/hg_spreadrt/dependency-summary.txt
+installed_source_excerpts=tests/fixtures/hg_spreadrt/installed-source-excerpts.txt
+engine_installed_files_hashed=3085
+all_conda_closure_archives_found=True
+
+COMMAND: export TMPDIR=/mnt/20t/xubuqiang/hg-work/spreadrt/tmp; export PYTHONDONTWRITEBYTECODE=1; python3 tests/fixtures/hg_spreadrt/scorer_custody.py > tests/fixtures/hg_spreadrt/scorer-custody-output.txt 2>&1
+OBSERVED EXIT: 0
+EXACT OUTPUT (scorer-custody-output.txt):
+data/datasets/spreadsheetbench/verify/check.py sha256=e7131a2649a89d818a73b6b83e1b66892e41b93c53a7fee8330749146ad3ee46
+registry/w-metriccmp-sources/spreadsheetbench-evaluation.py.txt sha256=7cbddc1a31ade2a1bb87047a1dcaa293911fdeefc046c1fe796f5436af11a0a6
+transform_value AST_equal_ignoring_docstrings=True
+datetime_to_float AST_equal_ignoring_docstrings=True
+compare_cell_value AST_equal_ignoring_docstrings=True
+col_num2name AST_equal_ignoring_docstrings=True
+col_name2num AST_equal_ignoring_docstrings=True
+parse_cell_range AST_equal_ignoring_docstrings=True
+generate_cell_names AST_equal_ignoring_docstrings=False
+scope=source-only; adapted workbook/comparison/error policy is separate; no official execution
+
+COMMAND: export TMPDIR=/mnt/20t/xubuqiang/hg-work/spreadrt/tmp; export PYTHONDONTWRITEBYTECODE=1; python3 tests/fixtures/hg_spreadrt/run_synthetic.py > tests/fixtures/hg_spreadrt/synthetic-launch-output.txt 2>&1
+OBSERVED EXIT: 1
+EXACT OUTPUT (synthetic-launch-output.txt):
+Traceback (most recent call last):
+  File "/mnt/20t/xubuqiang/hg-wt/w-spreadrt/tests/fixtures/hg_spreadrt/run_synthetic.py", line 37, in <module>
+    assert proc.returncode == 0
+           ^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+COMMAND: Same launch command before scratch-backed /tmp bind and absent-reward reporting; outputs preserved by mv synthetic-output.txt synthetic-initial-output.txt and mv synthetic-launch-output.txt synthetic-initial-launch-output.txt
+OBSERVED EXIT: 1
+EXACT OUTPUT (synthetic-initial-launch-output.txt):
+Traceback (most recent call last):
+  File "/mnt/20t/xubuqiang/hg-wt/w-spreadrt/tests/fixtures/hg_spreadrt/run_synthetic.py", line 29, in <module>
+    assert any('/soffice.bin' in line and '--convert-to' in line for line in successful)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+COMMAND: export TMPDIR=/mnt/20t/xubuqiang/hg-work/spreadrt/tmp; export PYTHONDONTWRITEBYTECODE=1; /usr/bin/bwrap --unshare-net --ro-bind / / --bind /mnt/20t/xubuqiang/hg-work/spreadrt /mnt/20t/xubuqiang/hg-work/spreadrt --bind /mnt/20t/xubuqiang/hg-work/spreadrt/tmp /tmp --proc /proc -- python3 tests/fixtures/hg_spreadrt/reward_loss_control.py > tests/fixtures/hg_spreadrt/reward-loss-output.txt 2>&1
+OBSERVED EXIT: 0
+EXACT OUTPUT (reward-loss-output.txt):
+label=synthetic reward-transport fault injection; no dataset execution
+real_scorer_argv=["python3", "check.py", "--workdir", ".", "--reward-file", "verifier/reward.txt", "--evidence-file", "verifier/evidence.json", "--task-id", "authored-reward-loss", "--scorer-input-sha256", "dae1f1ca4486df0a46184c69fe769043e140ea94395df0d836b0239dae3fd299", "--scorer-input-files", "{\"golden.xlsx\": \"d424bfff4e76b5e8599e2c2c848445489aa3d71dab995e11d3a1911fa9067b24\", \"task.json\": \"614fb6e8f287fc75b50705e11ccacaa09e9a213f2a20b7d8a8b4367d882d2665\"}"]
+real_scorer_exit=0
+real_scorer_stdout='reward 1: the named cells hold the reference values\n'
+real_scorer_stderr=''
+reward_before_injected_loss='1\n'
+fault_injected=unlink authored reward after successful real scorer process
+verdict={"detail": "the check wrote no /verifier/reward.txt (looked for /mnt/20t/xubuqiang/hg-work/spreadrt/reward-loss-d2e518f0d06c4ebd915cc499112184de/verifier/reward.txt), exit 0 | stdout reward 1: the named cells hold the reference values", "evidence": {"answer_file": "answer.txt", "answer_position": "Synthetic!A1", "correct": true, "golden": "/tmp/hg-scorer-input-ia5r2jn6/golden.xlsx", "instruction_type": "synthetic", "measured": true, "named_result": "result.xlsx", "recalculated": false, "result_exists": true, "reward": 1.0, "score": 1.0, "scorer_input": {"expected_sha256": "dae1f1ca4486df0a46184c69fe769043e140ea94395df0d836b0239dae3fd299", "files": {"golden.xlsx": "d424bfff4e76b5e8599e2c2c848445489aa3d71dab995e11d3a1911fa9067b24", "task.json": "614fb6e8f287fc75b50705e11ccacaa09e9a213f2a20b7d8a8b4367d882d2665"}, "path": "native-inputs", "sha256": "dae1f1ca4486df0a46184c69fe769043e140ea94395df0d836b0239dae3fd299", "task_id": "authored-reward-loss", "verified": true}, "task_id": "authored-reward-loss", "why": "the named cells hold the reference values"}, "kind": "command", "passed": false, "score": 0.0, "scorer_isolation_class": "actor-workdir", "scorer_isolation_declared": "unknown"}
+infrastructure_failure_as_zero=YES; matching bound evidence survives while reward disappears
+synthetic_work_removed=True
+
+COMMAND: Same reward-loss launch before adding selected task_id to _verify; output preserved by mv reward-loss-output.txt reward-loss-initial-output.txt
+OBSERVED EXIT: 1
+EXACT OUTPUT (reward-loss-initial-output.txt):
+label=synthetic reward-transport fault injection; no dataset execution
+verdict={"kind": "command", "passed": false, "score": null, "scorer_isolation_class": "actor-workdir", "scorer_isolation_declared": "unknown", "unmeasured": "scorer input does not belong to selected task"}
+Traceback (most recent call last):
+  File "/mnt/20t/xubuqiang/hg-wt/w-spreadrt/tests/fixtures/hg_spreadrt/reward_loss_control.py", line 56, in <module>
+    assert verdict['score'] == 0.0 and 'unmeasured' not in verdict
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+COMMAND: export TMPDIR=/mnt/20t/xubuqiang/hg-work/spreadrt/tmp; export PYTHONDONTWRITEBYTECODE=1; python3 -m pytest -q tests/quality/test_spreadsheetbench_classification_w_spread2.py --basetemp=/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification > tests/fixtures/hg_spreadrt/classification-tests.txt 2>&1
+OBSERVED EXIT: 1
+EXACT OUTPUT (classification-tests.txt):
+.....................FFFFFFFFFFFFFFFFFFFFF                               [100%]
+=================================== FAILURES ===================================
+_ test_classification_survives_verifier_persistence_and_aggregation[unparseable-range] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify...r_input.py'}], 'kind': 'command', ...}, 0.0, 'not a cell range', <function scenario.<locals>.invoke at 0x715cef5cc180>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef628a70>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v0')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+            assert reason in verdict["unmeasured"]
+            assert result["per_task"] == result["per_task_trials"] == {}
+            assert result["trial_verdicts"] == result["verdicts"] == {}
+            assert result["invalid"]["synthetic-spread"]["stage"] == "check"
+            assert reason in persisted["invalid"]["detail"]
+            assert not {"score", "trial_scores", "complete"}.intersection(persisted)
+            assert cache == {}
+        else:
+>           assert "unmeasured" not in verdict
+E           AssertionError: assert 'unmeasured' not in {'kind': 'command', 'passed': False, 'score': None, 'scorer_isolation_class': 'actor-workdir', ...}
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:220: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[released-unparseable-range] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify...ind': 'command', ...}, 0.0, 'official-equivalent measured zero', <function scenario.<locals>.invoke at 0x715cef590f40>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef5a98b0>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v1')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+            assert reason in verdict["unmeasured"]
+            assert result["per_task"] == result["per_task_trials"] == {}
+            assert result["trial_verdicts"] == result["verdicts"] == {}
+            assert result["invalid"]["synthetic-spread"]["stage"] == "check"
+            assert reason in persisted["invalid"]["detail"]
+            assert not {"score", "trial_scores", "complete"}.intersection(persisted)
+            assert cache == {}
+        else:
+>           assert "unmeasured" not in verdict
+E           AssertionError: assert 'unmeasured' not in {'kind': 'command', 'passed': False, 'score': None, 'scorer_isolation_class': 'actor-workdir', ...}
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:220: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[parser-exception] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify...y'}], 'kind': 'command', ...}, None, 'synthetic parser failure', <function scenario.<locals>.invoke at 0x715cef592f20>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef6b4e00>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v2')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+>           assert reason in verdict["unmeasured"]
+E           AssertionError: assert 'synthetic parser failure' in 'scorer input does not belong to selected task'
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:212: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[result-vanished] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify...}], 'kind': 'command', ...}, None, 'unavailable for comparison', <function scenario.<locals>.invoke at 0x715cef60ac00>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef4becc0>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v3')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+>           assert reason in verdict["unmeasured"]
+E           AssertionError: assert 'unavailable for comparison' in 'scorer input does not belong to selected task'
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:212: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[golden-load] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify...ut.py'}], 'kind': 'command', ...}, None, 'workbook load failed', <function scenario.<locals>.invoke at 0x715cef60a980>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef629670>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v4')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+>           assert reason in verdict["unmeasured"]
+E           AssertionError: assert 'workbook load failed' in 'scorer input does not belong to selected task'
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:212: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[result-load] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify...ut.py'}], 'kind': 'command', ...}, None, 'workbook load failed', <function scenario.<locals>.invoke at 0x715cef495080>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef716420>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v5')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+>           assert reason in verdict["unmeasured"]
+E           AssertionError: assert 'workbook load failed' in 'scorer input does not belong to selected task'
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:212: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[formula-probe-load] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify...input.py'}], 'kind': 'command', ...}, None, 'formula detection', <function scenario.<locals>.invoke at 0x715cef5cf420>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef6b7920>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v6')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+>           assert reason in verdict["unmeasured"]
+E           AssertionError: assert 'formula detection' in 'scorer input does not belong to selected task'
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:212: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[comparator-exception] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify..., 'kind': 'command', ...}, None, 'synthetic comparator failure', <function scenario.<locals>.invoke at 0x715cef496980>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef5bbf80>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v7')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+>           assert reason in verdict["unmeasured"]
+E           AssertionError: assert 'synthetic comparator failure' in 'scorer input does not belong to selected task'
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:212: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[formula-no-runtime] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify...er_input.py'}], 'kind': 'command', ...}, None, 'no LibreOffice', <function scenario.<locals>.invoke at 0x715cef609300>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef5b8a10>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v8')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+>           assert reason in verdict["unmeasured"]
+E           AssertionError: assert 'no LibreOffice' in 'scorer input does not belong to selected task'
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:212: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[recalc-timeout] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify...t.py'}], 'kind': 'command', ...}, None, 'LibreOffice timed out', <function scenario.<locals>.invoke at 0x715cef495e40>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef49ef00>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v9')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+>           assert reason in verdict["unmeasured"]
+E           AssertionError: assert 'LibreOffice timed out' in 'scorer input does not belong to selected task'
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:212: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[recalc-exit] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify...ut.py'}], 'kind': 'command', ...}, None, 'LibreOffice exited 7', <function scenario.<locals>.invoke at 0x715cef5cd300>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef5a64b0>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v10')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+>           assert reason in verdict["unmeasured"]
+E           AssertionError: assert 'LibreOffice exited 7' in 'scorer input does not belong to selected task'
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:212: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[recalc-no-output] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify..., 'kind': 'command', ...}, None, 'LibreOffice produced no file', <function scenario.<locals>.invoke at 0x715cef5928e0>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef6b54c0>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v11')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+>           assert reason in verdict["unmeasured"]
+E           AssertionError: assert 'LibreOffice produced no file' in 'scorer input does not belong to selected task'
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:212: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[recalc-launch] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify...'}], 'kind': 'command', ...}, None, 'LibreOffice recalculation', <function scenario.<locals>.invoke at 0x715cef4959e0>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef5a86b0>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v12')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+>           assert reason in verdict["unmeasured"]
+E           AssertionError: assert 'LibreOffice recalculation' in 'scorer input does not belong to selected task'
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:212: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[recalc-copy] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify...'}], 'kind': 'command', ...}, None, 'LibreOffice recalculation', <function scenario.<locals>.invoke at 0x715cef5cf6a0>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef629130>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v13')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+>           assert reason in verdict["unmeasured"]
+E           AssertionError: assert 'LibreOffice recalculation' in 'scorer input does not belong to selected task'
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:212: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[recalc-scratch] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify...'}], 'kind': 'command', ...}, None, 'LibreOffice recalculation', <function scenario.<locals>.invoke at 0x715cef591580>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef6eb740>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v14')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+>           assert reason in verdict["unmeasured"]
+E           AssertionError: assert 'LibreOffice recalculation' in 'scorer input does not belong to selected task'
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:212: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[recalc-cleanup] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify...'}], 'kind': 'command', ...}, None, 'LibreOffice recalculation', <function scenario.<locals>.invoke at 0x715cef60ae80>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef4bd910>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v15')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+>           assert reason in verdict["unmeasured"]
+E           AssertionError: assert 'LibreOffice recalculation' in 'scorer input does not belong to selected task'
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:212: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[golden-sheet-absent] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify...scorer_input.py'}], 'kind': 'command', ...}, None, 'comparison', <function scenario.<locals>.invoke at 0x715cef609580>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef4b2b10>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v16')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+>           assert reason in verdict["unmeasured"]
+E           AssertionError: assert 'comparison' in 'scorer input does not belong to selected task'
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:212: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[mismatch] __
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify...r_input.py'}], 'kind': 'command', ...}, 0.0, 'value difference', <function scenario.<locals>.invoke at 0x715cef60bd80>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef4f9940>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v17')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+            assert reason in verdict["unmeasured"]
+            assert result["per_task"] == result["per_task_trials"] == {}
+            assert result["trial_verdicts"] == result["verdicts"] == {}
+            assert result["invalid"]["synthetic-spread"]["stage"] == "check"
+            assert reason in persisted["invalid"]["detail"]
+            assert not {"score", "trial_scores", "complete"}.intersection(persisted)
+            assert cache == {}
+        else:
+>           assert "unmeasured" not in verdict
+E           AssertionError: assert 'unmeasured' not in {'kind': 'command', 'passed': False, 'score': None, 'scorer_isolation_class': 'actor-workdir', ...}
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:220: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[result-sheet-absent] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify....py'}], 'kind': 'command', ...}, 0.0, 'not found in the result', <function scenario.<locals>.invoke at 0x715cef591260>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef5bab40>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v18')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+            assert reason in verdict["unmeasured"]
+            assert result["per_task"] == result["per_task_trials"] == {}
+            assert result["trial_verdicts"] == result["verdicts"] == {}
+            assert result["invalid"]["synthetic-spread"]["stage"] == "check"
+            assert reason in persisted["invalid"]["detail"]
+            assert not {"score", "trial_scores", "complete"}.intersection(persisted)
+            assert cache == {}
+        else:
+>           assert "unmeasured" not in verdict
+E           AssertionError: assert 'unmeasured' not in {'kind': 'command', 'passed': False, 'score': None, 'scorer_isolation_class': 'actor-workdir', ...}
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:220: AssertionError
+_ test_classification_survives_verifier_persistence_and_aggregation[result-absent] _
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify...nput.py'}], 'kind': 'command', ...}, 0.0, 'no such file exists', <function scenario.<locals>.invoke at 0x715cef495ee0>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef6db890>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v19')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+            assert reason in verdict["unmeasured"]
+            assert result["per_task"] == result["per_task_trials"] == {}
+            assert result["trial_verdicts"] == result["verdicts"] == {}
+            assert result["invalid"]["synthetic-spread"]["stage"] == "check"
+            assert reason in persisted["invalid"]["detail"]
+            assert not {"score", "trial_scores", "complete"}.intersection(persisted)
+            assert cache == {}
+        else:
+>           assert "unmeasured" not in verdict
+E           AssertionError: assert 'unmeasured' not in {'kind': 'command', 'passed': False, 'score': None, 'scorer_isolation_class': 'actor-workdir', ...}
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:220: AssertionError
+___ test_classification_survives_verifier_persistence_and_aggregation[match] ___
+
+scenario = (<module 'spreadsheet_check_w_spread2' from '/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify...r_input.py'}], 'kind': 'command', ...}, 1.0, 'reference values', <function scenario.<locals>.invoke at 0x715cef60bec0>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x715cef408b00>
+tmp_path = PosixPath('/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-classification/test_classification_survives_v20')
+
+    def test_classification_survives_verifier_persistence_and_aggregation(
+            scenario, monkeypatch, tmp_path):
+        check, work, spec, score, reason, invoke = scenario
+        verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+                                   env={"kind": "files"})
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+            trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
+        persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+        if score is None:
+            assert reason in verdict["unmeasured"]
+            assert result["per_task"] == result["per_task_trials"] == {}
+            assert result["trial_verdicts"] == result["verdicts"] == {}
+            assert result["invalid"]["synthetic-spread"]["stage"] == "check"
+            assert reason in persisted["invalid"]["detail"]
+            assert not {"score", "trial_scores", "complete"}.intersection(persisted)
+            assert cache == {}
+        else:
+>           assert "unmeasured" not in verdict
+E           AssertionError: assert 'unmeasured' not in {'kind': 'command', 'passed': False, 'score': None, 'scorer_isolation_class': 'actor-workdir', ...}
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:220: AssertionError
+=============================== warnings summary ===============================
+tests/quality/test_spreadsheetbench_classification_w_spread2.py: 106 warnings
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/packaging/core.py:99: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.datetime.utcnow()
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py: 82 warnings
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/writer/excel.py:292: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    workbook.properties.modified = datetime.datetime.utcnow()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[unparseable-range]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[released-unparseable-range]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[parser-exception]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[result-vanished]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[golden-load]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[result-load]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[formula-probe-load]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[comparator-exception]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[formula-no-runtime]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[recalc-timeout]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[recalc-exit]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[recalc-no-output]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[recalc-launch]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[recalc-copy]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[recalc-scratch]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[recalc-cleanup]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[golden-sheet-absent]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[mismatch]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[result-sheet-absent]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[result-absent]
+FAILED tests/quality/test_spreadsheetbench_classification_w_spread2.py::test_classification_survives_verifier_persistence_and_aggregation[match]
+21 failed, 21 passed, 188 warnings in 29.38s
+
+COMMAND: export TMPDIR=/mnt/20t/xubuqiang/hg-work/spreadrt/tmp; export PYTHONDONTWRITEBYTECODE=1; python3 -m pytest -q tests/quality/test_spreadsheetbench_classification_w_spread2.py -k test_checker_classifies_failures_and_completed_comparisons --basetemp=/mnt/20t/xubuqiang/hg-work/spreadrt/pytest-checker-only > tests/fixtures/hg_spreadrt/checker-only-tests.txt 2>&1
+OBSERVED EXIT: 0
+EXACT OUTPUT (checker-only-tests.txt):
+.....................                                                    [100%]
+=============================== warnings summary ===============================
+tests/quality/test_spreadsheetbench_classification_w_spread2.py: 85 warnings
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/packaging/core.py:99: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.datetime.utcnow()
+
+tests/quality/test_spreadsheetbench_classification_w_spread2.py: 41 warnings
+  /mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/openpyxl/writer/excel.py:292: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    workbook.properties.modified = datetime.datetime.utcnow()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+21 passed, 21 deselected, 126 warnings in 4.93s
+
+COMMAND: rg -n '^(import |from )|subprocess|soffice|libreoffice|uno|java|https?://' data/datasets/spreadsheetbench.py data/datasets/spreadsheetbench/verify/check.py data/scaffolds/scorer_input.py > tests/fixtures/hg_spreadrt/source-requirements-scan.txt
+OBSERVED EXIT: 0
+EXACT OUTPUT (source-requirements-scan.txt):
+data/scaffolds/scorer_input.py:12:from __future__ import annotations
+data/scaffolds/scorer_input.py:14:import hashlib
+data/scaffolds/scorer_input.py:15:import json
+data/scaffolds/scorer_input.py:16:import sys
+data/scaffolds/scorer_input.py:17:import tempfile
+data/scaffolds/scorer_input.py:18:from functools import lru_cache
+data/scaffolds/scorer_input.py:19:from pathlib import Path
+data/datasets/spreadsheetbench.py:10:from the HuggingFace mirror `KAKA22/SpreadsheetBench`
+data/datasets/spreadsheetbench.py:36:`evaluation/open_spreadsheet.py` exists to do. Measured on this host: `soffice` is installed
+data/datasets/spreadsheetbench.py:37:(`/usr/bin/soffice`) and `--headless --calc --convert-to xlsx` does cache the computed values.
+data/datasets/spreadsheetbench.py:51:from __future__ import annotations
+data/datasets/spreadsheetbench.py:53:from data.scaffolds.scorer_input import bind as bind_scorer_input
+data/datasets/spreadsheetbench.py:55:import json
+data/datasets/spreadsheetbench.py:56:import os
+data/datasets/spreadsheetbench.py:57:from pathlib import Path
+data/datasets/spreadsheetbench.py:82:TARBALL_URL = (f"https://hf-mirror.com/datasets/KAKA22/SpreadsheetBench/resolve/"
+data/datasets/spreadsheetbench.py:276:                    "exists to do, and `soffice` must be installed for any formula-using task. "
+data/datasets/spreadsheetbench.py:329:        "libreoffice": _soffice(),
+data/datasets/spreadsheetbench.py:334:def _soffice() -> str | None:
+data/datasets/spreadsheetbench.py:338:    for candidate in ("soffice", "libreoffice"):
+data/datasets/spreadsheetbench/verify/check.py:24:`evaluation/open_spreadsheet.py` does, and the reason `soffice` has to be installed.
+data/datasets/spreadsheetbench/verify/check.py:36:from __future__ import annotations
+data/datasets/spreadsheetbench/verify/check.py:38:import argparse
+data/datasets/spreadsheetbench/verify/check.py:39:import datetime
+data/datasets/spreadsheetbench/verify/check.py:40:import json
+data/datasets/spreadsheetbench/verify/check.py:41:import os
+data/datasets/spreadsheetbench/verify/check.py:42:import shutil
+data/datasets/spreadsheetbench/verify/check.py:43:import subprocess
+data/datasets/spreadsheetbench/verify/check.py:44:import sys
+data/datasets/spreadsheetbench/verify/check.py:45:import tempfile
+data/datasets/spreadsheetbench/verify/check.py:46:import traceback
+data/datasets/spreadsheetbench/verify/check.py:47:from pathlib import Path
+data/datasets/spreadsheetbench/verify/check.py:51:from data.scaffolds.scorer_input import add_arguments, run_bound
+data/datasets/spreadsheetbench/verify/check.py:218:def soffice_path() -> str | None:
+data/datasets/spreadsheetbench/verify/check.py:220:    for candidate in ("soffice", "libreoffice"):
+data/datasets/spreadsheetbench/verify/check.py:227:def recalculate(workbook: Path, *, scratch: Path, soffice: str) -> tuple[bool, str]:
+data/datasets/spreadsheetbench/verify/check.py:241:    cmd = [soffice, "--headless", "--calc", "--norestore", "--nolockcheck",
+data/datasets/spreadsheetbench/verify/check.py:246:        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=180, env=env)
+data/datasets/spreadsheetbench/verify/check.py:247:    except subprocess.TimeoutExpired:
+data/datasets/spreadsheetbench/verify/check.py:369:            soffice = soffice_path()
+data/datasets/spreadsheetbench/verify/check.py:370:            if soffice is None:
+data/datasets/spreadsheetbench/verify/check.py:375:                ok, why = recalculate(candidate, scratch=Path(scratch), soffice=soffice)
+
+Exact engine-search heredoc executed:
+export TMPDIR=/mnt/20t/xubuqiang/hg-work/spreadrt/tmp; export PYTHONDONTWRITEBYTECODE=1; python3 - <<'PY' > tests/fixtures/hg_spreadrt/engine-archive-search.json
+import json,os
+from pathlib import Path
+x=json.load(open('tests/fixtures/hg_spreadrt/dependency-inventory.json'))
+out={'command':'Python os.walk over each enumerated scope; followlinks=False; match listed filename prefixes and archive suffixes','scopes':x['search']['scopes'],'prefixes':['libreoffice','libuno','uno-libs-private','ure-','ure_','python3-uno','LibreOffice'],'suffixes':['.deb','.rpm','.tar.gz','.tar.xz','.tar.bz2','.conda','.whl'],'matches':[],'errors':[]}
+for root in out['scopes']:
+ if not Path(root).exists(): out['errors'].append({'scope':root,'error':'root does not exist'}); continue
+ def err(e): out['errors'].append({'scope':root,'error':str(e)})
+ for base,dirs,files in os.walk(root,followlinks=False,onerror=err):
+  for f in files:
+   if f.startswith(tuple(out['prefixes'])) and f.endswith(tuple(out['suffixes'])): out['matches'].append(str(Path(base)/f))
+print(json.dumps(out,indent=2,sort_keys=True))
+PY
+OBSERVED EXIT: 0
+EXACT OUTPUT:
+{
+  "command": "Python os.walk over each enumerated scope; followlinks=False; match listed filename prefixes and archive suffixes",
+  "errors": [
+    {
+      "error": "[Errno 13] Permission denied: '/opt/containerd'",
+      "scope": "/opt"
+    },
+    {
+      "error": "root does not exist",
+      "scope": "/tmp/hg-wwheelhouse-payloads-e5uywviu"
+    },
+    {
+      "error": "[Errno 13] Permission denied: '/tmp/pip-ephem-wheel-cache-hh0ewg2_'",
+      "scope": "/tmp/pip-ephem-wheel-cache-hh0ewg2_"
+    },
+    {
+      "error": "[Errno 13] Permission denied: '/tmp/pip-ephem-wheel-cache-u3quqp9h'",
+      "scope": "/tmp/pip-ephem-wheel-cache-u3quqp9h"
+    },
+    {
+      "error": "[Errno 13] Permission denied: '/tmp/pip-ephem-wheel-cache-xpe4fqg5'",
+      "scope": "/tmp/pip-ephem-wheel-cache-xpe4fqg5"
+    }
+  ],
+  "matches": [],
+  "prefixes": [
+    "libreoffice",
+    "libuno",
+    "uno-libs-private",
+    "ure-",
+    "ure_",
+    "python3-uno",
+    "LibreOffice"
+  ],
+  "scopes": [
+    "/mnt/20t/xubuqiang/hg-wt/w-spreadrt/tests/fixtures",
+    "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages",
+    "/home/xubuqiang/.local/lib/python3.12/site-packages",
+    "/mnt/8t/xubuqiang/anaconda3/pkgs",
+    "/home/xubuqiang/.cache/pip",
+    "/usr/bin",
+    "/usr/lib/libreoffice",
+    "/opt",
+    "/tmp/hg-wwheelhouse-payloads-e5uywviu",
+    "/tmp/pip-ephem-wheel-cache-hh0ewg2_",
+    "/tmp/pip-ephem-wheel-cache-u3quqp9h",
+    "/tmp/pip-ephem-wheel-cache-xpe4fqg5"
+  ],
+  "suffixes": [
+    ".deb",
+    ".rpm",
+    ".tar.gz",
+    ".tar.xz",
+    ".tar.bz2",
+    ".conda",
+    ".whl"
+  ]
+}
+
+Additional explicit import/version/path probes: exact subprocess commands, exits, stdout, stderr and artifact digests:
+COMMAND=["/usr/bin/python3", "-c", "import sys,sysconfig,uno,pyuno; print(sys.executable); print(sys.version); print(sysconfig.get_config_var(\"SOABI\")); print(uno.__file__); print(pyuno.__file__)"]
+EXIT=0
+STDOUT='/usr/bin/python3\n3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0]\ncpython-310-x86_64-linux-gnu\n/usr/lib/python3/dist-packages/uno.py\n/usr/lib/libreoffice/program/pyuno.so\n'
+STDERR=''
+COMMAND=["dpkg-query", "-L", "python3-uno"]
+EXIT=0
+STDOUT='/.\n/usr\n/usr/lib\n/usr/lib/libreoffice\n/usr/lib/libreoffice/program\n/usr/lib/libreoffice/program/libpythonloaderlo.so\n/usr/lib/libreoffice/program/libpyuno.so\n/usr/lib/libreoffice/program/officehelper.py\n/usr/lib/libreoffice/program/pythonloader.py\n/usr/lib/libreoffice/program/pythonloader.unorc\n/usr/lib/libreoffice/program/pyuno.so\n/usr/lib/libreoffice/program/services\n/usr/lib/libreoffice/program/services/pyuno.rdb\n/usr/lib/libreoffice/share\n/usr/lib/libreoffice/share/.registry\n/usr/lib/libreoffice/share/.registry/pyuno.xcd\n/usr/lib/libreoffice/share/Scripts\n/usr/lib/libreoffice/share/Scripts/python\n/usr/lib/libreoffice/share/Scripts/python/Capitalise.py\n/usr/lib/libreoffice/share/Scripts/python/HelloWorld.py\n/usr/lib/libreoffice/share/Scripts/python/InsertText.py\n/usr/lib/libreoffice/share/Scripts/python/NamedRanges.py\n/usr/lib/libreoffice/share/Scripts/python/SetCellColor.py\n/usr/lib/libreoffice/share/Scripts/python/TableSample.py\n/usr/lib/python3\n/usr/lib/python3/dist-packages\n/usr/lib/python3/dist-packages/uno.py\n/usr/lib/python3/dist-packages/unohelper.py\n/usr/share\n/usr/share/bug\n/usr/share/bug/python3-uno\n/usr/share/bug/python3-uno/presubj\n/usr/share/bug/python3-uno/script\n/usr/share/doc\n/usr/share/doc/python3-uno\n/usr/share/doc/python3-uno/NEWS.Debian.gz\n/usr/share/doc/python3-uno/copyright\n/usr/share/doc/python3-uno/demo\n/usr/share/doc/python3-uno/demo/Addons.xcu\n/usr/share/doc/python3-uno/demo/biblioaccess.py\n/usr/share/doc/python3-uno/demo/hello_world_comp.py\n/usr/share/doc/python3-uno/demo/makefile.mk\n/usr/share/doc/python3-uno/demo/ooextract.py\n/usr/share/doc/python3-uno/demo/pyunoenv.bat\n/usr/share/doc/python3-uno/demo/pyunoenv.tcsh\n/usr/share/doc/python3-uno/demo/swriter.py\n/usr/share/doc/python3-uno/demo/swritercomp.py\n/usr/share/doc/python3-uno/demo/swritercompclient.py\n/usr/share/doc/python3-uno/modes.sxd\n/usr/share/python3\n/usr/share/python3/runtime.d\n/usr/share/python3/runtime.d/python3-uno.rtupdate\n/usr/share/doc/python3-uno/changelog.Debian.gz\n'
+STDERR=''
+COMMAND=["/usr/lib/libreoffice/program/oosplash", "--version"]
+EXIT=0
+STDOUT='LibreOffice 7.3.7.2 30(Build:2)\n\n'
+STDERR=''
+COMMAND=["/usr/lib/libreoffice/program/soffice.bin", "--version"]
+EXIT=0
+STDOUT='LibreOffice 7.3.7.2 30(Build:2)\n\n'
+STDERR=''
+COMMAND=["/usr/bin/dirname", "--version"]
+EXIT=0
+STDOUT='dirname (GNU coreutils) 8.32\nCopyright © 2020 Free Software Foundation, Inc.\n许可证 GPLv3+：GNU 通用公共许可证第 3 版或更新版本 <https://gnu.org/licenses/gpl.html>。\n本软件是自由软件：您可以自由修改和重新发布它。\n在法律允许的范围内，不提供任何保证。\n\n由 David MacKenzie 和 Jim Meyering 编写。\n'
+STDERR=''
+COMMAND=["/usr/bin/basename", "--version"]
+EXIT=0
+STDOUT='basename (GNU coreutils) 8.32\nCopyright © 2020 Free Software Foundation, Inc.\n许可证 GPLv3+：GNU 通用公共许可证第 3 版或更新版本 <https://gnu.org/licenses/gpl.html>。\n本软件是自由软件：您可以自由修改和重新发布它。\n在法律允许的范围内，不提供任何保证。\n\n由 David MacKenzie 编写。\n'
+STDERR=''
+COMMAND=["/usr/bin/ls", "--version"]
+EXIT=0
+STDOUT='ls (GNU coreutils) 8.32\nCopyright © 2020 Free Software Foundation, Inc.\n许可证 GPLv3+：GNU 通用公共许可证第 3 版或更新版本 <https://gnu.org/licenses/gpl.html>。\n本软件是自由软件：您可以自由修改和重新发布它。\n在法律允许的范围内，不提供任何保证。\n\n由 Richard M. Stallman 和 David MacKenzie 编写。\n'
+STDERR=''
+COMMAND=["/usr/bin/sed", "--version"]
+EXIT=0
+STDOUT='/usr/bin/sed (GNU sed) 4.8\n由 Debian 打包\nCopyright (C) 2020 Free Software Foundation, Inc.\n许可证 GPLv3+：GNU 通用公共许可证第 3 版或更新版本<https://gnu.org/licenses/gpl.html>。\n本软件是自由软件：您可以自由修改和重新发布它。\n在法律范围内没有其他保证。\n\n由 Jay Fenlason、Tom Lord、Ken Pizzini、\nPaolo Bonzini、Jim Meyering 和 Assaf Gordon 编写。\n\n本 sed 程序构建时含有 SELinux 支持。\n此系统已禁用 SELinux。\n\nGNU sed 主页：<https://www.gnu.org/software/sed/>。\n使用 GNU 软件的一般性帮助：<https://www.gnu.org/gethelp/>。\n请将错误报告发送至：<bug-sed@gnu.org>。\n'
+STDERR=''
+COMMAND=["/usr/bin/grep", "--version"]
+EXIT=0
+STDOUT='grep (GNU grep) 3.7\nCopyright © 2021 Free Software Foundation, Inc.\n许可证 GPLv3+：GNU 通用公共许可证第 3 版或更新版本 <https://gnu.org/licenses/gpl.html>。\n本软件是自由软件：您可以自由修改和重新发布它。\n在法律允许的范围内，不提供任何保证。\n\n由 Mike Haerhtel 等人编写；作者信息请参见\n<https://git.sv.gnu.org/cgit/grep.git/tree/AUTHORS>。\n'
+STDERR=''
+ARTIFACT={"bytes": 125688, "path": "/bin/sh", "resolved": "/usr/bin/dash", "sha256": "4f291296e89b784cd35479fca606f228126e3641f5bcaee68dee36583d7c9483"}
+ARTIFACT={"bytes": 17193, "path": "/usr/lib/python3/dist-packages/uno.py", "resolved": "/usr/lib/python3/dist-packages/uno.py", "sha256": "d172dae3fe5baec125ecfc0b4bcdb4042a47fa5b2ab99796f0f6d8e4239925b7"}
+ARTIFACT={"bytes": 10957, "path": "/usr/lib/python3/dist-packages/unohelper.py", "resolved": "/usr/lib/python3/dist-packages/unohelper.py", "sha256": "248736158d692cb2433499328b6087277ed4ee39947ca6b759e2b57912ab0da3"}
+
+Exact import probe body: import importlib,importlib.metadata as md,hashlib; for each name in (pycparser,six,setuptools), import_module(name), version(name), SHA256(open(module.__file__, rb).read()). No install.
+COMMAND: importlib.import_module('pycparser')
+FOUND module=/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/pycparser/__init__.py version=2.21 sha256=594129e43d1fb87047f50f1cd5f62f47678a59f8fe08d8212dfd8c32540b2352
+COMMAND: importlib.import_module('six')
+FOUND module=/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/six.py version=1.16.0 sha256=4ce39f422ee71467ccac8bed76beb05f8c321c7f0ceda9279ae2dfa3670106b3
+COMMAND: importlib.import_module('setuptools')
+FOUND module=/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/setuptools/__init__.py version=82.0.0 sha256=f94b531bda5d7846646222054faf51724302ab151d5482e38f6e20dea789feb7
+
+Stale cache inspection: python3 heredoc, load_workbook(data_only=False), load_workbook(data_only=True) of the exact authored path below; ZipFile.read xl/worksheets/sheet1.xml and xl/workbook.xml. Exact output:
+path=/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-3b187a95e0f449fd9f34fea75940e48a/result.xlsx
+data_only=False cells={'A1': 2, 'A2': 3, 'B1': '=SUM(A1:A2)', 'B2': '=B1*2'}
+data_only=True cells={'A1': 2, 'A2': 3, 'B1': 999, 'B2': 888}
+converted_sheet_xml=b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:x14="http://schemas.microsoft.com/office/spreadsheetml/2009/9/main" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"><sheetPr filterMode="false"><pageSetUpPr fitToPage="false"/></sheetPr><dimension ref="A1:B2"/><sheetViews><sheetView showFormulas="false" showGridLines="true" showRowColHeaders="true" showZeros="true" rightToLeft="false" tabSelected="true" showOutlineSymbols="true" defaultGridColor="true" view="normal" topLeftCell="A1" colorId="64" zoomScale="100" zoomScaleNormal="100" zoomScalePageLayoutView="60" workbookViewId="0"><selection pane="topLeft" activeCell="A1" activeCellId="0" sqref="A1"/></sheetView></sheetViews><sheetFormatPr defaultColWidth="8.5390625" defaultRowHeight="15" zeroHeight="false" outlineLevelRow="0" outlineLevelCol="0"></sheetFormatPr><sheetData><row r="1" customFormat="false" ht="15" hidden="false" customHeight="false" outlineLevel="0" collapsed="false"><c r="A1" s="0" t="n"><v>2</v></c><c r="B1" s="0" t="n"><f aca="false">SUM(A1:A2)</f><v>999</v></c></row><row r="2" customFormat="false" ht="15" hidden="false" customHeight="false" outlineLevel="0" collapsed="false"><c r="A2" s="0" t="n"><v>3</v></c><c r="B2" s="0" t="n"><f aca="false">B1*2</f><v>888</v></c></row></sheetData><printOptions headings="false" gridLines="false" gridLinesSet="true" horizontalCentered="false" verticalCentered="false"/><pageMargins left="0.75" right="0.75" top="1" bottom="1" header="0.511811023622047" footer="0.511811023622047"/><pageSetup paperSize="9" scale="100" fitToWidth="1" fitToHeight="1" pageOrder="downThenOver" orientation="portrait" blackAndWhite="false" draft="false" cellComments="none" horizontalDpi="300" verticalDpi="300" copies="1"/><headerFooter differentFirst="false" differentOddEven="false"><oddHeader></oddHeader><oddFooter></oddFooter></headerFooter></worksheet>'
+converted_workbook_xml=b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><fileVersion appName="Calc"/><workbookPr backupFile="false" showObjects="all" date1904="false"/><workbookProtection/><bookViews><workbookView showHorizontalScroll="true" showVerticalScroll="true" showSheetTabs="true" xWindow="0" yWindow="0" windowWidth="16384" windowHeight="8192" tabRatio="600" firstSheet="0" activeTab="0"/></bookViews><sheets><sheet name="Synthetic" sheetId="1" state="visible" r:id="rId2"/></sheets><calcPr iterateCount="100" refMode="A1" iterate="false" iterateDelta="0.0001"/><extLst><ext xmlns:loext="http://schemas.libreoffice.org/" uri="{7626C862-2A13-11E5-B345-FEFF819CDC9F}"><loext:extCalcPr stringRefSyntax="ExcelA1"/></ext></extLst></workbook>'
+
+Full synthetic exact commands/stdout/stderr/exec trace:
+COMMAND=["/usr/bin/bwrap", "--unshare-net", "--ro-bind", "/", "/", "--bind", "/mnt/20t/xubuqiang/hg-work/spreadrt", "/mnt/20t/xubuqiang/hg-work/spreadrt", "--proc", "/proc", "--", "/usr/bin/strace", "-f", "-s", "2000", "-e", "trace=execve", "-o", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-8682d43d0f4042f2a5dd125669fb027e-exec.trace", "/mnt/8t/xubuqiang/anaconda3/bin/python3", "/mnt/20t/xubuqiang/hg-wt/w-spreadrt/tests/fixtures/hg_spreadrt/synthetic_control.py", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-8682d43d0f4042f2a5dd125669fb027e"]
+ENV_OVERRIDES={"PYTHONDONTWRITEBYTECODE": "1", "SPREADRT_PARENT_NETNS": "net:[4026531840]", "TMPDIR": "/mnt/20t/xubuqiang/hg-work/spreadrt/tmp"}
+EXIT=1
+STDOUT:
+label=synthetic offline control; not dataset measurement or official scorer execution
+work=/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-8682d43d0f4042f2a5dd125669fb027e
+netns=net:[4026535624]
+parent_netns=net:[4026531840]
+route_table='Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n'
+network_probe family=AF_INET errno=101 message=Network is unreachable
+network_probe family=AF_INET6 errno=101 message=Network is unreachable
+engine_version_stdout='LibreOffice 7.3.7.2 30(Build:2)\n\n'
+engine_version_stderr="\n(process:398126): dconf-CRITICAL **: 17:35:32.532: unable to create file '/run/user/1026/dconf/user': Read-only file system.  dconf will not work properly.\n"
+authored_formulas=["=SUM(A1:A2)", "=B1*2"]
+stale_cached_values=[999, 888]
+before_compare=(False, 'value difference at B1: golden has 5, result has 999')
+scorer_argv=["/mnt/8t/xubuqiang/anaconda3/bin/python3", "/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify/check.py", "--workdir", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-8682d43d0f4042f2a5dd125669fb027e", "--reward-file", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-8682d43d0f4042f2a5dd125669fb027e/reward.txt", "--evidence-file", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-8682d43d0f4042f2a5dd125669fb027e/evidence.json", "--task-id", "spreadrt-authored-formulas", "--scorer-input-sha256", "a08fd547703c9cb3f8a7545aefe521bf01d553652a2ae556839913cc8ba5ef88", "--scorer-input-files", "{\"golden.xlsx\": \"6338854b9f3355fe7013c011067436d0f0554878d3e3d6a9f834a00a1ca63325\", \"task.json\": \"db686bbe230a77cc476f21e57734f8f198ecb82e1f1cd2c686f4a089116c7dcf\"}"]
+scorer_exit=3
+scorer_stdout=''
+scorer_stderr='check cannot measure: LibreOffice recalculation failed: RuntimeError: could not recalculate the workbook: LibreOffice exited 1: ERROR: no valid pipe path found.\n'
+scorer_evidence={"answer_file": "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-8682d43d0f4042f2a5dd125669fb027e/answer.txt", "answer_position": "Synthetic!B1:B2", "error": "LibreOffice recalculation failed: RuntimeError: could not recalculate the workbook: LibreOffice exited 1: ERROR: no valid pipe path found.", "golden": "/mnt/20t/xubuqiang/hg-work/spreadrt/tmp/hg-scorer-input-ekm8rdw2/golden.xlsx", "instruction_type": "synthetic", "measured": false, "named_result": "result.xlsx", "recalculated": false, "result_exists": true, "scorer_input": {"expected_sha256": "a08fd547703c9cb3f8a7545aefe521bf01d553652a2ae556839913cc8ba5ef88", "files": {"golden.xlsx": "6338854b9f3355fe7013c011067436d0f0554878d3e3d6a9f834a00a1ca63325", "task.json": "db686bbe230a77cc476f21e57734f8f198ecb82e1f1cd2c686f4a089116c7dcf"}, "path": "native-inputs", "sha256": "a08fd547703c9cb3f8a7545aefe521bf01d553652a2ae556839913cc8ba5ef88", "task_id": "spreadrt-authored-formulas", "verified": true}, "task_id": "spreadrt-authored-formulas", "traceback": "Traceback (most recent call last):\n  File \"/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify/check.py\", line 378, in _score\n    raise RuntimeError(f\"could not recalculate the workbook: {why}\")\nRuntimeError: could not recalculate the workbook: LibreOffice exited 1: ERROR: no valid pipe path found.\n"}
+
+STDERR:
+Traceback (most recent call last):
+  File "/mnt/20t/xubuqiang/hg-wt/w-spreadrt/tests/fixtures/hg_spreadrt/synthetic_control.py", line 111, in <module>
+    main()
+  File "/mnt/20t/xubuqiang/hg-wt/w-spreadrt/tests/fixtures/hg_spreadrt/synthetic_control.py", line 98, in main
+    print('reward_file=' + repr((work / 'reward.txt').read_text()), flush=True)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-8682d43d0f4042f2a5dd125669fb027e/reward.txt'
+
+EXEC_TRACE:
+398096 execve("/mnt/8t/xubuqiang/anaconda3/bin/python3", ["/mnt/8t/xubuqiang/anaconda3/bin/python3", "/mnt/20t/xubuqiang/hg-wt/w-spreadrt/tests/fixtures/hg_spreadrt/synthetic_control.py", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-8682d43d0f4042f2a5dd125669fb027e"], 0x7ffc9ddac348 /* 78 vars */) = 0
+398110 execve("/usr/bin/soffice", ["/usr/bin/soffice", "--version"], 0x21e2c3b0 /* 79 vars */) = 0
+398111 +++ exited with 0 +++
+398110 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398111, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398112 execve("/usr/bin/dirname", ["dirname", "/usr/bin/soffice"], 0x5d904f0d6b88 /* 80 vars */) = 0
+398112 +++ exited with 0 +++
+398110 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398112, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398113 execve("/usr/bin/basename", ["basename", "/usr/bin/soffice"], 0x5d904f0d6c58 /* 80 vars */) = 0
+398113 +++ exited with 0 +++
+398110 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398113, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398118 execve("/usr/bin/ls", ["ls", "-l", "soffice"], 0x5d904f0d6ca8 /* 80 vars */) = 0
+398119 execve("/usr/bin/sed", ["sed", "s/.*soffice -> //g"], 0x5d904f0d6cd8 /* 80 vars */) = 0
+398118 +++ exited with 0 +++
+398115 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398118, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398119 +++ exited with 0 +++
+398115 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398119, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398115 +++ exited with 0 +++
+398110 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398115, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398120 execve("/usr/bin/dirname", ["dirname", "../lib/libreoffice/program/soffice"], 0x5d904f0d6c98 /* 80 vars */) = 0
+398120 +++ exited with 0 +++
+398110 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398120, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398121 +++ exited with 0 +++
+398110 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398121, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398122 +++ exited with 0 +++
+398110 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398122, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398123 execve("/usr/bin/grep", ["grep", "-q", "cc"], 0x5d904f0d64d8 /* 80 vars */) = 0
+398123 +++ exited with 1 +++
+398110 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398123, si_uid=1026, si_status=1, si_utime=0, si_stime=0} ---
+398124 execve("/usr/bin/uname", ["uname", "-s"], 0x5d904f0d6f38 /* 80 vars */) = 0
+398124 +++ exited with 0 +++
+398110 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398124, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398110 execve("/usr/lib/libreoffice/program/oosplash", ["/usr/lib/libreoffice/program/oosplash", "--version"], 0x5d904f0d64d8 /* 80 vars */) = 0
+398126 execve("/usr/lib/libreoffice/program/soffice.bin", ["/usr/lib/libreoffice/program/soffice.bin", "--version"], 0x7ffe62557e80 /* 80 vars */) = 0
+398132 +++ exited with 1 +++
+398126 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398132, si_uid=1026, si_status=1, si_utime=0, si_stime=0} ---
+398126 +++ exited with 0 +++
+398125 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398126, si_uid=1026, si_status=0, si_utime=9, si_stime=4} ---
+398125 +++ exited with 0 +++
+398110 +++ exited with 0 +++
+398096 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398110, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398143 execve("/mnt/8t/xubuqiang/anaconda3/bin/python3", ["/mnt/8t/xubuqiang/anaconda3/bin/python3", "/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify/check.py", "--workdir", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-8682d43d0f4042f2a5dd125669fb027e", "--reward-file", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-8682d43d0f4042f2a5dd125669fb027e/reward.txt", "--evidence-file", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-8682d43d0f4042f2a5dd125669fb027e/evidence.json", "--task-id", "spreadrt-authored-formulas", "--scorer-input-sha256", "a08fd547703c9cb3f8a7545aefe521bf01d553652a2ae556839913cc8ba5ef88", "--scorer-input-files", "{\"golden.xlsx\": \"6338854b9f3355fe7013c011067436d0f0554878d3e3d6a9f834a00a1ca63325\", \"task.json\": \"db686bbe230a77cc476f21e57734f8f198ecb82e1f1cd2c686f4a089116c7dcf\"}"], 0x21e2c3b0 /* 79 vars */) = 0
+398177 execve("/usr/bin/soffice", ["/usr/bin/soffice", "--headless", "--calc", "--norestore", "--nolockcheck", "-env:UserInstallation=file:///mnt/20t/xubuqiang/hg-work/spreadrt/tmp/sb-recalc-u_eiqyto/lo-profile", "--convert-to", "xlsx:Calc MS Excel 2007 XML", "--outdir", "/mnt/20t/xubuqiang/hg-work/spreadrt/tmp/sb-recalc-u_eiqyto/conv", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-8682d43d0f4042f2a5dd125669fb027e/result.xlsx"], 0x26e9c510 /* 79 vars */) = 0
+398178 +++ exited with 0 +++
+398177 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398178, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398179 execve("/usr/bin/dirname", ["dirname", "/usr/bin/soffice"], 0x55b3fcfd5b88 /* 80 vars */) = 0
+398179 +++ exited with 0 +++
+398177 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398179, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398180 execve("/usr/bin/basename", ["basename", "/usr/bin/soffice"], 0x55b3fcfd5c58 /* 80 vars */) = 0
+398180 +++ exited with 0 +++
+398177 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398180, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398182 execve("/usr/bin/ls", ["ls", "-l", "soffice"], 0x55b3fcfd5ca8 /* 80 vars */) = 0
+398183 execve("/usr/bin/sed", ["sed", "s/.*soffice -> //g"], 0x55b3fcfd5cd8 /* 80 vars */) = 0
+398182 +++ exited with 0 +++
+398181 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398182, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398183 +++ exited with 0 +++
+398181 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398183, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398181 +++ exited with 0 +++
+398177 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398181, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398184 execve("/usr/bin/dirname", ["dirname", "../lib/libreoffice/program/soffice"], 0x55b3fcfd5c98 /* 80 vars */) = 0
+398184 +++ exited with 0 +++
+398177 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398184, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398185 +++ exited with 0 +++
+398177 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398185, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398186 +++ exited with 0 +++
+398177 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398186, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398187 execve("/usr/bin/grep", ["grep", "-q", "cc"], 0x55b3fcfd54d8 /* 80 vars */) = 0
+398187 +++ exited with 1 +++
+398177 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398187, si_uid=1026, si_status=1, si_utime=0, si_stime=0} ---
+398188 execve("/usr/bin/uname", ["uname", "-s"], 0x55b3fcfd5f38 /* 80 vars */) = 0
+398188 +++ exited with 0 +++
+398177 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398188, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+398177 execve("/usr/lib/libreoffice/program/oosplash", ["/usr/lib/libreoffice/program/oosplash", "--headless", "--calc", "--norestore", "--nolockcheck", "-env:UserInstallation=file:///mnt/20t/xubuqiang/hg-work/spreadrt/tmp/sb-recalc-u_eiqyto/lo-profile", "--convert-to", "xlsx:Calc MS Excel 2007 XML", "--outdir", "/mnt/20t/xubuqiang/hg-work/spreadrt/tmp/sb-recalc-u_eiqyto/conv", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-8682d43d0f4042f2a5dd125669fb027e/result.xlsx"], 0x55b3fcfd54d8 /* 80 vars */) = 0
+398177 +++ exited with 1 +++
+398143 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398177, si_uid=1026, si_status=1, si_utime=0, si_stime=0} ---
+398143 +++ exited with 3 +++
+398096 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=398143, si_uid=1026, si_status=3, si_utime=31, si_stime=10} ---
+398096 +++ exited with 1 +++
+
+
+COMMAND=["/usr/bin/bwrap", "--unshare-net", "--ro-bind", "/", "/", "--bind", "/mnt/20t/xubuqiang/hg-work/spreadrt", "/mnt/20t/xubuqiang/hg-work/spreadrt", "--bind", "/mnt/20t/xubuqiang/hg-work/spreadrt/tmp", "/tmp", "--proc", "/proc", "--", "/usr/bin/strace", "-f", "-s", "2000", "-e", "trace=execve", "-o", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-3b187a95e0f449fd9f34fea75940e48a-exec.trace", "/mnt/8t/xubuqiang/anaconda3/bin/python3", "/mnt/20t/xubuqiang/hg-wt/w-spreadrt/tests/fixtures/hg_spreadrt/synthetic_control.py", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-3b187a95e0f449fd9f34fea75940e48a"]
+ENV_OVERRIDES={"PYTHONDONTWRITEBYTECODE": "1", "SPREADRT_PARENT_NETNS": "net:[4026531840]", "TMPDIR": "/mnt/20t/xubuqiang/hg-work/spreadrt/tmp"}
+EXIT=1
+STDOUT:
+label=synthetic offline control; not dataset measurement or official scorer execution
+work=/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-3b187a95e0f449fd9f34fea75940e48a
+netns=net:[4026535624]
+parent_netns=net:[4026531840]
+route_table='Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n'
+network_probe family=AF_INET errno=101 message=Network is unreachable
+network_probe family=AF_INET6 errno=101 message=Network is unreachable
+engine_version_stdout='LibreOffice 7.3.7.2 30(Build:2)\n\n'
+engine_version_stderr="\n(process:401234): dconf-CRITICAL **: 17:37:06.836: unable to create file '/run/user/1026/dconf/user': Read-only file system.  dconf will not work properly.\n"
+authored_formulas=["=SUM(A1:A2)", "=B1*2"]
+stale_cached_values=[999, 888]
+before_compare=(False, 'value difference at B1: golden has 5, result has 999')
+scorer_argv=["/mnt/8t/xubuqiang/anaconda3/bin/python3", "/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify/check.py", "--workdir", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-3b187a95e0f449fd9f34fea75940e48a", "--reward-file", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-3b187a95e0f449fd9f34fea75940e48a/reward.txt", "--evidence-file", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-3b187a95e0f449fd9f34fea75940e48a/evidence.json", "--task-id", "spreadrt-authored-formulas", "--scorer-input-sha256", "a061507b33591e794eaf72eb770499a857a7415458f0aae0879dfc0a9a00ada5", "--scorer-input-files", "{\"golden.xlsx\": \"98c5449f365a2fece2aed965b222f6917afa8204e6682508b6ea2b87aaeeb4a8\", \"task.json\": \"db686bbe230a77cc476f21e57734f8f198ecb82e1f1cd2c686f4a089116c7dcf\"}"]
+scorer_exit=1
+scorer_stdout='reward 0: workbook differs: value difference at B1: golden has 5, result has 999\n'
+scorer_stderr=''
+scorer_evidence={"answer_file": "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-3b187a95e0f449fd9f34fea75940e48a/answer.txt", "answer_position": "Synthetic!B1:B2", "correct": false, "golden": "/mnt/20t/xubuqiang/hg-work/spreadrt/tmp/hg-scorer-input-204ftf92/golden.xlsx", "instruction_type": "synthetic", "measured": true, "named_result": "result.xlsx", "recalculated": true, "result_exists": true, "reward": 0.0, "score": 0.0, "scorer_input": {"expected_sha256": "a061507b33591e794eaf72eb770499a857a7415458f0aae0879dfc0a9a00ada5", "files": {"golden.xlsx": "98c5449f365a2fece2aed965b222f6917afa8204e6682508b6ea2b87aaeeb4a8", "task.json": "db686bbe230a77cc476f21e57734f8f198ecb82e1f1cd2c686f4a089116c7dcf"}, "path": "native-inputs", "sha256": "a061507b33591e794eaf72eb770499a857a7415458f0aae0879dfc0a9a00ada5", "task_id": "spreadrt-authored-formulas", "verified": true}, "task_id": "spreadrt-authored-formulas", "why": "workbook differs: value difference at B1: golden has 5, result has 999"}
+reward_file='0\n'
+recalculated_cached_values=[999, 888]
+
+STDERR:
+Traceback (most recent call last):
+  File "/mnt/20t/xubuqiang/hg-wt/w-spreadrt/tests/fixtures/hg_spreadrt/synthetic_control.py", line 112, in <module>
+    main()
+  File "/mnt/20t/xubuqiang/hg-wt/w-spreadrt/tests/fixtures/hg_spreadrt/synthetic_control.py", line 104, in main
+    assert proc.returncode == 0 and after == [5, 10]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+EXEC_TRACE:
+401203 execve("/mnt/8t/xubuqiang/anaconda3/bin/python3", ["/mnt/8t/xubuqiang/anaconda3/bin/python3", "/mnt/20t/xubuqiang/hg-wt/w-spreadrt/tests/fixtures/hg_spreadrt/synthetic_control.py", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-3b187a95e0f449fd9f34fea75940e48a"], 0x7ffe4fb4cd28 /* 78 vars */) = 0
+401220 execve("/usr/bin/soffice", ["/usr/bin/soffice", "--version"], 0x3b49bda0 /* 79 vars */) = 0
+401221 +++ exited with 0 +++
+401220 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401221, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401222 execve("/usr/bin/dirname", ["dirname", "/usr/bin/soffice"], 0x59fa798f9b88 /* 80 vars */) = 0
+401222 +++ exited with 0 +++
+401220 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401222, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401223 execve("/usr/bin/basename", ["basename", "/usr/bin/soffice"], 0x59fa798f9c58 /* 80 vars */) = 0
+401223 +++ exited with 0 +++
+401220 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401223, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401225 execve("/usr/bin/ls", ["ls", "-l", "soffice"], 0x59fa798f9ca8 /* 80 vars */) = 0
+401226 execve("/usr/bin/sed", ["sed", "s/.*soffice -> //g"], 0x59fa798f9cd8 /* 80 vars */) = 0
+401225 +++ exited with 0 +++
+401224 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401225, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401226 +++ exited with 0 +++
+401224 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401226, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401224 +++ exited with 0 +++
+401220 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401224, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401227 execve("/usr/bin/dirname", ["dirname", "../lib/libreoffice/program/soffice"], 0x59fa798f9c98 /* 80 vars */) = 0
+401227 +++ exited with 0 +++
+401220 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401227, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401228 +++ exited with 0 +++
+401220 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401228, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401229 +++ exited with 0 +++
+401220 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401229, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401230 execve("/usr/bin/grep", ["grep", "-q", "cc"], 0x59fa798f94d8 /* 80 vars */) = 0
+401230 +++ exited with 1 +++
+401220 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401230, si_uid=1026, si_status=1, si_utime=0, si_stime=0} ---
+401231 execve("/usr/bin/uname", ["uname", "-s"], 0x59fa798f9f38 /* 80 vars */) = 0
+401231 +++ exited with 0 +++
+401220 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401231, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401220 execve("/usr/lib/libreoffice/program/oosplash", ["/usr/lib/libreoffice/program/oosplash", "--version"], 0x59fa798f94d8 /* 80 vars */) = 0
+401234 execve("/usr/lib/libreoffice/program/soffice.bin", ["/usr/lib/libreoffice/program/soffice.bin", "--version"], 0x7ffc68cd6530 /* 80 vars */) = 0
+401247 +++ exited with 1 +++
+401234 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401247, si_uid=1026, si_status=1, si_utime=0, si_stime=0} ---
+401234 +++ exited with 0 +++
+401233 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401234, si_uid=1026, si_status=0, si_utime=7, si_stime=5} ---
+401233 +++ exited with 0 +++
+401220 +++ exited with 0 +++
+401203 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401220, si_uid=1026, si_status=0, si_utime=0, si_stime=1} ---
+401250 execve("/mnt/8t/xubuqiang/anaconda3/bin/python3", ["/mnt/8t/xubuqiang/anaconda3/bin/python3", "/mnt/20t/xubuqiang/hg-wt/w-spreadrt/data/datasets/spreadsheetbench/verify/check.py", "--workdir", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-3b187a95e0f449fd9f34fea75940e48a", "--reward-file", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-3b187a95e0f449fd9f34fea75940e48a/reward.txt", "--evidence-file", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-3b187a95e0f449fd9f34fea75940e48a/evidence.json", "--task-id", "spreadrt-authored-formulas", "--scorer-input-sha256", "a061507b33591e794eaf72eb770499a857a7415458f0aae0879dfc0a9a00ada5", "--scorer-input-files", "{\"golden.xlsx\": \"98c5449f365a2fece2aed965b222f6917afa8204e6682508b6ea2b87aaeeb4a8\", \"task.json\": \"db686bbe230a77cc476f21e57734f8f198ecb82e1f1cd2c686f4a089116c7dcf\"}"], 0x3b49bda0 /* 79 vars */) = 0
+401263 execve("/usr/bin/soffice", ["/usr/bin/soffice", "--headless", "--calc", "--norestore", "--nolockcheck", "-env:UserInstallation=file:///mnt/20t/xubuqiang/hg-work/spreadrt/tmp/sb-recalc-g702ulbs/lo-profile", "--convert-to", "xlsx:Calc MS Excel 2007 XML", "--outdir", "/mnt/20t/xubuqiang/hg-work/spreadrt/tmp/sb-recalc-g702ulbs/conv", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-3b187a95e0f449fd9f34fea75940e48a/result.xlsx"], 0x1b235510 /* 79 vars */) = 0
+401264 +++ exited with 0 +++
+401263 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401264, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401265 execve("/usr/bin/dirname", ["dirname", "/usr/bin/soffice"], 0x566724bd4b88 /* 80 vars */) = 0
+401265 +++ exited with 0 +++
+401263 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401265, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401266 execve("/usr/bin/basename", ["basename", "/usr/bin/soffice"], 0x566724bd4c58 /* 80 vars */) = 0
+401266 +++ exited with 0 +++
+401263 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401266, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401268 execve("/usr/bin/ls", ["ls", "-l", "soffice"], 0x566724bd4ca8 /* 80 vars */ <unfinished ...>
+401269 execve("/usr/bin/sed", ["sed", "s/.*soffice -> //g"], 0x566724bd4cd8 /* 80 vars */ <unfinished ...>
+401268 <... execve resumed>)            = 0
+401269 <... execve resumed>)            = 0
+401268 +++ exited with 0 +++
+401267 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401268, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401269 +++ exited with 0 +++
+401267 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401269, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401267 +++ exited with 0 +++
+401263 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401267, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401270 execve("/usr/bin/dirname", ["dirname", "../lib/libreoffice/program/soffice"], 0x566724bd4c98 /* 80 vars */) = 0
+401270 +++ exited with 0 +++
+401263 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401270, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401271 +++ exited with 0 +++
+401263 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401271, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401272 +++ exited with 0 +++
+401263 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401272, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401273 execve("/usr/bin/grep", ["grep", "-q", "cc"], 0x566724bd44d8 /* 80 vars */) = 0
+401273 +++ exited with 1 +++
+401263 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401273, si_uid=1026, si_status=1, si_utime=0, si_stime=0} ---
+401274 execve("/usr/bin/uname", ["uname", "-s"], 0x566724bd4f38 /* 80 vars */) = 0
+401274 +++ exited with 0 +++
+401263 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401274, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401263 execve("/usr/lib/libreoffice/program/oosplash", ["/usr/lib/libreoffice/program/oosplash", "--headless", "--calc", "--norestore", "--nolockcheck", "-env:UserInstallation=file:///mnt/20t/xubuqiang/hg-work/spreadrt/tmp/sb-recalc-g702ulbs/lo-profile", "--convert-to", "xlsx:Calc MS Excel 2007 XML", "--outdir", "/mnt/20t/xubuqiang/hg-work/spreadrt/tmp/sb-recalc-g702ulbs/conv", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-3b187a95e0f449fd9f34fea75940e48a/result.xlsx"], 0x566724bd44d8 /* 80 vars */) = 0
+401276 execve("/usr/lib/libreoffice/program/javaldx", ["/usr/lib/libreoffice/program/javaldx", "-env:UserInstallation=file:///mnt/20t/xubuqiang/hg-work/spreadrt/tmp/sb-recalc-g702ulbs/lo-profile", "-env:INIFILENAME=vnd.sun.star.pathname:/usr/lib/libreoffice/program/redirectrc"], 0x7ffd301f2cb8 /* 80 vars */) = -1 ENOENT (没有那个文件或目录)
+401276 +++ exited with 255 +++
+401275 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401276, si_uid=1026, si_status=255, si_utime=0, si_stime=0} ---
+401275 +++ exited with 0 +++
+401278 execve("/usr/lib/libreoffice/program/soffice.bin", ["/usr/lib/libreoffice/program/soffice.bin", "-env:UserInstallation=file:///mnt/20t/xubuqiang/hg-work/spreadrt/tmp/sb-recalc-g702ulbs/lo-profile", "--headless", "--calc", "--norestore", "--nolockcheck", "--convert-to", "xlsx:Calc MS Excel 2007 XML", "--outdir", "/mnt/20t/xubuqiang/hg-work/spreadrt/tmp/sb-recalc-g702ulbs/conv", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-3b187a95e0f449fd9f34fea75940e48a/result.xlsx"], 0x7ffd301f2cb8 /* 80 vars */) = 0
+401284 +++ exited with 1 +++
+401278 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401284, si_uid=1026, si_status=1, si_utime=0, si_stime=0} ---
+401295 +++ exited with 0 +++
+401296 +++ exited with 0 +++
+401278 +++ exited with 81 +++
+401277 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401278, si_uid=1026, si_status=81, si_utime=19, si_stime=14} ---
+401277 +++ exited with 0 +++
+401325 execve("/usr/lib/libreoffice/program/soffice.bin", ["/usr/lib/libreoffice/program/soffice.bin", "-env:UserInstallation=file:///mnt/20t/xubuqiang/hg-work/spreadrt/tmp/sb-recalc-g702ulbs/lo-profile", "--headless", "--calc", "--norestore", "--nolockcheck", "--convert-to", "xlsx:Calc MS Excel 2007 XML", "--outdir", "/mnt/20t/xubuqiang/hg-work/spreadrt/tmp/sb-recalc-g702ulbs/conv", "/mnt/20t/xubuqiang/hg-work/spreadrt/synthetic-3b187a95e0f449fd9f34fea75940e48a/result.xlsx"], 0x7ffd301f2cb8 /* 80 vars */) = 0
+401329 +++ exited with 1 +++
+401325 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401329, si_uid=1026, si_status=1, si_utime=0, si_stime=0} ---
+401330 +++ exited with 0 +++
+401394 execve("/bin/sh", ["sh", "-c", "paperconf 2>/dev/null"], 0x636282ff8140 /* 82 vars */) = 0
+401394 +++ exited with 2 +++
+401325 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401394, si_uid=1026, si_status=2, si_utime=0, si_stime=0} ---
+401401 +++ exited with 0 +++
+401402 +++ exited with 0 +++
+401403 +++ exited with 0 +++
+401408 +++ exited with 0 +++
+401325 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401408, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401409 +++ exited with 8 +++
+401410 +++ exited with 0 +++
+401325 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401410, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401411 +++ exited with 8 +++
+401412 +++ exited with 0 +++
+401325 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401412, si_uid=1026, si_status=0, si_utime=0, si_stime=0} ---
+401413 +++ exited with 8 +++
+401435 +++ exited with 0 +++
+401551 +++ exited with 0 +++
+401547 +++ exited with 0 +++
+401546 +++ exited with 0 +++
+401545 +++ exited with 0 +++
+401544 +++ exited with 0 +++
+401543 +++ exited with 0 +++
+401542 +++ exited with 0 +++
+401539 +++ exited with 0 +++
+401536 +++ exited with 0 +++
+401535 +++ exited with 0 +++
+401533 +++ exited with 0 +++
+401524 +++ exited with 0 +++
+401523 +++ exited with 0 +++
+401521 +++ exited with 0 +++
+401519 +++ exited with 0 +++
+401512 +++ exited with 0 +++
+401509 +++ exited with 0 +++
+401501 +++ exited with 0 +++
+401496 +++ exited with 0 +++
+401495 +++ exited with 0 +++
+401494 +++ exited with 0 +++
+401490 +++ exited with 0 +++
+401485 +++ exited with 0 +++
+401484 +++ exited with 0 +++
+401478 +++ exited with 0 +++
+401472 +++ exited with 0 +++
+401465 +++ exited with 0 +++
+401459 +++ exited with 0 +++
+401458 +++ exited with 0 +++
+401447 +++ exited with 0 +++
+401538 +++ exited with 0 +++
+401531 +++ exited with 0 +++
+401527 +++ exited with 0 +++
+401518 +++ exited with 0 +++
+401516 +++ exited with 0 +++
+401514 +++ exited with 0 +++
+401508 +++ exited with 0 +++
+401499 +++ exited with 0 +++
+401492 +++ exited with 0 +++
+401489 +++ exited with 0 +++
+401487 +++ exited with 0 +++
+401474 +++ exited with 0 +++
+401470 +++ exited with 0 +++
+401467 +++ exited with 0 +++
+401463 +++ exited with 0 +++
+401462 +++ exited with 0 +++
+401454 +++ exited with 0 +++
+401452 +++ exited with 0 +++
+401446 +++ exited with 0 +++
+401444 +++ exited with 0 +++
+401439 +++ exited with 0 +++
+401437 +++ exited with 0 +++
+401550 +++ exited with 0 +++
+401549 +++ exited with 0 +++
+401541 +++ exited with 0 +++
+401537 +++ exited with 0 +++
+401534 +++ exited with 0 +++
+401530 +++ exited with 0 +++
+401529 +++ exited with 0 +++
+401526 +++ exited with 0 +++
+401525 +++ exited with 0 +++
+401522 +++ exited with 0 +++
+401517 +++ exited with 0 +++
+401515 +++ exited with 0 +++
+401513 +++ exited with 0 +++
+401510 +++ exited with 0 +++
+401507 +++ exited with 0 +++
+401506 +++ exited with 0 +++
+401503 +++ exited with 0 +++
+401500 +++ exited with 0 +++
+401498 +++ exited with 0 +++
+401497 +++ exited with 0 +++
+401493 +++ exited with 0 +++
+401491 +++ exited with 0 +++
+401488 +++ exited with 0 +++
+401486 +++ exited with 0 +++
+401483 +++ exited with 0 +++
+401479 +++ exited with 0 +++
+401475 +++ exited with 0 +++
+401477 +++ exited with 0 +++
+401473 +++ exited with 0 +++
+401471 +++ exited with 0 +++
+401469 +++ exited with 0 +++
+401468 +++ exited with 0 +++
+401466 +++ exited with 0 +++
+401464 +++ exited with 0 +++
+401461 +++ exited with 0 +++
+401460 +++ exited with 0 +++
+401456 +++ exited with 0 +++
+401455 +++ exited with 0 +++
+401453 +++ exited with 0 +++
+401451 +++ exited with 0 +++
+401450 +++ exited with 0 +++
+401448 +++ exited with 0 +++
+401445 +++ exited with 0 +++
+401443 +++ exited with 0 +++
+401442 +++ exited with 0 +++
+401440 +++ exited with 0 +++
+401438 +++ exited with 0 +++
+401436 +++ exited with 0 +++
+401548 +++ exited with 0 +++
+401540 +++ exited with 0 +++
+401532 +++ exited with 0 +++
+401528 +++ exited with 0 +++
+401520 +++ exited with 0 +++
+401511 +++ exited with 0 +++
+401504 +++ exited with 0 +++
+401502 +++ exited with 0 +++
+401481 +++ exited with 0 +++
+401480 +++ exited with 0 +++
+401476 +++ exited with 0 +++
+401457 +++ exited with 0 +++
+401449 +++ exited with 0 +++
+401441 +++ exited with 0 +++
+401505 +++ exited with 0 +++
+401482 +++ exited with 0 +++
+401594 +++ exited with 0 +++
+401331 +++ exited with 0 +++
+401325 +++ exited with 0 +++
+401324 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401325, si_uid=1026, si_status=0, si_utime=61, si_stime=72} ---
+401324 +++ exited with 0 +++
+401263 +++ exited with 0 +++
+401250 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401263, si_uid=1026, si_status=0, si_utime=0, si_stime=1} ---
+401250 +++ exited with 1 +++
+401203 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=401250, si_uid=1026, si_status=1, si_utime=35, si_stime=10} ---
+401203 +++ exited with 1 +++
+
+
+No direct conversion stdout/stderr capture: checker discards successful engine streams; UNKNOWN.
+
+COMMAND: python3 tests/fixtures/hg_spreadrt/validate_packet.py
+citation_locations_checked=119
+citation_errors=[]
+proposal_schema_and_claim_states=PASS
+captured_source_hashes_unchanged=PASS
+fixture_python_AST_parse=PASS
+COMMAND: ["python3", "tools/check_dataset_blockers.py"]
+EXIT=0
+STDOUT='{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}\n'
+STDERR=''
+COMMAND: ["git", "diff", "--check"]
+EXIT=0
+STDOUT=''
+STDERR=''
+COMMAND: ["git", "diff", "--cached", "--check"]
+EXIT=2
+STDOUT='tests/fixtures/hg_spreadrt/installed-source-excerpts.txt:3: trailing whitespace.\n+     2\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:5: trailing whitespace.\n+     4\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:7: trailing whitespace.\n+     6\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:8: trailing whitespace.\n+     7\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:14: trailing whitespace.\n+    13\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:15: trailing whitespace.\n+    14\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:48: trailing whitespace.\n+     2\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:49: trailing whitespace.\n+     3\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:52: trailing whitespace.\n+     6\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:53: trailing whitespace.\n+     7\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:66: trailing whitespace.\n+    20\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:67: trailing whitespace.\n+    21\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:70: trailing whitespace.\n+    24\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:71: trailing whitespace.\n+    25\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:73: trailing whitespace.\n+    27\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:74: trailing whitespace.\n+    28\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:82: trailing whitespace.\n+    36\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:83: trailing whitespace.\n+    37\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:86: trailing whitespace.\n+    40\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:87: trailing whitespace.\n+    41\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:92: trailing whitespace.\n+     2\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:96: trailing whitespace.\n+     6\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:100: trailing whitespace.\n+    10\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:102: trailing whitespace.\n+    12\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:116: trailing whitespace.\n+    26\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:129: trailing whitespace.\n+    39\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:133: trailing whitespace.\n+    43\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:137: trailing whitespace.\n+     2\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:139: trailing whitespace.\n+     4\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:144: trailing whitespace.\n+     9\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:145: trailing whitespace.\n+    10\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:149: trailing whitespace.\n+    14\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:152: trailing whitespace.\n+    17\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:154: trailing whitespace.\n+    19\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:155: trailing whitespace.\n+    20\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:158: trailing whitespace.\n+    23\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:162: trailing whitespace.\n+    27\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:164: trailing whitespace.\n+    29\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:169: trailing whitespace.\n+    34\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:177: trailing whitespace.\n+    42\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:178: trailing whitespace.\n+    43\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:184: trailing whitespace.\n+     2\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:187: trailing whitespace.\n+     5\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:189: trailing whitespace.\n+     7\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:193: trailing whitespace.\n+    11\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:208: trailing whitespace.\n+    25\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:210: trailing whitespace.\n+    27\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:214: trailing whitespace.\n+    31\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:225: trailing whitespace.\n+    42\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:230: trailing whitespace.\n+    47\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:233: trailing whitespace.\n+    50\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:236: trailing whitespace.\n+    53\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:238: trailing whitespace.\n+    55\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:239: trailing whitespace.\n+    56\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:247: trailing whitespace.\n+     5\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:254: trailing whitespace.\n+    12\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:260: trailing whitespace.\n+    18\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:262: trailing whitespace.\n+    20\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:263: trailing whitespace.\n+    21\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:264: trailing whitespace.\n+    22\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:268: trailing whitespace.\n+    26\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:270: trailing whitespace.\n+    28\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:275: trailing whitespace.\n+    33\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:279: trailing whitespace.\n+    37\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:282: trailing whitespace.\n+    40\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:306: trailing whitespace.\n+    64\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:333: trailing whitespace.\n+    19\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:338: trailing whitespace.\n+    24\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:343: trailing whitespace.\n+    29\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:347: trailing whitespace.\n+    33\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:350: trailing whitespace.\n+    36\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:353: trailing whitespace.\n+    39\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:355: trailing whitespace.\n+    41\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:369: trailing whitespace.\n+    55\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:375: trailing whitespace.\n+    61\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:393: trailing whitespace.\n+   171\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:400: trailing whitespace.\n+   178\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:405: trailing whitespace.\n+   183\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:411: trailing whitespace.\n+   189\t\ntests/fixtures/hg_spreadrt/installed-source-excerpts.txt:414: new blank line at EOF.\ntests/fixtures/hg_spreadrt/synthetic-initial-output.txt:116: new blank line at EOF.\ntests/fixtures/hg_spreadrt/synthetic-output.txt:267: new blank line at EOF.\n'
+STDERR=''
+Raw diff check reports only literal evidence whitespace: nl-numbered blank lines and terminal blank lines from preserved exec traces. Evidence bytes remain exact; the subsequent whitespace-configured diff check passes.
+COMMAND: ["git", "-c", "core.whitespace=-blank-at-eol,-blank-at-eof", "diff", "--cached", "--check"]
+EXIT=0
+STDOUT=''
+STDERR=''
+COMMAND: ["git", "diff", "--name-only", "HEAD", "--", "registry/dataset-blockers.json", "docs/adapter-integration-journal.md", "data", "eval", "tests/quality"]
+EXIT=0
+STDOUT=''
+STDERR=''
+COMMAND: ["git", "check-ignore", "--no-index", "-v", "tests/fixtures/hg_spreadrt/inventory.py"]
+EXIT=0
+STDOUT='.gitignore:379:tests/fixtures/hg_*/\ttests/fixtures/hg_spreadrt/inventory.py\n'
+STDERR=''
+Registry checker cannot be affected by these new standalone files: registry and journal unchanged; the checker above still reports valid=true. Proposal is not integrated.
+Explicit NOT VERIFIED:
+- No dataset rows (including 283-32), released/gold/init workbook content, full eligible metadata, task execution, dataset diagnostic, pilot, or coverage was read/run by this packet.
+- No model endpoint/server, GPU, API credit, download, install, public artifact availability or upstream network authentication was used/verified.
+- No official upstream evaluator execution; local primitive source comparison and authored local checker execution do not establish official selected measurement.
+- No original LibreOffice package archive digest, full conditional native/plugin/font graph, archive-to-installed-tree equality, offline reinstall or production read-only sandbox compatibility.
+- No general formula freshness/equivalence: stale-cache synthetic control FAILED; underlying cause/corrective runtime configuration is UNKNOWN.
+- No integration-suite pass or repaired test/code claim: 21 cross-layer cases failed at missing-selected-task-ID admission; 21 direct checker cases passed.
+- No production/cache run was used to demonstrate reward-loss persistence; authored verifier fault injection reproduced score=0 with no unmeasured, and runner consequence is source-derived.
+- No absent claim in permission-denied /opt/containerd or three ephemeral wheel caches; those scopes remain UNKNOWN. No system-wide archive absence claim.
+- No frozen/historical receipt updated, old run ID resumed, registry/journal edit, main checkout commit/merge/push, branch/worktree deletion, or parent merge performed.
+
+File sizes of every file proposed for this one commit (UTF-8 text only; each <1,000,000 bytes):
+registry/proposals/w-spreadrt.json	6911
+registry/w-spreadrt-runtime.md	30286
+registry/w-spreadrt-validation.txt	113712
+tests/fixtures/hg_spreadrt/additional-probes.txt	5888
+tests/fixtures/hg_spreadrt/checker-only-tests.txt	1121
+tests/fixtures/hg_spreadrt/classification-tests.txt	40526
+tests/fixtures/hg_spreadrt/dependency-inventory.json	332326
+tests/fixtures/hg_spreadrt/dependency-summary.txt	44727
+tests/fixtures/hg_spreadrt/engine-archive-search.json	1589
+tests/fixtures/hg_spreadrt/engine-installed-sha256.txt	431251
+tests/fixtures/hg_spreadrt/executed-artifacts.json	2088
+tests/fixtures/hg_spreadrt/installed-source-excerpts.txt	15399
+tests/fixtures/hg_spreadrt/inventory-initial-output.txt	882
+tests/fixtures/hg_spreadrt/inventory-output.txt	872
+tests/fixtures/hg_spreadrt/inventory.py	9005
+tests/fixtures/hg_spreadrt/python-dependency-path-probes.txt	654
+tests/fixtures/hg_spreadrt/retained-authored-files.txt	1856
+tests/fixtures/hg_spreadrt/reward-loss-initial-output.txt	578
+tests/fixtures/hg_spreadrt/reward-loss-output.txt	2099
+tests/fixtures/hg_spreadrt/reward_loss_control.py	2676
+tests/fixtures/hg_spreadrt/run_synthetic.py	2225
+tests/fixtures/hg_spreadrt/scorer-custody-output.txt	712
+tests/fixtures/hg_spreadrt/scorer_custody.py	1311
+tests/fixtures/hg_spreadrt/source-requirements-scan.txt	3530
+tests/fixtures/hg_spreadrt/stale-cache-inspection.txt	3303
+tests/fixtures/hg_spreadrt/summarize.py	5169
+tests/fixtures/hg_spreadrt/summary-output.txt	225
+tests/fixtures/hg_spreadrt/synthetic-initial-launch-output.txt	339
+tests/fixtures/hg_spreadrt/synthetic-initial-output.txt	13202
+tests/fixtures/hg_spreadrt/synthetic-launch-output.txt	225
+tests/fixtures/hg_spreadrt/synthetic-output.txt	19061
+tests/fixtures/hg_spreadrt/synthetic_control.py	5408
+tests/fixtures/hg_spreadrt/validate_packet.py	12596
