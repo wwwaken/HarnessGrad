@@ -1,0 +1,28 @@
+Parent integration of w-b5restore: verified restoration of the B5 response bodies.
+
+Cherry-picked from baf37fa4. The worker restored **12 of the 87** missing bodies - 11 replayed HTTP 200
+responses plus one `HEAD` body written as a deliberate zero-byte file - and **refused to write anything
+it could not verify**. The parent re-ran its own verifier independently:
+
+    $ python3 tools/restore_external_provenance_b5_w_b5restore.py verify reports/w-b5restore-replay.jsonl
+    {"manifest_entries": 234, "missing": 75, "present": 159, "present_digest_mismatches": [],
+     "restored_verification_failures": [], "restored_verified": 12, "sha256sums_unchanged": true}
+
+So every present entry's digest matches, the 12 restored bodies verify, `SHA256SUMS` is unchanged and no
+rejected body was written.
+
+The residue is enumerated and, importantly, **mostly transient**:
+
+| count | reason |
+| --- | --- |
+| 70 | HTTP 403 with `X-RateLimit-Remaining: 0` - unauthenticated GitHub API rate limiting |
+| 3 | HTTP 200 whose bytes did **not** match the pin, so they were withheld |
+| 1 | transport timeout |
+| 1 | HTTP 404 whose body happens to match its historical pin, withheld under the worker's explicit non-200 rule |
+
+The worker used each body's own receipt for URL/method/headers, disabled redirects and proxies, added no
+credentials, slept between requests and refused bodies at a size cap. `.gitignore` and `SHA256SUMS` were
+not edited. The replay tool is committed and takes a `--delay`, so the 70 rate-limited entries are
+retryable rather than unobtainable; the parent is retrying them on a long interval in the background.
+
+No blocker, receipt or run ID is touched, and no claim is made that the remaining 75 are unobtainable.
