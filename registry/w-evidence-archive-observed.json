@@ -1,0 +1,318 @@
+{
+  "scope": "/mnt/20t/xubuqiang/HarnessGrad_experiments_result",
+  "archives": {
+    "agentdojo": {
+      "files": 1914,
+      "bytes": 22670809001,
+      "verdict_dirs": 0,
+      "verdict_files": 0,
+      "progress_json": 949,
+      "progress_jsonl": 949,
+      "other_files": 16
+    },
+    "alfworld": {
+      "files": 282,
+      "bytes": 2921612,
+      "verdict_dirs": 0,
+      "verdict_files": 0,
+      "progress_json": 134,
+      "progress_jsonl": 134,
+      "other_files": 14
+    },
+    "gsm8k": {
+      "files": 35184,
+      "bytes": 30614422,
+      "verdict_dirs": 0,
+      "verdict_files": 0,
+      "progress_json": 8792,
+      "progress_jsonl": 26376,
+      "other_files": 16
+    },
+    "musique": {
+      "files": 4903,
+      "bytes": 261404153,
+      "verdict_dirs": 0,
+      "verdict_files": 0,
+      "progress_json": 2417,
+      "progress_jsonl": 2466,
+      "other_files": 20
+    }
+  },
+  "original_runs": {
+    "agentdojo-probe-clean": {
+      "files": 48,
+      "bytes": 5393930,
+      "verdict_dirs": 1,
+      "verdict_files": 10,
+      "progress_json": 10,
+      "progress_jsonl": 10,
+      "other_files": 28
+    },
+    "agentdojo-qwen-t1-eval3": {
+      "files": 103,
+      "bytes": 37982692,
+      "verdict_dirs": 0,
+      "verdict_files": 0,
+      "progress_json": 51,
+      "progress_jsonl": 50,
+      "other_files": 2
+    },
+    "agentdojo-qwen-t1-train": {
+      "files": 1204,
+      "bytes": 203131666,
+      "verdict_dirs": 0,
+      "verdict_files": 0,
+      "progress_json": 601,
+      "progress_jsonl": 601,
+      "other_files": 2
+    },
+    "agentdojo-qwen-t1-train3": {
+      "files": 2412,
+      "bytes": 314068466,
+      "verdict_dirs": 1,
+      "verdict_files": 601,
+      "progress_json": 601,
+      "progress_jsonl": 601,
+      "other_files": 1210
+    },
+    "agentdojo-robind-probe": {
+      "files": 48,
+      "bytes": 4235037,
+      "verdict_dirs": 1,
+      "verdict_files": 10,
+      "progress_json": 10,
+      "progress_jsonl": 10,
+      "other_files": 28
+    },
+    "alfworld-qwen-t1-eval2": {
+      "files": 216,
+      "bytes": 2409900,
+      "verdict_dirs": 1,
+      "verdict_files": 53,
+      "progress_json": 53,
+      "progress_jsonl": 53,
+      "other_files": 110
+    },
+    "alfworld-qwen-t1-train": {
+      "files": 164,
+      "bytes": 1558767,
+      "verdict_dirs": 0,
+      "verdict_files": 0,
+      "progress_json": 81,
+      "progress_jsonl": 81,
+      "other_files": 2
+    },
+    "alfworld-qwen-t1-train2": {
+      "files": 332,
+      "bytes": 3733451,
+      "verdict_dirs": 1,
+      "verdict_files": 81,
+      "progress_json": 81,
+      "progress_jsonl": 81,
+      "other_files": 170
+    },
+    "gsm8k-qwen-t1-40": {
+      "files": 168,
+      "bytes": 1096957,
+      "verdict_dirs": 1,
+      "verdict_files": 40,
+      "progress_json": 40,
+      "progress_jsonl": 40,
+      "other_files": 88
+    },
+    "gsm8k-qwen-t3-eval-full": {
+      "files": 11875,
+      "bytes": 16521612,
+      "verdict_dirs": 1,
+      "verdict_files": 1319,
+      "progress_json": 1319,
+      "progress_jsonl": 3957,
+      "other_files": 6599
+    },
+    "gsm8k-qwen-t3-train-full": {
+      "files": 17470,
+      "bytes": 11909212,
+      "verdict_dirs": 0,
+      "verdict_files": 0,
+      "progress_json": 4367,
+      "progress_jsonl": 13101,
+      "other_files": 2
+    },
+    "gsm8k-qwen-t3-train-resume-4367": {
+      "files": 27962,
+      "bytes": 37862672,
+      "verdict_dirs": 1,
+      "verdict_files": 3106,
+      "progress_json": 3106,
+      "progress_jsonl": 9318,
+      "other_files": 15538
+    },
+    "musique-full-qwen-t1-eval": {
+      "files": 464,
+      "bytes": 14970055,
+      "verdict_dirs": 0,
+      "verdict_files": 0,
+      "progress_json": 231,
+      "progress_jsonl": 231,
+      "other_files": 2
+    },
+    "musique-full-qwen-t1-eval-last1": {
+      "files": 8,
+      "bytes": 996411,
+      "verdict_dirs": 1,
+      "verdict_files": 1,
+      "progress_json": 1,
+      "progress_jsonl": 1,
+      "other_files": 6
+    },
+    "musique-full-qwen-t1-eval-resume-191": {
+      "files": 1198,
+      "bytes": 121836586,
+      "verdict_dirs": 0,
+      "verdict_files": 0,
+      "progress_json": 598,
+      "progress_jsonl": 598,
+      "other_files": 2
+    },
+    "musique-full-qwen-t1-train": {
+      "files": 1850,
+      "bytes": 84748073,
+      "verdict_dirs": 0,
+      "verdict_files": 0,
+      "progress_json": 924,
+      "progress_jsonl": 924,
+      "other_files": 2
+    },
+    "musique-full-qwen-t1-train-resume-915": {
+      "files": 2856,
+      "bytes": 78040759,
+      "verdict_dirs": 1,
+      "verdict_files": 712,
+      "progress_json": 712,
+      "progress_jsonl": 712,
+      "other_files": 1432
+    },
+    "musique-qwen-j10-20x3": {
+      "files": 188,
+      "bytes": 13065659,
+      "verdict_dirs": 1,
+      "verdict_files": 20,
+      "progress_json": 20,
+      "progress_jsonl": 60,
+      "other_files": 108
+    },
+    "musique-qwen-j100-20x3": {
+      "files": 188,
+      "bytes": 9510486,
+      "verdict_dirs": 1,
+      "verdict_files": 20,
+      "progress_json": 20,
+      "progress_jsonl": 60,
+      "other_files": 108
+    },
+    "musique-qwen-j60-20x3": {
+      "files": 188,
+      "bytes": 8444071,
+      "verdict_dirs": 1,
+      "verdict_files": 20,
+      "progress_json": 20,
+      "progress_jsonl": 60,
+      "other_files": 108
+    },
+    "musique-qwen-monitor-20x3": {
+      "files": 188,
+      "bytes": 7134473,
+      "verdict_dirs": 1,
+      "verdict_files": 20,
+      "progress_json": 20,
+      "progress_jsonl": 60,
+      "other_files": 108
+    },
+    "musique-qwen-pilot-20x3": {
+      "files": 188,
+      "bytes": 8580495,
+      "verdict_dirs": 1,
+      "verdict_files": 20,
+      "progress_json": 20,
+      "progress_jsonl": 60,
+      "other_files": 108
+    }
+  },
+  "version_control": {
+    "agentdojo": {
+      "command": [
+        "git",
+        "-C",
+        "/mnt/20t/xubuqiang/HarnessGrad_experiments_result/agentdojo/loop_qwen3.5-9b-local",
+        "rev-parse",
+        "--show-toplevel"
+      ],
+      "exit": 128,
+      "stdout": "",
+      "stderr": "fatal: 不是 git 仓库（或者直至挂载点 /mnt 的任何父目录）\n停止在文件系统边界（未设置 GIT_DISCOVERY_ACROSS_FILESYSTEM）。\n",
+      "ancestor_dot_git": []
+    },
+    "alfworld": {
+      "command": [
+        "git",
+        "-C",
+        "/mnt/20t/xubuqiang/HarnessGrad_experiments_result/alfworld/loop_qwen3.5-9b-local",
+        "rev-parse",
+        "--show-toplevel"
+      ],
+      "exit": 128,
+      "stdout": "",
+      "stderr": "fatal: 不是 git 仓库（或者直至挂载点 /mnt 的任何父目录）\n停止在文件系统边界（未设置 GIT_DISCOVERY_ACROSS_FILESYSTEM）。\n",
+      "ancestor_dot_git": []
+    },
+    "gsm8k": {
+      "command": [
+        "git",
+        "-C",
+        "/mnt/20t/xubuqiang/HarnessGrad_experiments_result/gsm8k/loop_qwen3.5-9b-local",
+        "rev-parse",
+        "--show-toplevel"
+      ],
+      "exit": 128,
+      "stdout": "",
+      "stderr": "fatal: 不是 git 仓库（或者直至挂载点 /mnt 的任何父目录）\n停止在文件系统边界（未设置 GIT_DISCOVERY_ACROSS_FILESYSTEM）。\n",
+      "ancestor_dot_git": []
+    },
+    "musique": {
+      "command": [
+        "git",
+        "-C",
+        "/mnt/20t/xubuqiang/HarnessGrad_experiments_result/musique/loop_qwen3.5-9b-local",
+        "rev-parse",
+        "--show-toplevel"
+      ],
+      "exit": 128,
+      "stdout": "",
+      "stderr": "fatal: 不是 git 仓库（或者直至挂载点 /mnt 的任何父目录）\n停止在文件系统边界（未设置 GIT_DISCOVERY_ACROSS_FILESYSTEM）。\n",
+      "ancestor_dot_git": []
+    }
+  },
+  "original_run_directory_count": 35,
+  "copy_correspondence": {
+    "agentdojo": {
+      "source_progress_records_with_archive_peer": 1273,
+      "byte_equal_to_an_archive_peer": 3,
+      "byte_equal_distinct_inode": 3
+    },
+    "alfworld": {
+      "source_progress_records_with_archive_peer": 215,
+      "byte_equal_to_an_archive_peer": 135,
+      "byte_equal_distinct_inode": 135
+    },
+    "gsm8k": {
+      "source_progress_records_with_archive_peer": 0,
+      "byte_equal_to_an_archive_peer": 0,
+      "byte_equal_distinct_inode": 0
+    },
+    "musique": {
+      "source_progress_records_with_archive_peer": 2566,
+      "byte_equal_to_an_archive_peer": 2417,
+      "byte_equal_distinct_inode": 2417
+    }
+  }
+}
