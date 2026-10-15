@@ -3587,3 +3587,31 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
 - The verifier now runs only a read-only-mounted, host-owned static BusyBox idle process before checker entry, overriding image entrypoint and disabling inherited healthcheck. Numeric sleep supports the installed BusyBox. Removed the unnecessary actor-owned pre-check mkdir; the fresh reward bind already supplies that directory. Networking, bridge attachment, recording/reward mounts, admission/headroom/limits, scoring and pristine two-projection enforcement are preserved.
 - Evidence: `reports/w-snapfix-receipts.md`, raw command/output/source/manifest/config/cleanup artifacts under `reports/w-snapfix-evidence/`, and `reports/w-snapfix-validation.txt`. The independently verified original packet remains byte-identical. Corrected-pin unit controls fail before (9 failed, 1 passed); all 10 new controls pass after within the 39-pass focused selection. The full 22-test Option B suite also passes. Live baseline fails both binding assertions; the final live check passes both with an actual checker read, independently recomputed manifest/config/layers and owned-container/network/image cleanup. Initial wrong-index unit pins and unsupported-infinity live failure are preserved and explicitly excluded from closure; unchanged bytes alone were not a completed check.
 - Exact closure: expected-identity comparison and prevention of actor startup mutation at checker entry are established at this route only. Inherited-volume coverage, actor-owned checker runtime, historical byte custody, portable/execution-selected dependency/ABI/input closure and broad dataset/image coverage remain open. S1/S3/S4/S6 and E5/E6 stay PARTIAL; both shared blockers and every dataset blocker remain open, with statuses/next_actions/history/gates unchanged. No model/GPU/endpoint, official scorer, benchmark run, frozen receipt or pre-existing image mutation occurred. Work is committed only on this registered worktree branch for parent review.
+## Parent review and merge — w-snapfix — 2026-10-15
+
+- Merged `4922dc2` and `c3c0109` (w-snapfix). Result `d9bc65f`. Registry valid: 28 datasets, 2
+  shared blockers, 11 historical records, `production_authorized=false`; sequencer clean;
+  deliverable present. The production diff touches `eval/containers/container.py` (+79),
+  `eval/containers/container_state.py` and `eval/verification/verifier.py`; the parent checked the
+  removed lines and they are parameter-signature changes only - **no admission, refusal, limit or
+  headroom check was removed**.
+- **Both independently confirmed snapshot-service defects are now fixed, with two-direction
+  evidence.** Expected-identity comparison is **enforced**, including Docker's consumed image, and
+  filesystem binding against startup mutation is **enforced at checker entry** using a trusted
+  static idle process. New tests went **9 failed / 1 passed before -> 10 passed after**, and the live
+  binding controls went **2 failed before -> 2 passed after**; 39 focused tests and 22 Option B
+  tests pass.
+- **The honest boundary was stated by the worker and is worth keeping:** the identity comparison
+  trusts the local daemon and does **not** establish publisher provenance, and checker-runtime
+  integrity, inherited-volume coverage, historical replay and complete scorer/export closure remain
+  unfixed because these changes do not establish those guarantees. No shared or dataset blocker
+  closed and the required PARTIAL statuses remain.
+- This closes a real loop that ran across three rounds: round 54 found the gap and was stopped
+  mid-packet by an attack-framed brief; round 55 re-ran it as binding validation, completed the
+  evidence packet, independently confirmed five claims and **corrected two** (`looks_pinned` was
+  syntax-only; a different existing digest was accepted); round 56 fixed both defects against
+  reproduced failing cases. The sequence is a good example of why the phase insists on
+  demonstrate-then-fix rather than fix-on-suspicion.
+- Resource state: local scratch-container work, docker metadata inspection and tests only - no
+  benchmark scoring run, model, GPU or endpoint call. Both GPUs stayed idle and no utilisation is
+  claimed. Historical runs, frozen receipts and pre-existing images were untouched.
