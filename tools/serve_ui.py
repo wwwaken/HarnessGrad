@@ -81,7 +81,7 @@ def model_presets() -> dict:
         "本地 Qwen3.5-9B(vLLM,免费、秒回)": {
             "HG_AGENT_BACKEND": "openai",
             "HG_AGENT_MODEL": "qwen3.5-9b-local",
-            "HG_AGENT_BASE_URL": "http://127.0.0.1:8001/v1",
+            "HG_AGENT_BASE_URL": "http://127.0.0.1:8002/v1",
             "HG_AGENT_API_KEY": "local",
             "note": "需要先启动本地服务:./tools/serve_local_model.sh --model <模型>",
         },
@@ -570,7 +570,7 @@ def explain_diff(run_id: str, round_no: int) -> dict:
         "用中文写 3-5 句话:改了什么、针对什么问题、有什么风险。")
 
     # 先试本地服务:免费且快,演示时最稳
-    candidates = [("http://127.0.0.1:8001/v1", "local",
+    candidates = [("http://127.0.0.1:8002/v1", "local",
                    os.environ.get("HARNESSGRAD_EXPLAIN_MODEL", "qwen3.5-9b-local"))]
     env = {}
     ef = ROOT / ".env"
@@ -621,7 +621,7 @@ def explain_diff(run_id: str, round_no: int) -> dict:
 #: 人以为配置不完整。DSH 的做法是允许"无凭据的 provider 原生配置",这里照做。
 PROVIDERS = {
     "本地 vLLM(免费,秒回)": {
-        "base_url": "http://127.0.0.1:8001/v1",
+        "base_url": "http://127.0.0.1:8002/v1",
         "models": ["qwen3.5-9b-local", "qwen3-30b-local", "qwen2.5-7b-local"],
         "local": True,
         "note": "需要先在下面启动本地模型服务;首次加载约 2 分钟",
@@ -653,7 +653,7 @@ def provider_catalog() -> dict:
 
     # 本地服务真在跑的话,把它自报的模型名填进去 —— 这比预设的猜测准
     try:
-        with urllib.request.urlopen("http://127.0.0.1:8001/v1/models", timeout=4) as r:
+        with urllib.request.urlopen("http://127.0.0.1:8002/v1/models", timeout=4) as r:
             names = [m["id"] for m in json.load(r).get("data", [])]
         if names:
             catalog["本地 vLLM(免费,秒回)"]["models"] = names

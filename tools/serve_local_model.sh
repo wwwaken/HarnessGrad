@@ -22,7 +22,7 @@
 #      `--stop`, which builds the pattern at runtime.
 #
 # Usage:
-#   ./tools/serve_local_model.sh --model /path/to/model --port 8001 [--tp 2]
+#   ./tools/serve_local_model.sh --model /path/to/model --port 8002 [--tp 2]
 #   ./tools/serve_local_model.sh --stop
 #   ./tools/serve_local_model.sh --list         # candidate local models
 #
@@ -181,7 +181,7 @@ list_models() {
     done
 }
 
-MODEL="" PORT=8001 TP=1 MAXLEN=32768 GPUMEM=0.90 SERVED=""
+MODEL="" PORT=8002 TP=1 MAXLEN=32768 GPUMEM=0.90 SERVED=""
 
 while [ $# -gt 0 ]; do
     case "$1" in
