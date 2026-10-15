@@ -14,7 +14,7 @@ NATIVE_PINS = {
     "alfworld": {
         "dataset": "alfworld",
         "manifest": "data/runtimes/alfworld-native.json",
-        "sha256": "8bf87ee279e407b7a5eda8b2dc5ee85ad297d04bbc29ddf496338a4adeebd6dc",
+        "sha256": "2d3783313a936b2f3c90527187a1350d96ca329608fd9514de2f75c8e630b264",
     },
     "jericho": {
         "dataset": "jericho",

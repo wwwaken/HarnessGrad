@@ -49,9 +49,12 @@ def _indices():
     The legacy roster can describe required paths before fresh attack-specific preparation;
     legacy snapshots themselves are never selected for SETUP or verification.
     """
-    prepared = DATASET_ROOT / 'prepared'
+    prepared = DATASET_ROOT / PREPARED
     if not prepared.is_dir():
-        prepared = DATASET_ROOT / PREPARED
+        # Roster only: a pre-preparation checkout still has to enumerate its cases so
+        # `load()` can say the dataset is unprovisioned. `provision_status` gates on
+        # PREPARED, and SETUP/VERIFY never read this legacy directory.
+        prepared = DATASET_ROOT / 'prepared'
     return sorted(int(p.name) for p in prepared.iterdir()
                   if p.is_dir() and p.name.isdecimal() and str(int(p.name)) == p.name)
 
