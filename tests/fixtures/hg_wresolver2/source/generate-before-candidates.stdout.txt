@@ -1,0 +1,274 @@
+{
+  "profiles": [
+    {
+      "dataset": "jericho",
+      "import_scope": "spaCy is a lazy util dependency. The wrapper replay path calls env.step; this source audit does not execute a game or attest a spaCy import. The normal metadata edge remains required for dependency-aware resolution.",
+      "import_site": {
+        "line": 42,
+        "locator": "tests/fixtures/hg_wresolver2/source/wheels/jericho/jericho/util.py:42",
+        "origin": "/tmp/hg-wwheelhouse-payloads-e5uywviu/jericho-3.3.1-py3-none-any.whl:jericho/util.py",
+        "preimage": "tests/fixtures/hg_wresolver2/source/wheels/jericho/jericho/util.py",
+        "text": "        import spacy"
+      },
+      "metadata_edge": {
+        "line": 12,
+        "locator": "tests/fixtures/hg_wresolver2/source/wheels/jericho/jericho-3.3.1.dist-info/METADATA:12",
+        "origin": "/tmp/hg-wwheelhouse-payloads-e5uywviu/jericho-3.3.1-py3-none-any.whl:jericho-3.3.1.dist-info/METADATA",
+        "preimage": "tests/fixtures/hg_wresolver2/source/wheels/jericho/jericho-3.3.1.dist-info/METADATA",
+        "text": "Requires-Dist: spacy>=2.1.0"
+      },
+      "missing_requirement": "spacy>=2.1.0",
+      "root_pin": {
+        "line": 305,
+        "locator": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/jericho.py:305",
+        "origin": "data/datasets/jericho.py",
+        "preimage": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/jericho.py",
+        "text": "            \"version\": \"3.3.1\","
+      },
+      "root_requirement": "jericho==3.3.1",
+      "scorer_route": [
+        {
+          "line": 257,
+          "locator": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/jericho.py:257",
+          "origin": "data/datasets/jericho.py",
+          "preimage": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/jericho.py",
+          "text": "            \"python3\", \"check.py\","
+        },
+        {
+          "line": 49,
+          "locator": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/jericho/verify/check.py:49",
+          "origin": "data/datasets/jericho/verify/check.py",
+          "preimage": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/jericho/verify/check.py",
+          "text": "import jer_env  # noqa: E402"
+        },
+        {
+          "line": 38,
+          "locator": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/jericho/lib/jer_env.py:38",
+          "origin": "data/datasets/jericho/lib/jer_env.py",
+          "preimage": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/jericho/lib/jer_env.py",
+          "text": "    from jericho import FrotzEnv"
+        }
+      ],
+      "separate_model_obligation": [
+        {
+          "line": 44,
+          "locator": "tests/fixtures/hg_wresolver2/source/wheels/jericho/jericho/util.py:44",
+          "origin": "/tmp/hg-wwheelhouse-payloads-e5uywviu/jericho-3.3.1-py3-none-any.whl:jericho/util.py",
+          "preimage": "tests/fixtures/hg_wresolver2/source/wheels/jericho/jericho/util.py",
+          "text": "            spacy_nlp = spacy.load(\"en_core_web_sm\")"
+        },
+        {
+          "line": 46,
+          "locator": "tests/fixtures/hg_wresolver2/source/wheels/jericho/jericho/util.py:46",
+          "origin": "/tmp/hg-wwheelhouse-payloads-e5uywviu/jericho-3.3.1-py3-none-any.whl:jericho/util.py",
+          "preimage": "tests/fixtures/hg_wresolver2/source/wheels/jericho/jericho/util.py",
+          "text": "            spacy.cli.download(\"en_core_web_sm\")"
+        }
+      ]
+    },
+    {
+      "dataset": "reasoning_gym",
+      "import_scope": "Reasoning Gym eagerly imports game_of_life and cellpylib; contourpy is a deferred contour-operation import in retained Matplotlib. Matplotlib 3.8.4 is the retained candidate, not a root source pin. The normal contourpy metadata edge remains required even without calling contour operations.",
+      "import_site": {
+        "line": 1507,
+        "locator": "tests/fixtures/hg_wresolver2/source/wheels/matplotlib/matplotlib/contour.py:1507",
+        "origin": "/tmp/hg-wwheelhouse-payloads-e5uywviu/matplotlib-3.8.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl:matplotlib/contour.py",
+        "preimage": "tests/fixtures/hg_wresolver2/source/wheels/matplotlib/matplotlib/contour.py",
+        "text": "            import contourpy"
+      },
+      "metadata_edges": [
+        {
+          "line": 16,
+          "locator": "tests/fixtures/hg_wresolver2/source/wheels/reasoning-gym/reasoning_gym-0.1.25.dist-info/METADATA:16",
+          "origin": "/tmp/hg-wwheelhouse-payloads-e5uywviu/reasoning_gym-0.1.25-py3-none-any.whl:reasoning_gym-0.1.25.dist-info/METADATA",
+          "preimage": "tests/fixtures/hg_wresolver2/source/wheels/reasoning-gym/reasoning_gym-0.1.25.dist-info/METADATA",
+          "text": "Requires-Dist: cellpylib==2.4.0"
+        },
+        {
+          "line": 18,
+          "locator": "tests/fixtures/hg_wresolver2/source/wheels/cellpylib/cellpylib-2.4.0.dist-info/METADATA:18",
+          "origin": "/tmp/hg-wwheelhouse-payloads-e5uywviu/cellpylib-2.4.0-py3-none-any.whl:cellpylib-2.4.0.dist-info/METADATA",
+          "preimage": "tests/fixtures/hg_wresolver2/source/wheels/cellpylib/cellpylib-2.4.0.dist-info/METADATA",
+          "text": "Requires-Dist: matplotlib>=3.0.2"
+        },
+        {
+          "line": 42,
+          "locator": "tests/fixtures/hg_wresolver2/source/wheels/matplotlib/matplotlib-3.8.4.dist-info/METADATA:42",
+          "origin": "/tmp/hg-wwheelhouse-payloads-e5uywviu/matplotlib-3.8.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl:matplotlib-3.8.4.dist-info/METADATA",
+          "preimage": "tests/fixtures/hg_wresolver2/source/wheels/matplotlib/matplotlib-3.8.4.dist-info/METADATA",
+          "text": "Requires-Dist: contourpy >=1.0.1"
+        }
+      ],
+      "missing_requirement": "contourpy>=1.0.1",
+      "root_pin": {
+        "line": 67,
+        "locator": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/reasoning_gym.py:67",
+        "origin": "data/datasets/reasoning_gym.py",
+        "preimage": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/reasoning_gym.py",
+        "text": "VERSION = \"0.1.25\""
+      },
+      "root_requirement": "reasoning-gym==0.1.25",
+      "scorer_route": [
+        {
+          "line": 108,
+          "locator": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/reasoning_gym.py:108",
+          "origin": "data/datasets/reasoning_gym.py",
+          "preimage": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/reasoning_gym.py",
+          "text": "    from reasoning_gym import create_dataset"
+        },
+        {
+          "line": 7,
+          "locator": "tests/fixtures/hg_wresolver2/source/wheels/reasoning-gym/reasoning_gym/__init__.py:7",
+          "origin": "/tmp/hg-wwheelhouse-payloads-e5uywviu/reasoning_gym-0.1.25-py3-none-any.whl:reasoning_gym/__init__.py",
+          "preimage": "tests/fixtures/hg_wresolver2/source/wheels/reasoning-gym/reasoning_gym/__init__.py",
+          "text": "    algorithmic,"
+        },
+        {
+          "line": 16,
+          "locator": "tests/fixtures/hg_wresolver2/source/wheels/reasoning-gym/reasoning_gym/algorithmic/__init__.py:16",
+          "origin": "/tmp/hg-wwheelhouse-payloads-e5uywviu/reasoning_gym-0.1.25-py3-none-any.whl:reasoning_gym/algorithmic/__init__.py",
+          "preimage": "tests/fixtures/hg_wresolver2/source/wheels/reasoning-gym/reasoning_gym/algorithmic/__init__.py",
+          "text": "from .game_of_life import GameOfLifeConfig, GameOfLifeCurriculum, GameOfLifeDataset"
+        },
+        {
+          "line": 6,
+          "locator": "tests/fixtures/hg_wresolver2/source/wheels/reasoning-gym/reasoning_gym/algorithmic/game_of_life.py:6",
+          "origin": "/tmp/hg-wwheelhouse-payloads-e5uywviu/reasoning_gym-0.1.25-py3-none-any.whl:reasoning_gym/algorithmic/game_of_life.py",
+          "preimage": "tests/fixtures/hg_wresolver2/source/wheels/reasoning-gym/reasoning_gym/algorithmic/game_of_life.py",
+          "text": "import cellpylib as cpl"
+        },
+        {
+          "line": 12,
+          "locator": "tests/fixtures/hg_wresolver2/source/wheels/cellpylib/cellpylib/__init__.py:12",
+          "origin": "/tmp/hg-wwheelhouse-payloads-e5uywviu/cellpylib-2.4.0-py3-none-any.whl:cellpylib/__init__.py",
+          "preimage": "tests/fixtures/hg_wresolver2/source/wheels/cellpylib/cellpylib/__init__.py",
+          "text": "from .ca_functions import BaseRule, AsynchronousRule, ReversibleRule, binary_rule, init_simple, nks_rule, \\"
+        },
+        {
+          "line": 1,
+          "locator": "tests/fixtures/hg_wresolver2/source/wheels/cellpylib/cellpylib/ca_functions.py:1",
+          "origin": "/tmp/hg-wwheelhouse-payloads-e5uywviu/cellpylib-2.4.0-py3-none-any.whl:cellpylib/ca_functions.py",
+          "preimage": "tests/fixtures/hg_wresolver2/source/wheels/cellpylib/cellpylib/ca_functions.py",
+          "text": "import matplotlib.pyplot as plt"
+        }
+      ]
+    },
+    {
+      "branch": [
+        {
+          "line": 13,
+          "locator": "tests/fixtures/hg_wresolver2/source/wheels/openpyxl/openpyxl/xml/functions.py:13",
+          "origin": "/tmp/hg-wwheelhouse-payloads-e5uywviu/openpyxl-3.1.2-py2.py3-none-any.whl:openpyxl/xml/functions.py",
+          "preimage": "tests/fixtures/hg_wresolver2/source/wheels/openpyxl/openpyxl/xml/functions.py",
+          "text": "if LXML is True:"
+        },
+        {
+          "line": 27,
+          "locator": "tests/fixtures/hg_wresolver2/source/wheels/openpyxl/openpyxl/xml/functions.py:27",
+          "origin": "/tmp/hg-wwheelhouse-payloads-e5uywviu/openpyxl-3.1.2-py2.py3-none-any.whl:openpyxl/xml/functions.py",
+          "preimage": "tests/fixtures/hg_wresolver2/source/wheels/openpyxl/openpyxl/xml/functions.py",
+          "text": "else:"
+        },
+        {
+          "line": 26,
+          "locator": "tests/fixtures/hg_wresolver2/source/wheels/openpyxl/openpyxl/xml/__init__.py:26",
+          "origin": "/tmp/hg-wwheelhouse-payloads-e5uywviu/openpyxl-3.1.2-py2.py3-none-any.whl:openpyxl/xml/__init__.py",
+          "preimage": "tests/fixtures/hg_wresolver2/source/wheels/openpyxl/openpyxl/xml/__init__.py",
+          "text": "LXML = lxml_available() and lxml_env_set()"
+        }
+      ],
+      "dataset": "spreadsheetbench",
+      "import_scope": "et_xmlfile is imported on openpyxl's no-LXML branch. openpyxl declares et-xmlfile unconditionally and without a version bound; optional lxml availability does not remove the resolver metadata obligation.",
+      "import_site": {
+        "line": 36,
+        "locator": "tests/fixtures/hg_wresolver2/source/wheels/openpyxl/openpyxl/xml/functions.py:36",
+        "origin": "/tmp/hg-wwheelhouse-payloads-e5uywviu/openpyxl-3.1.2-py2.py3-none-any.whl:openpyxl/xml/functions.py",
+        "preimage": "tests/fixtures/hg_wresolver2/source/wheels/openpyxl/openpyxl/xml/functions.py",
+        "text": "    from et_xmlfile import xmlfile"
+      },
+      "metadata_edge": {
+        "line": 26,
+        "locator": "tests/fixtures/hg_wresolver2/source/wheels/openpyxl/openpyxl-3.1.2.dist-info/METADATA:26",
+        "origin": "/tmp/hg-wwheelhouse-payloads-e5uywviu/openpyxl-3.1.2-py2.py3-none-any.whl:openpyxl-3.1.2.dist-info/METADATA",
+        "preimage": "tests/fixtures/hg_wresolver2/source/wheels/openpyxl/openpyxl-3.1.2.dist-info/METADATA",
+        "text": "Requires-Dist: et-xmlfile"
+      },
+      "missing_requirement": "et-xmlfile",
+      "root_pin": {
+        "line": 285,
+        "locator": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/spreadsheetbench.py:285",
+        "origin": "data/datasets/spreadsheetbench.py",
+        "preimage": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/spreadsheetbench.py",
+        "text": "            \"version\": \"3.1.2\","
+      },
+      "root_requirement": "openpyxl==3.1.2",
+      "scorer_route": [
+        {
+          "line": 234,
+          "locator": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/spreadsheetbench.py:234",
+          "origin": "data/datasets/spreadsheetbench.py",
+          "preimage": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/spreadsheetbench.py",
+          "text": "            \"python3\", \"check.py\","
+        },
+        {
+          "line": 169,
+          "locator": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/spreadsheetbench/verify/check.py:169",
+          "origin": "data/datasets/spreadsheetbench/verify/check.py",
+          "preimage": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/spreadsheetbench/verify/check.py",
+          "text": "    import openpyxl"
+        },
+        {
+          "line": 260,
+          "locator": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/spreadsheetbench/verify/check.py:260",
+          "origin": "data/datasets/spreadsheetbench/verify/check.py",
+          "preimage": "tests/fixtures/hg_wresolver2/source/repository/data/datasets/spreadsheetbench/verify/check.py",
+          "text": "    import openpyxl"
+        }
+      ]
+    }
+  ],
+  "runtime_identity": {
+    "SOABI": "cpython-312-x86_64-linux-gnu",
+    "executable": "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+    "executable_sha256": "0eb25a387ef43f21492b659f4865eae5bdaf8da30d6357097b2d9bb24873ebfb",
+    "implementation": "CPython",
+    "machine": "x86_64",
+    "prior_runtime_preimage": "tests/fixtures/hg_wresolver/raw/native-runtime.json",
+    "scope": "CPython 3.12 Linux x86_64 metadata resolver target; no production interpreter custody claim",
+    "sys_version": "3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]",
+    "system": "Linux"
+  },
+  "source_files": 31,
+  "wheels": [
+    {
+      "bytes": 325272,
+      "key": "jericho",
+      "path": "/tmp/hg-wwheelhouse-payloads-e5uywviu/jericho-3.3.1-py3-none-any.whl",
+      "sha256": "7cceee841274af004628024d04a9032cc37a08ab60b8095cdff82d5ddd73ed31"
+    },
+    {
+      "bytes": 6985897,
+      "key": "reasoning-gym",
+      "path": "/tmp/hg-wwheelhouse-payloads-e5uywviu/reasoning_gym-0.1.25-py3-none-any.whl",
+      "sha256": "7f17a3eddb13c015d7d4a755ed576a061df889faf9468bcc2cca334ebe9e0435"
+    },
+    {
+      "bytes": 38008,
+      "key": "cellpylib",
+      "path": "/tmp/hg-wwheelhouse-payloads-e5uywviu/cellpylib-2.4.0-py3-none-any.whl",
+      "sha256": "7d24c32060e17752c24b77e3185af426b8a1593e54fc716db36cd39243d1d316"
+    },
+    {
+      "bytes": 11600837,
+      "key": "matplotlib",
+      "path": "/tmp/hg-wwheelhouse-payloads-e5uywviu/matplotlib-3.8.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "sha256": "f51c4c869d4b60d769f7b4406eec39596648d9d70246428745a681c327a8ad30"
+    },
+    {
+      "bytes": 249985,
+      "key": "openpyxl",
+      "path": "/tmp/hg-wwheelhouse-payloads-e5uywviu/openpyxl-3.1.2-py2.py3-none-any.whl",
+      "sha256": "f91456ead12ab3c6c2e9491cf33ba6d08357d802192379bb482f1033ade496f5"
+    }
+  ]
+}

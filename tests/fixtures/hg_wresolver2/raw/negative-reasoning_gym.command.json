@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "/tmp/hg-wresolver2-offline-mc30gqp1/reasoning_gym/bin/python",
+    "-m",
+    "pip",
+    "--isolated",
+    "--disable-pip-version-check",
+    "install",
+    "--ignore-installed",
+    "--no-index",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--dry-run",
+    "--find-links",
+    "/tmp/hg-wresolver2-offline-mc30gqp1/missing-contourpy",
+    "-r",
+    "/tmp/hg-resolver2/tests/fixtures/hg_wresolver2/profiles/reasoning_gym/roots.in",
+    "-c",
+    "/tmp/hg-resolver2/tests/fixtures/hg_wresolver2/profiles/reasoning_gym/constraints.txt"
+  ],
+  "elapsed_seconds": 0.8854603338986635,
+  "exit_code": 1,
+  "timeout_seconds": 180
+}

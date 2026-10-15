@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/tmp/hg-resolver2/tests/fixtures/hg_wresolver2/source/generate-source-audit.py", line 111, in <module>
+    cite('data/datasets/spreadsheetbench/verify/check.py', 165, 'import openpyxl'),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/hg-resolver2/tests/fixtures/hg_wresolver2/source/generate-source-audit.py", line 79, in cite
+    assert expected in actual, (origin, line, expected, actual)
+           ^^^^^^^^^^^^^^^^^^
+AssertionError: ('data/datasets/spreadsheetbench/verify/check.py', 165, 'import openpyxl', '')

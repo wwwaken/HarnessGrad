@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/tmp/hg-resolver2/tests/fixtures/hg_wresolver2/source/generate-source-audit.py", line 88, in <module>
+    'scorer_route': [cite('data/datasets/jericho.py', 255, 'python3'),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/hg-resolver2/tests/fixtures/hg_wresolver2/source/generate-source-audit.py", line 79, in cite
+    assert expected in actual, (origin, line, expected, actual)
+           ^^^^^^^^^^^^^^^^^^
+AssertionError: ('data/datasets/jericho.py', 255, 'python3', '        "kind": "command",')

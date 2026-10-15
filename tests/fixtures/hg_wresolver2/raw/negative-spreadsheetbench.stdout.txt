@@ -1,0 +1,12 @@
+Looking in links: /tmp/hg-wresolver2-offline-mc30gqp1/missing-et-xmlfile
+Processing /tmp/hg-wresolver2-offline-mc30gqp1/missing-et-xmlfile/openpyxl-3.1.2-py2.py3-none-any.whl (from -r /tmp/hg-resolver2/tests/fixtures/hg_wresolver2/profiles/spreadsheetbench/roots.in (line 1))
+INFO: pip is looking at multiple versions of openpyxl to determine which version is compatible with other requirements. This could take a while.
+
+The conflict is caused by:
+    openpyxl 3.1.2 depends on et-xmlfile
+    The user requested (constraint) et-xmlfile==1.1.0
+
+To fix this you could try to:
+1. loosen the range of package versions you've specified
+2. remove package versions to allow pip attempt to solve the dependency conflict
+

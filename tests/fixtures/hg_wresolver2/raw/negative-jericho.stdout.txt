@@ -1,0 +1,13 @@
+Looking in links: /tmp/hg-wresolver2-offline-mc30gqp1/missing-spacy
+Processing /tmp/hg-wresolver2-offline-mc30gqp1/missing-spacy/jericho-3.3.1-py3-none-any.whl (from -r /tmp/hg-resolver2/tests/fixtures/hg_wresolver2/profiles/jericho/roots.in (line 1))
+Processing /tmp/hg-wresolver2-offline-mc30gqp1/missing-spacy/numpy-1.26.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (from jericho==3.3.1->-r /tmp/hg-resolver2/tests/fixtures/hg_wresolver2/profiles/jericho/roots.in (line 1))
+INFO: pip is looking at multiple versions of jericho to determine which version is compatible with other requirements. This could take a while.
+
+The conflict is caused by:
+    jericho 3.3.1 depends on spacy>=2.1.0
+    The user requested (constraint) spacy==3.8.16
+
+To fix this you could try to:
+1. loosen the range of package versions you've specified
+2. remove package versions to allow pip attempt to solve the dependency conflict
+

@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "/tmp/hg-wresolver2-offline-mc30gqp1/spreadsheetbench/bin/python",
+    "-m",
+    "pip",
+    "--isolated",
+    "--disable-pip-version-check",
+    "install",
+    "--ignore-installed",
+    "--no-index",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--dry-run",
+    "-vv",
+    "--find-links",
+    "/tmp/hg-wresolver2-payloads-3pw9kdeg/wheels",
+    "--report",
+    "/tmp/hg-resolver2/tests/fixtures/hg_wresolver2/raw/spreadsheetbench.pip-report.json",
+    "-r",
+    "/tmp/hg-resolver2/tests/fixtures/hg_wresolver2/profiles/spreadsheetbench/roots.in",
+    "-c",
+    "/tmp/hg-resolver2/tests/fixtures/hg_wresolver2/profiles/spreadsheetbench/constraints.txt"
+  ],
+  "elapsed_seconds": 0.6384422648698092,
+  "exit_code": 0,
+  "timeout_seconds": 180
+}
