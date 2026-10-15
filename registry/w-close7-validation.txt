@@ -59,6 +59,21 @@ because `parse_cell_range` gives an end column of 0, so the loop body never ran 
     compare_workbooks(..., "'Sheet1'!BD2:308") -> ok=True  msg=''
     compare_workbooks(..., "'Sheet1'!A1")      -> ok=False msg='value difference at A1: golden has 5, result has 999'
 
+That block is the parent's **pre-fix** reproduction, kept as what was observed then. The same two
+workbooks were re-run in this checkout after the fix landed (worksheet renamed to `Sheet1`, which the
+first attempt got wrong and which is why the earlier transcript's `A1` case is quoted from the pre-fix
+run):
+
+    $ python3 -c "<import data/datasets/spreadsheetbench/verify/check.py by path>"
+    generate_cell_names('BD2:308') -> []
+    compare_workbooks(..., "'Sheet1'!BD2:308") -> ValueError: the task's answer_position
+        "'Sheet1'!BD2:308" component "'Sheet1'!BD2:308" has an empty expansion (zero cells)
+    compare_workbooks(..., "'Sheet1'!A1") -> (False, 'value difference at A1: golden has 5, result has 999')
+
+So the unaddressable reference is now unmeasured with a named reason instead of returning a pass, and an
+ordinary differing cell is still detected - the fix removes the vacuous pass without weakening the real
+comparison.
+
 So a released row whose `answer_position` had a range end without column letters scored **1.0 for any
 submission** and was recorded as a measured pass. `w-spreadelig` had already classified released row `73-45`
 as `not_gradable_as_installed` for exactly this reason and flagged `130-9` as the

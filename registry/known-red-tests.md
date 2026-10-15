@@ -514,3 +514,56 @@ names a published dataset, and asserts there are still exactly six of them - whi
 parametrized content check below it from shrinking silently. The substitution is recorded in
 `registry/w-close7-validation.txt` because editing a guard to fit a closure is the exact move that can
 hide a defect.
+
+## The definitive sweep, 2026-10-15 - 191/191 files, every red accounted for
+
+`tools/quality_sweep.py --timeout 400` over all 191 `tests/quality/test_*.py` at `ce5c1dae`, on a
+**frozen** tree (the earlier attempt was killed at 13/191 because the parent had committed to `main`
+during it, and `data/`/`tests/` are hashed `PLATFORM` paths). Result: `discovered 191, selected 191,
+ran 191, missing [], interrupted false`, 9 red files, 68.7 minutes wall. The point of the count is that
+`ran == selected == discovered`: a sweep whose covered list is shorter than its selected list is not
+evidence, which is the failure this tool exists to prevent.
+
+Nine reds, in four classes:
+
+* **Two load-induced, both verified green in isolation.** `test_appworld_official_scorer.py` hit the
+  sweep's own 400 s cap (rc 124) after 7 passing tests - it spawns one appworld-venv subprocess per
+  covered task with a 180 s internal timeout, and the operator's 40-job AgentDojo pass had load average
+  above 15. `test_chessbench_stepwise_runner.py` failed 2 socket-deadline tests under the same load and is
+  **18 passed in 31.84 s** when re-run alone. Neither is a defect; both are re-run in a quiet tree and the
+  re-run is the record.
+* **Three caused by merges earlier the same day**, all in *guards* rather than in product code, and all
+  fixed: `test_gaia_snapshot_attestation.py` (7) and `test_gaia_preflight_codex175.py` (1) from the two
+  field/decoding changes, plus `test_jericho_runtime_admission.py` (1) which encoded the pre-`w-jerichoadm`
+  contract for `network: "none"`. See the two sections above.
+* **Three red for recorded, enumerated reasons, unchanged by this sweep.** `test_we5_equivalence.py`
+  (the preserved packet that exists nowhere), `test_external_provenance_b5.py` (71 raw bodies not yet
+  restored; the replay is paused so it cannot write `tests/fixtures/` beside a running driver), and
+  `test_isolation.py` (the known pre-existing failure).
+* **One red that is a missing internal artefact**, below.
+
+## `docs/claims.md` was deleted and is recoverable, not lost
+
+`test_claims_doc.py` exits **5** (no tests collected) because `docs/claims.md` - the group's research
+register, gitignored by the `/docs/*` narrowing and never committed - is absent. The module-level
+`pytest.skip("docs/claims.md is internal ... and absent from this clone")` fires, so pytest reports
+`1 skipped` and returns 5.
+
+**It is recoverable, and was recovered and verified.** Three byte-identical copies (44,827 B, SHA-256
+prefix `baa79fb748f9b4bd`, mtime 2026-10-13 22:08:40) survived inside staged-platform copies made by
+`test_the_driver_exits_nonzero_0`:
+
+* `/mnt/20t/xubuqiang/.hg-pytest/main-s8/bt/test_the_driver_exits_nonzero_0/platform/docs/claims.md`
+* `/mnt/20t/xubuqiang/.hg-pytest/main-s8c/bt/test_the_driver_exits_nonzero_0/platform/docs/claims.md`
+* `/mnt/20t/xubuqiang/.hg-pytest/race/test_isolation/test_the_driver_exits_nonzero_0/platform/docs/claims.md`
+
+Copied into a throwaway worktree at HEAD, the guard is **11 passed** - the recovered register satisfies
+every invariant it checks (attribution, claim, refutation condition, confounds, experiment, status, and
+the scope-separation rules), so it is the genuine register and not a stub or a fixture. Restored into the
+main checkout afterwards; because it is gitignored, `git status` still shows nothing, so the restore
+cannot be committed by accident.
+
+**Method note.** A pytest basetemp is not only a scratch directory: the staged-platform tests copy the
+whole platform into it, which makes an old `--basetemp` the last surviving copy of an untracked internal
+document. Before concluding that a deleted untracked file is unrecoverable, enumerate the basetemps -
+`/mnt/20t/xubuqiang/.hg-pytest/` held three.
