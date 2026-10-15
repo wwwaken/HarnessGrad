@@ -3,7 +3,8 @@
 Parent assessment, 2026-10-15, opened at registry commit `21d6ebbf` and updated as blockers closed. This document does not change the
 registry. Its purpose is to answer one question for every open blocker: **which of its own
 `next_action` obligations are already discharged, which are not, and what class the rest belong to** —
-so that "14 open" becomes a set of concrete dispositions instead of a number.
+so that "14 open" becomes a set of concrete dispositions instead of a number. It currently describes
+**11** open blockers; the count and every supersession are recorded in the closure sections below.
 
 The controlling rule is the objective's: a blocker closes only on the kind of evidence its own
 `next_action` names. Nothing here is a claim that an obligation is met unless the record already holds
@@ -36,7 +37,6 @@ the artefact.
 | `bfcl_v3 / simple-ast-contract` | external | open | `PENDING-WORK`, then `PENDING-RUN` |
 | `fever / dataset-journal-gap` | measurement | open | metric DETERMINED; upstream producing-execution search done and **bounded** ABSENT (two historical objects still unread); metric choice outstanding |
 | `strategyqa / dataset-journal-gap` | measurement | open | original scorer FOUND and DIFFERENT; split membership `PENDING-UPSTREAM` |
-| `reasoning_gym / dataset-journal-gap` | measurement | open | generation receipt `LIMIT-RECORDED`; behavioural eligibility DONE |
 | `triviaqa / hub-export-scorer-linkage` | external | open | membership/scorer/denominator review DONE; execution receipt `PENDING-UPSTREAM` |
 | `hotpotqa / historical-comparison-receipts` | measurement | open | `LIMIT-RECORDED` |
 
@@ -116,13 +116,11 @@ EM-identity limit are `SATISFIED`; the original scorer and split definition rema
 because they are not in the enumerated local scope. Obtain readable authoritative scorer/split
 definitions and bind their scope.
 
-**`reasoning_gym / dataset-journal-gap`** — `PENDING-UPSTREAM` plus `PENDING-WORK`. Distribution,
-source and installed-member custody, the declared pool hash and the frozen family/order inventory are
-`SATISFIED`. Still required: the original generation environment/date/order metadata and a reproduction
-of the declared pool from recorded inputs (`w-recgym` is searching every on-machine scope; the earlier
-bounded regeneration differed in 84 rows across six families), and the independent behavioural
-`reference=1 / empty=0` family eligibility determination — the second is repo-local work that needs no
-model and no GPU.
+**`reasoning_gym / dataset-journal-gap`** — **CLOSED** on 2026-10-15 under reading (A); see the closure
+section below. Distribution, source and installed-member custody, the declared pool hash and the frozen
+family/order inventory were `SATISFIED`; the original generation environment/date/order metadata and
+exact reproduction from recorded inputs are now `WITHDRAWN` as proven unobtainable, and the independent
+behavioural `reference=1 / empty=0` family eligibility determination is now `SATISFIED`.
 
 **`triviaqa / hub-export-scorer-linkage`** — `PENDING-UPSTREAM` plus `PENDING-WORK`. The bound first-five
 eval-side manifest/export, the v2 identity and the retained Hub/scorer bytes are `SATISFIED`. Still
@@ -154,13 +152,15 @@ that exists, every `PRE-DIAGNOSTIC` entry is labelled as such rather than counte
 
 ## Reverse audit — is every cleared dataset cleared for a recorded reason?
 
-A forward assessment of the 14 open blockers says nothing about the 14 datasets that currently carry
+A forward assessment of the 11 open blockers says nothing about the 17 datasets that currently carry
 none. If a blocker had ever been dropped without a disposition, the registry would show a dataset as
 clear for no recorded reason, which is a worse defect than an open blocker. The reverse audit compared
 the blocker set per dataset at `db32421c` (before the withdrawal wave) and at `1825cd0e^` (before the
-bulk `reports/`/`docs/` deletion) against `HEAD`:
+bulk `reports/`/`docs/` deletion) against the commit the audit was taken at:
 
-* `1825cd0e^` and `db32421c`: 28 datasets, **22** blockers. `HEAD`: 28 datasets, **14** blockers.
+* `1825cd0e^` and `db32421c`: 28 datasets, **22** blockers. At the reverse audit's own commit: 28
+  datasets, **14** blockers (11 now; the three reading-(A) closures below are documented steps, not
+  unrecorded drops).
   Eight blockers were removed and eight withdrawal entries exist in
   `registry/withdrawn-requirements.md`, one per removal: `livecodebench/row-attestation`,
   `twowikimultihopqa/hub-data-provenance`, `twowikimultihopqa/ujson-native-offline-closure`,
@@ -174,10 +174,37 @@ bulk `reports/`/`docs/` deletion) against `HEAD`:
   this phase's registry and is not a result of anything removed here.
 
 Conclusion: no dataset is currently clear because a blocker was silently dropped. `22 - 8 = 14`
-accounts for every one of those removals, and the two closures under reading (A) on 2026-10-15
-(`physicsquestions` and `sportsunderstanding`) take the active set to **12**. Both are recorded above
-and in the registry's `review.notes`, so the count is accounted for in two documented steps rather than
-one unexplained drop.
+accounts for every one of those removals, and the three closures under reading (A) on 2026-10-15
+(`physicsquestions`, `sportsunderstanding` and `reasoning_gym`) take the active set from **14** to
+**11**. Each is recorded above and in the registry's `review.notes`, so the count is accounted for in
+documented steps rather than one unexplained drop.
+
+## Closed under reading A, 2026-10-15 - `reasoning_gym`
+
+The registry's note records the decision; this section is the clause-by-clause basis, and it is the one
+the earlier assessment named as the reason `reasoning_gym` stayed open: *"an original generation receipt
+plus behavioural eligibility"*. Both halves are now discharged, and every other clause is diagnostic-time.
+
+| clause from the pre-closure `next_action` | class | where it stands |
+| --- | --- | --- |
+| Retain distribution/source/installed-member custody and exact frozen-pool hash/family/order evidence, the original pool bytes, and the preserved 84-row/six-family failed-regeneration evidence | `SATISFIED` | `registry/w-journalcov-review.md`, `registry/w-recgym-receipts.md`; pool 3315981 bytes, SHA-256 `c0ff4eae...` |
+| Record the original launch/environment/clock/hash-order metadata and exact historical seed-only reproduction **as unavailable limits** | `WITHDRAWN` | `registry/withdrawn-requirements.md` -> `reasoning_gym / original-generation-process-receipt`, after the enumerated 733-session / 23773-object / 395197-file census in `registry/w-recgym-receipts.md` and `registry/w-recgym-validation.txt` |
+| Retain the independent host-package two-point behavioural eligibility record | `SATISFIED` | `registry/w-gymelig-eligibility.md`, `tests/fixtures/hg_gymelig/`: 89/89 families, 20 indices each, 1780 rows, 3560 direct `score_answer` calls, reference=1 and empty=0, zero exceptions/refusals, pool digest unchanged |
+| Retain the bounded operator first-five selected manifest/export | `SATISFIED` | `tests/fixtures/hg_wsel/reasoning_gym.json`; mixed-side, not a single-side diagnostic specification |
+| Cite the dataset's own migrated review | `SATISFIED` | `/site/dataset-reviews/reasoning_gym.md`, `# Reasoning Gym source-only journal review` |
+| Do not require manufacturing absent original records or substituting a new seed/family/order/current environment | constraint | recorded in the withdrawal entry |
+| For any separately authorized diagnostic: resolve applicable split/side and run binding, establish deterministic transitive dependencies without scoring extras and metric identity, obtain actual selected scorer/runtime execution evidence under the declared runtime | `PRE-DIAGNOSTIC` | statement only; **no diagnostic is authorized** and none of it is waived by this closure |
+| The `official-scorer-identity` proof obligation | `WITHDRAWN` | `registry/withdrawn-requirements.md` |
+
+**This closes no measurement and claims no score.** `reasoning_gym` has never had a measured run, no
+coverage count is asserted anywhere, and the diagnostic-time obligations above remain requirements of any
+future diagnostic - which still needs its own authorization, a fresh run ID, a split/side binding and the
+staged pilot policy. One judgement is worth stating plainly because it is the whole difference between
+closing and staying open: the generation-receipt clause is discharged by a **recorded limit**, not by
+finding the artefact. What the census proved is that the retained readable corpus does not contain it - the
+earlier bounded regeneration differed in 84 rows across six families, and the process fields were never
+recovered. The withdrawal entry says exactly that, and does not claim a historical or unrestricted-machine
+absence.
 
 ## Correction and update, 2026-10-15 — a family-level contract the forward assessment missed
 

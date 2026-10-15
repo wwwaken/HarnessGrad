@@ -1,0 +1,74 @@
+Parent closure of a third journal-coverage blocker under operator decision (A).
+
+Decision
+--------
+The reading is the one the operator fixed on 2026-10-15 and which is recorded in the registry's own
+`review.notes`: a `dataset-journal-gap` is discharged when the journal coverage its own `next_action`
+names exists, and the diagnostic-time clauses are preconditions on a future, separately authorized
+diagnostic rather than conditions on closure. The earlier note deliberately left `reasoning_gym` open for
+two named, not-merely-diagnostic-time obligations - "an original generation receipt plus behavioural
+eligibility" - and both are now discharged.
+
+Closed
+------
+* `reasoning_gym / dataset-journal-gap`, removed from `registry/dataset-blockers.json`.
+
+Clause-by-clause basis at closure
+---------------------------------
+* original pool generation environment/clock/hash-order metadata and exact reproduction from recorded
+  original inputs -> WITHDRAWN and recorded in `registry/withdrawn-requirements.md` under
+  `reasoning_gym / original-generation-process-receipt`, after the enumerated census of 733 Codex session
+  snapshots, 23773 stored main Git objects and 395197 Study regular files
+  (`registry/w-recgym-receipts.md`, `registry/w-recgym-validation.txt`). The withdrawal asserts only that
+  the retained readable/permitted corpus does not contain the fields; it claims no historical or
+  unrestricted-machine absence.
+* independent host-package behavioural eligibility -> SATISFIED. All 89 declared families over all 20
+  frozen indices each: 1780 rows, 3560 direct `score_answer` calls, `reference=1` and `empty=0`, zero
+  constructor/scorer exceptions and zero refusals, with the 3315981-byte pool digest
+  `c0ff4eaef318cd59afcc61472ebe206362fc0211c4b589ed0d53946a569bd177` unchanged before and after
+  (`registry/w-gymelig-eligibility.md`, `tests/fixtures/hg_gymelig/`).
+* installed distribution/source/ordered-member custody, declared pool hash, frozen family/order
+  inventory, preserved 84-row/six-family failed-regeneration evidence -> SATISFIED/retained
+  (`registry/w-journalcov-review.md`, `registry/w-recgym-receipts.md`).
+* bounded operator first-five selected-only manifest/export -> SATISFIED
+  (`tests/fixtures/hg_wsel/reasoning_gym.json`); mixed-side, explicitly not a single-side diagnostic
+  specification.
+* migrated review citation -> SATISFIED (`/site/dataset-reviews/reasoning_gym.md`,
+  `# Reasoning Gym source-only journal review`), enforced by
+  `tests/quality/test_dataset_journal_coverage.py`.
+* every split/side/run/manifest binding, deterministic transitive dependency, metric identity and actual
+  selected scorer/runtime execution clause -> PRE-DIAGNOSTIC. **No diagnostic is authorized by this
+  closure**, and none of these is waived: they remain requirements of any future diagnostic, which still
+  needs its own authorization, a fresh run ID, a split/side binding and the staged pilot policy.
+* the `official-scorer-identity` proof obligation -> WITHDRAWN (`registry/withdrawn-requirements.md`).
+
+What this does NOT do
+---------------------
+It closes no measurement and asserts no score. `reasoning_gym` has never had a measured run here, no
+eligibility or coverage count is promoted to a measured-result claim, and the structural inventories are
+not measured coverage. The blocker's pre-closure text remains readable in the git history of
+`registry/dataset-blockers.json`.
+
+Verification
+------------
+```
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+
+$ python3 -m pytest -q tests/quality/test_closure_assessment.py \
+      tests/quality/test_dataset_blockers.py tests/quality/test_dataset_journal_coverage.py
+83 passed in 3.38s
+
+$ python3 -m pytest -q tests/quality/test_dataset_blockers.py \
+      tests/quality/test_dataset_journal_coverage.py tests/quality/test_b6_blocker_evidence.py \
+      tests/quality/test_measurement_coverage_hg_b3.py tests/quality/test_site_evidence_carriers.py \
+      tests/quality/test_apply_blocker_proposal.py tests/quality/test_closure_assessment.py \
+      tests/quality/test_withdrawn_requirements_not_reimposed.py \
+      tests/quality/test_appworld_trusted_trial_writer_codex183.py \
+      tests/quality/test_ujson_pypi_codex226.py tests/quality/test_onboarding_doc.py \
+      tests/quality/test_parallel_tasks.py tests/quality/test_reasoning_gym_official_scorer.py \
+      tests/quality/test_registry_discovery_order.py
+282 passed, 12 skipped in 14.99s
+```
+
+Open blockers: 12 -> 11. `production_authorized` stays `false`.
