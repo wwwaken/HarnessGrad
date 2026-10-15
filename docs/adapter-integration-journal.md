@@ -3796,3 +3796,18 @@ clean; all four named deliverables present.
 - Evidence: [report](../reports/w-resolver-payloads.md), [packet](../tests/fixtures/hg_wresolver/README.md), [validation](../reports/w-resolver-validation.txt). Three complete-profile wheels are committed; other staged candidates remain at the retained location recorded in inputs.json. Existing committed w-uvx wheels/archive are reused and freshly rehashed. Raw successful/failed solves, negative controls, source preimages, actual selected versions, network denial, cached image identity and cleanup are preserved. No missing wheel, version or historical resolver byte is fabricated or substituted.
 - Platform lesson: installed-import payloads using --no-deps do not prove Requires-Dist resolution. Native scoring imports installed modules; Terminal-Bench actually bootstraps with pip/uv/uvx. Finite wheel directories plus embedded metadata, target interpreter and exact transitive hash locks resolve without index metadata. Missing host mkl-service target artifacts remain a saved-index-scoped finding, not a claim about all sources.
 - Registry: additive scorer-offline-closure observed/evidence only; statuses, next_actions, all dataset/history records, admission/refusal gates and production_authorized=false are unchanged. S1/S3/S4/S5/S6 remain PARTIAL; no shared or dataset blocker closes. Validation checks exact source locators, independent hashes, resolver selections, denial/refusal/cleanup and additive-only registry changes, plus the registry checker and focused source-only registry tests.
+## Parent review and merge — w-resolver — 2026-10-15
+
+- Merged `e02e9f4` (w-resolver). Result `7bc26062`. Registry valid: 28 datasets, 2 shared
+  blockers, 11 historical records, `production_authorized=false`; sequencer clean; report present.
+- **S3's "offline resolver payloads" is now measured rather than assumed, and the number is
+  small.** 3 of 6 bounded profiles resolved offline (ChessBench, ScienceWorld, one Terminal-Bench
+  task) and 3 failed on genuinely missing distributions (spaCy, contourpy, et-xmlfile). At dataset
+  scope that is **2 of 23** complete nonempty Python resolver profiles, with Terminal-Bench still
+  at **1 of 89 tasks**. All requested clauses remain PARTIAL and no blocker closed.
+- Recording the failures as failures is the point: "3 of 6 resolved, 3 blocked on a named missing
+  distribution" is actionable, while "offline resolution partially addressed" would not be.
+- Still in flight and NOT merged: `w-e6` (has finished; unread) and `w-e5` (still running).
+- Resource state: offline installs, local containers and tests only - no benchmark scoring run,
+  model, GPU or endpoint call. Both GPUs stayed idle and no utilisation is claimed. Historical
+  runs, frozen receipts and archives were untouched.
