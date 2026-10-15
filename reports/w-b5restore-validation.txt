@@ -1,0 +1,695 @@
+w-b5restore validation
+
+All commands ran in /mnt/20t/xubuqiang/hg-wt/w-b5restore unless explicitly stated.
+
+BASELINE TEST COMMAND
+$ TMPDIR=/tmp/b5restore-baseline PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q tests/quality/test_external_provenance_b5.py tests/quality/test_dataset_blockers.py --basetemp=/tmp/b5restore-baseline/pytest
+FFFFFF.................................................................. [ 90%]
+........                                                                 [100%]
+=================================== FAILURES ===================================
+_______________ test_inventory_and_every_raw_response_are_intact _______________
+
+    def test_inventory_and_every_raw_response_are_intact():
+        sums = (FIXTURE / 'SHA256SUMS').read_bytes()
+        assert hashlib.sha256(sums).hexdigest() == SUMS_SHA256
+        listed = set()
+        for line in sums.decode().splitlines():
+            digest, name = line.split('  ', 1)
+            path = FIXTURE / name
+            assert path.resolve().is_relative_to(FIXTURE.resolve())
+>           assert hashlib.sha256(path.read_bytes()).hexdigest() == digest, name
+
+tests/quality/test_external_provenance_b5.py:52:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-archive-head.body')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+E       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-archive-head.body'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____________ test_bfcl_tag_signed_commit_and_all_original_git_trees ____________
+
+    def test_bfcl_tag_signed_commit_and_all_original_git_trees():
+>       tag = response('bfcl-tag')
+
+tests/quality/test_external_provenance_b5.py:73:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/quality/test_external_provenance_b5.py:31: in response
+    return json.loads((FIXTURE / 'responses' / (label + '.body')).read_bytes())
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-tag.body')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+E       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-tag.body'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError
+__________ test_bfcl_projection_matches_tree_and_retained_blob_bodies __________
+
+    def test_bfcl_projection_matches_tree_and_retained_blob_bodies():
+        inventory = json.loads((FIXTURE / 'inventory.json').read_bytes())['bfcl_v3']
+>       entries = {e['path']: e for e in response('bfcl-tree')['tree']}
+
+tests/quality/test_external_provenance_b5.py:104:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/quality/test_external_provenance_b5.py:31: in response
+    return json.loads((FIXTURE / 'responses' / (label + '.body')).read_bytes())
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-tree.body')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+E       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-tree.body'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_______ test_changed_tree_and_code_cannot_reproduce_original_identities ________
+
+    def test_changed_tree_and_code_cannot_reproduce_original_identities():
+>       tree = copy.deepcopy(response('bfcl-root-tree')['tree'])
+
+tests/quality/test_external_provenance_b5.py:139:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/quality/test_external_provenance_b5.py:31: in response
+    return json.loads((FIXTURE / 'responses' / (label + '.body')).read_bytes())
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-root-tree.body')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+E       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-root-tree.body'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError
+________ test_triviaqa_mirror_revision_config_splits_and_file_metadata _________
+
+    def test_triviaqa_mirror_revision_config_splits_and_file_metadata():
+>       meta = response('triviaqa-mirror-revision')
+
+tests/quality/test_external_provenance_b5.py:147:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/quality/test_external_provenance_b5.py:31: in response
+    return json.loads((FIXTURE / 'responses' / (label + '.body')).read_bytes())
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/triviaqa-mirror-revision.body')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+E       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/triviaqa-mirror-revision.body'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_triviaqa_predecessor_and_conversion_history_do_not_self_attest_execution _
+
+    def test_triviaqa_predecessor_and_conversion_history_do_not_self_attest_execution():
+        loader = (FIXTURE / 'triviaqa/trivia_qa.py').read_bytes()
+>       assert loader == (FIXTURE / 'responses/triviaqa-predecessor-loader.body').read_bytes()
+
+tests/quality/test_external_provenance_b5.py:173:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/triviaqa-predecessor-loader.body')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+E       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/triviaqa-predecessor-loader.body'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError
+=========================== short test summary info ============================
+FAILED tests/quality/test_external_provenance_b5.py::test_inventory_and_every_raw_response_are_intact
+FAILED tests/quality/test_external_provenance_b5.py::test_bfcl_tag_signed_commit_and_all_original_git_trees
+FAILED tests/quality/test_external_provenance_b5.py::test_bfcl_projection_matches_tree_and_retained_blob_bodies
+FAILED tests/quality/test_external_provenance_b5.py::test_changed_tree_and_code_cannot_reproduce_original_identities
+FAILED tests/quality/test_external_provenance_b5.py::test_triviaqa_mirror_revision_config_splits_and_file_metadata
+FAILED tests/quality/test_external_provenance_b5.py::test_triviaqa_predecessor_and_conversion_history_do_not_self_attest_execution
+6 failed, 74 passed in 3.31s
+exit_code: 1
+removed /tmp/b5restore-baseline: True
+
+BLOCKER CHECKER
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+exit_code: 0
+
+DIGEST VERIFICATION
+$ python3 tools/restore_external_provenance_b5_w_b5restore.py verify reports/w-b5restore-replay.jsonl
+{"manifest_entries": 234, "missing": 75, "present": 159, "present_digest_mismatches": [], "restored_verification_failures": [], "restored_verified": 12, "sha256sums_unchanged": true}
+exit_code: 0
+
+AFTER TEST COMMAND
+$ TMPDIR=/tmp/b5restore-after PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q tests/quality/test_external_provenance_b5.py tests/quality/test_dataset_blockers.py --basetemp=/tmp/b5restore-after/pytest
+FFFF.F.................................................................. [ 90%]
+........                                                                 [100%]
+=================================== FAILURES ===================================
+_______________ test_inventory_and_every_raw_response_are_intact _______________
+
+    def test_inventory_and_every_raw_response_are_intact():
+        sums = (FIXTURE / 'SHA256SUMS').read_bytes()
+        assert hashlib.sha256(sums).hexdigest() == SUMS_SHA256
+        listed = set()
+        for line in sums.decode().splitlines():
+            digest, name = line.split('  ', 1)
+            path = FIXTURE / name
+            assert path.resolve().is_relative_to(FIXTURE.resolve())
+>           assert hashlib.sha256(path.read_bytes()).hexdigest() == digest, name
+
+tests/quality/test_external_provenance_b5.py:52:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-blob-base_oss_handler.body')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+E       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-blob-base_oss_handler.body'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____________ test_bfcl_tag_signed_commit_and_all_original_git_trees ____________
+
+    def test_bfcl_tag_signed_commit_and_all_original_git_trees():
+>       tag = response('bfcl-tag')
+
+tests/quality/test_external_provenance_b5.py:73:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/quality/test_external_provenance_b5.py:31: in response
+    return json.loads((FIXTURE / 'responses' / (label + '.body')).read_bytes())
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-tag.body')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+E       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-tag.body'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError
+__________ test_bfcl_projection_matches_tree_and_retained_blob_bodies __________
+
+    def test_bfcl_projection_matches_tree_and_retained_blob_bodies():
+        inventory = json.loads((FIXTURE / 'inventory.json').read_bytes())['bfcl_v3']
+>       entries = {e['path']: e for e in response('bfcl-tree')['tree']}
+
+tests/quality/test_external_provenance_b5.py:104:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/quality/test_external_provenance_b5.py:31: in response
+    return json.loads((FIXTURE / 'responses' / (label + '.body')).read_bytes())
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-tree.body')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+E       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-tree.body'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_______ test_changed_tree_and_code_cannot_reproduce_original_identities ________
+
+    def test_changed_tree_and_code_cannot_reproduce_original_identities():
+>       tree = copy.deepcopy(response('bfcl-root-tree')['tree'])
+
+tests/quality/test_external_provenance_b5.py:139:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/quality/test_external_provenance_b5.py:31: in response
+    return json.loads((FIXTURE / 'responses' / (label + '.body')).read_bytes())
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-root-tree.body')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+E       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-root-tree.body'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_triviaqa_predecessor_and_conversion_history_do_not_self_attest_execution _
+
+    def test_triviaqa_predecessor_and_conversion_history_do_not_self_attest_execution():
+        loader = (FIXTURE / 'triviaqa/trivia_qa.py').read_bytes()
+        assert loader == (FIXTURE / 'responses/triviaqa-predecessor-loader.body').read_bytes()
+        sha = git_hash('blob', loader)
+        assert sha == 'a9a6932c23d378b9e5628ecec1f0509496806d77'
+        for label in ('triviaqa-predecessor-tree', 'triviaqa-initial-tree', 'triviaqa-predelete-tree'):
+            assert next(e['oid'] for e in response(label) if e['path'] == 'trivia_qa.py') == sha
+        ast.parse(loader)
+        assert b'Licensed under the Apache License, Version 2.0' in loader
+        assert b'HumanAnswers' not in loader and b'VerifiedEval' not in loader
+        commits = response('triviaqa-mirror-commits')
+        assert [c['id'] for c in commits[:2]] == [HUB_REVISION, PREDECESSOR]
+>       discussion = response('triviaqa-conversion-discussion')
+
+tests/quality/test_external_provenance_b5.py:183:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/quality/test_external_provenance_b5.py:31: in response
+    return json.loads((FIXTURE / 'responses' / (label + '.body')).read_bytes())
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/triviaqa-conversion-discussion.body')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+E       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/triviaqa-conversion-discussion.body'
+
+/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError
+=========================== short test summary info ============================
+FAILED tests/quality/test_external_provenance_b5.py::test_inventory_and_every_raw_response_are_intact
+FAILED tests/quality/test_external_provenance_b5.py::test_bfcl_tag_signed_commit_and_all_original_git_trees
+FAILED tests/quality/test_external_provenance_b5.py::test_bfcl_projection_matches_tree_and_retained_blob_bodies
+FAILED tests/quality/test_external_provenance_b5.py::test_changed_tree_and_code_cannot_reproduce_original_identities
+FAILED tests/quality/test_external_provenance_b5.py::test_triviaqa_predecessor_and_conversion_history_do_not_self_attest_execution
+5 failed, 75 passed in 3.05s
+exit_code: 1
+removed /tmp/b5restore-after: True
+
+INITIAL INVENTORY AUDIT (before restoration; command is historical, rerunning now sees restored bodies)
+$ python3 - <<'PY'
+import json, pathlib, collections, subprocess, hashlib
+out={'command':"python3 audit (full source recorded in reports/w-b5restore-validation.txt)",'packets':{}}
+for name in ('external_provenance_b5','e3_bfcl_source','upstream_provenance_e2'):
+ p=pathlib.Path('tests/fixtures')/name
+ sums=(p/'SHA256SUMS').read_bytes()
+ rows=[line.split('  ',1) for line in sums.decode().splitlines()]
+ missing=[]
+ for digest,f in rows:
+  if (p/f).is_file(): continue
+  body=p/f
+  candidates=([body.with_suffix('.receipt.json')] if name=='external_provenance_b5' else [body.with_suffix('.json')] if name=='e3_bfcl_source' else [body.parent/'receipt.json'])
+  receipt=candidates[0]
+  entry={'path':f,'sha256':digest,'receipt':str(receipt),'receipt_exists':receipt.is_file()}
+  if receipt.is_file():
+   data=json.loads(receipt.read_text())
+   if isinstance(data,list):
+    data=data[int(body.stem.split('-')[-1])]
+    entry.update(method=data['method'],url=data['url'],recorded_status=data.get('status'),recorded_bytes=data['bytes'],recorded_sha256=data['sha256'],request_headers_present='request_headers' in data,transport_proxy=data.get('transport_proxy'))
+   else:
+    entry.update(method=data['method'],url=data['url'],recorded_status=data.get('status'),recorded_bytes=data['response_body']['bytes'],recorded_sha256=data['response_body']['sha256'],request_headers_present='request_headers' in data)
+   entry['digest_agrees']=entry['recorded_sha256']==digest
+  missing.append(entry)
+ present_files=sorted(str(f.relative_to(p)) for f in p.rglob('*') if f.is_file())
+ tracked=subprocess.check_output(['git','ls-files',str(p)],text=True).splitlines()
+ out['packets'][name]={'scope':str(p),'sha256sums_sha256':hashlib.sha256(sums).hexdigest(),'manifest_entries':len(rows),'manifest_present':len(rows)-len(missing),'on_disk_files_including_manifest':len(present_files),'tracked_files':len(tracked),'initial_missing':missing,'all_missing_are_body':all(e['path'].endswith('.body') for e in missing),'missing_with_receipt':sum(e['receipt_exists'] for e in missing),'methods':dict(collections.Counter(e['method'] for e in missing))}
+ print(name,json.dumps({k:v for k,v in out['packets'][name].items() if k!='initial_missing'}))
+pathlib.Path('reports/w-b5restore-audit.json').write_text(json.dumps(out,indent=2)+'\n')
+PY
+external_provenance_b5 {"scope": "tests/fixtures/external_provenance_b5", "sha256sums_sha256": "aebf74434643e759983e0483787d069d6562873492d4c3c618a47cd9269ea30b", "manifest_entries": 234, "manifest_present": 147, "on_disk_files_including_manifest": 148, "tracked_files": 148, "all_missing_are_body": true, "missing_with_receipt": 87, "methods": {"HEAD": 1, "GET": 86}}
+e3_bfcl_source {"scope": "tests/fixtures/e3_bfcl_source", "sha256sums_sha256": "b292072291cc94ec43334ee8f35d67d80ff3d2707efa1bcae18b167fd0eed5ce", "manifest_entries": 87, "manifest_present": 63, "on_disk_files_including_manifest": 64, "tracked_files": 64, "all_missing_are_body": true, "missing_with_receipt": 24, "methods": {"GET": 24}}
+upstream_provenance_e2 {"scope": "tests/fixtures/upstream_provenance_e2", "sha256sums_sha256": "73acb21043c16484f7c0178f61da6713762f9b6b9f29459e5afdb46a7bdf88b4", "manifest_entries": 47, "manifest_present": 32, "on_disk_files_including_manifest": 33, "tracked_files": 33, "all_missing_are_body": true, "missing_with_receipt": 15, "methods": {"GET": 8, "HEAD": 7}}
+exit_code: 0
+The audit JSON command field was subsequently made a pointer to this exact heredoc.
+
+REPLAY COMMAND
+$ python3 tools/restore_external_provenance_b5_w_b5restore.py replay reports/w-b5restore-replay.jsonl --delay 2 --timeout 15
+{"path": "responses/bfcl-archive-head.body", "outcome": "restored_deliberately_empty", "status": null, "observed_bytes": 0, "observed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "written": true}
+{"path": "responses/bfcl-blob-base_oss_handler.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-blob-category_mapping.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-blob-column_headers.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-blob-default_prompts.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-blob-eval_config.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-blob-java_parser.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-blob-java_type_converter.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-blob-js_parser.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-blob-js_type_converter.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-blob-model_config.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-blob-model_style.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-blob-multi_turn_checker.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-blob-multi_turn_utils.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-blob-qwen.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-blob-utils.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-commit.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-claude.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-cohere.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-databricks.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-deepseek.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-dm_cito.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-fireworks.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-functionary.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-gemini.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-gogoagent.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-gorilla.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-grok.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-ling.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-mining.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-mistral.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-nemotron.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-nexus.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-nova.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-novita.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-nvidia.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-openai_completion.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-openai_response.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-qwen.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-writer.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-api_inference-yi.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-arch.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-bielik.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-bitagent.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-deepseek.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-deepseek_coder.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-deepseek_reasoning.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-falcon_fc.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-gemma.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-glaive.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-glm.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-granite.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-granite_3.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-hammer.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-hermes.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-llama.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-llama_3_1.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-minicpm.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-minicpm_fc.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-mistral_fc.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-phi.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-phi_fc.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-quick_testing_oss.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-qwen_fc.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-salesforce_llama.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-salesforce_qwen.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-handler-local_inference-think_agent.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-release.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-root-tree.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-tag.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-tree.body", "outcome": "fetch_failure", "status": 403, "observed_bytes": 279, "observed_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b", "written": false}
+{"path": "responses/bfcl-web-bitagent.body", "outcome": "fetch_failure", "status": null, "observed_bytes": null, "observed_sha256": null, "written": false}
+{"path": "responses/triviaqa-added-tree.body", "outcome": "restored_verified", "status": 200, "observed_bytes": 973, "observed_sha256": "40b807247f15bb2f5522bc69d0c4c4a031f30eb23f2632a8526bfb53f8df1ce2", "written": true}
+{"path": "responses/triviaqa-conversion-discussion.body", "outcome": "mismatch", "status": 200, "observed_bytes": 13106, "observed_sha256": "7254bad8c17b9570d1556b16c8de84d8a1cee1b2c0a6d446f22ca5e05a35d8a8", "written": false}
+{"path": "responses/triviaqa-conversion-initial-commits.body", "outcome": "restored_verified", "status": 200, "observed_bytes": 7052, "observed_sha256": "7a386287343a75fdb7f09a924ab3d9b2b05856077947257adbb95e653d63c48d", "written": true}
+{"path": "responses/triviaqa-dns-alidns.body", "outcome": "mismatch", "status": 200, "observed_bytes": 192, "observed_sha256": "9f046e4efd476e4304118a5ae602c50e513500115b6e770679b994a0f7c359c6", "written": false}
+{"path": "responses/triviaqa-dns-dohpub.body", "outcome": "mismatch", "status": 200, "observed_bytes": 391, "observed_sha256": "166022710e6562f7e1a2c6c0ff134bf581f1696c739b7b0a6725ed66a2caa311", "written": false}
+{"path": "responses/triviaqa-initial-tree.body", "outcome": "restored_verified", "status": 200, "observed_bytes": 483, "observed_sha256": "450269716dfde3a4f30839f010e8c12c6bd832821ae58a67a5c2a667a116daf2", "written": true}
+{"path": "responses/triviaqa-input-tree.body", "outcome": "restored_verified", "status": 200, "observed_bytes": 621, "observed_sha256": "53718ecab96ddc19f326194a90967b4c8f21987fcdceb38d60b6b0b59b1d67cb", "written": true}
+{"path": "responses/triviaqa-mirror-commits.body", "outcome": "restored_verified", "status": 200, "observed_bytes": 7888, "observed_sha256": "0f1c890e59a5e2e69f8c46efe68eeefdf766a081a067bbd6339cf1b772c00396", "written": true}
+{"path": "responses/triviaqa-mirror-loader.body", "outcome": "fetch_failure", "status": 404, "observed_bytes": 15, "observed_sha256": "f36668ddf22403a332f978057d527cf285b01468bc3431b04094a7bafa6aba59", "written": false}
+{"path": "responses/triviaqa-mirror-revision.body", "outcome": "restored_verified", "status": 200, "observed_bytes": 25259, "observed_sha256": "fd58143bcbfe06d8d63b4caf0c1068c8865e3d936d5de6078dc41af34dbb3fe5", "written": true}
+{"path": "responses/triviaqa-mirror-tree.body", "outcome": "restored_verified", "status": 200, "observed_bytes": 1011, "observed_sha256": "8d14e07783c5dcf3ac5c8fd30a3a480f0e167bed0b77cbb819d1530b41bffc54", "written": true}
+{"path": "responses/triviaqa-predecessor-loader.body", "outcome": "restored_verified", "status": 200, "observed_bytes": 13317, "observed_sha256": "b80c2307a37cfb261b66b7c73157de5495ae18add3f91f5f7d62f86620edc137", "written": true}
+{"path": "responses/triviaqa-predecessor-tree.body", "outcome": "restored_verified", "status": 200, "observed_bytes": 392, "observed_sha256": "992511505f49ef7de5bb405fe8c5ce529ca00ac139ffaf1a597b74e1ca58f53a", "written": true}
+{"path": "responses/triviaqa-predelete-tree.body", "outcome": "restored_verified", "status": 200, "observed_bytes": 1204, "observed_sha256": "1abf68dec2a986dd71ecf0ccfb969422de1ced2ef3ee5486a6bbb75e87ead583", "written": true}
+{"path": "responses/triviaqa-selected-tree.body", "outcome": "restored_verified", "status": 200, "observed_bytes": 973, "observed_sha256": "40b807247f15bb2f5522bc69d0c4c4a031f30eb23f2632a8526bfb53f8df1ce2", "written": true}
+exit_code: 0
+Per-request full evidence, including times/headers and mismatch digests, is retained in reports/w-b5restore-replay.jsonl.
+
+NOT VERIFIED / UNKNOWN
+- Historical or independent publisher custody, source-gate approval, and production authorization.
+- Future recoverability of the 75 missing B5 bodies; no retry after a rate-limit reset was attempted.
+- Historical bytes of rejected response bodies; only the new observed digest/length/status is retained.
+- Whether current dynamic DNS/discussion content differs semantically: mismatching bodies were not saved or inspected.
+- Dataset payloads, scorers, model/GPU execution, benchmarks, and all hg_* packets: not accessed for this task.
+- Secondary packet restoration or network replay: report-only inventory was performed.
+- Request headers are not embedded in the E2 receipts; headers are visible in its preserved acquire.py, not re-observed historical wire bytes.
+- No tests outside the two requested quality files were run.
+
+$ git check-ignore -v tests/fixtures/external_provenance_b5/responses/bfcl-archive-head.body
+.gitignore:364:tests/fixtures/**/*.body	tests/fixtures/external_provenance_b5/responses/bfcl-archive-head.body
+exit_code: 0
+
+$ git diff --exit-code -- tests/fixtures/external_provenance_b5/SHA256SUMS tests/fixtures/external_provenance_b5/responses tests/fixtures/e3_bfcl_source tests/fixtures/upstream_provenance_e2 registry/dataset-blockers.json docs/adapter-integration-journal.md .gitignore tests/quality/test_external_provenance_b5.py tests/quality/test_dataset_blockers.py
+exit_code: 0
+
+$ git status --short
+?? reports/w-b5restore-audit.json
+?? reports/w-b5restore-replay.jsonl
+?? reports/w-b5restore-validation.txt
+?? reports/w-b5restore.md
+?? tools/restore_external_provenance_b5_w_b5restore.py
+exit_code: 0
+
+$ git branch --show-current
+wg-b5restore
+exit_code: 0
+
+$ git add -- reports/w-b5restore-audit.json reports/w-b5restore-replay.jsonl reports/w-b5restore-validation.txt reports/w-b5restore.md tools/restore_external_provenance_b5_w_b5restore.py
+exit_code: 0
+
+$ git add -f -- tests/fixtures/external_provenance_b5/responses/bfcl-archive-head.body tests/fixtures/external_provenance_b5/responses/triviaqa-added-tree.body tests/fixtures/external_provenance_b5/responses/triviaqa-conversion-initial-commits.body tests/fixtures/external_provenance_b5/responses/triviaqa-initial-tree.body tests/fixtures/external_provenance_b5/responses/triviaqa-input-tree.body tests/fixtures/external_provenance_b5/responses/triviaqa-mirror-commits.body tests/fixtures/external_provenance_b5/responses/triviaqa-mirror-revision.body tests/fixtures/external_provenance_b5/responses/triviaqa-mirror-tree.body tests/fixtures/external_provenance_b5/responses/triviaqa-predecessor-loader.body tests/fixtures/external_provenance_b5/responses/triviaqa-predecessor-tree.body tests/fixtures/external_provenance_b5/responses/triviaqa-predelete-tree.body tests/fixtures/external_provenance_b5/responses/triviaqa-selected-tree.body
+exit_code: 0
+
+$ git diff --cached --name-status
+A	reports/w-b5restore-audit.json
+A	reports/w-b5restore-replay.jsonl
+A	reports/w-b5restore-validation.txt
+A	reports/w-b5restore.md
+A	tests/fixtures/external_provenance_b5/responses/bfcl-archive-head.body
+A	tests/fixtures/external_provenance_b5/responses/triviaqa-added-tree.body
+A	tests/fixtures/external_provenance_b5/responses/triviaqa-conversion-initial-commits.body
+A	tests/fixtures/external_provenance_b5/responses/triviaqa-initial-tree.body
+A	tests/fixtures/external_provenance_b5/responses/triviaqa-input-tree.body
+A	tests/fixtures/external_provenance_b5/responses/triviaqa-mirror-commits.body
+A	tests/fixtures/external_provenance_b5/responses/triviaqa-mirror-revision.body
+A	tests/fixtures/external_provenance_b5/responses/triviaqa-mirror-tree.body
+A	tests/fixtures/external_provenance_b5/responses/triviaqa-predecessor-loader.body
+A	tests/fixtures/external_provenance_b5/responses/triviaqa-predecessor-tree.body
+A	tests/fixtures/external_provenance_b5/responses/triviaqa-predelete-tree.body
+A	tests/fixtures/external_provenance_b5/responses/triviaqa-selected-tree.body
+A	tools/restore_external_provenance_b5_w_b5restore.py
+exit_code: 0
+
+$ git diff --cached --check
+reports/w-b5restore-validation.txt:22: trailing whitespace.
++tests/quality/test_external_provenance_b5.py:52:
+reports/w-b5restore-validation.txt:23: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:26: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:48: trailing whitespace.
++tests/quality/test_external_provenance_b5.py:73:
+reports/w-b5restore-validation.txt:49: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:54: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:77: trailing whitespace.
++tests/quality/test_external_provenance_b5.py:104:
+reports/w-b5restore-validation.txt:78: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:83: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:105: trailing whitespace.
++tests/quality/test_external_provenance_b5.py:139:
+reports/w-b5restore-validation.txt:106: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:111: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:133: trailing whitespace.
++tests/quality/test_external_provenance_b5.py:147:
+reports/w-b5restore-validation.txt:134: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:139: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:162: trailing whitespace.
++tests/quality/test_external_provenance_b5.py:173:
+reports/w-b5restore-validation.txt:163: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:166: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:221: trailing whitespace.
++tests/quality/test_external_provenance_b5.py:52:
+reports/w-b5restore-validation.txt:222: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:225: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:247: trailing whitespace.
++tests/quality/test_external_provenance_b5.py:73:
+reports/w-b5restore-validation.txt:248: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:253: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:276: trailing whitespace.
++tests/quality/test_external_provenance_b5.py:104:
+reports/w-b5restore-validation.txt:277: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:282: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:304: trailing whitespace.
++tests/quality/test_external_provenance_b5.py:139:
+reports/w-b5restore-validation.txt:305: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:310: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:343: trailing whitespace.
++tests/quality/test_external_provenance_b5.py:183:
+reports/w-b5restore-validation.txt:344: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+reports/w-b5restore-validation.txt:349: trailing whitespace.
++_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+exit_code: 2
+
+EXACT CAPTURED OUTPUTS AS JSON STRINGS
+Readable copies above trim only line-ending whitespace. Decode the following JSON strings for the exact output, including every trailing space and newline.
+baseline_stdout = "FFFFFF.................................................................. [ 90%]\n........                                                                 [100%]\n=================================== FAILURES ===================================\n_______________ test_inventory_and_every_raw_response_are_intact _______________\n\n    def test_inventory_and_every_raw_response_are_intact():\n        sums = (FIXTURE / 'SHA256SUMS').read_bytes()\n        assert hashlib.sha256(sums).hexdigest() == SUMS_SHA256\n        listed = set()\n        for line in sums.decode().splitlines():\n            digest, name = line.split('  ', 1)\n            path = FIXTURE / name\n            assert path.resolve().is_relative_to(FIXTURE.resolve())\n>           assert hashlib.sha256(path.read_bytes()).hexdigest() == digest, name\n\ntests/quality/test_external_provenance_b5.py:52: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes\n    with self.open(mode='rb') as f:\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-archive-head.body')\nmode = 'rb', buffering = -1, encoding = None, errors = None, newline = None\n\n    def open(self, mode='r', buffering=-1, encoding=None,\n             errors=None, newline=None):\n        \"\"\"\n        Open the file pointed to by this path and return a file object, as\n        the built-in open() function does.\n        \"\"\"\n        if \"b\" not in mode:\n            encoding = io.text_encoding(encoding)\n>       return io.open(self, mode, buffering, encoding, errors, newline)\nE       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-archive-head.body'\n\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError\n____________ test_bfcl_tag_signed_commit_and_all_original_git_trees ____________\n\n    def test_bfcl_tag_signed_commit_and_all_original_git_trees():\n>       tag = response('bfcl-tag')\n\ntests/quality/test_external_provenance_b5.py:73: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/quality/test_external_provenance_b5.py:31: in response\n    return json.loads((FIXTURE / 'responses' / (label + '.body')).read_bytes())\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes\n    with self.open(mode='rb') as f:\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-tag.body')\nmode = 'rb', buffering = -1, encoding = None, errors = None, newline = None\n\n    def open(self, mode='r', buffering=-1, encoding=None,\n             errors=None, newline=None):\n        \"\"\"\n        Open the file pointed to by this path and return a file object, as\n        the built-in open() function does.\n        \"\"\"\n        if \"b\" not in mode:\n            encoding = io.text_encoding(encoding)\n>       return io.open(self, mode, buffering, encoding, errors, newline)\nE       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-tag.body'\n\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError\n__________ test_bfcl_projection_matches_tree_and_retained_blob_bodies __________\n\n    def test_bfcl_projection_matches_tree_and_retained_blob_bodies():\n        inventory = json.loads((FIXTURE / 'inventory.json').read_bytes())['bfcl_v3']\n>       entries = {e['path']: e for e in response('bfcl-tree')['tree']}\n\ntests/quality/test_external_provenance_b5.py:104: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/quality/test_external_provenance_b5.py:31: in response\n    return json.loads((FIXTURE / 'responses' / (label + '.body')).read_bytes())\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes\n    with self.open(mode='rb') as f:\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-tree.body')\nmode = 'rb', buffering = -1, encoding = None, errors = None, newline = None\n\n    def open(self, mode='r', buffering=-1, encoding=None,\n             errors=None, newline=None):\n        \"\"\"\n        Open the file pointed to by this path and return a file object, as\n        the built-in open() function does.\n        \"\"\"\n        if \"b\" not in mode:\n            encoding = io.text_encoding(encoding)\n>       return io.open(self, mode, buffering, encoding, errors, newline)\nE       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-tree.body'\n\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError\n_______ test_changed_tree_and_code_cannot_reproduce_original_identities ________\n\n    def test_changed_tree_and_code_cannot_reproduce_original_identities():\n>       tree = copy.deepcopy(response('bfcl-root-tree')['tree'])\n\ntests/quality/test_external_provenance_b5.py:139: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/quality/test_external_provenance_b5.py:31: in response\n    return json.loads((FIXTURE / 'responses' / (label + '.body')).read_bytes())\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes\n    with self.open(mode='rb') as f:\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-root-tree.body')\nmode = 'rb', buffering = -1, encoding = None, errors = None, newline = None\n\n    def open(self, mode='r', buffering=-1, encoding=None,\n             errors=None, newline=None):\n        \"\"\"\n        Open the file pointed to by this path and return a file object, as\n        the built-in open() function does.\n        \"\"\"\n        if \"b\" not in mode:\n            encoding = io.text_encoding(encoding)\n>       return io.open(self, mode, buffering, encoding, errors, newline)\nE       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-root-tree.body'\n\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError\n________ test_triviaqa_mirror_revision_config_splits_and_file_metadata _________\n\n    def test_triviaqa_mirror_revision_config_splits_and_file_metadata():\n>       meta = response('triviaqa-mirror-revision')\n\ntests/quality/test_external_provenance_b5.py:147: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/quality/test_external_provenance_b5.py:31: in response\n    return json.loads((FIXTURE / 'responses' / (label + '.body')).read_bytes())\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes\n    with self.open(mode='rb') as f:\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/triviaqa-mirror-revision.body')\nmode = 'rb', buffering = -1, encoding = None, errors = None, newline = None\n\n    def open(self, mode='r', buffering=-1, encoding=None,\n             errors=None, newline=None):\n        \"\"\"\n        Open the file pointed to by this path and return a file object, as\n        the built-in open() function does.\n        \"\"\"\n        if \"b\" not in mode:\n            encoding = io.text_encoding(encoding)\n>       return io.open(self, mode, buffering, encoding, errors, newline)\nE       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/triviaqa-mirror-revision.body'\n\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError\n_ test_triviaqa_predecessor_and_conversion_history_do_not_self_attest_execution _\n\n    def test_triviaqa_predecessor_and_conversion_history_do_not_self_attest_execution():\n        loader = (FIXTURE / 'triviaqa/trivia_qa.py').read_bytes()\n>       assert loader == (FIXTURE / 'responses/triviaqa-predecessor-loader.body').read_bytes()\n\ntests/quality/test_external_provenance_b5.py:173: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes\n    with self.open(mode='rb') as f:\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/triviaqa-predecessor-loader.body')\nmode = 'rb', buffering = -1, encoding = None, errors = None, newline = None\n\n    def open(self, mode='r', buffering=-1, encoding=None,\n             errors=None, newline=None):\n        \"\"\"\n        Open the file pointed to by this path and return a file object, as\n        the built-in open() function does.\n        \"\"\"\n        if \"b\" not in mode:\n            encoding = io.text_encoding(encoding)\n>       return io.open(self, mode, buffering, encoding, errors, newline)\nE       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/triviaqa-predecessor-loader.body'\n\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError\n=========================== short test summary info ============================\nFAILED tests/quality/test_external_provenance_b5.py::test_inventory_and_every_raw_response_are_intact\nFAILED tests/quality/test_external_provenance_b5.py::test_bfcl_tag_signed_commit_and_all_original_git_trees\nFAILED tests/quality/test_external_provenance_b5.py::test_bfcl_projection_matches_tree_and_retained_blob_bodies\nFAILED tests/quality/test_external_provenance_b5.py::test_changed_tree_and_code_cannot_reproduce_original_identities\nFAILED tests/quality/test_external_provenance_b5.py::test_triviaqa_mirror_revision_config_splits_and_file_metadata\nFAILED tests/quality/test_external_provenance_b5.py::test_triviaqa_predecessor_and_conversion_history_do_not_self_attest_execution\n6 failed, 74 passed in 3.31s\n"
+baseline_stderr = ""
+after_stdout = "FFFF.F.................................................................. [ 90%]\n........                                                                 [100%]\n=================================== FAILURES ===================================\n_______________ test_inventory_and_every_raw_response_are_intact _______________\n\n    def test_inventory_and_every_raw_response_are_intact():\n        sums = (FIXTURE / 'SHA256SUMS').read_bytes()\n        assert hashlib.sha256(sums).hexdigest() == SUMS_SHA256\n        listed = set()\n        for line in sums.decode().splitlines():\n            digest, name = line.split('  ', 1)\n            path = FIXTURE / name\n            assert path.resolve().is_relative_to(FIXTURE.resolve())\n>           assert hashlib.sha256(path.read_bytes()).hexdigest() == digest, name\n\ntests/quality/test_external_provenance_b5.py:52: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes\n    with self.open(mode='rb') as f:\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-blob-base_oss_handler.body')\nmode = 'rb', buffering = -1, encoding = None, errors = None, newline = None\n\n    def open(self, mode='r', buffering=-1, encoding=None,\n             errors=None, newline=None):\n        \"\"\"\n        Open the file pointed to by this path and return a file object, as\n        the built-in open() function does.\n        \"\"\"\n        if \"b\" not in mode:\n            encoding = io.text_encoding(encoding)\n>       return io.open(self, mode, buffering, encoding, errors, newline)\nE       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-blob-base_oss_handler.body'\n\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError\n____________ test_bfcl_tag_signed_commit_and_all_original_git_trees ____________\n\n    def test_bfcl_tag_signed_commit_and_all_original_git_trees():\n>       tag = response('bfcl-tag')\n\ntests/quality/test_external_provenance_b5.py:73: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/quality/test_external_provenance_b5.py:31: in response\n    return json.loads((FIXTURE / 'responses' / (label + '.body')).read_bytes())\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes\n    with self.open(mode='rb') as f:\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-tag.body')\nmode = 'rb', buffering = -1, encoding = None, errors = None, newline = None\n\n    def open(self, mode='r', buffering=-1, encoding=None,\n             errors=None, newline=None):\n        \"\"\"\n        Open the file pointed to by this path and return a file object, as\n        the built-in open() function does.\n        \"\"\"\n        if \"b\" not in mode:\n            encoding = io.text_encoding(encoding)\n>       return io.open(self, mode, buffering, encoding, errors, newline)\nE       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-tag.body'\n\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError\n__________ test_bfcl_projection_matches_tree_and_retained_blob_bodies __________\n\n    def test_bfcl_projection_matches_tree_and_retained_blob_bodies():\n        inventory = json.loads((FIXTURE / 'inventory.json').read_bytes())['bfcl_v3']\n>       entries = {e['path']: e for e in response('bfcl-tree')['tree']}\n\ntests/quality/test_external_provenance_b5.py:104: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/quality/test_external_provenance_b5.py:31: in response\n    return json.loads((FIXTURE / 'responses' / (label + '.body')).read_bytes())\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes\n    with self.open(mode='rb') as f:\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-tree.body')\nmode = 'rb', buffering = -1, encoding = None, errors = None, newline = None\n\n    def open(self, mode='r', buffering=-1, encoding=None,\n             errors=None, newline=None):\n        \"\"\"\n        Open the file pointed to by this path and return a file object, as\n        the built-in open() function does.\n        \"\"\"\n        if \"b\" not in mode:\n            encoding = io.text_encoding(encoding)\n>       return io.open(self, mode, buffering, encoding, errors, newline)\nE       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-tree.body'\n\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError\n_______ test_changed_tree_and_code_cannot_reproduce_original_identities ________\n\n    def test_changed_tree_and_code_cannot_reproduce_original_identities():\n>       tree = copy.deepcopy(response('bfcl-root-tree')['tree'])\n\ntests/quality/test_external_provenance_b5.py:139: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/quality/test_external_provenance_b5.py:31: in response\n    return json.loads((FIXTURE / 'responses' / (label + '.body')).read_bytes())\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes\n    with self.open(mode='rb') as f:\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-root-tree.body')\nmode = 'rb', buffering = -1, encoding = None, errors = None, newline = None\n\n    def open(self, mode='r', buffering=-1, encoding=None,\n             errors=None, newline=None):\n        \"\"\"\n        Open the file pointed to by this path and return a file object, as\n        the built-in open() function does.\n        \"\"\"\n        if \"b\" not in mode:\n            encoding = io.text_encoding(encoding)\n>       return io.open(self, mode, buffering, encoding, errors, newline)\nE       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/bfcl-root-tree.body'\n\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError\n_ test_triviaqa_predecessor_and_conversion_history_do_not_self_attest_execution _\n\n    def test_triviaqa_predecessor_and_conversion_history_do_not_self_attest_execution():\n        loader = (FIXTURE / 'triviaqa/trivia_qa.py').read_bytes()\n        assert loader == (FIXTURE / 'responses/triviaqa-predecessor-loader.body').read_bytes()\n        sha = git_hash('blob', loader)\n        assert sha == 'a9a6932c23d378b9e5628ecec1f0509496806d77'\n        for label in ('triviaqa-predecessor-tree', 'triviaqa-initial-tree', 'triviaqa-predelete-tree'):\n            assert next(e['oid'] for e in response(label) if e['path'] == 'trivia_qa.py') == sha\n        ast.parse(loader)\n        assert b'Licensed under the Apache License, Version 2.0' in loader\n        assert b'HumanAnswers' not in loader and b'VerifiedEval' not in loader\n        commits = response('triviaqa-mirror-commits')\n        assert [c['id'] for c in commits[:2]] == [HUB_REVISION, PREDECESSOR]\n>       discussion = response('triviaqa-conversion-discussion')\n\ntests/quality/test_external_provenance_b5.py:183: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/quality/test_external_provenance_b5.py:31: in response\n    return json.loads((FIXTURE / 'responses' / (label + '.body')).read_bytes())\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1019: in read_bytes\n    with self.open(mode='rb') as f:\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = PosixPath('/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/triviaqa-conversion-discussion.body')\nmode = 'rb', buffering = -1, encoding = None, errors = None, newline = None\n\n    def open(self, mode='r', buffering=-1, encoding=None,\n             errors=None, newline=None):\n        \"\"\"\n        Open the file pointed to by this path and return a file object, as\n        the built-in open() function does.\n        \"\"\"\n        if \"b\" not in mode:\n            encoding = io.text_encoding(encoding)\n>       return io.open(self, mode, buffering, encoding, errors, newline)\nE       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/20t/xubuqiang/hg-wt/w-b5restore/tests/fixtures/external_provenance_b5/responses/triviaqa-conversion-discussion.body'\n\n/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError\n=========================== short test summary info ============================\nFAILED tests/quality/test_external_provenance_b5.py::test_inventory_and_every_raw_response_are_intact\nFAILED tests/quality/test_external_provenance_b5.py::test_bfcl_tag_signed_commit_and_all_original_git_trees\nFAILED tests/quality/test_external_provenance_b5.py::test_bfcl_projection_matches_tree_and_retained_blob_bodies\nFAILED tests/quality/test_external_provenance_b5.py::test_changed_tree_and_code_cannot_reproduce_original_identities\nFAILED tests/quality/test_external_provenance_b5.py::test_triviaqa_predecessor_and_conversion_history_do_not_self_attest_execution\n5 failed, 75 passed in 3.05s\n"
+after_stderr = ""
+initial_git_diff_cached_check_stdout = "reports/w-b5restore-validation.txt:22: trailing whitespace.\n+tests/quality/test_external_provenance_b5.py:52: \nreports/w-b5restore-validation.txt:23: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:26: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:48: trailing whitespace.\n+tests/quality/test_external_provenance_b5.py:73: \nreports/w-b5restore-validation.txt:49: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:54: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:77: trailing whitespace.\n+tests/quality/test_external_provenance_b5.py:104: \nreports/w-b5restore-validation.txt:78: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:83: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:105: trailing whitespace.\n+tests/quality/test_external_provenance_b5.py:139: \nreports/w-b5restore-validation.txt:106: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:111: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:133: trailing whitespace.\n+tests/quality/test_external_provenance_b5.py:147: \nreports/w-b5restore-validation.txt:134: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:139: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:162: trailing whitespace.\n+tests/quality/test_external_provenance_b5.py:173: \nreports/w-b5restore-validation.txt:163: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:166: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:221: trailing whitespace.\n+tests/quality/test_external_provenance_b5.py:52: \nreports/w-b5restore-validation.txt:222: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:225: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:247: trailing whitespace.\n+tests/quality/test_external_provenance_b5.py:73: \nreports/w-b5restore-validation.txt:248: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:253: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:276: trailing whitespace.\n+tests/quality/test_external_provenance_b5.py:104: \nreports/w-b5restore-validation.txt:277: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:282: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:304: trailing whitespace.\n+tests/quality/test_external_provenance_b5.py:139: \nreports/w-b5restore-validation.txt:305: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:310: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:343: trailing whitespace.\n+tests/quality/test_external_provenance_b5.py:183: \nreports/w-b5restore-validation.txt:344: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nreports/w-b5restore-validation.txt:349: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n"
+The initial diff whitespace check reported pytest-emitted trailing spaces in the verbatim transcript only. These outputs are now encoded losslessly above; no test or frozen-body bytes were changed.
+
+$ python3 -c "from pathlib import Path; import json; rows=[json.loads(s) for s in Path('reports/w-b5restore-replay.jsonl').read_text().splitlines()][1:]; assert len(rows)==87 and len({r['path'] for r in rows})==87; assert sum(r['request_sent'] for r in rows)==86; assert sum(r['written'] for r in rows)==12; assert all(not r['written'] for r in rows if r['outcome'] in ('fetch_failure','mismatch')); assert all(dict(r['response_headers'])['X-RateLimit-Remaining']=='0' for r in rows if r['status']==403); assert not Path('/tmp/b5restore-baseline').exists() and not Path('/tmp/b5restore-after').exists(); print('87 unique outcomes; 86 requests; 12 writes; all rejected bodies absent; 70 rate-limit failures; owned SSD temp directories removed')"
+87 unique outcomes; 86 requests; 12 writes; all rejected bodies absent; 70 rate-limit failures; owned SSD temp directories removed
+exit_code: 0
+
+$ python3 -c "from pathlib import Path; root=Path('/mnt/20t/xubuqiang/hg-work/b5restore'); names=('baseline.json','after.json','checker.json','verification.json'); [(root/name).unlink() for name in names]; print('Removed four owned scratch captures; evidence is retained in reports/w-b5restore-validation.txt'); print('Scratch remaining:', sorted(p.name for p in root.iterdir()))"
+Removed four owned scratch captures; evidence is retained in reports/w-b5restore-validation.txt
+Scratch remaining: ['tmp']
+exit_code: 0
+
+$ git diff --cached --check
+exit_code: 0
+
+$ git diff --name-only
+reports/w-b5restore-validation.txt
+exit_code: 0
+
+$ git diff --cached --stat
+ reports/w-b5restore-audit.json                     | 1705 ++++++++++++++++++++
+ reports/w-b5restore-replay.jsonl                   |   88 +
+ reports/w-b5restore-validation.txt                 |  644 ++++++++
+ reports/w-b5restore.md                             |  151 ++
+ .../responses/bfcl-archive-head.body               |    0
+ .../responses/triviaqa-added-tree.body             |    1 +
+ .../triviaqa-conversion-initial-commits.body       |    1 +
+ .../responses/triviaqa-initial-tree.body           |    1 +
+ .../responses/triviaqa-input-tree.body             |    1 +
+ .../responses/triviaqa-mirror-commits.body         |    1 +
+ .../responses/triviaqa-mirror-revision.body        |    1 +
+ .../responses/triviaqa-mirror-tree.body            |    1 +
+ .../responses/triviaqa-predecessor-loader.body     |  329 ++++
+ .../responses/triviaqa-predecessor-tree.body       |    1 +
+ .../responses/triviaqa-predelete-tree.body         |    1 +
+ .../responses/triviaqa-selected-tree.body          |    1 +
+ .../restore_external_provenance_b5_w_b5restore.py  |  187 +++
+ 17 files changed, 3114 insertions(+)
+exit_code: 0
+
+Scratch remaining tmp directory was not removed: its origin/content was not established by this task; only the four named worker-created captures were deleted.
+
+COMMITTED FILE SIZES (bytes; every file must be <1,000,000)
+$ python3 -c 'from pathlib import Path; import subprocess; paths=subprocess.check_output(['"'"'git'"'"','"'"'diff'"'"','"'"'--cached'"'"','"'"'--name-only'"'"'],text=True).splitlines(); [print(str(Path(p))+'"'"'\t'"'"'+str(Path(p).stat().st_size)) for p in paths]; assert all(Path(p).stat().st_size<1000000 for p in paths)'
+reports/w-b5restore-audit.json	92348
+reports/w-b5restore-replay.jsonl	197812
+reports/w-b5restore-validation.txt	83301
+reports/w-b5restore.md	19676
+tests/fixtures/external_provenance_b5/responses/bfcl-archive-head.body	0
+tests/fixtures/external_provenance_b5/responses/triviaqa-added-tree.body	973
+tests/fixtures/external_provenance_b5/responses/triviaqa-conversion-initial-commits.body	7052
+tests/fixtures/external_provenance_b5/responses/triviaqa-initial-tree.body	483
+tests/fixtures/external_provenance_b5/responses/triviaqa-input-tree.body	621
+tests/fixtures/external_provenance_b5/responses/triviaqa-mirror-commits.body	7888
+tests/fixtures/external_provenance_b5/responses/triviaqa-mirror-revision.body	25259
+tests/fixtures/external_provenance_b5/responses/triviaqa-mirror-tree.body	1011
+tests/fixtures/external_provenance_b5/responses/triviaqa-predecessor-loader.body	13317
+tests/fixtures/external_provenance_b5/responses/triviaqa-predecessor-tree.body	392
+tests/fixtures/external_provenance_b5/responses/triviaqa-predelete-tree.body	1204
+tests/fixtures/external_provenance_b5/responses/triviaqa-selected-tree.body	973
+tools/restore_external_provenance_b5_w_b5restore.py	9306
+exit_code: 0
