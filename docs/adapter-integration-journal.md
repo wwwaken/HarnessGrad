@@ -5417,3 +5417,30 @@ attached containers, and after removing it the file was **45 passed in 63.94 s, 
 network left behind**. Recorded in `registry/known-red-tests.md` alongside the other "do not mistake these
 for regressions" entries. The lesson for my own behaviour is the one already in `AGENTS.md`: never run this
 file in the foreground under a short cap, and reap what a killed run left.
+
+#### Goal round 6, final increment — the acceptance record is complete
+
+`registry/fidelity-acceptance.md` no longer has a "not verified" caveat for range C. Every fix in the phase
+now has both halves measured by the parent: B5/B6/B7/C8/C9/A1 in the earlier sweep, and C10+C11 (`6b0c78ea`,
+**10 failed / 19 passed**), C12 (`87a8450a`, **4 failed / 6 passed**), C13 (`87a8450a`, **1 failed / 136
+passed**), C14 (`2cdd859a`, **16 failed / 22 passed / 1 skipped**), C15 (`a121b145`, **2 failed / 14 passed
+/ 2 skipped**), C16 (`cdb43ac4`, **17 failed / 7 passed**) and 17b (`28e5dc67`, **8 failed / 2 passed**) in
+this one. 17a (`14866a0c`) fails as a **collection error** rather than an assertion, because the fix
+*created* `data/datasets/tau_bench/service.py`; that is kept visible in the record as weaker evidence.
+
+Two of my own method errors are recorded with it rather than hidden, because both produced a *misleading
+pass*: choosing the test file from the item description instead of from `git show --stat <fix-sha>`. I ran
+`test_ds1000_scratch_cleanup_w_scratch.py` for C13 and `test_hotpot_timeout_admission_w_hotpot.py` for C14,
+got "everything passed" on the reverted tree, and nearly concluded there was no coverage. The real tests
+are `test_ds1000_official_scorer.py::test_gold_stays_out_of_setup_and_the_tests_travel_in_verify_inputs`
+and the two files `2cdd859a` itself touched. **A regression test you have not located is not a missing
+regression test.** Final pass-after checks: `test_agentdojo_metadata_privacy.py`,
+`test_agentdojo_official_scorer.py`, `test_agentdojo_targeted_control.py`,
+`test_tau_bench_recording_w_taubench.py` → **103 passed in 18.54 s**. Throwaway worktrees removed, no `hg-*`
+Docker network left, checker `valid` on every commit.
+
+**What remains is operator-gated, not agent-gated.** Three open blockers (`appworld`, `bfcl_v3`,
+`triviaqa`) need the closure decision set out in `registry/w-decisionpack.md`; B5's 47 gitignored bodies
+need a custody decision; and the optional B5 per-entry disposition guard was deliberately not done
+unilaterally. Nothing is blocked for a *third* round yet, so the goal stays active rather than being
+marked blocked.
