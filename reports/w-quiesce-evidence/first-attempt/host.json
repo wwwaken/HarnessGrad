@@ -1,0 +1,33 @@
+{
+  "docker-info": {
+    "argv": [
+      "docker",
+      "info"
+    ],
+    "monotonic_ns": 6546356467300986,
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "Client: Docker Engine - Community\n Version:    29.2.1\n Context:    default\n Debug Mode: false\n Plugins:\n  buildx: Docker Buildx (Docker Inc.)\n    Version:  v0.31.1\n    Path:     /usr/libexec/docker/cli-plugins/docker-buildx\n  compose: Docker Compose (Docker Inc.)\n    Version:  v5.1.0\n    Path:     /usr/libexec/docker/cli-plugins/docker-compose\n\nServer:\n Containers: 10\n  Running: 3\n  Paused: 0\n  Stopped: 7\n Images: 188\n Server Version: 29.2.1\n Storage Driver: overlayfs\n  driver-type: io.containerd.snapshotter.v1\n Logging Driver: json-file\n Cgroup Driver: systemd\n Cgroup Version: 2\n Plugins:\n  Volume: local\n  Network: bridge host ipvlan macvlan null overlay\n  Log: awslogs fluentd gcplogs gelf journald json-file local splunk syslog\n CDI spec directories:\n  /etc/cdi\n  /var/run/cdi\n Swarm: inactive\n Runtimes: io.containerd.runc.v2 runc\n Default Runtime: runc\n Init Binary: docker-init\n containerd version: dea7da592f5d1d2b7755e3a161be07f43fad8f75\n runc version: v1.3.4-0-gd6d73eb8\n init version: de40ad0\n Security Options:\n  apparmor\n  seccomp\n   Profile: builtin\n  cgroupns\n Kernel Version: 6.8.0-136-generic\n Operating System: Ubuntu 22.04.4 LTS\n OSType: linux\n Architecture: x86_64\n CPUs: 144\n Total Memory: 251.5GiB\n Name: mistral\n ID: 8cdccfcf-2840-4a8c-8d23-e0acdcffe273\n Docker Root Dir: /var/lib/docker\n Debug Mode: false\n Experimental: false\n Insecure Registries:\n  ::1/128\n  127.0.0.0/8\n Registry Mirrors:\n  https://docker.1ms.run/\n  https://hub.rat.dev/\n  https://docker.1panel.live/\n Live Restore Enabled: false\n Firewall Backend: iptables\n\n"
+  },
+  "id": {
+    "argv": [
+      "id"
+    ],
+    "monotonic_ns": 6546356388549605,
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "uid=1026(xubuqiang) gid=1026(xubuqiang) \u7ec4=1026(xubuqiang),1034(docker)\n"
+  },
+  "image": {
+    "argv": [
+      "docker",
+      "image",
+      "inspect",
+      "sha256:3d32c18960e2cd4340c95b9cb3042581be0e2392959e6428fc06a37de334981d"
+    ],
+    "monotonic_ns": 6546356520444224,
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "[\n    {\n        \"Id\": \"sha256:3d32c18960e2cd4340c95b9cb3042581be0e2392959e6428fc06a37de334981d\",\n        \"RepoTags\": [],\n        \"RepoDigests\": [],\n        \"Comment\": \"buildkit.dockerfile.v0\",\n        \"Created\": \"2026-10-15T06:50:11.266122494+08:00\",\n        \"Config\": {\n            \"Env\": [\n                \"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"\n            ],\n            \"WorkingDir\": \"/\"\n        },\n        \"Architecture\": \"amd64\",\n        \"Os\": \"linux\",\n        \"Size\": 1988,\n        \"RootFS\": {\n            \"Type\": \"layers\",\n            \"Layers\": [\n                \"sha256:8f2ed55adc1879ac79ed385f79edcb820dcaccae52e4e9cfa075cd1f13319f4c\"\n            ]\n        },\n        \"Metadata\": {\n            \"LastTagTime\": \"2026-10-14T22:50:11.679731567Z\"\n        },\n        \"Descriptor\": {\n            \"mediaType\": \"application/vnd.oci.image.index.v1+json\",\n            \"digest\": \"sha256:3d32c18960e2cd4340c95b9cb3042581be0e2392959e6428fc06a37de334981d\",\n            \"size\": 855\n        },\n        \"Identity\": {\n            \"Build\": [\n                {\n                    \"Ref\": \"xsx1e3rtalmve9c13pgri13p6\",\n                    \"CreatedAt\": \"2026-10-15T06:50:11.721621591+08:00\"\n                }\n            ]\n        }\n    }\n]\n"
+  }
+}

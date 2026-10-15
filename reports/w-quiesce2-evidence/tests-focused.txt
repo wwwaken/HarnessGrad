@@ -1,0 +1,27 @@
+........................................................................ [ 40%]
+..........................................F............................. [ 80%]
+..................................                                       [100%]
+=================================== FAILURES ===================================
+__________ test_preserved_packet_establishes_only_its_bounded_claims ___________
+
+    def test_preserved_packet_establishes_only_its_bounded_claims():
+>       result = AUDIT.audit(EVIDENCE / "final-control")
+
+tests/quality/test_quiesce_evidence.py:18: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/hg-quiesce2/reports/w-quiesce-evidence/final-control')
+
+    def audit(root):
+        sealed_files = check_seals(root)
+        fixture = REPO / "tests/fixtures/hg_wpristine"
+        fixture_files = check_seals(fixture)
+        launch = load(root / "launch.json")
+        for name, pin in launch["source_hashes"].items():
+>           assert sha(REPO / name) == pin, name
+E           AssertionError: eval/admission/artifact_admission.py
+
+reports/w-quiesce-evidence/audit.py:59: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_quiesce_evidence.py::test_preserved_packet_establishes_only_its_bounded_claims
+1 failed, 177 passed in 23.15s
