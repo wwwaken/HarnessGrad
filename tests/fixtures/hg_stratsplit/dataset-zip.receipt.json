@@ -1,0 +1,95 @@
+{
+  "url": "https://storage.googleapis.com/ai2i/strategyqa/data/strategyqa_dataset.zip?generation=1610016136750122",
+  "command": "python3 tests/fixtures/hg_stratsplit/capture.py dataset-zip 'https://storage.googleapis.com/ai2i/strategyqa/data/strategyqa_dataset.zip?generation=1610016136750122'",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-stratsplit-source-audit/1.0",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "limit_bytes": 15000000,
+  "status": 200,
+  "final_url": "https://storage.googleapis.com/ai2i/strategyqa/data/strategyqa_dataset.zip?generation=1610016136750122",
+  "headers": [
+    [
+      "Content-Type",
+      "application/zip"
+    ],
+    [
+      "X-GUploader-UploadID",
+      "AP6rU81zK_pvbrolSQkmyYtfkb4GDgHNKQIhKZwMvuubcsVdBY80up8DZpcHdwe2Ubjs3Es_"
+    ],
+    [
+      "Expires",
+      "Thu, 15 Oct 2026 12:31:39 GMT"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 11:31:39 GMT"
+    ],
+    [
+      "Cache-Control",
+      "public, max-age=3600"
+    ],
+    [
+      "Last-Modified",
+      "Thu, 07 Jan 2021 10:42:16 GMT"
+    ],
+    [
+      "ETag",
+      "\"f4ae9d9296c06f90d80aee1e4a25d58a\""
+    ],
+    [
+      "x-goog-generation",
+      "1610016136750122"
+    ],
+    [
+      "x-goog-metageneration",
+      "2"
+    ],
+    [
+      "x-goog-stored-content-encoding",
+      "identity"
+    ],
+    [
+      "x-goog-stored-content-length",
+      "3434332"
+    ],
+    [
+      "x-goog-hash",
+      "crc32c=i/fHCg=="
+    ],
+    [
+      "x-goog-hash",
+      "md5=9K6dkpbAb5DYCu4eSiXVig=="
+    ],
+    [
+      "x-goog-storage-class",
+      "REGIONAL"
+    ],
+    [
+      "Accept-Ranges",
+      "bytes"
+    ],
+    [
+      "Content-Length",
+      "3434332"
+    ],
+    [
+      "Server",
+      "UploadServer"
+    ],
+    [
+      "Alt-Svc",
+      "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+    ],
+    [
+      "Connection",
+      "close"
+    ]
+  ],
+  "complete": true,
+  "bytes": 3434332,
+  "sha256": "4911d85eb6721a93bed7645419df77e721808b32b9785dee14ad80e6249e0a90",
+  "raw_fixture": "tests/fixtures/hg_stratsplit/dataset-zip.body",
+  "persistent_body": "/mnt/20t/xubuqiang/hg-work/stratsplit/dataset-zip.body"
+}

@@ -1,0 +1,12 @@
+{
+  "url": "https://ai2.org/data/strategyqa",
+  "command": "python3 tests/fixtures/hg_stratsplit/capture.py ai2-current https://ai2.org/data/strategyqa",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-stratsplit-source-audit/1.0",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "limit_bytes": 15000000,
+  "status": null,
+  "error": "URLError: <urlopen error [Errno -5] No address associated with hostname>"
+}

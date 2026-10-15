@@ -1,0 +1,55 @@
+{
+  "url": "https://storage.googleapis.com/ai2i/strategyqa/README.md",
+  "command": "python3 tests/fixtures/hg_stratsplit/capture.py ai2i-readme-candidate https://storage.googleapis.com/ai2i/strategyqa/README.md",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-stratsplit-source-audit/1.0",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "limit_bytes": 15000000,
+  "status": 404,
+  "final_url": "https://storage.googleapis.com/ai2i/strategyqa/README.md",
+  "headers": [
+    [
+      "Content-Type",
+      "application/xml; charset=UTF-8"
+    ],
+    [
+      "X-GUploader-UploadID",
+      "AP6rU81kngxq_hyt1ktV5yN74mehSJezUI19WFgenz9Kupjk83sbAefOkS9pAqU6bDejYs5OtrOfZDE"
+    ],
+    [
+      "Content-Length",
+      "187"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 11:33:56 GMT"
+    ],
+    [
+      "Expires",
+      "Thu, 15 Oct 2026 11:33:56 GMT"
+    ],
+    [
+      "Cache-Control",
+      "private, max-age=0"
+    ],
+    [
+      "Server",
+      "UploadServer"
+    ],
+    [
+      "Alt-Svc",
+      "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+    ],
+    [
+      "Connection",
+      "close"
+    ]
+  ],
+  "complete": true,
+  "bytes": 187,
+  "sha256": "e09a2b50bdfa348fd39796558f0893b5e8e902c77436038e53391f2c07f781a2",
+  "raw_fixture": "tests/fixtures/hg_stratsplit/ai2i-readme-candidate.body",
+  "persistent_body": "/mnt/20t/xubuqiang/hg-work/stratsplit/ai2i-readme-candidate.body"
+}

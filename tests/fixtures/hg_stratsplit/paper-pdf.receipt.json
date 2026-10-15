@@ -1,0 +1,51 @@
+{
+  "url": "https://aclanthology.org/2021.tacl-1.21.pdf",
+  "command": "python3 tests/fixtures/hg_stratsplit/capture.py paper-pdf https://aclanthology.org/2021.tacl-1.21.pdf",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-stratsplit-source-audit/1.0",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "limit_bytes": 15000000,
+  "status": 200,
+  "final_url": "https://aclanthology.org/2021.tacl-1.21.pdf",
+  "headers": [
+    [
+      "Date",
+      "Thu, 15 Oct 2026 11:32:45 GMT"
+    ],
+    [
+      "Server",
+      "Apache/2.4.41 (Ubuntu)"
+    ],
+    [
+      "Last-Modified",
+      "Thu, 23 Dec 2021 02:37:36 GMT"
+    ],
+    [
+      "ETag",
+      "\"9b0f5-5d3c71f061c00\""
+    ],
+    [
+      "Accept-Ranges",
+      "bytes"
+    ],
+    [
+      "Content-Length",
+      "635125"
+    ],
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "Content-Type",
+      "application/pdf"
+    ]
+  ],
+  "complete": true,
+  "bytes": 635125,
+  "sha256": "bfa000a0bc7c065f62918b61267032bba4edc196a4e67927c92b9bf6baa0e1de",
+  "raw_fixture": "tests/fixtures/hg_stratsplit/paper-pdf.body",
+  "persistent_body": "/mnt/20t/xubuqiang/hg-work/stratsplit/paper-pdf.body"
+}

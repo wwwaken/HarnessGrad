@@ -1,0 +1,127 @@
+{
+  "url": "https://api.github.com/repos/allenai/strategyqa-evaluator/git/trees/4f0051627e208629fffb1eacedd454f2cd89cf47?recursive=1",
+  "command": "python3 tests/fixtures/hg_stratsplit/capture.py evaluator-tree 'https://api.github.com/repos/allenai/strategyqa-evaluator/git/trees/4f0051627e208629fffb1eacedd454f2cd89cf47?recursive=1'",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-stratsplit-source-audit/1.0",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "limit_bytes": 15000000,
+  "status": 200,
+  "final_url": "https://api.github.com/repos/allenai/strategyqa-evaluator/git/trees/4f0051627e208629fffb1eacedd454f2cd89cf47?recursive=1",
+  "headers": [
+    [
+      "Date",
+      "Thu, 15 Oct 2026 11:35:09 GMT"
+    ],
+    [
+      "Content-Type",
+      "application/json; charset=utf-8"
+    ],
+    [
+      "Cache-Control",
+      "public, max-age=86400, s-maxage=86400"
+    ],
+    [
+      "Vary",
+      "Accept,Accept-Encoding, Accept, X-Requested-With"
+    ],
+    [
+      "ETag",
+      "W/\"0c8c9b22f3afecaee917310f44b3de108fd89c5307ea1d60267f428bc3bf8174\""
+    ],
+    [
+      "Last-Modified",
+      "Wed, 30 Oct 2024 14:15:38 GMT"
+    ],
+    [
+      "X-GitHub-Media-Type",
+      "github.v3; format=json"
+    ],
+    [
+      "x-github-api-version-selected",
+      "2022-11-28"
+    ],
+    [
+      "Access-Control-Expose-Headers",
+      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset, Warning"
+    ],
+    [
+      "Access-Control-Allow-Origin",
+      "*"
+    ],
+    [
+      "Strict-Transport-Security",
+      "max-age=31536000; includeSubdomains; preload"
+    ],
+    [
+      "X-Frame-Options",
+      "deny"
+    ],
+    [
+      "X-Content-Type-Options",
+      "nosniff"
+    ],
+    [
+      "X-XSS-Protection",
+      "0"
+    ],
+    [
+      "Referrer-Policy",
+      "origin-when-cross-origin, strict-origin-when-cross-origin"
+    ],
+    [
+      "Content-Security-Policy",
+      "default-src 'none'"
+    ],
+    [
+      "Server",
+      "github.com"
+    ],
+    [
+      "Accept-Ranges",
+      "bytes"
+    ],
+    [
+      "X-RateLimit-Limit",
+      "60"
+    ],
+    [
+      "X-RateLimit-Remaining",
+      "53"
+    ],
+    [
+      "X-RateLimit-Used",
+      "7"
+    ],
+    [
+      "X-RateLimit-Resource",
+      "core"
+    ],
+    [
+      "X-RateLimit-Reset",
+      "1792067498"
+    ],
+    [
+      "Content-Length",
+      "3243"
+    ],
+    [
+      "X-GitHub-Request-Id",
+      "C290:2C9738:3A3E9F:59779B:6AD0BA6C"
+    ],
+    [
+      "x-github-edge-region",
+      "southeastasia"
+    ],
+    [
+      "connection",
+      "close"
+    ]
+  ],
+  "complete": true,
+  "bytes": 3243,
+  "sha256": "0c8c9b22f3afecaee917310f44b3de108fd89c5307ea1d60267f428bc3bf8174",
+  "raw_fixture": "tests/fixtures/hg_stratsplit/evaluator-tree.body",
+  "persistent_body": "/mnt/20t/xubuqiang/hg-work/stratsplit/evaluator-tree.body"
+}

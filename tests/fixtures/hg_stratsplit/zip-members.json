@@ -1,0 +1,48 @@
+[
+  {
+    "name": "strategyqa_test.json",
+    "bytes": 64207,
+    "compressed_bytes": 21959,
+    "sha256": "268bec2605a45830ae7f1f3861d5ee2a4a10f4aeaca0358a076760b2eff3ed25",
+    "crc32": 2334004213,
+    "json_type": "list",
+    "records": 490,
+    "record_key_signatures": {
+      "qid,question": 490
+    }
+  },
+  {
+    "name": "strategyqa_train.json",
+    "bytes": 4281955,
+    "compressed_bytes": 583014,
+    "sha256": "728e28b7d6bdfe6da3a0a5f8c5923113a79063d199e960cfcc9f8a3ab34cd92c",
+    "crc32": 371080008,
+    "json_type": "list",
+    "records": 2290,
+    "record_key_signatures": {
+      "answer,decomposition,description,evidence,facts,qid,question,term": 2290
+    }
+  },
+  {
+    "name": "strategyqa_train_filtered.json",
+    "bytes": 681610,
+    "compressed_bytes": 114059,
+    "sha256": "5c207a051a4753c930f446591d232520b7db854b19c9da873650643bb03b0362",
+    "crc32": 534817793,
+    "json_type": "list",
+    "records": 2821,
+    "record_key_signatures": {
+      "answer,description,qid,question,term": 2821
+    }
+  },
+  {
+    "name": "strategyqa_train_paragraphs.json",
+    "bytes": 7748648,
+    "compressed_bytes": 2714448,
+    "sha256": "e664979065b2eabfb5412b968c82d532d099e3ad86c9e3de5d3065a016edf96b",
+    "crc32": 893700874,
+    "json_type": "dict",
+    "records": 9251,
+    "record_key_signatures": null
+  }
+]

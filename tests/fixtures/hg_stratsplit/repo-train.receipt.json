@@ -1,0 +1,123 @@
+{
+  "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/df79706e10671bebebb87a610fdd434576c27a18",
+  "command": "python3 tests/fixtures/hg_stratsplit/capture.py repo-train https://api.github.com/repos/eladsegal/strategyqa/git/blobs/df79706e10671bebebb87a610fdd434576c27a18",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-stratsplit-source-audit/1.0",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "limit_bytes": 15000000,
+  "status": 200,
+  "final_url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/df79706e10671bebebb87a610fdd434576c27a18",
+  "headers": [
+    [
+      "Date",
+      "Thu, 15 Oct 2026 11:31:38 GMT"
+    ],
+    [
+      "Content-Type",
+      "application/json; charset=utf-8"
+    ],
+    [
+      "Cache-Control",
+      "public, max-age=86400, s-maxage=86400"
+    ],
+    [
+      "Vary",
+      "Accept,Accept-Encoding, Accept, X-Requested-With"
+    ],
+    [
+      "ETag",
+      "W/\"494e2bf5be6be947d96567ba8be2f8926a2710f7ef016906e0f851b567c148c0\""
+    ],
+    [
+      "X-GitHub-Media-Type",
+      "github.v3; format=json"
+    ],
+    [
+      "x-github-api-version-selected",
+      "2022-11-28"
+    ],
+    [
+      "Access-Control-Expose-Headers",
+      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset, Warning"
+    ],
+    [
+      "Access-Control-Allow-Origin",
+      "*"
+    ],
+    [
+      "Strict-Transport-Security",
+      "max-age=31536000; includeSubdomains; preload"
+    ],
+    [
+      "X-Frame-Options",
+      "deny"
+    ],
+    [
+      "X-Content-Type-Options",
+      "nosniff"
+    ],
+    [
+      "X-XSS-Protection",
+      "0"
+    ],
+    [
+      "Referrer-Policy",
+      "origin-when-cross-origin, strict-origin-when-cross-origin"
+    ],
+    [
+      "Content-Security-Policy",
+      "default-src 'none'"
+    ],
+    [
+      "Server",
+      "github.com"
+    ],
+    [
+      "Accept-Ranges",
+      "bytes"
+    ],
+    [
+      "X-RateLimit-Limit",
+      "60"
+    ],
+    [
+      "X-RateLimit-Remaining",
+      "58"
+    ],
+    [
+      "X-RateLimit-Used",
+      "2"
+    ],
+    [
+      "X-RateLimit-Resource",
+      "core"
+    ],
+    [
+      "X-RateLimit-Reset",
+      "1792067498"
+    ],
+    [
+      "Transfer-Encoding",
+      "chunked"
+    ],
+    [
+      "X-GitHub-Request-Id",
+      "C6DC:62D67:36BCE2:54D545:6AD0B99A"
+    ],
+    [
+      "x-github-edge-region",
+      "southeastasia"
+    ],
+    [
+      "connection",
+      "close"
+    ]
+  ],
+  "complete": true,
+  "bytes": 5315438,
+  "sha256": "494e2bf5be6be947d96567ba8be2f8926a2710f7ef016906e0f851b567c148c0",
+  "raw_fixture": "tests/fixtures/hg_stratsplit/repo-train.body",
+  "persistent_body": "/mnt/20t/xubuqiang/hg-work/stratsplit/repo-train.body"
+}

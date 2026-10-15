@@ -1,0 +1,61 @@
+{
+  "installed_csv": {
+    "path": "/mnt/20t/xubuqiang/datasets/strategyqa/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/strategy_qa.csv",
+    "bytes": 200453,
+    "sha256": "c1fd0c271bf98741b68ac1ea3d167c5ccf2ed46da66645d5fc0ed6222e45f055",
+    "rows": 2290
+  },
+  "prefix_removed_exactly": "Answer with 'Yes' or 'No': ",
+  "original_partition_coverage": {
+    "Train": 2290,
+    "Test": 0,
+    "unaccounted_installed_rows": 0,
+    "Test_ids_missing_from_installed_pool": 490
+  },
+  "unofficial_partition_coverage": {
+    "train": 2061,
+    "dev": 229
+  },
+  "imposed_partition_coverage": {
+    "train": 1520,
+    "eval": 770
+  },
+  "unofficial_by_imposed": {
+    "train": {
+      "train": 1372,
+      "eval": 689
+    },
+    "dev": {
+      "train": 148,
+      "eval": 81
+    }
+  },
+  "id_namespaces": {
+    "distribution_train_vs_author_qid_overlap": 0
+  },
+  "exact_id_ambiguity": {
+    "installed_row_indices": [
+      42,
+      1987
+    ],
+    "count": 2,
+    "reason": "Two equal question/answer rows; retain both candidate IDs; no occurrence-order tie-break",
+    "partition_ambiguity": 0
+  },
+  "binding": {
+    "path": "/mnt/20t/xubuqiang/hg-wt/w-stratsplit/tests/fixtures/hg_stratsplit/installed-row-binding.tsv",
+    "bytes": 491438,
+    "sha256": "3015ba7fd809b6a8d85af3b4c91dc61a087dba38efb9c26dde118410729dbfd2"
+  },
+  "zip_member_count": 4,
+  "listed_gcs_objects": 36,
+  "repo_blob_count": 81,
+  "missing_brief_paths": [
+    "registry/w-journalcov-review.md",
+    "tests/fixtures/hg_wjc2"
+  ],
+  "source_sha256": {
+    "data/datasets/strategyqa.py": "eaad45dfb944241fad84eb575882560ffcf7243de40c9d34fd0766a40c16a50a",
+    "data/scaffolds/qa/base.py": "3c2242e4ed82d76eb7732a6c077122f3d74fb4387860caa3b53a9d8a049a8d8a"
+  }
+}

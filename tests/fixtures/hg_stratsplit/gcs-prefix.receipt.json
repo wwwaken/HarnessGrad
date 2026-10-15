@@ -1,0 +1,59 @@
+{
+  "url": "https://storage.googleapis.com/ai2i?prefix=strategyqa%2F&max-keys=1000",
+  "command": "python3 tests/fixtures/hg_stratsplit/capture.py gcs-prefix 'https://storage.googleapis.com/ai2i?prefix=strategyqa%2F&max-keys=1000'",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-stratsplit-source-audit/1.0",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "limit_bytes": 15000000,
+  "status": 200,
+  "final_url": "https://storage.googleapis.com/ai2i?prefix=strategyqa%2F&max-keys=1000",
+  "headers": [
+    [
+      "Content-Type",
+      "application/xml; charset=UTF-8"
+    ],
+    [
+      "X-GUploader-UploadID",
+      "AP6rU82dX5KACMhPZk1Ad7B4Vb3hQQWHJLouFq4t3axqsgAyF4qVvr_0FHe0ddg0-wYuG4Ko"
+    ],
+    [
+      "x-goog-metageneration",
+      "20"
+    ],
+    [
+      "Content-Length",
+      "9767"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 11:31:40 GMT"
+    ],
+    [
+      "Expires",
+      "Thu, 15 Oct 2026 11:31:40 GMT"
+    ],
+    [
+      "Cache-Control",
+      "private, max-age=0"
+    ],
+    [
+      "Server",
+      "UploadServer"
+    ],
+    [
+      "Alt-Svc",
+      "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+    ],
+    [
+      "Connection",
+      "close"
+    ]
+  ],
+  "complete": true,
+  "bytes": 9767,
+  "sha256": "70f896e34495fdcbcc9365ab063aff096c5c0bdecac9a6f57fa4aae48bceabae",
+  "raw_fixture": "tests/fixtures/hg_stratsplit/gcs-prefix.body",
+  "persistent_body": "/mnt/20t/xubuqiang/hg-work/stratsplit/gcs-prefix.body"
+}

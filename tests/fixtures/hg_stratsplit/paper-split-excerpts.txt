@@ -1,0 +1,41 @@
+Exact line excerpts from pdftotext -layout of paper-pdf.body
+Full extracted text bytes: 85554
+Full extracted text SHA-256: 40f0916cd110abaef8a9a55879da5f5f884a3faa0b898f317fe33f0b4aa51bf9
+Raw PDF request: paper-pdf.receipt.json
+
+392: multiple verbs). For SQD, we check that the                      We collected 2,835 questions, out of which 55
+393: decomposition structure forms a directed acyclic              were marked as having an incorrect answer during
+394: graph, that is: (i) each decomposition step is                SQD (§3.2). This results in a collection of 2,780
+395: referenced by (at least) one of the following steps,          verified strategy questions, for which we create an
+396: such that all steps are reachable from the last step;         annotator-based data split (Geva et al., 2019). We
+397: and (ii) steps don’t form a cycle. In the EVM task,           now describe the dataset statistics (§4.1), analyze
+398: a warning message is shown when the worker                    the quality of the examples (§4.2), and explore the
+399: marks an intermediate step as an operation (an                reasoning skills in STRATEGYQA (§4.3).
+
+435:                                    Train     Test                            multi-step    single-step
+436: # of questions                      2290      490                 implicit      81              1        82
+437: % ‘‘yes’’ questions                46.8%    46.1%                 explicit     14.5            3.5       18
+438: # of unique terms                   1333      442                              95.5            4.5       100
+439: # of unique decomposition           6050     1347
+440: steps                                                            Table 5: Distribution over the implicit and
+441: # of unique evidence               9251      2136                multi-step properties (§2) in a sample of 100
+442: paragraphs                                                       STRATEGYQA questions, annotated by two
+443: # of occurrences of the top          31        5                 experts (we average the expert decisions).
+444: trigram                                                          Most questions are multi-step and implicit.
+445: # of question writers               23          6                Annotator agreement is substantial for both
+446: # of filtered questions            2821       484                the implicit (κ = 0.73) and multi-step
+447: Avg. question length (words)        9.6        9.8               (κ = 0.65) properties.
+448: Avg. decomposition length          2.93       2.92
+449: (steps)                                                       questions are implicit, and 95.5% are multi-step
+450: Avg. # of paragraphs per            2.33      2.29            (Table 5).
+451: question
+452:                                                               Do questions in STRATEGYQA have a definitive
+453: Table 4: STRATEGYQA statistics. Filtered questions            answer? We let experts review the answers to
+454: were rejected by the solvers (§3.1). The train and            100 random questions, allowing access to the
+455: test sets of question writers are disjoint. The ‘‘top         Web. We then ask them to state for every question
+456: trigram’’ is the most common trigram.                         whether they agree or disagree with the provided
+
+736:    7
+737:     For brevity, exact details on model training and               of retrieving the relevant context, and deriving
+738: hyper-parameters will be released as part of our codebase.         the answer based on that context. Training
+

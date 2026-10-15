@@ -1,0 +1,43 @@
+{
+  "url": "https://allenai.org/data/strategyqa",
+  "command": "python3 tests/fixtures/hg_stratsplit/capture.py official-page https://allenai.org/data/strategyqa",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-stratsplit-source-audit/1.0",
+    "Accept-Encoding": "identity"
+  },
+  "redirects": [],
+  "limit_bytes": 15000000,
+  "status": 403,
+  "final_url": "https://allenai.org/data/strategyqa",
+  "headers": [
+    [
+      "content-type",
+      "text/html; charset=UTF-8"
+    ],
+    [
+      "Content-Length",
+      "134"
+    ],
+    [
+      "via",
+      "1.1 google"
+    ],
+    [
+      "date",
+      "Thu, 15 Oct 2026 11:31:38 GMT"
+    ],
+    [
+      "Alt-Svc",
+      "h3=\":443\"; ma=2592000"
+    ],
+    [
+      "Connection",
+      "close"
+    ]
+  ],
+  "complete": true,
+  "bytes": 134,
+  "sha256": "c996c0469ef05ff6fdd1f7cefbc3f7e109bb21969de42fcf591498a828a7ad5f",
+  "raw_fixture": "tests/fixtures/hg_stratsplit/official-page.body",
+  "persistent_body": "/mnt/20t/xubuqiang/hg-work/stratsplit/official-page.body"
+}
