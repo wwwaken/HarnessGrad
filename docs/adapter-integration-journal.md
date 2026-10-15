@@ -5524,3 +5524,53 @@ print-trust.
 
 Both audits are the same shape as the rest of this phase: **the check is cheap, and a recorded negative is
 worth as much as a finding**, because it is what stops the next session re-opening it.
+
+## 2026-10-16 (goal round 8) — The RESCORE precondition is satisfied, and the metric fixes turn out to be latent
+
+**This round closed my own plan's oldest open item.** `eval-fidelity-plan.md:198-199` said the RESCORE/RERUN
+split was *"a plan, not a fact"* until someone probed whether each dataset's traces carry a re-parseable
+submission. They do: every census verdict records the submission and the gold in `evidence`, plus the
+`scorer_module` that graded it and the scorer's own `official` extraction results. So the scorer can be
+replayed with **no model, no GPU, no dataset run** - exactly what the objective's reference note invites
+("多数评分器修复可以『重算』而非重跑").
+
+**The load-bearing step was validating the harness, not running it.** The archived scores were produced by
+the *pre-fix* scorer, so a faithful harness must reproduce them in a pre-fix tree. It does, exactly - and
+the post-fix tree reproduces them **identically**:
+
+| tree | gsm8k | physicsquestions | 2Wiki | fever |
+| --- | --- | --- | --- | --- |
+| pre-fix | 1319/1319 | 16/16 + 37/37 | 11/12 | 12/12 |
+| post-fix (HEAD) | 1319/1319 | 16/16 + 37/37 | 11/12 | 12/12 |
+
+The one 2Wiki line is the receipt rounding `0.142857` vs `0.142857142857`, and it appears in both trees. So
+the metric-identity fixes change **not one of 1,396 archived verdicts**: they are **latent**, and each is
+latent for a measured reason - **0 of 3,957** `gsm8k` trial-predictions contain a `####` marker, **0 of 53**
+`physicsquestions` predictions end in `.`, **0 of 12** `2Wiki` verdicts used a structured
+`prediction.json`, and only **1 of 12** `fever` golds has more than one evidence group. The repaired paths
+were never exercised by the runs we still hold. A future submission that *does* exercise one will score
+differently, correctly.
+
+**This upgrades the disclosure rather than weakening it.** The qualification says earlier figures "must not
+be reused as the new metric name". That obligation stands, but it is now demonstrably a **labelling**
+obligation and not an observed numeric change - which is a stronger claim than the diff alone could
+support. Landed in the three places the qualifications are read (`w-evidence-qualification.md` preamble,
+the closure-assessment table, `fidelity-acceptance.md`) so nobody has to find the measurement file to know
+it. Scope kept honest throughout: **`gsm8k` is a full eval run** (1,319 x 3 trials), the other four are
+**probes**, so their neutrality must not be extended to the full pools. Coverage gaps are recorded with
+reasons, including two that are structural rather than inconvenient: **`bfcl_v3`'s gold is redacted by
+design** (`data/scaffolds/qa/verify/check.py:144`), so it can never be rescored from a verdict, and
+`alfworld`/`agentdojo`/`scienceworld` are **RERUN** because the instrument changed, not only the scorer.
+
+**Two errors of mine, both of which pointed at the fixes rather than at the harness.** My first run reported
+**0 of 1,319 agreement** - because the archived reward is the verdict's `score` and there is no top-level
+`reward` key, so it compared nothing. My second reported **37 GSM8K changes** - because a verdict is a
+**mean over trials** and I rescored one sample per task. Both looked like findings and were artefacts. The
+trap is the same one this phase keeps documenting: **a proxy read as a result.** The 37 in particular would
+have been a spectacular false confirmation of the very thing I was testing for.
+
+**The harness is committed as `registry/rescore-census-verdicts.py`,** because the reproduce recipe in the
+measurement otherwise pointed outside the repository - the durability failure this phase already hit when
+47 restored provenance bodies turned out to be gitignored. Commits: `fe5d4186` (the measurement),
+`70dfb681` (landing it where the qualifications are read), `e4573f56` (the harness). Checker valid on all
+three; the committed copy reproduces the HEAD result (1,396 verdicts, 1,395 exact).
