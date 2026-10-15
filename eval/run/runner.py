@@ -30,7 +30,8 @@ from eval.run.integrity import PLATFORM_ROOT, diff, snapshot
 from eval.containers.container_state import _run_one_container_state
 from eval.run.task_contract import runtime_task
 from eval.policy.runtime_policy import admit_native_network, phase_timeout, stage_agent_runtime
-from eval.observe.tracing import _last_identity, _last_usage, _materialize, _write_progress
+from eval.observe.tracing import (_last_identity, _last_usage, _materialize,
+                                  _write_progress, process_outcome)
 from eval.containers.immutable_runtime import ImmutableRuntimeUnavailable, projections, targets
 from eval.verification.verifier import _verify, test_rate_of
 from eval.verification.isolation import common_class, observed_class, declared_class
@@ -702,6 +703,41 @@ def _provider_failure(result: dict) -> dict | None:
     return None
 
 
+def _stopped_by_signals(measured: list[dict]) -> dict | None:
+    """Was this task killed by something **outside** the measurement?
+
+    `process_outcome` separates four endings. Three of them are scores under
+    `INTERFACE.md` §2.2 -- the harness ran, the harness crashed on its own, and the
+    harness blew through the `agent_timeout_s` budget it was given (a *declared* bound,
+    so exceeding it is failing to finish in budget). The fourth is not a score: a
+    negative return code that is not the platform's own timeout marker means something
+    else killed the process, so no trial got the chance to leave an artifact and nothing
+    graded one.
+
+    That is the case `_cancel` already names -- "a cancelled task is not a task that
+    scored nothing ... rather than given a zero the platform never measured" (§2.5.7).
+    Nothing checked the sign of the return code until now, so all four endings fell
+    through to the verifier and were written as ordinary zeros. Measured on our own
+    AgentDojo passes: the tasks an operator watchdog killed (156,157,159,160 and
+    294,295,296,297,301,302,303,307, eval 257,259) are recorded as clean `0.0` and are
+    the only zeros in that collection that are actually wrong.
+
+    A passing verdict is never overruled, for the same reason the provider rule declines
+    to: it is positive evidence that the artifact was correct.
+    """
+    if any((res.get("verdict") or {}).get("passed") for res in measured or []):
+        return None
+    for res in reversed(measured or []):
+        if process_outcome(res.get("exit_code"), res.get("stderr")) != "stopped_by_signal":
+            continue
+        code = res.get("exit_code")
+        return {"stage": "harness", "outcome": "stopped_by_signal",
+                "detail": (f"the task was terminated by signal {-code} (exit code {code}) "
+                           f"from outside the measurement, so no artifact was ever "
+                           f"graded; this is not a score")}
+    return None
+
+
 def _invalid(task: dict, exc, *, stage: str, service: str | None) -> dict:
     """A task the platform could not measure, as opposed to one it measured as zero.
 
@@ -1197,6 +1233,14 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
                     "score", 1.0 if (result.get("verdict") or {}).get("passed") else 0.0))
 
             measured.append(result)
+
+        # A task the platform's own terms did not stop, and never graded, is not a zero.
+        # Checked after the trial loop so a passing trial keeps its pass, and only when
+        # nothing above already decided this task was unmeasured.
+        if unmeasured is None:
+            stopped = _stopped_by_signals(measured)
+            if stopped is not None:
+                unmeasured = stopped
 
         if unmeasured is not None:
             # Not cached, and deliberately: the cache key names the harness, and the reason

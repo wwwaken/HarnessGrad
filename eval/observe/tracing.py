@@ -351,6 +351,52 @@ def _materialize(workdir: Path, entries, platform_root: Path,
             continue
         written.append(rel)
     return written
+def process_outcome(exit_code, stderr) -> str | None:
+    """How the harness's process ended, kept apart from what the task scored.
+
+    `INTERFACE.md` §2.2 is explicit that the two are independent: "the harness's exit
+    code says whether the *harness* finished; the verifier says whether the *task* was
+    completed. A harness that crashed but left working artifacts still scores." So
+    this is an **annotation**, not a scoring rule -- a harness that crashes on its own
+    is a legitimate zero, and marking it unmeasured would discard a real measurement.
+
+    What it fixes is that the runner read `proc.returncode` (`eval/run/runner.py:536`)
+    and then dropped it: the per-task record had no `exit_code` at all, so a task where
+    the harness crashed and a task where it ran to completion and failed produced
+    byte-identical records. Measured on AgentDojo train: 134 of 601 tasks died in the
+    harness and nothing in the records said so; it took reading traces and
+    `events.jsonl` to find out.
+
+    The four values are distinguishable from data the runner already has:
+
+    ``completed``          exit 0 -- the harness ran to its end.
+    ``harness_crash``      exit > 0 -- the harness died on its own. A score (§2.2).
+    ``platform_timeout``   the platform's own `agent_timeout_s` expired. `runner.py`
+                           catches `TimeoutExpired` and records it as `-1` with a
+                           ``timeout after Ns`` stderr marker, deliberately distinct
+                           from a signal. `agent_timeout_s` is a *declared* bound, so
+                           exceeding it is the harness failing to finish in budget --
+                           also a score, by the same reading as §2.2.
+    ``stopped_by_signal``  a negative return code that is not the timeout marker:
+                           something outside the measurement killed it -- an operator
+                           watchdog, the OOM killer. The platform never graded it as a
+                           budget failure, which is what `_cancel` means by "a cancelled
+                           task is not a task that scored nothing".
+
+    The signal case is the only one of the four that must not be scored, and
+    `runner.py` routes it to `unmeasured`. The other three stay scores.
+    """
+    if exit_code is None:
+        return None
+    if exit_code == 0:
+        return "completed"
+    if exit_code > 0:
+        return "harness_crash"
+    if "timeout after " in str(stderr or ""):
+        return "platform_timeout"
+    return "stopped_by_signal"
+
+
 def _write_progress(progress_dir, round_no: int, tid: str,
                     measured: list[dict], unmeasured: dict | None,
                     *, diagnostic: dict | None = None,
@@ -385,7 +431,9 @@ def _write_progress(progress_dir, round_no: int, tid: str,
         dest = Path(progress_dir) / "progress" / f"round-{round_no}"
         dest.mkdir(parents=True, exist_ok=True)
         if unmeasured is not None:
-            record = {"task_id": tid, "round": round_no, "invalid": unmeasured}
+            record = {"task_id": tid, "round": round_no, "invalid": unmeasured,
+                      "exit_code": None,
+                      "process_outcome": unmeasured.get("outcome")}
             if enforcement is not None:
                 record["enforcement"] = enforcement
             if diagnostic is not None:
@@ -411,6 +459,11 @@ def _write_progress(progress_dir, round_no: int, tid: str,
             "score", 1.0 if (r.get("verdict") or {}).get("passed") else 0.0))
             for r in measured]
         last = (measured[-1].get("verdict") or {}) if measured else {}
+        # The process's own ending, kept *beside* the score rather than folded into it:
+        # §2.2 makes the harness's exit code and the task's score independent, and this
+        # is what lets a reader tell a crash-driven zero from a completion-driven one.
+        last_exit = measured[-1].get("exit_code") if measured else None
+        last_stderr = measured[-1].get("stderr") if measured else None
         wall = None
         for line in str((measured[-1] if measured else {}).get("trace") or "").splitlines():
             if '"wall_clock_s"' in line:
@@ -429,6 +482,8 @@ def _write_progress(progress_dir, round_no: int, tid: str,
             "detail": last.get("detail"),
             "tests": last.get("tests"),
             "wall_clock_s": wall,
+            "exit_code": last_exit,
+            "process_outcome": process_outcome(last_exit, last_stderr),
             "complete": True,
             **({"enforcement": enforcement} if enforcement is not None else {}),
         }, indent=1, ensure_ascii=False), encoding="utf-8")
