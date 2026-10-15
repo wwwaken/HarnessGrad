@@ -1,0 +1,4379 @@
+{
+  "baseline": "bf917b3b237e352ac46373fdba501d35004c7911",
+  "checker": {
+    "command": "python3 tools/check_dataset_blockers.py",
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "{\"valid\": true, \"datasets\": 28, \"shared_blockers\": 2, \"historical_records\": 11, \"production_authorized\": false}\n"
+  },
+  "command": "python3 /tmp/hg-tbi2-baseline-audit.py",
+  "generator_source": "from __future__ import annotations\nimport ast, hashlib, importlib, importlib.util, json, subprocess, sys\nfrom pathlib import Path\nROOT = Path('/tmp/hg-tbi2-audit')\nsys.path.insert(0, str(ROOT))\n\ndef ident(p):\n    p = Path(p)\n    h = hashlib.sha256(); n = 0\n    with p.open('rb') as f:\n        for b in iter(lambda: f.read(1024*1024), b''):\n            n += len(b); h.update(b)\n    return {'path':str(p), 'bytes':n, 'sha256':h.hexdigest()}\n\ndef raw_ident(path, raw):\n    return {'path':path, 'bytes':len(raw), 'sha256':hashlib.sha256(raw).hexdigest()}\n\ndef inline(path, text): return raw_ident(path,text.encode('utf-8'))\n\ndef excerpts(rel, spans):\n    p=Path(rel) if str(rel).startswith('/') else ROOT / rel\n    lines=p.read_text().splitlines()\n    return {'source':ident(p),'excerpts':[{'line':n,'text':lines[n-1]} for a,b in spans for n in range(a,min(b,len(lines))+1)]}\n\nspans={\n 'data/scaffolds/qa/base.py':[(338,361)],\n 'data/scaffolds/qa/verify/check.py':[(164,186)],\n 'eval/verification/verifier.py':[(489,529),(560,572)],\n 'data/datasets/alfworld.py':[(220,267),(342,363)],\n 'data/datasets/alfworld/verify/check.py':[(131,164)],\n 'data/datasets/alfworld/lib/gym_env.py':[(63,85),(109,133)],\n 'data/datasets/bird_minidev.py':[(111,126),(251,266)],\n 'data/datasets/bird_minidev/verify/check.py':[(90,131)],\n 'data/datasets/ds1000.py':[(163,205)],\n 'data/datasets/ds1000/verify/check.py':[(20,38),(49,78)],\n 'data/datasets/jericho.py':[(122,156),(250,276)],\n 'data/datasets/jericho/verify/check.py':[(84,124)],\n 'data/datasets/jericho/lib/jer_env.py':[(30,59)],\n 'data/datasets/livecodebench.py':[(175,207),(260,282)],\n 'data/datasets/livecodebench/verify/check.py':[(74,95),(138,160),(172,184)],\n 'data/datasets/scienceworld.py':[(197,207),(306,328)],\n 'data/datasets/scienceworld/verify/check.py':[(125,164)],\n 'data/datasets/scienceworld/lib/scw_env.py':[(115,144)],\n 'data/datasets/spreadsheetbench.py':[(113,138),(231,253)],\n 'data/datasets/spreadsheetbench/verify/check.py':[(305,327),(366,376)],\n 'data/datasets/chessbench_puzzles.py':[(200,215),(370,382),(423,438)],\n}\nout={'command':'python3 /tmp/hg-tbi2-baseline-audit.py','scope':'Read-only baseline source/input audit; no scorer, engine, endpoint, model, GPU, subprocess candidate or network call. Digests recomputed from local bytes; no raw gold published.', 'baseline':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(), 'generator_source':Path(__file__).read_text(), 'sources':[excerpts(p,s) for p,s in spans.items()]}\n# Read the continuation report and all raw source audit artifacts first and retain identities and machine-derived record counts.\nout['prior_evidence']=[]\nfor p in [ROOT/'reports/w-tbi-receipts.md',*sorted((ROOT/'reports/w-tbi-evidence').glob('*'))]:\n    if not p.is_file():continue\n    raw=p.read_bytes(); r=ident(p)\n    if p.suffix=='.jsonl':r['jsonl_records']=len([json.loads(line) for line in raw.decode().splitlines() if line.strip()])\n    elif p.suffix=='.json':r['json_top_level_type']=type(json.loads(raw)).__name__\n    out['prior_evidence'].append(r)\n\nnames=['alfworld','bird_minidev','ds1000','jericho','livecodebench','scienceworld','spreadsheetbench']\nmodules={n:importlib.import_module('data.datasets.'+n) for n in names}\npairs={}\na=modules['alfworld']; rows=a._collect()\ndef alf(r): return [inline(a.GAME_IN_WORKDIR,r['stripped_game'])]\npairs['alfworld']={'selected':{'task_id':rows[0]['task_id'],'inputs':alf(rows[0]),'original_source':ident(rows[0]['game_path'])},'foreign':{'task_id':rows[1]['task_id'],'inputs':alf(rows[1]),'original_source':ident(rows[1]['game_path'])}}\nb=modules['bird_minidev']; rows=b._ensure(); first=rows[0]; foreign=next(r for r in rows[1:] if r['gold_sql']!=first['gold_sql']); foreigndb=next(r for r in rows[1:] if r['db_id']!=first['db_id'])\ndef bird(r):\n    return [inline('gold.sql',r['gold_sql']), {**ident(b.DBS/r['db_id']/f\"{r['db_id']}.sqlite\"),'staged_path':'database.sqlite','db_id':r['db_id']}]\npairs['bird_minidev']={'selected':{'task_id':first['task_id'],'inputs':bird(first)},'foreign':{'task_id':foreign['task_id'],'inputs':bird(foreign)},'foreign_database':{'task_id':foreigndb['task_id'],'inputs':bird(foreigndb)}}\nd=modules['ds1000']; indices=d.included_indices(); first=indices[0]; foreign=next(i for i in indices[1:] if d._raw()[i]['code_context']!=d._raw()[first]['code_context'])\ndef ds(i):return [inline('context.json',json.dumps({'code_context':d._raw()[i]['code_context']},ensure_ascii=False))]\npairs['ds1000']={'selected':{'task_id':d.task_id(first),'inputs':ds(first)},'foreign':{'task_id':d.task_id(foreign),'inputs':ds(foreign)}}\nj=modules['jericho']; jspec=importlib.util.find_spec('jericho'); info=Path(jspec.origin).parent/'game_info.py'; parsed=ast.parse(info.read_text()); rows=[]\nfor node in parsed.body:\n    if not isinstance(node,ast.Assign):continue\n    try:entry=ast.literal_eval(node.value)\n    except (ValueError,TypeError):continue\n    if not isinstance(entry,dict) or 'rom' not in entry:continue\n    key=node.targets[0].id; path=j.games_dir()/entry['rom']\n    if path.is_file():rows.append({'task_id':Path(entry['rom']).stem,'rom':entry['rom'],'seed':int(entry.get('seed') or 0),'path':path,'key':key,'source_line':node.lineno})\nrows.sort(key=lambda r:r['key'])\ndef jer(r):return [inline(j.GAME_FILE,json.dumps({'task_id':r['task_id'],'rom':r['rom'],'seed':r['seed']})),{**ident(r['path']),'staged_path':r['rom']}]\npairs['jericho']={'records_method':'AST literal_eval on installed game_info assignments, same sorted-key/ROM existence filter as adapter; no package or engine imported','table':ident(info),'selected':{'task_id':rows[0]['task_id'],'seed':rows[0]['seed'],'source_line':rows[0]['source_line'],'inputs':jer(rows[0])},'foreign':{'task_id':rows[1]['task_id'],'seed':rows[1]['seed'],'source_line':rows[1]['source_line'],'inputs':jer(rows[1])},'offered_roms':len(rows)}\nl=modules['livecodebench']; rows=l._INDEXED\npairs['livecodebench']={'selected':{'task_id':l.task_id(rows[0]['index']),'question_id':rows[0]['question_id'],'inputs':[ident(l._tests_path(rows[0]))]},'foreign':{'task_id':l.task_id(rows[1]['index']),'question_id':rows[1]['question_id'],'inputs':[ident(l._tests_path(rows[1]))]}}\ns=modules['scienceworld']; rows=s.test_fold(); sspec=importlib.util.find_spec('scienceworld'); pkg=Path(sspec.origin).parent\nfor fn,sp in [('scienceworld.py',[(25,49),(95,114)]),('constants.py',[(1,10),(30,38)])]:out['sources'].append(excerpts(pkg/fn,sp))\ndef scw(r):return [inline(s.TASK_IN_WORKDIR,json.dumps({'task_name':r['task_name'],'variation':r['variation'],'simplifications':''}))]\npairs['scienceworld']={'selected':{'task_id':rows[0]['task_id'],'inputs':scw(rows[0])},'foreign':{'task_id':rows[1]['task_id'],'inputs':scw(rows[1])},'installed_payloads':[ident(pkg/f) for f in ('scienceworld.jar','tasks.json','object_type_ids.tsv')]}\nw=modules['spreadsheetbench']; rows=w._tasks()\ndef sheet(r):return [inline('task.json',json.dumps({'task_id':r['task_id'],'answer_position':r['answer_position'],'instruction_type':r['instruction_type']})),{**ident(r['golden_path']),'staged_path':'golden.xlsx'}]\npairs['spreadsheetbench']={'selected':{'task_id':rows[0]['task_id'],'inputs':sheet(rows[0])},'foreign':{'task_id':rows[1]['task_id'],'inputs':sheet(rows[1])}}\nout['native_routes']=names; out['real_task_pairs']=pairs\nout['observations']={\n 'baseline_bound_fraction':'12/19 shared-QA actor-workdir routes; seven native routes unbound. chessbench_puzzles is among existing 12; livecodebench is among seven remaining.',\n 'alfworld':'Trusted inline stripped game is passed as --game; replay/build passes its path to TextWorld register_games. Hash/check the bytes that engine later opens, not original unstripped source bytes.',\n 'bird_minidev':'Both gold.sql and database.sqlite matter. Query text is read into a string; sqlite3.connect reopens DB path. Gold and DB need identities and selected task receipt. First foreign SQL may share DB; select independent foreign-DB control too.',\n 'ds1000':'Actor context.json carries test code and is read without VERIFY rematerialization; upstream execution.py pin does not bind it. Add selected context to trusted VERIFY inputs and hash/parse same context buffer.',\n 'jericho':'--rom is evidence-only, and --game path used for existence/evidence is not library consumed path: load_game always reads workdir/jer_game.json, then resolves spec[rom] plus seed. Pin exact consumed config and ROM; avoid reopening unpinned config behind receipt.',\n 'livecodebench':'Selected tests file is copied, read into tests_text then sent unchanged to _child/run_test; metadata test hash does not enforce this consumer. Pin/recompute actual tests_text buffer.',\n 'scienceworld':'load_task silently reads fixed workdir/scw_task.json rather than args.task; task JSON alone does not cover native world payload. make_env uses ScienceWorldEnv with None serverPath; installed package sets serverPath to JAR_PATH; world JAR and package task lookup bytes have local sources distinct from JRE runtime custody. Bind exact loaded config and world payload separately from full runtime claim.',\n 'spreadsheetbench':'Trusted metadata config is read as dict, task_id only echoed. golden workbook reopened in compare_workbooks; hash it and ensure the comparator consumes the pinned bytes, plus selected task metadata.',\n 'alternate_scope':'Chess StepwisePuzzle in-process API lies outside shared-QA/native command-route denominator, as historical report already states. Low-level direct checks without binding args and callers bypassing native _verify do not gain trusted selected-task association.',\n 'closure':'No blocker closure claimed; S1 complete execution-selected runtime custody remains necessary; S3/S4/S5/S6 partial scope must remain.'}\np=ROOT/'reports/w-tbi2-evidence/baseline-audit.json';p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(out,indent=2,sort_keys=True)+'\\n')\nprint(json.dumps({'audit':ident(p),'baseline':out['baseline'],'native_routes':names,'pairs':pairs},indent=2,sort_keys=True))\n",
+  "native_routes": [
+    "alfworld",
+    "bird_minidev",
+    "ds1000",
+    "jericho",
+    "livecodebench",
+    "scienceworld",
+    "spreadsheetbench"
+  ],
+  "observations": {
+    "alfworld": "Trusted inline stripped game is passed as --game; replay/build passes its path to TextWorld register_games. Hash/check the bytes that engine later opens, not original unstripped source bytes.",
+    "alternate_scope": "Chess StepwisePuzzle in-process API lies outside shared-QA/native command-route denominator, as historical report already states. Low-level direct checks without binding args and callers bypassing native _verify do not gain trusted selected-task association.",
+    "baseline_bound_fraction": "12/19 shared-QA actor-workdir routes; seven native routes unbound. chessbench_puzzles is among existing 12; livecodebench is among seven remaining.",
+    "bird_minidev": "Both gold.sql and database.sqlite matter. Query text is read into a string; sqlite3.connect reopens DB path. Gold and DB need identities and selected task receipt. First foreign SQL may share DB; select independent foreign-DB control too.",
+    "closure": "No blocker closure claimed; S1 complete execution-selected runtime custody remains necessary; S3/S4/S5/S6 partial scope must remain.",
+    "ds1000": "Actor context.json carries test code and is read without VERIFY rematerialization; upstream execution.py pin does not bind it. Add selected context to trusted VERIFY inputs and hash/parse same context buffer.",
+    "jericho": "--rom is evidence-only, and --game path used for existence/evidence is not library consumed path: load_game always reads workdir/jer_game.json, then resolves spec[rom] plus seed. Pin exact consumed config and ROM; avoid reopening unpinned config behind receipt.",
+    "livecodebench": "Selected tests file is copied, read into tests_text then sent unchanged to _child/run_test; metadata test hash does not enforce this consumer. Pin/recompute actual tests_text buffer.",
+    "scienceworld": "load_task silently reads fixed workdir/scw_task.json rather than args.task; task JSON alone does not cover native world payload. make_env uses ScienceWorldEnv with None serverPath; installed package sets serverPath to JAR_PATH; world JAR and package task lookup bytes have local sources distinct from JRE runtime custody. Bind exact loaded config and world payload separately from full runtime claim.",
+    "spreadsheetbench": "Trusted metadata config is read as dict, task_id only echoed. golden workbook reopened in compare_workbooks; hash it and ensure the comparator consumes the pinned bytes, plus selected task metadata."
+  },
+  "prior_evidence": [
+    {
+      "bytes": 14306,
+      "path": "/tmp/hg-tbi2-audit/reports/w-tbi-receipts.md",
+      "sha256": "6ede52e96568be62508b4b0f2415249d41dacbd9c3bb1f1713938a02bd147bd8"
+    },
+    {
+      "bytes": 4078,
+      "path": "/tmp/hg-tbi2-audit/reports/w-tbi-evidence/audit.py",
+      "sha256": "97c324c61440837474ae6f08cf28c5cfe6393cc44aaf6e0af9134526fa77ee0a"
+    },
+    {
+      "bytes": 16447,
+      "jsonl_records": 19,
+      "path": "/tmp/hg-tbi2-audit/reports/w-tbi-evidence/closure-record-read.jsonl",
+      "sha256": "f401434d11a6b157265c118f91e15a15982114e0e71cfa4e570d9982c7af3939"
+    },
+    {
+      "bytes": 58597,
+      "jsonl_records": 45,
+      "path": "/tmp/hg-tbi2-audit/reports/w-tbi-evidence/input-source-audit-initial.jsonl",
+      "sha256": "8ec155e206306b3f1b231e58700e20e85f88dc742ead0eef0499563d7913b438"
+    },
+    {
+      "bytes": 59341,
+      "jsonl_records": 46,
+      "path": "/tmp/hg-tbi2-audit/reports/w-tbi-evidence/input-source-audit.jsonl",
+      "sha256": "f9ede0479db2d7e37deeae279196fb5a4292316404f8e7e4d41172e8d3cdae97"
+    },
+    {
+      "bytes": 459,
+      "json_top_level_type": "dict",
+      "path": "/tmp/hg-tbi2-audit/reports/w-tbi-evidence/review-audit.json",
+      "sha256": "3ab4c2df29a60249ef4749ac5a9de71711e7fbedbb86bab195dc987a6b47c156"
+    },
+    {
+      "bytes": 9488,
+      "path": "/tmp/hg-tbi2-audit/reports/w-tbi-evidence/tests-after-initial.txt",
+      "sha256": "75dd1fea8e2588faea1bfa9262cae34cc71b9878b18fc0b1df1d683189038b72"
+    },
+    {
+      "bytes": 24897,
+      "path": "/tmp/hg-tbi2-audit/reports/w-tbi-evidence/tests-after.txt",
+      "sha256": "351beba4a1d6f17f0a29015b051cce6c1846b351e0d3fa81c1460bb05ed44dac"
+    },
+    {
+      "bytes": 78551,
+      "path": "/tmp/hg-tbi2-audit/reports/w-tbi-evidence/tests-before-initial.txt",
+      "sha256": "cdb9ee12a2e2b45f99a13d65b8863e8d63df0d41a9a8a747614e61e3c7400a45"
+    },
+    {
+      "bytes": 113624,
+      "path": "/tmp/hg-tbi2-audit/reports/w-tbi-evidence/tests-before.txt",
+      "sha256": "ca74a7d90f3a44600122dd1bc903eb615147dc5abaa5a47029a35f879ae9ba15"
+    },
+    {
+      "bytes": 99,
+      "path": "/tmp/hg-tbi2-audit/reports/w-tbi-evidence/tests-registry-final.txt",
+      "sha256": "d2d497bae700b10f0adad096ba350a70c976eb99a495e10511dc1c9810bb9db5"
+    },
+    {
+      "bytes": 191,
+      "path": "/tmp/hg-tbi2-audit/reports/w-tbi-evidence/tests-regression.txt",
+      "sha256": "7ebc93a2cc95c3cec0868eb369406bb169f7976b4fdd5549aa94296d65180567"
+    }
+  ],
+  "real_task_pairs": {
+    "alfworld": {
+      "foreign": {
+        "inputs": [
+          {
+            "bytes": 69841,
+            "path": "game.tw-pddl",
+            "sha256": "c4699c0e4a1a3f081d89b1fc40cc105a02ba689ecb96f9a06f453d987e8d4d25"
+          }
+        ],
+        "original_source": {
+          "bytes": 69941,
+          "path": "/mnt/20t/xubuqiang/datasets/alfworld/json_2.1.1/valid_unseen/look_at_obj_in_light-AlarmClock-None-DeskLamp-308/trial_T20190908_222933_607649/game.tw-pddl",
+          "sha256": "b7d347141ccbf56c2a8e6746fde25a5364caf5c285834939466ea811bb166bff"
+        },
+        "task_id": "look_at_obj_in_light-AlarmClock-None-DeskLamp-308__trial_T20190908_222933_607649"
+      },
+      "selected": {
+        "inputs": [
+          {
+            "bytes": 68089,
+            "path": "game.tw-pddl",
+            "sha256": "436323b6475ecf5284f9b9593797798316f96aeda1a21c5a291073c244ff594b"
+          }
+        ],
+        "original_source": {
+          "bytes": 68189,
+          "path": "/mnt/20t/xubuqiang/datasets/alfworld/json_2.1.1/valid_unseen/look_at_obj_in_light-AlarmClock-None-DeskLamp-308/trial_T20190908_222917_366542/game.tw-pddl",
+          "sha256": "debf644284b20d488820b0b59c44d24c42d208cd99b2b25c01105e6bf6668859"
+        },
+        "task_id": "look_at_obj_in_light-AlarmClock-None-DeskLamp-308__trial_T20190908_222917_366542"
+      }
+    },
+    "bird_minidev": {
+      "foreign": {
+        "inputs": [
+          {
+            "bytes": 225,
+            "path": "gold.sql",
+            "sha256": "800a5f5ada5d137d263ac75d44d16c7e24838d2a9778b938ae9d62ae24e2dc12"
+          },
+          {
+            "bytes": 34635776,
+            "db_id": "debit_card_specializing",
+            "path": "/mnt/20t/xubuqiang/datasets/bird_minidev/_src/unpacked/minidev/MINIDEV/dev_databases/debit_card_specializing/debit_card_specializing.sqlite",
+            "sha256": "b3d149ad05746dbbe5116e229e17e18f09c39db43cf117d9ef3441753608b691",
+            "staged_path": "database.sqlite"
+          }
+        ],
+        "task_id": "bird_minidev/1"
+      },
+      "foreign_database": {
+        "inputs": [
+          {
+            "bytes": 155,
+            "path": "gold.sql",
+            "sha256": "1b4bdc85d23e839f20a8088b14236d77da08e7bfa89680d968541102f090b74f"
+          },
+          {
+            "bytes": 2641920,
+            "db_id": "student_club",
+            "path": "/mnt/20t/xubuqiang/datasets/bird_minidev/_src/unpacked/minidev/MINIDEV/dev_databases/student_club/student_club.sqlite",
+            "sha256": "eb89bcfe97eefa386a27904ec5aa15159811a7eac894ec659a36e48fa9f76b77",
+            "staged_path": "database.sqlite"
+          }
+        ],
+        "task_id": "bird_minidev/30"
+      },
+      "selected": {
+        "inputs": [
+          {
+            "bytes": 113,
+            "path": "gold.sql",
+            "sha256": "c96b18b24eec0210b437176421432354f1cbd3ab913e4d23403f51273e67f6f6"
+          },
+          {
+            "bytes": 34635776,
+            "db_id": "debit_card_specializing",
+            "path": "/mnt/20t/xubuqiang/datasets/bird_minidev/_src/unpacked/minidev/MINIDEV/dev_databases/debit_card_specializing/debit_card_specializing.sqlite",
+            "sha256": "b3d149ad05746dbbe5116e229e17e18f09c39db43cf117d9ef3441753608b691",
+            "staged_path": "database.sqlite"
+          }
+        ],
+        "task_id": "bird_minidev/0"
+      }
+    },
+    "ds1000": {
+      "foreign": {
+        "inputs": [
+          {
+            "bytes": 1464,
+            "path": "context.json",
+            "sha256": "c65955a5cbc5593fdb2348f3929afc8c2b67e3639a189cc3a9222c7baf0cba6c"
+          }
+        ],
+        "task_id": "ds1000/1"
+      },
+      "selected": {
+        "inputs": [
+          {
+            "bytes": 1429,
+            "path": "context.json",
+            "sha256": "1f351eeb9e323518912de43056f17cbc3e8bffbd95c94ddd9500eb117478b2d4"
+          }
+        ],
+        "task_id": "ds1000/0"
+      }
+    },
+    "jericho": {
+      "foreign": {
+        "inputs": [
+          {
+            "bytes": 52,
+            "path": "jer_game.json",
+            "sha256": "98b90f07a1817d359d014313f8d9658aa88dfd6939d3f23d8d9257955008c066"
+          },
+          {
+            "bytes": 138240,
+            "path": "/mnt/20t/xubuqiang/datasets/jericho/z-machine-games-master/jericho-game-suite/advent.z5",
+            "sha256": "6179b5d5b17d692ec83fe64101ff8e4092390166c2b05063e7310eb976b93ea0",
+            "staged_path": "advent.z5"
+          }
+        ],
+        "seed": 5,
+        "source_line": 47,
+        "task_id": "advent"
+      },
+      "offered_roms": 56,
+      "records_method": "AST literal_eval on installed game_info assignments, same sorted-key/ROM existence filter as adapter; no package or engine imported",
+      "selected": {
+        "inputs": [
+          {
+            "bytes": 60,
+            "path": "jer_game.json",
+            "sha256": "01f1d4d8a4c6cd5a58ac44a987d1bd28a137b8e9d1c68e48440503486dc73c8d"
+          },
+          {
+            "bytes": 55296,
+            "path": "/mnt/20t/xubuqiang/datasets/jericho/z-machine-games-master/jericho-game-suite/acorncourt.z5",
+            "sha256": "7b13c904bf7608fa0de902ce7ecd5fcd0e026f293fc67baa87b99a35a3190c9e",
+            "staged_path": "acorncourt.z5"
+          }
+        ],
+        "seed": 4,
+        "source_line": 26,
+        "task_id": "acorncourt"
+      },
+      "table": {
+        "bytes": 417373,
+        "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/jericho/game_info.py",
+        "sha256": "70abb19e75e9f390d2109d5d772285d07ad102a33b298b96b911ee87bf89dceb"
+      }
+    },
+    "livecodebench": {
+      "foreign": {
+        "inputs": [
+          {
+            "bytes": 856513,
+            "path": "/mnt/20t/xubuqiang/datasets/livecodebench/tests/1873_B.json",
+            "sha256": "3e78d369dec2f57ebdffb925542697b98d2c706c35d9cf8177cebc680f6ab495"
+          }
+        ],
+        "question_id": "1873_B",
+        "task_id": "livecodebench/1"
+      },
+      "selected": {
+        "inputs": [
+          {
+            "bytes": 304,
+            "path": "/mnt/20t/xubuqiang/datasets/livecodebench/tests/1873_A.json",
+            "sha256": "859b81f0bb39b9797a5f340a5ffa2983e7673044eeee690fb8670b58a99876a3"
+          }
+        ],
+        "question_id": "1873_A",
+        "task_id": "livecodebench/0"
+      }
+    },
+    "scienceworld": {
+      "foreign": {
+        "inputs": [
+          {
+            "bytes": 68,
+            "path": "scw_task.json",
+            "sha256": "7b5a6b1086e198e486f717b96038d6495662bca7bfd2317e976b068ff6774311"
+          }
+        ],
+        "task_id": "task-1-boil/22"
+      },
+      "installed_payloads": [
+        {
+          "bytes": 7784058,
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/scienceworld/scienceworld.jar",
+          "sha256": "f4e1fdce0cdabe1bab7128a7e78ea820210d9db3c28d7272bcbbc3f3a1c5f0d7"
+        },
+        {
+          "bytes": 4871,
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/scienceworld/tasks.json",
+          "sha256": "cd1a6ffd0a43c269d0167de4d53ce7c42687a7b42e8b0ae228f30b3321885a79"
+        },
+        {
+          "bytes": 10633,
+          "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/scienceworld/object_type_ids.tsv",
+          "sha256": "c8ad78fd41f79d9edd9669565990a58ec58f916f599de6c06765c2275a983e32"
+        }
+      ],
+      "selected": {
+        "inputs": [
+          {
+            "bytes": 68,
+            "path": "scw_task.json",
+            "sha256": "ff354a9e80b83e3cab29486a659d41a64448ab0f582db9a8e391fedb40f61b23"
+          }
+        ],
+        "task_id": "task-1-boil/21"
+      }
+    },
+    "spreadsheetbench": {
+      "foreign": {
+        "inputs": [
+          {
+            "bytes": 98,
+            "path": "task.json",
+            "sha256": "fec79b694b4bc3329a325963edd23883fd3d85d68003ad3b2f5b391876a5c744"
+          },
+          {
+            "bytes": 36840,
+            "path": "/mnt/20t/xubuqiang/datasets/spreadsheetbench/spreadsheetbench_verified_400/spreadsheet/17-35/1_17-35_golden.xlsx",
+            "sha256": "2e35c3957c9025cc60a3b4bd10984b709037eb674c1ab26e18805c99f9543ce4",
+            "staged_path": "golden.xlsx"
+          }
+        ],
+        "task_id": "17-35"
+      },
+      "selected": {
+        "inputs": [
+          {
+            "bytes": 96,
+            "path": "task.json",
+            "sha256": "a8a0039e0c42fca97d1574a21706a34c14ef9246543bb7fee1a4eaff061d3e1a"
+          },
+          {
+            "bytes": 14698,
+            "path": "/mnt/20t/xubuqiang/datasets/spreadsheetbench/spreadsheetbench_verified_400/spreadsheet/13-1/1_13-1_golden.xlsx",
+            "sha256": "a8eaf5ec1991c35ae785fb82efce2ecd24f6268410a8a89f78ca07843fcaf140",
+            "staged_path": "golden.xlsx"
+          }
+        ],
+        "task_id": "13-1"
+      }
+    }
+  },
+  "scope": "Read-only baseline source/input audit; no scorer, engine, endpoint, model, GPU, subprocess candidate or network call. Digests recomputed from local bytes; no raw gold published.",
+  "sources": [
+    {
+      "excerpts": [
+        {
+          "line": 338,
+          "text": "        \"\"\""
+        },
+        {
+          "line": 339,
+          "text": "        gold_content = json.dumps(record[\"gold\"], ensure_ascii=False, sort_keys=True)"
+        },
+        {
+          "line": 340,
+          "text": "        scorer_input = {\"task_id\": record[\"task_id\"], \"path\": GOLD_FILE,"
+        },
+        {
+          "line": 341,
+          "text": "                        \"sha256\": hashlib.sha256(gold_content.encode(\"utf-8\")).hexdigest()}"
+        },
+        {
+          "line": 342,
+          "text": "        return {"
+        },
+        {
+          "line": 343,
+          "text": "            \"kind\": self.VERIFIER_KIND,"
+        },
+        {
+          "line": 344,
+          "text": "            \"scorer_input\": scorer_input,"
+        },
+        {
+          "line": 345,
+          "text": "            \"argv\": ["
+        },
+        {
+          "line": 346,
+          "text": "                \"python3\", f\"{CHECK_DIR}/{CHECK_NAME}\","
+        },
+        {
+          "line": 347,
+          "text": "                \"--dataset\", self.name,"
+        },
+        {
+          "line": 348,
+          "text": "                \"--answer\", ANSWER_FILE,"
+        },
+        {
+          "line": 349,
+          "text": "                \"--prediction\", PREDICTION_FILE,"
+        },
+        {
+          "line": 350,
+          "text": "                \"--gold\", GOLD_FILE,"
+        },
+        {
+          "line": 351,
+          "text": "                \"--task-id\", record[\"task_id\"],"
+        },
+        {
+          "line": 352,
+          "text": "                \"--gold-sha256\", scorer_input[\"sha256\"],"
+        },
+        {
+          "line": 353,
+          "text": "                \"--reward-file\", REWARD_REL,"
+        },
+        {
+          "line": 354,
+          "text": "                \"--evidence-file\", EVIDENCE_REL,"
+        },
+        {
+          "line": 355,
+          "text": "            ],"
+        },
+        {
+          "line": 356,
+          "text": "            \"inputs\": ["
+        },
+        {
+          "line": 357,
+          "text": "                {\"path\": GOLD_FILE,"
+        },
+        {
+          "line": 358,
+          "text": "                 \"content\": gold_content},"
+        },
+        {
+          "line": 359,
+          "text": "                {\"path\": f\"{CHECK_DIR}/{CHECK_NAME}\","
+        },
+        {
+          "line": 360,
+          "text": "                 \"from\": str(VERIFY_DIR / CHECK_NAME)},"
+        },
+        {
+          "line": 361,
+          "text": "                # The scaffold, materialized under the same package names the platform"
+        }
+      ],
+      "source": {
+        "bytes": 27878,
+        "path": "/tmp/hg-tbi2-audit/data/scaffolds/qa/base.py",
+        "sha256": "3c2242e4ed82d76eb7732a6c077122f3d74fb4387860caa3b53a9d8a049a8d8a"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 164,
+          "text": "        return unmeasured(args, evidence,"
+        },
+        {
+          "line": 165,
+          "text": "                          f\"no gold file at {gold_path} -- the platform's \""
+        },
+        {
+          "line": 166,
+          "text": "                          f\"re-materialization did not happen\")"
+        },
+        {
+          "line": 167,
+          "text": ""
+        },
+        {
+          "line": 168,
+          "text": "    try:"
+        },
+        {
+          "line": 169,
+          "text": "        # Hash and parse one buffer: a later path substitution cannot change the"
+        },
+        {
+          "line": 170,
+          "text": "        # object supplied to the scorer while leaving a receipt for earlier bytes."
+        },
+        {
+          "line": 171,
+          "text": "        gold_bytes = gold_path.read_bytes()"
+        },
+        {
+          "line": 172,
+          "text": "        digest = hashlib.sha256(gold_bytes).hexdigest()"
+        },
+        {
+          "line": 173,
+          "text": "        bound = (bool(args.task_id) and bool(args.gold_sha256)"
+        },
+        {
+          "line": 174,
+          "text": "                 and re.fullmatch(r\"[0-9a-f]{64}\", args.gold_sha256) is not None"
+        },
+        {
+          "line": 175,
+          "text": "                 and digest == args.gold_sha256)"
+        },
+        {
+          "line": 176,
+          "text": "        evidence[\"scorer_input\"] = {"
+        },
+        {
+          "line": 177,
+          "text": "            \"task_id\": args.task_id, \"path\": str(gold_path), \"sha256\": digest,"
+        },
+        {
+          "line": 178,
+          "text": "            \"expected_sha256\": args.gold_sha256, \"verified\": bound,"
+        },
+        {
+          "line": 179,
+          "text": "        }"
+        },
+        {
+          "line": 180,
+          "text": "        if (args.task_id is not None or args.gold_sha256 is not None) and not bound:"
+        },
+        {
+          "line": 181,
+          "text": "            return unmeasured(args, evidence, \"scorer input task/digest binding mismatch\")"
+        },
+        {
+          "line": 182,
+          "text": "        # Legacy by-hand calls without either argument remain explicitly unbound."
+        },
+        {
+          "line": 183,
+          "text": "        # Native bound dispatch refuses such a receipt, even if it has a reward."
+        },
+        {
+          "line": 184,
+          "text": "        gold = json.loads(gold_bytes.decode(\"utf-8\"))"
+        },
+        {
+          "line": 185,
+          "text": "    except (OSError, ValueError) as exc:"
+        },
+        {
+          "line": 186,
+          "text": "        return unmeasured(args, evidence,"
+        }
+      ],
+      "source": {
+        "bytes": 14894,
+        "path": "/tmp/hg-tbi2-audit/data/scaffolds/qa/verify/check.py",
+        "sha256": "7625d8070cac767c5a878623f98469cb7f4bb0b528a86980d7334b5fdbbbbe7e"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 489,
+          "text": "                             \"unmeasured\": \"scorer declaration incompatible with runtime route\"},"
+        },
+        {
+          "line": 490,
+          "text": "                            spec, \"unknown\")"
+        },
+        {
+          "line": 491,
+          "text": "    binding = spec.get(\"scorer_input\")"
+        },
+        {
+          "line": 492,
+          "text": "    if binding is not None and (not isinstance(binding, dict) or not task_id"
+        },
+        {
+          "line": 493,
+          "text": "                                or binding.get(\"task_id\") != task_id):"
+        },
+        {
+          "line": 494,
+          "text": "        return record_class({\"kind\": spec.get(\"kind\"), \"passed\": False, \"score\": None,"
+        },
+        {
+          "line": 495,
+          "text": "                             \"unmeasured\": \"scorer input does not belong to selected task\"},"
+        },
+        {
+          "line": 496,
+          "text": "                            spec, actual)"
+        },
+        {
+          "line": 497,
+          "text": "    if spec.get(\"kind\") == \"command\" and spec.get(\"reward_file\") \\"
+        },
+        {
+          "line": 498,
+          "text": "            and env_spec.get(\"kind\") == \"exec\":"
+        },
+        {
+          "line": 499,
+          "text": "        with tempfile.TemporaryDirectory(prefix=\"hg-verdict-\","
+        },
+        {
+          "line": 500,
+          "text": "                                          dir=str(workdir.parent)) as verdict_dir:"
+        },
+        {
+          "line": 501,
+          "text": "            verdict = _verify_inner(workdir, verifier, answer, sandbox=sandbox,"
+        },
+        {
+          "line": 502,
+          "text": "                                 timeout_s=timeout_s, env=env,"
+        },
+        {
+          "line": 503,
+          "text": "                                 service_specs=service_specs, running=running,"
+        },
+        {
+          "line": 504,
+          "text": "                                 verdict_dir=Path(verdict_dir))"
+        },
+        {
+          "line": 505,
+          "text": "            return record_class(_enforce_scorer_input(verdict, binding), spec, actual)"
+        },
+        {
+          "line": 506,
+          "text": "    verdict = _verify_inner(workdir, verifier, answer, sandbox=sandbox,"
+        },
+        {
+          "line": 507,
+          "text": "                         timeout_s=timeout_s, env=env,"
+        },
+        {
+          "line": 508,
+          "text": "                         service_specs=service_specs, running=running)"
+        },
+        {
+          "line": 509,
+          "text": "    return record_class(_enforce_scorer_input(verdict, binding), spec, actual)"
+        },
+        {
+          "line": 510,
+          "text": ""
+        },
+        {
+          "line": 511,
+          "text": ""
+        },
+        {
+          "line": 512,
+          "text": "def _enforce_scorer_input(verdict: dict, binding: dict | None) -> dict:"
+        },
+        {
+          "line": 513,
+          "text": "    \"\"\"Consume a check's input receipt only against the independently selected spec."
+        },
+        {
+          "line": 514,
+          "text": ""
+        },
+        {
+          "line": 515,
+          "text": "    These are consistency checks under trusted spec/check custody, not authentication"
+        },
+        {
+          "line": 516,
+          "text": "    of arbitrary scorer JSON. Other verifier routes retain their existing contracts."
+        },
+        {
+          "line": 517,
+          "text": "    \"\"\""
+        },
+        {
+          "line": 518,
+          "text": "    if binding is None:"
+        },
+        {
+          "line": 519,
+          "text": "        return verdict"
+        },
+        {
+          "line": 520,
+          "text": "    evidence = verdict.get(\"evidence\")"
+        },
+        {
+          "line": 521,
+          "text": "    receipt = evidence.get(\"scorer_input\") if isinstance(evidence, dict) else None"
+        },
+        {
+          "line": 522,
+          "text": "    if (isinstance(receipt, dict) and receipt.get(\"verified\") is True"
+        },
+        {
+          "line": 523,
+          "text": "            and all(receipt.get(k) == binding.get(k) for k in (\"task_id\", \"path\", \"sha256\"))"
+        },
+        {
+          "line": 524,
+          "text": "            and receipt.get(\"expected_sha256\") == binding.get(\"sha256\")):"
+        },
+        {
+          "line": 525,
+          "text": "        return verdict"
+        },
+        {
+          "line": 526,
+          "text": "    return {**verdict, \"passed\": False, \"score\": None,"
+        },
+        {
+          "line": 527,
+          "text": "            \"unmeasured\": verdict.get(\"unmeasured\") or \"scorer input receipt mismatch or missing\"}"
+        },
+        {
+          "line": 528,
+          "text": ""
+        },
+        {
+          "line": 529,
+          "text": ""
+        },
+        {
+          "line": 560,
+          "text": ""
+        },
+        {
+          "line": 561,
+          "text": "    if kind != \"command\":"
+        },
+        {
+          "line": 562,
+          "text": "        raise ValueError(f\"unknown verifier kind {kind!r}\")"
+        },
+        {
+          "line": 563,
+          "text": ""
+        },
+        {
+          "line": 564,
+          "text": "    # Re-materialize the check's inputs, overwriting whatever the harness left there."
+        },
+        {
+          "line": 565,
+          "text": "    try:"
+        },
+        {
+          "line": 566,
+          "text": "        _materialize(workdir, spec.get(\"inputs\"), PLATFORM_ROOT)"
+        },
+        {
+          "line": 567,
+          "text": "    except (ValueError, OSError) as exc:"
+        },
+        {
+          "line": 568,
+          "text": "        return {\"kind\": \"command\", \"passed\": False,"
+        },
+        {
+          "line": 569,
+          "text": "                \"detail\": f\"could not stage the verifier's inputs: {exc}\"}"
+        },
+        {
+          "line": 570,
+          "text": ""
+        },
+        {
+          "line": 571,
+          "text": "    argv = [str(a) for a in spec[\"argv\"]]"
+        },
+        {
+          "line": 572,
+          "text": "    cwd = workdir / spec[\"cwd\"] if spec.get(\"cwd\") else workdir"
+        }
+      ],
+      "source": {
+        "bytes": 41028,
+        "path": "/tmp/hg-tbi2-audit/eval/verification/verifier.py",
+        "sha256": "61643659858f6de72e5035d154e712fd005433234b56ba3f9d7e067dbecd5871"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 220,
+          "text": "        task_dir = trial_dir.parent"
+        },
+        {
+          "line": 221,
+          "text": "        label = f\"{task_dir.name}/{trial_dir.name}\""
+        },
+        {
+          "line": 222,
+          "text": "        if \"movable\" in str(trial_dir) or \"Sliced\" in str(trial_dir):"
+        },
+        {
+          "line": 223,
+          "text": "            continue"
+        },
+        {
+          "line": 224,
+          "text": "        traj_path = trial_dir / \"traj_data.json\""
+        },
+        {
+          "line": 225,
+          "text": "        if not traj_path.is_file():"
+        },
+        {
+          "line": 226,
+          "text": "            continue"
+        },
+        {
+          "line": 227,
+          "text": "        try:"
+        },
+        {
+          "line": 228,
+          "text": "            traj_data = json.loads(traj_path.read_text())"
+        },
+        {
+          "line": 229,
+          "text": "            gamedata = json.loads(game_path.read_text())"
+        },
+        {
+          "line": 230,
+          "text": "        except (OSError, ValueError) as exc:"
+        },
+        {
+          "line": 231,
+          "text": "            raise ValueError(f\"alfworld: {label} is unreadable: {exc}\") from exc"
+        },
+        {
+          "line": 232,
+          "text": "        if traj_data.get(\"task_type\") not in TASK_TYPES.values():"
+        },
+        {
+          "line": 233,
+          "text": "            continue"
+        },
+        {
+          "line": 234,
+          "text": "        if \"solvable\" not in gamedata:"
+        },
+        {
+          "line": 235,
+          "text": "            # The 0.4.2 asset is the only one with this key; an extraction that skipped"
+        },
+        {
+          "line": 236,
+          "text": "            # it lands here for every trial. Say that rather than \"0 tasks\"."
+        },
+        {
+          "line": 237,
+          "text": "            raise ValueError("
+        },
+        {
+          "line": 238,
+          "text": "                f\"alfworld: {label} has no `solvable` key -- the game files are not the \""
+        },
+        {
+          "line": 239,
+          "text": "                f\"0.4.2 `json_2.1.3_tw-pddl.zip` ones. See downloads() and \""
+        },
+        {
+          "line": 240,
+          "text": "                f\"tools/datasets.py --check\")"
+        },
+        {
+          "line": 241,
+          "text": "        if not gamedata[\"solvable\"]:"
+        },
+        {
+          "line": 242,
+          "text": "            continue"
+        },
+        {
+          "line": 243,
+          "text": "        match = _GOAL_RE.search(str(gamedata.get(\"grammar\") or \"\"))"
+        },
+        {
+          "line": 244,
+          "text": "        if not match:"
+        },
+        {
+          "line": 245,
+          "text": "            raise ValueError("
+        },
+        {
+          "line": 246,
+          "text": "                f\"alfworld: {label}: the game grammar has no `task` rule, so the \""
+        },
+        {
+          "line": 247,
+          "text": "                f\"goal text cannot be read\")"
+        },
+        {
+          "line": 248,
+          "text": "        goal = json.loads('\"' + match.group(1) + '\"')"
+        },
+        {
+          "line": 249,
+          "text": "        records.append({"
+        },
+        {
+          "line": 250,
+          "text": "            # The official per-game label is the last two path components"
+        },
+        {
+          "line": 251,
+          "text": "            # (`evaluate_dagger` prints `\"/\".join(game_names[i].split(\"/\")[-3:-1])`)."
+        },
+        {
+          "line": 252,
+          "text": "            # A slash is not safe in a platform task id (it becomes a container name"
+        },
+        {
+          "line": 253,
+          "text": "            # and a path component), so it is spelled `__` here."
+        },
+        {
+          "line": 254,
+          "text": "            \"task_id\": f\"{task_dir.name}__{trial_dir.name}\","
+        },
+        {
+          "line": 255,
+          "text": "            \"label\": label,"
+        },
+        {
+          "line": 256,
+          "text": "            \"task_type\": traj_data[\"task_type\"],"
+        },
+        {
+          "line": 257,
+          "text": "            \"goal\": goal,"
+        },
+        {
+          "line": 258,
+          "text": "            \"game_path\": game_path,"
+        },
+        {
+          "line": 259,
+          "text": "            \"stripped_game\": _stripped_game(gamedata),"
+        },
+        {
+          "line": 260,
+          "text": "        })"
+        },
+        {
+          "line": 261,
+          "text": "    return records"
+        },
+        {
+          "line": 262,
+          "text": ""
+        },
+        {
+          "line": 263,
+          "text": ""
+        },
+        {
+          "line": 264,
+          "text": "def _stripped_game(gamedata: dict) -> str:"
+        },
+        {
+          "line": 265,
+          "text": "    \"\"\"The game file without the reference solution, as JSON text."
+        },
+        {
+          "line": 266,
+          "text": ""
+        },
+        {
+          "line": 267,
+          "text": "    Kept as a string because that is the shape `SETUP`/`VERIFY.inputs` take for inline"
+        },
+        {
+          "line": 342,
+          "text": "    return {"
+        },
+        {
+          "line": 343,
+          "text": "        \"kind\": \"command\","
+        },
+        {
+          "line": 344,
+          "text": "        \"argv\": ["
+        },
+        {
+          "line": 345,
+          "text": "            \"python3\", \"check.py\","
+        },
+        {
+          "line": 346,
+          "text": "            \"--workdir\", \".\","
+        },
+        {
+          "line": 347,
+          "text": "            \"--game\", GAME_IN_WORKDIR,"
+        },
+        {
+          "line": 348,
+          "text": "            \"--log\", LOG_IN_WORKDIR,"
+        },
+        {
+          "line": 349,
+          "text": "            \"--reward-file\", REWARD_REL,"
+        },
+        {
+          "line": 350,
+          "text": "            \"--evidence-file\", EVIDENCE_REL,"
+        },
+        {
+          "line": 351,
+          "text": "            \"--budget\", str(STEP_BUDGET),"
+        },
+        {
+          "line": 352,
+          "text": "        ],"
+        },
+        {
+          "line": 353,
+          "text": "        \"inputs\": ["
+        },
+        {
+          "line": 354,
+          "text": "            {\"path\": \"check.py\", \"from\": str(VERIFY_DIR / \"check.py\")},"
+        },
+        {
+          "line": 355,
+          "text": "            {\"path\": \"gym_env.py\", \"from\": str(LIB_DIR / \"gym_env.py\")},"
+        },
+        {
+          "line": 356,
+          "text": "            {\"path\": GAME_IN_WORKDIR, \"content\": record[\"stripped_game\"]},"
+        },
+        {
+          "line": 357,
+          "text": "        ],"
+        },
+        {
+          "line": 358,
+          "text": "        \"reward_file\": REWARD_FILE,"
+        },
+        {
+          "line": 359,
+          "text": "        \"evidence_file\": EVIDENCE_FILE,"
+        },
+        {
+          "line": 360,
+          "text": "        \"timeout_s\": 300,"
+        },
+        {
+          "line": 361,
+          "text": "    }"
+        },
+        {
+          "line": 362,
+          "text": ""
+        },
+        {
+          "line": 363,
+          "text": ""
+        }
+      ],
+      "source": {
+        "bytes": 26974,
+        "path": "/tmp/hg-tbi2-audit/data/datasets/alfworld.py",
+        "sha256": "9a91e5f9b8a77815222996edcceb8a55feff8b194186e2f8590cfb92e04e1e91"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 131,
+          "text": "def main(argv) -> int:"
+        },
+        {
+          "line": 132,
+          "text": "    args = parse_args(argv)"
+        },
+        {
+          "line": 133,
+          "text": "    evidence: dict = {"
+        },
+        {
+          "line": 134,
+          "text": "        \"game_file\": str(args.game),"
+        },
+        {
+          "line": 135,
+          "text": "        \"action_log\": str(args.log),"
+        },
+        {
+          "line": 136,
+          "text": "        \"reward_file\": str(args.reward_file),"
+        },
+        {
+          "line": 137,
+          "text": "    }"
+        },
+        {
+          "line": 138,
+          "text": ""
+        },
+        {
+          "line": 139,
+          "text": "    if not args.game.is_file():"
+        },
+        {
+          "line": 140,
+          "text": "        # The check's own input is missing: not a measurement."
+        },
+        {
+          "line": 141,
+          "text": "        evidence[\"error\"] = f\"no game file at {args.game}\""
+        },
+        {
+          "line": 142,
+          "text": "        evidence[\"measured\"] = False"
+        },
+        {
+          "line": 143,
+          "text": "        write_evidence(args.evidence_file, evidence)"
+        },
+        {
+          "line": 144,
+          "text": "        print(f\"check cannot run: {evidence['error']}\", file=sys.stderr)"
+        },
+        {
+          "line": 145,
+          "text": "        return 3"
+        },
+        {
+          "line": 146,
+          "text": ""
+        },
+        {
+          "line": 147,
+          "text": "    records = gym_env.action_log_records(args.log)"
+        },
+        {
+          "line": 148,
+          "text": "    actions = [str(r[\"action\"]) for r in records"
+        },
+        {
+          "line": 149,
+          "text": "               if r.get(\"kind\") == \"action\" and isinstance(r.get(\"action\"), str)]"
+        },
+        {
+          "line": 150,
+          "text": "    declared_done = any(r.get(\"kind\") == \"done\" for r in records)"
+        },
+        {
+          "line": 151,
+          "text": "    unparseable = len([line for line in"
+        },
+        {
+          "line": 152,
+          "text": "                       (args.log.read_text(errors=\"replace\").splitlines()"
+        },
+        {
+          "line": 153,
+          "text": "                        if args.log.is_file() else []) if line.strip()]) - len(records)"
+        },
+        {
+          "line": 154,
+          "text": "    evidence.update(actions_in_log=len(actions), log_records=len(records),"
+        },
+        {
+          "line": 155,
+          "text": "                    unparseable_lines=unparseable, agent_declared_done=declared_done,"
+        },
+        {
+          "line": 156,
+          "text": "                    budget=args.budget)"
+        },
+        {
+          "line": 157,
+          "text": ""
+        },
+        {
+          "line": 158,
+          "text": "    try:"
+        },
+        {
+          "line": 159,
+          "text": "        state = gym_env.replay(str(args.game), actions, args.budget)"
+        },
+        {
+          "line": 160,
+          "text": "    except Exception as exc:  # noqa: BLE001 - a check that cannot run is not a zero"
+        },
+        {
+          "line": 161,
+          "text": "        evidence[\"error\"] = f\"could not build or replay the environment: {exc}\""
+        },
+        {
+          "line": 162,
+          "text": "        evidence[\"traceback\"] = traceback.format_exc()[-2000:]"
+        },
+        {
+          "line": 163,
+          "text": "        evidence[\"measured\"] = False"
+        },
+        {
+          "line": 164,
+          "text": "        write_evidence(args.evidence_file, evidence)"
+        }
+      ],
+      "source": {
+        "bytes": 10810,
+        "path": "/tmp/hg-tbi2-audit/data/datasets/alfworld/verify/check.py",
+        "sha256": "c1e7b97377122babc47c519128244ffce60b4511c1b5faa061c10b50a1e03c6d"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 63,
+          "text": "    are the mangled ones, so without the demangler every command is \"not admissible\"."
+        },
+        {
+          "line": 64,
+          "text": "    `shuffle=False` because the benchmark's evaluation is not randomised and a shuffled"
+        },
+        {
+          "line": 65,
+          "text": "    world would make two replays of one log disagree."
+        },
+        {
+          "line": 66,
+          "text": "    \"\"\""
+        },
+        {
+          "line": 67,
+          "text": "    import textworld"
+        },
+        {
+          "line": 68,
+          "text": "    import textworld.gym"
+        },
+        {
+          "line": 69,
+          "text": "    from alfworld.agents.environment.alfred_tw_env import AlfredDemangler, AlfredInfos"
+        },
+        {
+          "line": 70,
+          "text": ""
+        },
+        {
+          "line": 71,
+          "text": "    request_infos = textworld.EnvInfos(won=True, admissible_commands=True,"
+        },
+        {
+          "line": 72,
+          "text": "                                       extras=[\"gamefile\"])"
+        },
+        {
+          "line": 73,
+          "text": "    env_id = textworld.gym.register_games("
+        },
+        {
+          "line": 74,
+          "text": "        [str(game_path)], request_infos,"
+        },
+        {
+          "line": 75,
+          "text": "        batch_size=1,"
+        },
+        {
+          "line": 76,
+          "text": "        asynchronous=False,"
+        },
+        {
+          "line": 77,
+          "text": "        max_episode_steps=budget,"
+        },
+        {
+          "line": 78,
+          "text": "        wrappers=[AlfredDemangler(shuffle=False), AlfredInfos],"
+        },
+        {
+          "line": 79,
+          "text": "    )"
+        },
+        {
+          "line": 80,
+          "text": "    return textworld.gym.make(env_id)"
+        },
+        {
+          "line": 81,
+          "text": ""
+        },
+        {
+          "line": 82,
+          "text": ""
+        },
+        {
+          "line": 83,
+          "text": "def reset(env) -> dict:"
+        },
+        {
+          "line": 84,
+          "text": "    \"\"\"The episode's first observation. `won` is read but is always false here.\"\"\""
+        },
+        {
+          "line": 85,
+          "text": "    obs, infos = env.reset()"
+        },
+        {
+          "line": 109,
+          "text": "    step\" is upstream's rule, not a convenience: ALFWorld's own evaluator takes the"
+        },
+        {
+          "line": 110,
+          "text": "    maximum of the per-step `won` (`alfworld/agents/eval/evaluate_dagger.py`), and an"
+        },
+        {
+          "line": 111,
+          "text": "    episode that wins and then keeps acting is still a win."
+        },
+        {
+          "line": 112,
+          "text": ""
+        },
+        {
+          "line": 113,
+          "text": "    The replay stops early when TextWorld says `done` (a win, or the budget running"
+        },
+        {
+          "line": 114,
+          "text": "    out), which is what the official evaluator does too."
+        },
+        {
+          "line": 115,
+          "text": "    \"\"\""
+        },
+        {
+          "line": 116,
+          "text": "    env = build(game_path, budget)"
+        },
+        {
+          "line": 117,
+          "text": "    try:"
+        },
+        {
+          "line": 118,
+          "text": "        first = reset(env)"
+        },
+        {
+          "line": 119,
+          "text": "        records: list[dict] = []"
+        },
+        {
+          "line": 120,
+          "text": "        won = first[\"won\"]"
+        },
+        {
+          "line": 121,
+          "text": "        for action in list(actions)[:budget]:"
+        },
+        {
+          "line": 122,
+          "text": "            record = dict(step(env, action))"
+        },
+        {
+          "line": 123,
+          "text": "            record[\"action\"] = action"
+        },
+        {
+          "line": 124,
+          "text": "            records.append(record)"
+        },
+        {
+          "line": 125,
+          "text": "            won = won or record[\"won\"]"
+        },
+        {
+          "line": 126,
+          "text": "            if record[\"done\"]:"
+        },
+        {
+          "line": 127,
+          "text": "                break"
+        },
+        {
+          "line": 128,
+          "text": "        return {\"initial_observation\": first[\"observation\"],"
+        },
+        {
+          "line": 129,
+          "text": "                \"initial_admissible\": first[\"admissible\"],"
+        },
+        {
+          "line": 130,
+          "text": "                \"records\": records, \"won\": won}"
+        },
+        {
+          "line": 131,
+          "text": "    finally:"
+        },
+        {
+          "line": 132,
+          "text": "        try:"
+        },
+        {
+          "line": 133,
+          "text": "            env.close()"
+        }
+      ],
+      "source": {
+        "bytes": 7174,
+        "path": "/tmp/hg-tbi2-audit/data/datasets/alfworld/lib/gym_env.py",
+        "sha256": "46dfb6b0574c8ed391e30162c0d54ce6cd7e6030cf545ad867effaef6561e448"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 111,
+          "text": "    \"\"\"The table, or an error that says how to provision it."
+        },
+        {
+          "line": 112,
+          "text": ""
+        },
+        {
+          "line": 113,
+          "text": "    Read at import **inside a guard**, the pattern `data/datasets/spreadsheetbench.py` uses, because"
+        },
+        {
+          "line": 114,
+          "text": "    `data/scaffolds/registry.py::published()` imports every module in `data/` to decide what the"
+        },
+        {
+          "line": 115,
+          "text": "    Launch form offers and that has to work on a machine where `--fetch` has not run. The"
+        },
+        {
+          "line": 116,
+          "text": "    first version read the table unguarded, so an unprovisioned machine silently dropped"
+        },
+        {
+          "line": 117,
+          "text": "    this dataset from `published()` -- 27 datasets became 26 with no error anywhere."
+        },
+        {
+          "line": 118,
+          "text": "    \"\"\""
+        },
+        {
+          "line": 119,
+          "text": "    if _RECORDS:"
+        },
+        {
+          "line": 120,
+          "text": "        return _RECORDS"
+        },
+        {
+          "line": 121,
+          "text": "    raise ValueError("
+        },
+        {
+          "line": 122,
+          "text": "        f\"bird_minidev: cannot read {UNPACKED} ({_LOAD_ERROR}). Provision it with \""
+        },
+        {
+          "line": 123,
+          "text": "        f\"`python3 tools/datasets.py --fetch --dataset bird_minidev`\")"
+        },
+        {
+          "line": 124,
+          "text": ""
+        },
+        {
+          "line": 125,
+          "text": ""
+        },
+        {
+          "line": 126,
+          "text": "def _ids() -> list[str]:"
+        },
+        {
+          "line": 251,
+          "text": "def _verify(record: dict) -> dict:"
+        },
+        {
+          "line": 252,
+          "text": "    database = DBS / record[\"db_id\"] / f\"{record['db_id']}.sqlite\""
+        },
+        {
+          "line": 253,
+          "text": "    return {"
+        },
+        {
+          "line": 254,
+          "text": "        \"kind\": \"command\","
+        },
+        {
+          "line": 255,
+          "text": "        \"argv\": [\"python3\", \"check.py\", \"--db\", \"database.sqlite\", \"--gold\", \"gold.sql\","
+        },
+        {
+          "line": 256,
+          "text": "                 \"--pred\", \"answer.sql\", \"--reward-file\", \"verifier/reward.txt\","
+        },
+        {
+          "line": 257,
+          "text": "                 \"--evidence-file\", \"verifier/evidence.json\"],"
+        },
+        {
+          "line": 258,
+          "text": "        \"reward_file\": \"/verifier/reward.txt\","
+        },
+        {
+          "line": 259,
+          "text": "        \"evidence_file\": \"/verifier/evidence.json\","
+        },
+        {
+          "line": 260,
+          "text": "        \"inputs\": ["
+        },
+        {
+          "line": 261,
+          "text": "            {\"path\": \"check.py\","
+        },
+        {
+          "line": 262,
+          "text": "             \"from\": str(Path(__file__).resolve().parent / \"bird_minidev\" / \"verify\" / \"check.py\")},"
+        },
+        {
+          "line": 263,
+          "text": "            {\"path\": \"gold.sql\", \"content\": record[\"gold_sql\"]},"
+        },
+        {
+          "line": 264,
+          "text": "            {\"path\": \"database.sqlite\", \"from\": str(database)},"
+        },
+        {
+          "line": 265,
+          "text": "        ],"
+        },
+        {
+          "line": 266,
+          "text": "    }"
+        }
+      ],
+      "source": {
+        "bytes": 17163,
+        "path": "/tmp/hg-tbi2-audit/data/datasets/bird_minidev.py",
+        "sha256": "d6e26d4cf541f889a949992e823e446d52048eb5e05d99c3566bf4a95479667d"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 90,
+          "text": "def main() -> int:"
+        },
+        {
+          "line": 91,
+          "text": "    parser = argparse.ArgumentParser()"
+        },
+        {
+          "line": 92,
+          "text": "    parser.add_argument(\"--db\", required=True)"
+        },
+        {
+          "line": 93,
+          "text": "    parser.add_argument(\"--gold\", required=True)"
+        },
+        {
+          "line": 94,
+          "text": "    parser.add_argument(\"--pred\", required=True)"
+        },
+        {
+          "line": 95,
+          "text": "    parser.add_argument(\"--reward-file\", default=\"verifier/reward.txt\")"
+        },
+        {
+          "line": 96,
+          "text": "    parser.add_argument(\"--evidence-file\", default=\"verifier/evidence.json\")"
+        },
+        {
+          "line": 97,
+          "text": "    args = parser.parse_args()"
+        },
+        {
+          "line": 98,
+          "text": ""
+        },
+        {
+          "line": 99,
+          "text": "    gold_sql = Path(args.gold).read_text(encoding=\"utf-8\").strip() if Path(args.gold).is_file() else \"\""
+        },
+        {
+          "line": 100,
+          "text": "    if not Path(args.db).is_file():"
+        },
+        {
+          "line": 101,
+          "text": "        return _cannot_measure(args, f\"no database at {args.db}: this task cannot be graded\")"
+        },
+        {
+          "line": 102,
+          "text": "    if not gold_sql:"
+        },
+        {
+          "line": 103,
+          "text": "        return _cannot_measure(args, \"the gold query is empty: this task cannot be graded\")"
+        },
+        {
+          "line": 104,
+          "text": ""
+        },
+        {
+          "line": 105,
+          "text": "    connection = sqlite3.connect(args.db)"
+        },
+        {
+          "line": 106,
+          "text": "    try:"
+        },
+        {
+          "line": 107,
+          "text": "        try:"
+        },
+        {
+          "line": 108,
+          "text": "            gold_rows = run_query(connection, gold_sql)"
+        },
+        {
+          "line": 109,
+          "text": "        except Exception as exc:                    # noqa: BLE001 - a broken gold is not the agent's"
+        },
+        {
+          "line": 110,
+          "text": "            return _cannot_measure("
+        },
+        {
+          "line": 111,
+          "text": "                args, f\"the gold query cannot run against {Path(args.db).name} \""
+        },
+        {
+          "line": 112,
+          "text": "                      f\"({type(exc).__name__}: {exc}): the environment cannot measure this task\")"
+        },
+        {
+          "line": 113,
+          "text": ""
+        },
+        {
+          "line": 114,
+          "text": "        prediction = (Path(args.pred).read_text(encoding=\"utf-8\").strip()"
+        },
+        {
+          "line": 115,
+          "text": "                      if Path(args.pred).is_file() else \"\")"
+        },
+        {
+          "line": 116,
+          "text": "        if not prediction:"
+        },
+        {
+          "line": 117,
+          "text": "            return _measure(args, 0.0, \"no answer (measured zero): answer.sql is missing or empty\")"
+        },
+        {
+          "line": 118,
+          "text": "        try:"
+        },
+        {
+          "line": 119,
+          "text": "            predicted_rows = run_query(connection, prediction)"
+        },
+        {
+          "line": 120,
+          "text": "        except Exception as exc:                    # noqa: BLE001 - upstream scores this 0"
+        },
+        {
+          "line": 121,
+          "text": "            return _measure(args, 0.0, f\"prediction did not run ({type(exc).__name__}: {exc})\")"
+        },
+        {
+          "line": 122,
+          "text": "    finally:"
+        },
+        {
+          "line": 123,
+          "text": "        connection.close()"
+        },
+        {
+          "line": 124,
+          "text": ""
+        },
+        {
+          "line": 125,
+          "text": "    reward = float(calculate_ex(predicted_rows, gold_rows))"
+        },
+        {
+          "line": 126,
+          "text": "    return _measure(args, reward, f\"exact set equality: {len(predicted_rows)} predicted vs \""
+        },
+        {
+          "line": 127,
+          "text": "                                  f\"{len(gold_rows)} gold rows\")"
+        },
+        {
+          "line": 128,
+          "text": ""
+        },
+        {
+          "line": 129,
+          "text": ""
+        },
+        {
+          "line": 130,
+          "text": "if __name__ == \"__main__\":"
+        },
+        {
+          "line": 131,
+          "text": "    raise SystemExit(main())"
+        }
+      ],
+      "source": {
+        "bytes": 5683,
+        "path": "/tmp/hg-tbi2-audit/data/datasets/bird_minidev/verify/check.py",
+        "sha256": "2c0a012468c9d3b6126428008f9eae6f08fc7f81c454e02bf68000b0011840d0"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 163,
+          "text": "#: library mix to within 0.8 percentage points, and a row's side is a pure function of its"
+        },
+        {
+          "line": 164,
+          "text": "#: released index, so adding an exclusion cannot reshuffle the rows that remain."
+        },
+        {
+          "line": 165,
+          "text": "SPLIT = {\"train\": [task_id(i) for i in included_indices() if not is_eval(task_id(i))],"
+        },
+        {
+          "line": 166,
+          "text": "         \"eval\": [task_id(i) for i in included_indices() if is_eval(task_id(i))]}"
+        },
+        {
+          "line": 167,
+          "text": ""
+        },
+        {
+          "line": 168,
+          "text": "ENV = {task_id(i): {\"kind\": \"files\"} for i in included_indices()}"
+        },
+        {
+          "line": 169,
+          "text": ""
+        },
+        {
+          "line": 170,
+          "text": ""
+        },
+        {
+          "line": 171,
+          "text": "def task_for(index: int) -> dict:"
+        },
+        {
+          "line": 172,
+          "text": "    \"\"\"A task dict for any released row, included or not."
+        },
+        {
+          "line": 173,
+          "text": ""
+        },
+        {
+          "line": 174,
+          "text": "    Excluded rows are still buildable so that a test can re-run the official construction"
+        },
+        {
+          "line": 175,
+          "text": "    against them and re-observe the recorded failure. They are never offered by `load()`."
+        },
+        {
+          "line": 176,
+          "text": "    \"\"\""
+        },
+        {
+          "line": 177,
+          "text": "    return {\"task_id\": task_id(index), \"goal\": _raw()[index][\"prompt\"], \"inputs\": []}"
+        },
+        {
+          "line": 178,
+          "text": ""
+        },
+        {
+          "line": 179,
+          "text": ""
+        },
+        {
+          "line": 180,
+          "text": "def setup_for(index: int) -> dict:"
+        },
+        {
+          "line": 181,
+          "text": "    row = _raw()[index]"
+        },
+        {
+          "line": 182,
+          "text": "    return {\"files\": ["
+        },
+        {
+          "line": 183,
+          "text": "        {\"path\": \"task.json\", \"content\": json.dumps("
+        },
+        {
+          "line": 184,
+          "text": "            {\"task_id\": task_id(index), \"prompt\": row[\"prompt\"]}, ensure_ascii=False)},"
+        },
+        {
+          "line": 185,
+          "text": "        # The official context carries the tests, and the released benchmark hands it to the"
+        },
+        {
+          "line": 186,
+          "text": "        # solver as part of the problem. The gold `reference_code` is not in it."
+        },
+        {
+          "line": 187,
+          "text": "        {\"path\": \"context.json\", \"content\": json.dumps("
+        },
+        {
+          "line": 188,
+          "text": "            {\"code_context\": row[\"code_context\"]}, ensure_ascii=False)},"
+        },
+        {
+          "line": 189,
+          "text": "    ]}"
+        },
+        {
+          "line": 190,
+          "text": ""
+        },
+        {
+          "line": 191,
+          "text": ""
+        },
+        {
+          "line": 192,
+          "text": "def verify_for(index: int) -> dict:"
+        },
+        {
+          "line": 193,
+          "text": "    return {"
+        },
+        {
+          "line": 194,
+          "text": "        \"kind\": \"command\","
+        },
+        {
+          "line": 195,
+          "text": "        \"argv\": [\"python3\", \"verify/check.py\","
+        },
+        {
+          "line": 196,
+          "text": "                 \"--reward-file\", command_control.REWARD_REL,"
+        },
+        {
+          "line": 197,
+          "text": "                 \"--evidence-file\", command_control.EVIDENCE_REL],"
+        },
+        {
+          "line": 198,
+          "text": "        \"inputs\": ["
+        },
+        {
+          "line": 199,
+          "text": "            {\"path\": \"verify/check.py\", \"from\": str(CHECK_FILE)},"
+        },
+        {
+          "line": 200,
+          "text": "            {\"path\": \"execution.py\", \"from\": str(EXECUTION_FILE)},"
+        },
+        {
+          "line": 201,
+          "text": "            # Removes the official tests' only network fetch; see the module docstring."
+        },
+        {
+          "line": 202,
+          "text": "            {\"path\": \"seaborn-data\", \"from\": str(SEABORN_DIR)},"
+        },
+        {
+          "line": 203,
+          "text": "        ],"
+        },
+        {
+          "line": 204,
+          "text": "        \"reward_file\": command_control.REWARD_FILE,"
+        },
+        {
+          "line": 205,
+          "text": "        \"evidence_file\": command_control.EVIDENCE_FILE,"
+        }
+      ],
+      "source": {
+        "bytes": 13806,
+        "path": "/tmp/hg-tbi2-audit/data/datasets/ds1000.py",
+        "sha256": "7a58535f566e58d23819cad86c0ad9b0620e16f11b33033d6645dfcb977fb9a5"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 20,
+          "text": "def main() -> int:"
+        },
+        {
+          "line": 21,
+          "text": "    ap = argparse.ArgumentParser()"
+        },
+        {
+          "line": 22,
+          "text": "    ap.add_argument(\"--reward-file\", default=\"verifier/reward.txt\")"
+        },
+        {
+          "line": 23,
+          "text": "    ap.add_argument(\"--evidence-file\", default=\"verifier/evidence.json\")"
+        },
+        {
+          "line": 24,
+          "text": "    args = ap.parse_args()"
+        },
+        {
+          "line": 25,
+          "text": "    work = pathlib.Path.cwd()"
+        },
+        {
+          "line": 26,
+          "text": "    task = json.loads((work / \"context.json\").read_text(encoding=\"utf-8\"))"
+        },
+        {
+          "line": 27,
+          "text": "    solution = work / \"solution.py\""
+        },
+        {
+          "line": 28,
+          "text": "    candidate = solution.read_text(encoding=\"utf-8\") if solution.is_file() else \"\""
+        },
+        {
+          "line": 29,
+          "text": "    program = (task[\"code_context\"] + \"\\n\" + f\"code = {candidate!r}\\n\""
+        },
+        {
+          "line": 30,
+          "text": "               + \"test_execution(code)\\n\""
+        },
+        {
+          "line": 31,
+          "text": "               + (\"test_string(code)\\n\" if \"test_string(\" in task[\"code_context\"] else \"\"))"
+        },
+        {
+          "line": 32,
+          "text": "    # Keep this checker dependency-free: execution.py is a VERIFY input, and the candidate"
+        },
+        {
+          "line": 33,
+          "text": "    # program is passed via a temporary JSON file so the child can import the official runner."
+        },
+        {
+          "line": 34,
+          "text": "    # Own the wrapper files even for direct host checks and runner/setup failures."
+        },
+        {
+          "line": 35,
+          "text": "    with tempfile.TemporaryDirectory(prefix=\"ds1000-check-\") as scratch_dir:"
+        },
+        {
+          "line": 36,
+          "text": "        scratch = pathlib.Path(scratch_dir)"
+        },
+        {
+          "line": 37,
+          "text": "        runner = scratch / \"run_ds1000.py\""
+        },
+        {
+          "line": 38,
+          "text": "        (scratch / \"execution.py\").write_text((work / \"execution.py\").read_text(encoding=\"utf-8\"), encoding=\"utf-8\")"
+        },
+        {
+          "line": 49,
+          "text": "        # path runs offline instead of fetching from GitHub mid-check."
+        },
+        {
+          "line": 50,
+          "text": "        import os"
+        },
+        {
+          "line": 51,
+          "text": "        env = dict(os.environ)"
+        },
+        {
+          "line": 52,
+          "text": "        env[\"SEABORN_DATA\"] = str(work / \"seaborn-data\")"
+        },
+        {
+          "line": 53,
+          "text": "        for noisy in (\"MPLBACKEND\",):"
+        },
+        {
+          "line": 54,
+          "text": "            env.setdefault(noisy, \"Agg\")"
+        },
+        {
+          "line": 55,
+          "text": "        proc = subprocess.run([sys.executable, str(runner), str(payload)], cwd=scratch,"
+        },
+        {
+          "line": 56,
+          "text": "                              capture_output=True, text=True, timeout=130, env=env)"
+        },
+        {
+          "line": 57,
+          "text": "    result = json.loads(proc.stdout.strip().splitlines()[-1]) if proc.returncode == 0 and proc.stdout.strip() else {\"passed\": False, \"result\": proc.stderr[-500:]}"
+        },
+        {
+          "line": 58,
+          "text": "    reward = 1.0 if result.get(\"passed\") else 0.0"
+        },
+        {
+          "line": 59,
+          "text": "    out = work / args.reward_file"
+        },
+        {
+          "line": 60,
+          "text": "    out.parent.mkdir(parents=True, exist_ok=True)"
+        },
+        {
+          "line": 61,
+          "text": "    out.write_text(f\"{reward:g}\\n\")"
+        },
+        {
+          "line": 62,
+          "text": "    ev = work / args.evidence_file"
+        },
+        {
+          "line": 63,
+          "text": "    ev.parent.mkdir(parents=True, exist_ok=True)"
+        },
+        {
+          "line": 64,
+          "text": "    ev.write_text(json.dumps({\"measured\": True, \"reward\": reward,"
+        },
+        {
+          "line": 65,
+          "text": "                              \"official\": {\"metric\": \"DS-1000 test_execution plus conditional test_string\","
+        },
+        {
+          "line": 66,
+          "text": "                                            \"result\": result.get(\"result\")},"
+        },
+        {
+          "line": 67,
+          "text": "                              \"why\": result.get(\"result\", \"\")}, sort_keys=True) + \"\\n\")"
+        },
+        {
+          "line": 68,
+          "text": "    print(f\"reward {reward:g}: {result.get('result', '')}\")"
+        },
+        {
+          "line": 69,
+          "text": "    return 0"
+        },
+        {
+          "line": 70,
+          "text": ""
+        },
+        {
+          "line": 71,
+          "text": ""
+        },
+        {
+          "line": 72,
+          "text": "if __name__ == \"__main__\":"
+        },
+        {
+          "line": 73,
+          "text": "    raise SystemExit(main())"
+        }
+      ],
+      "source": {
+        "bytes": 3649,
+        "path": "/tmp/hg-tbi2-audit/data/datasets/ds1000/verify/check.py",
+        "sha256": "24f25dee67eeaf473b94d7c2cd2ef3cb43ba470b8ea46cc1662131693028701e"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 122,
+          "text": "    return DATASET_ROOT / GAMES_SUBDIR"
+        },
+        {
+          "line": 123,
+          "text": ""
+        },
+        {
+          "line": 124,
+          "text": ""
+        },
+        {
+          "line": 125,
+          "text": "def _official_games() -> list[dict]:"
+        },
+        {
+          "line": 126,
+          "text": "    \"\"\"The benchmark's own game table, filtered to the ROMs that are actually present."
+        },
+        {
+          "line": 127,
+          "text": ""
+        },
+        {
+          "line": 128,
+          "text": "    `jericho.game_info` is imported **lazily**: `data/scaffolds/registry.py::published` imports every"
+        },
+        {
+          "line": 129,
+          "text": "    adapter to decide what the chooser offers, and an import that pulls in `jericho` (a"
+        },
+        {
+          "line": 130,
+          "text": "    ctypes-wrapped C library) at that point is a second thing that can fail on a machine that"
+        },
+        {
+          "line": 131,
+          "text": "    has not installed it."
+        },
+        {
+          "line": 132,
+          "text": "    \"\"\""
+        },
+        {
+          "line": 133,
+          "text": "    import jericho.game_info as info"
+        },
+        {
+          "line": 134,
+          "text": ""
+        },
+        {
+          "line": 135,
+          "text": "    suite = games_dir()"
+        },
+        {
+          "line": 136,
+          "text": "    records = []"
+        },
+        {
+          "line": 137,
+          "text": "    for key in sorted(dir(info)):"
+        },
+        {
+          "line": 138,
+          "text": "        if key.startswith(\"_\"):"
+        },
+        {
+          "line": 139,
+          "text": "            continue"
+        },
+        {
+          "line": 140,
+          "text": "        entry = getattr(info, key)"
+        },
+        {
+          "line": 141,
+          "text": "        if not isinstance(entry, dict) or \"rom\" not in entry:"
+        },
+        {
+          "line": 142,
+          "text": "            continue"
+        },
+        {
+          "line": 143,
+          "text": "        rom = str(entry[\"rom\"])"
+        },
+        {
+          "line": 144,
+          "text": "        path = suite / rom"
+        },
+        {
+          "line": 145,
+          "text": "        if not path.is_file():"
+        },
+        {
+          "line": 146,
+          "text": "            continue"
+        },
+        {
+          "line": 147,
+          "text": "        walkthrough = [a for a in str(entry.get(\"walkthrough\") or \"\").split(\"/\") if a]"
+        },
+        {
+          "line": 148,
+          "text": "        records.append({"
+        },
+        {
+          "line": 149,
+          "text": "            \"task_id\": Path(rom).stem,"
+        },
+        {
+          "line": 150,
+          "text": "            \"key\": key,"
+        },
+        {
+          "line": 151,
+          "text": "            \"rom\": rom,"
+        },
+        {
+          "line": 152,
+          "text": "            \"path\": path,"
+        },
+        {
+          "line": 153,
+          "text": "            \"seed\": int(entry.get(\"seed\") or 0),"
+        },
+        {
+          "line": 154,
+          "text": "            \"walkthrough\": walkthrough,"
+        },
+        {
+          "line": 155,
+          "text": "        })"
+        },
+        {
+          "line": 156,
+          "text": "    if not records:"
+        },
+        {
+          "line": 250,
+          "text": "    import json"
+        },
+        {
+          "line": 251,
+          "text": ""
+        },
+        {
+          "line": 252,
+          "text": "    return {"
+        },
+        {
+          "line": 253,
+          "text": "        \"kind\": \"command\","
+        },
+        {
+          "line": 254,
+          "text": "        \"argv\": ["
+        },
+        {
+          "line": 255,
+          "text": "            \"python3\", \"check.py\","
+        },
+        {
+          "line": 256,
+          "text": "            \"--workdir\", \".\","
+        },
+        {
+          "line": 257,
+          "text": "            \"--game\", GAME_FILE,"
+        },
+        {
+          "line": 258,
+          "text": "            \"--rom\", record[\"rom\"],"
+        },
+        {
+          "line": 259,
+          "text": "            \"--log\", LOG_FILE,"
+        },
+        {
+          "line": 260,
+          "text": "            \"--reward-file\", REWARD_REL,"
+        },
+        {
+          "line": 261,
+          "text": "            \"--evidence-file\", EVIDENCE_REL,"
+        },
+        {
+          "line": 262,
+          "text": "        ],"
+        },
+        {
+          "line": 263,
+          "text": "        \"inputs\": ["
+        },
+        {
+          "line": 264,
+          "text": "            {\"path\": \"check.py\", \"from\": str(VERIFY_DIR / \"check.py\")},"
+        },
+        {
+          "line": 265,
+          "text": "            {\"path\": \"jer_env.py\", \"from\": str(LIB_DIR / \"jer_env.py\")},"
+        },
+        {
+          "line": 266,
+          "text": "            {\"path\": GAME_FILE,"
+        },
+        {
+          "line": 267,
+          "text": "             \"content\": json.dumps({\"task_id\": record[\"task_id\"], \"rom\": record[\"rom\"],"
+        },
+        {
+          "line": 268,
+          "text": "                                    \"seed\": record[\"seed\"]})},"
+        },
+        {
+          "line": 269,
+          "text": "            {\"path\": record[\"rom\"], \"from\": str(record[\"path\"])},"
+        },
+        {
+          "line": 270,
+          "text": "        ],"
+        },
+        {
+          "line": 271,
+          "text": "        \"reward_file\": REWARD_FILE,"
+        },
+        {
+          "line": 272,
+          "text": "        \"evidence_file\": EVIDENCE_FILE,"
+        },
+        {
+          "line": 273,
+          "text": "        \"timeout_s\": VERIFY_TIMEOUT_S,"
+        },
+        {
+          "line": 274,
+          "text": "    }"
+        },
+        {
+          "line": 275,
+          "text": ""
+        },
+        {
+          "line": 276,
+          "text": ""
+        }
+      ],
+      "source": {
+        "bytes": 18759,
+        "path": "/tmp/hg-tbi2-audit/data/datasets/jericho.py",
+        "sha256": "3eec2472c4f6130ab7fc20fe0c7b397283247ee487831f8db2358ca6557f5074"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 84,
+          "text": "def main(argv) -> int:"
+        },
+        {
+          "line": 85,
+          "text": "    args = parse_args(argv)"
+        },
+        {
+          "line": 86,
+          "text": "    evidence: dict = {"
+        },
+        {
+          "line": 87,
+          "text": "        \"game_file\": str(args.game),"
+        },
+        {
+          "line": 88,
+          "text": "        \"rom\": args.rom,"
+        },
+        {
+          "line": 89,
+          "text": "        \"action_log\": str(args.log),"
+        },
+        {
+          "line": 90,
+          "text": "    }"
+        },
+        {
+          "line": 91,
+          "text": ""
+        },
+        {
+          "line": 92,
+          "text": "    if not args.game.is_file():"
+        },
+        {
+          "line": 93,
+          "text": "        evidence.update(measured=False, error=f\"no game file at {args.game}\")"
+        },
+        {
+          "line": 94,
+          "text": "        write_evidence(args.evidence_file, evidence)"
+        },
+        {
+          "line": 95,
+          "text": "        print(f\"check cannot measure: {evidence['error']}\", file=sys.stderr)"
+        },
+        {
+          "line": 96,
+          "text": "        return 3"
+        },
+        {
+          "line": 97,
+          "text": ""
+        },
+        {
+          "line": 98,
+          "text": "    records = jer_env.action_log_records(args.log)"
+        },
+        {
+          "line": 99,
+          "text": "    actions = jer_env.actions_in(records)"
+        },
+        {
+          "line": 100,
+          "text": "    declared_done = any(r.get(\"kind\") == \"done\" for r in records)"
+        },
+        {
+          "line": 101,
+          "text": "    blank_or_broken = sum("
+        },
+        {
+          "line": 102,
+          "text": "        1 for line in (args.log.read_text(errors=\"replace\").splitlines()"
+        },
+        {
+          "line": 103,
+          "text": "                       if args.log.is_file() else []) if line.strip()) - len(records)"
+        },
+        {
+          "line": 104,
+          "text": "    evidence.update(actions_in_log=len(actions), log_records=len(records),"
+        },
+        {
+          "line": 105,
+          "text": "                    unparseable_lines=max(0, blank_or_broken),"
+        },
+        {
+          "line": 106,
+          "text": "                    agent_declared_done=declared_done)"
+        },
+        {
+          "line": 107,
+          "text": ""
+        },
+        {
+          "line": 108,
+          "text": "    try:"
+        },
+        {
+          "line": 109,
+          "text": "        env = jer_env.load_game(args.workdir)"
+        },
+        {
+          "line": 110,
+          "text": "    except Exception as exc:  # noqa: BLE001 - a check that cannot run is not a zero"
+        },
+        {
+          "line": 111,
+          "text": "        evidence.update(measured=False, error=f\"could not start the game: {exc}\","
+        },
+        {
+          "line": 112,
+          "text": "                        traceback=traceback.format_exc()[-2000:])"
+        },
+        {
+          "line": 113,
+          "text": "        write_evidence(args.evidence_file, evidence)"
+        },
+        {
+          "line": 114,
+          "text": "        print(f\"check cannot measure: {evidence['error']}\", file=sys.stderr)"
+        },
+        {
+          "line": 115,
+          "text": "        return 3"
+        },
+        {
+          "line": 116,
+          "text": ""
+        },
+        {
+          "line": 117,
+          "text": "    try:"
+        },
+        {
+          "line": 118,
+          "text": "        maximum = int(env.get_max_score())"
+        },
+        {
+          "line": 119,
+          "text": "        spec = json.loads(args.game.read_text())"
+        },
+        {
+          "line": 120,
+          "text": "        steps = jer_env.replay(env, actions)"
+        },
+        {
+          "line": 121,
+          "text": "    except Exception as exc:  # noqa: BLE001"
+        },
+        {
+          "line": 122,
+          "text": "        evidence.update(measured=False, error=f\"the game died mid-episode: {exc}\","
+        },
+        {
+          "line": 123,
+          "text": "                        traceback=traceback.format_exc()[-2000:])"
+        },
+        {
+          "line": 124,
+          "text": "        write_evidence(args.evidence_file, evidence)"
+        }
+      ],
+      "source": {
+        "bytes": 7085,
+        "path": "/tmp/hg-tbi2-audit/data/datasets/jericho/verify/check.py",
+        "sha256": "da09db93dd0b3159311114d77f90bd2c79f2c83dcb3e7bf87685540c2924227f"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 30,
+          "text": ""
+        },
+        {
+          "line": 31,
+          "text": "def make_env(rom: Path, *, seed: int):"
+        },
+        {
+          "line": 32,
+          "text": "    \"\"\"A `FrotzEnv` for `rom`, reset at `seed`."
+        },
+        {
+          "line": 33,
+          "text": ""
+        },
+        {
+          "line": 34,
+          "text": "    Imported inside the function so `data/datasets/jericho.py` stays importable on a machine without"
+        },
+        {
+          "line": 35,
+          "text": "    the package (`data/scaffolds/registry.py::published` imports every adapter to decide what the"
+        },
+        {
+          "line": 36,
+          "text": "    chooser offers)."
+        },
+        {
+          "line": 37,
+          "text": "    \"\"\""
+        },
+        {
+          "line": 38,
+          "text": "    from jericho import FrotzEnv"
+        },
+        {
+          "line": 39,
+          "text": ""
+        },
+        {
+          "line": 40,
+          "text": "    # The seed is a **constructor** argument, not a `reset` one (measured:"
+        },
+        {
+          "line": 41,
+          "text": "    # `FrotzEnv(sf, seed=None)` and `reset(self)`). A seed that failed to apply would move the"
+        },
+        {
+          "line": 42,
+          "text": "    # objects and break the walkthrough, and the resulting 0 would look like an unreachable"
+        },
+        {
+          "line": 43,
+          "text": "    # check -- so the env is constructed with the seed and then reset, in that order."
+        },
+        {
+          "line": 44,
+          "text": "    env = FrotzEnv(str(rom), seed=seed)"
+        },
+        {
+          "line": 45,
+          "text": "    env.reset()"
+        },
+        {
+          "line": 46,
+          "text": "    return env"
+        },
+        {
+          "line": 47,
+          "text": ""
+        },
+        {
+          "line": 48,
+          "text": ""
+        },
+        {
+          "line": 49,
+          "text": "def load_game(workdir: Path, *, rom_dir: Path | None = None):"
+        },
+        {
+          "line": 50,
+          "text": "    \"\"\"Build and reset the game named by `jer_game.json`. Returns the live env."
+        },
+        {
+          "line": 51,
+          "text": ""
+        },
+        {
+          "line": 52,
+          "text": "    `rom_dir` defaults to the workdir, which is where `VERIFY.inputs` puts the ROM for the"
+        },
+        {
+          "line": 53,
+          "text": "    check; the CLI's workdir has it too, because `SETUP` ships it there as well."
+        },
+        {
+          "line": 54,
+          "text": "    \"\"\""
+        },
+        {
+          "line": 55,
+          "text": "    spec = json.loads((workdir / GAME_FILENAME).read_text())"
+        },
+        {
+          "line": 56,
+          "text": "    rom = (rom_dir or workdir) / spec[\"rom\"]"
+        },
+        {
+          "line": 57,
+          "text": "    if not rom.is_file():"
+        },
+        {
+          "line": 58,
+          "text": "        raise FileNotFoundError(f\"no ROM at {rom}\")"
+        },
+        {
+          "line": 59,
+          "text": "    return make_env(rom, seed=int(spec.get(\"seed\") or 0))"
+        }
+      ],
+      "source": {
+        "bytes": 5563,
+        "path": "/tmp/hg-tbi2-audit/data/datasets/jericho/lib/jer_env.py",
+        "sha256": "dff31034630ba18ce0cbf57fa7a5b026c342b22d71b8957a2ef899eb1c06277f"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 175,
+          "text": "        cases = json.loads("
+        },
+        {
+          "line": 176,
+          "text": "            pickle.loads(zlib.decompress(base64.b64decode(value.encode(\"utf-8\")))))"
+        },
+        {
+          "line": 177,
+          "text": "    return cases"
+        },
+        {
+          "line": 178,
+          "text": ""
+        },
+        {
+          "line": 179,
+          "text": ""
+        },
+        {
+          "line": 180,
+          "text": "# ------------------------------------------------------------------------------ the pool ---"
+        },
+        {
+          "line": 181,
+          "text": ""
+        },
+        {
+          "line": 182,
+          "text": "_RAW: list[dict] | None = None"
+        },
+        {
+          "line": 183,
+          "text": ""
+        },
+        {
+          "line": 184,
+          "text": ""
+        },
+        {
+          "line": 185,
+          "text": "def _raw() -> list[dict]:"
+        },
+        {
+          "line": 186,
+          "text": "    \"\"\"The pool's rows, read once. 2.0 MB of metadata -- never the tests.\"\"\""
+        },
+        {
+          "line": 187,
+          "text": "    global _RAW"
+        },
+        {
+          "line": 188,
+          "text": "    if _RAW is None:"
+        },
+        {
+          "line": 189,
+          "text": "        rows = []"
+        },
+        {
+          "line": 190,
+          "text": "        with (DATASET_ROOT / POOL).open(encoding=\"utf-8\") as handle:"
+        },
+        {
+          "line": 191,
+          "text": "            header = json.loads(handle.readline())"
+        },
+        {
+          "line": 192,
+          "text": "            if header.get(\"problems\") != PROBLEMS:"
+        },
+        {
+          "line": 193,
+          "text": "                raise ValueError(f\"{POOL}: header says {header.get('problems')} problems, this \""
+        },
+        {
+          "line": 194,
+          "text": "                                 f\"adapter expects {PROBLEMS}\")"
+        },
+        {
+          "line": 195,
+          "text": "            for line in handle:"
+        },
+        {
+          "line": 196,
+          "text": "                if line.strip():"
+        },
+        {
+          "line": 197,
+          "text": "                    rows.append(json.loads(line))"
+        },
+        {
+          "line": 198,
+          "text": "        if len(rows) != PROBLEMS:"
+        },
+        {
+          "line": 199,
+          "text": "            raise ValueError(f\"{POOL}: {len(rows)} rows, expected {PROBLEMS}\")"
+        },
+        {
+          "line": 200,
+          "text": "        _RAW = rows"
+        },
+        {
+          "line": 201,
+          "text": "    return _RAW"
+        },
+        {
+          "line": 202,
+          "text": ""
+        },
+        {
+          "line": 203,
+          "text": ""
+        },
+        {
+          "line": 204,
+          "text": "def task_id(index: int) -> str:"
+        },
+        {
+          "line": 205,
+          "text": "    return f\"livecodebench/{index}\""
+        },
+        {
+          "line": 206,
+          "text": ""
+        },
+        {
+          "line": 207,
+          "text": ""
+        },
+        {
+          "line": 260,
+          "text": ""
+        },
+        {
+          "line": 261,
+          "text": ""
+        },
+        {
+          "line": 262,
+          "text": "def _verify(row: dict) -> dict:"
+        },
+        {
+          "line": 263,
+          "text": "    return {"
+        },
+        {
+          "line": 264,
+          "text": "        \"kind\": \"command\","
+        },
+        {
+          "line": 265,
+          "text": "        \"argv\": [\"python3\", \"verify/check.py\", \"--tests\", \"tests.json\","
+        },
+        {
+          "line": 266,
+          "text": "                 \"--solution\", \"solution.py\","
+        },
+        {
+          "line": 267,
+          "text": "                 \"--reward-file\", \"verifier/reward.txt\","
+        },
+        {
+          "line": 268,
+          "text": "                 \"--evidence-file\", \"verifier/evidence.json\"],"
+        },
+        {
+          "line": 269,
+          "text": "        \"inputs\": ["
+        },
+        {
+          "line": 270,
+          "text": "            {\"path\": \"verify/check.py\", \"from\": str(CHECK_FILE)},"
+        },
+        {
+          "line": 271,
+          "text": "            {\"path\": \"tests.json\", \"from\": str(_tests_path(row))},"
+        },
+        {
+          "line": 272,
+          "text": "            # Upstream's executor and its aggregation, materialized from the pinned archive:"
+        },
+        {
+          "line": 273,
+          "text": "            # the check runs *their* code rather than re-implementing the metric."
+        },
+        {
+          "line": 274,
+          "text": "            {\"path\": \"testing_util.py\", \"from\": str(DATASET_ROOT / EXECUTOR)},"
+        },
+        {
+          "line": 275,
+          "text": "            {\"path\": \"pass_k_utils.py\", \"from\": str(DATASET_ROOT / PASS_K)},"
+        },
+        {
+          "line": 276,
+          "text": "        ],"
+        },
+        {
+          "line": 277,
+          "text": "        \"reward_file\": \"/verifier/reward.txt\","
+        },
+        {
+          "line": 278,
+          "text": "        \"evidence_file\": \"/verifier/evidence.json\","
+        },
+        {
+          "line": 279,
+          "text": "        # Upstream's own global timeout reaches 726 s on the largest problem here; a check"
+        },
+        {
+          "line": 280,
+          "text": "        # capped at 600 s needs room to write its verdict rather than be killed by the runner."
+        },
+        {
+          "line": 281,
+          "text": "        \"timeout_s\": 900,"
+        },
+        {
+          "line": 282,
+          "text": "    }"
+        }
+      ],
+      "source": {
+        "bytes": 19347,
+        "path": "/tmp/hg-tbi2-audit/data/datasets/livecodebench.py",
+        "sha256": "69b06146ce29a1376f293436f9f0d050866be0d89a647f6e862cb664f7850ec2"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 74,
+          "text": "    if work not in sys.path:"
+        },
+        {
+          "line": 75,
+          "text": "        sys.path.insert(0, work)"
+        },
+        {
+          "line": 76,
+          "text": ""
+        },
+        {
+          "line": 77,
+          "text": ""
+        },
+        {
+          "line": 78,
+          "text": "def _child(tests_text: str, solution: str, queue) -> None:"
+        },
+        {
+          "line": 79,
+          "text": "    \"\"\"`run_test` in its own process: it mutates process-global state (`reliability_guard`"
+        },
+        {
+          "line": 80,
+          "text": "    nulls `os.system`, `os.remove`, `builtins.quit` and `os.environ` itself) and it executes"
+        },
+        {
+          "line": 81,
+          "text": "    the candidate, so nothing it does may reach the check's own interpreter. Upstream makes the"
+        },
+        {
+          "line": 82,
+          "text": "    same choice, for the same reason, in `compute_code_generation_metrics.py`.\"\"\""
+        },
+        {
+          "line": 83,
+          "text": "    _workdir_on_path()"
+        },
+        {
+          "line": 84,
+          "text": "    sys.set_int_max_str_digits(50000)          # upstream sets this for huge test integers"
+        },
+        {
+          "line": 85,
+          "text": "    try:"
+        },
+        {
+          "line": 86,
+          "text": "        from testing_util import run_test"
+        },
+        {
+          "line": 87,
+          "text": "    except Exception as exc:                   # noqa: BLE001 - reported as unmeasurable"
+        },
+        {
+          "line": 88,
+          "text": "        queue.put({\"error\": f\"the pinned executor will not import: {type(exc).__name__}: {exc}\"})"
+        },
+        {
+          "line": 89,
+          "text": "        return"
+        },
+        {
+          "line": 90,
+          "text": "    try:"
+        },
+        {
+          "line": 91,
+          "text": "        results, metadata = run_test({\"input_output\": tests_text}, test=solution, debug=False,"
+        },
+        {
+          "line": 92,
+          "text": "                                     timeout=PER_TEST_TIMEOUT)"
+        },
+        {
+          "line": 93,
+          "text": "        queue.put({\"results\": [bool(value) if isinstance(value, bool) else value"
+        },
+        {
+          "line": 94,
+          "text": "                               for value in results],"
+        },
+        {
+          "line": 95,
+          "text": "                   \"metadata\": str(metadata)[:2000]})"
+        },
+        {
+          "line": 138,
+          "text": "def main() -> int:"
+        },
+        {
+          "line": 139,
+          "text": "    parser = argparse.ArgumentParser()"
+        },
+        {
+          "line": 140,
+          "text": "    parser.add_argument(\"--tests\", required=True, help=\"the problem's released tests\")"
+        },
+        {
+          "line": 141,
+          "text": "    parser.add_argument(\"--solution\", required=True)"
+        },
+        {
+          "line": 142,
+          "text": "    parser.add_argument(\"--reward-file\", default=\"verifier/reward.txt\")"
+        },
+        {
+          "line": 143,
+          "text": "    parser.add_argument(\"--evidence-file\", default=\"verifier/evidence.json\")"
+        },
+        {
+          "line": 144,
+          "text": "    args = parser.parse_args()"
+        },
+        {
+          "line": 145,
+          "text": "    _workdir_on_path()"
+        },
+        {
+          "line": 146,
+          "text": ""
+        },
+        {
+          "line": 147,
+          "text": "    tests_path = Path(args.tests)"
+        },
+        {
+          "line": 148,
+          "text": "    if not tests_path.is_file():"
+        },
+        {
+          "line": 149,
+          "text": "        return _cannot_measure(args, f\"no test payload at {tests_path}\")"
+        },
+        {
+          "line": 150,
+          "text": "    tests_text = tests_path.read_text(encoding=\"utf-8\")"
+        },
+        {
+          "line": 151,
+          "text": "    try:"
+        },
+        {
+          "line": 152,
+          "text": "        payload = json.loads(tests_text)"
+        },
+        {
+          "line": 153,
+          "text": "        inputs, outputs = payload[\"inputs\"], payload[\"outputs\"]"
+        },
+        {
+          "line": 154,
+          "text": "    except Exception as exc:                   # noqa: BLE001"
+        },
+        {
+          "line": 155,
+          "text": "        return _cannot_measure(args, f\"the test payload is not usable: \""
+        },
+        {
+          "line": 156,
+          "text": "                                     f\"{type(exc).__name__}: {exc}\")"
+        },
+        {
+          "line": 157,
+          "text": "    total = len(inputs)"
+        },
+        {
+          "line": 158,
+          "text": "    if total == 0 or total != len(outputs):"
+        },
+        {
+          "line": 159,
+          "text": "        return _cannot_measure(args, f\"{total} inputs against {len(outputs)} outputs\")"
+        },
+        {
+          "line": 160,
+          "text": ""
+        },
+        {
+          "line": 172,
+          "text": "    if process.is_alive():                     # upstream kills and marks every test failed"
+        },
+        {
+          "line": 173,
+          "text": "        process.kill()"
+        },
+        {
+          "line": 174,
+          "text": "        process.join()"
+        },
+        {
+          "line": 175,
+          "text": "        return _measure(args, 0.0, f\"global timeout after {cap:g}s: the solution did not finish \""
+        },
+        {
+          "line": 176,
+          "text": "                                   f\"on {total} tests\", total, 0, [-1] * total)"
+        },
+        {
+          "line": 177,
+          "text": "    if queue.empty():"
+        },
+        {
+          "line": 178,
+          "text": "        return _cannot_measure(args, \"the executor died without a verdict\")"
+        },
+        {
+          "line": 179,
+          "text": "    outcome = queue.get()"
+        },
+        {
+          "line": 180,
+          "text": "    if \"error\" in outcome:"
+        },
+        {
+          "line": 181,
+          "text": "        return _cannot_measure(args, outcome[\"error\"])"
+        },
+        {
+          "line": 182,
+          "text": ""
+        },
+        {
+          "line": 183,
+          "text": "    results = outcome[\"results\"]"
+        },
+        {
+          "line": 184,
+          "text": "    passed = sum(1 for value in results if _positive(value))"
+        }
+      ],
+      "source": {
+        "bytes": 10099,
+        "path": "/tmp/hg-tbi2-audit/data/datasets/livecodebench/verify/check.py",
+        "sha256": "191ee875cf2443dd1e284781d196864d563fe354b12863365b21de5954d75274"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 197,
+          "text": "                  \"variation\": int(entry[\"variation\"]),"
+        },
+        {
+          "line": 198,
+          "text": "                  \"gold_moves\": int(entry[\"gold_moves\"])}"
+        },
+        {
+          "line": 199,
+          "text": "        (too_long if record[\"gold_moves\"] > STEP_BUDGET else records).append(record)"
+        },
+        {
+          "line": 200,
+          "text": "    if not records:"
+        },
+        {
+          "line": 201,
+          "text": "        raise ValueError(f\"{FOLD_FILE} leaves no tasks inside the {STEP_BUDGET}-move \""
+        },
+        {
+          "line": 202,
+          "text": "                         f\"budget\")"
+        },
+        {
+          "line": 203,
+          "text": "    if len(records) + len(too_long) == 0:"
+        },
+        {
+          "line": 204,
+          "text": "        raise ValueError(f\"{FOLD_FILE} has no tasks\")"
+        },
+        {
+          "line": 205,
+          "text": "    _FOLD_CACHE = records"
+        },
+        {
+          "line": 206,
+          "text": "    return records"
+        },
+        {
+          "line": 207,
+          "text": ""
+        },
+        {
+          "line": 306,
+          "text": "    return {"
+        },
+        {
+          "line": 307,
+          "text": "        \"kind\": \"command\","
+        },
+        {
+          "line": 308,
+          "text": "        \"argv\": ["
+        },
+        {
+          "line": 309,
+          "text": "            \"python3\", \"check.py\","
+        },
+        {
+          "line": 310,
+          "text": "            \"--workdir\", \".\","
+        },
+        {
+          "line": 311,
+          "text": "            \"--task\", TASK_IN_WORKDIR,"
+        },
+        {
+          "line": 312,
+          "text": "            \"--log\", LOG_IN_WORKDIR,"
+        },
+        {
+          "line": 313,
+          "text": "            \"--reward-file\", REWARD_REL,"
+        },
+        {
+          "line": 314,
+          "text": "            \"--evidence-file\", EVIDENCE_REL,"
+        },
+        {
+          "line": 315,
+          "text": "            \"--budget\", str(STEP_BUDGET),"
+        },
+        {
+          "line": 316,
+          "text": "        ],"
+        },
+        {
+          "line": 317,
+          "text": "        \"inputs\": ["
+        },
+        {
+          "line": 318,
+          "text": "            {\"path\": \"check.py\", \"from\": str(VERIFY_DIR / \"check.py\")},"
+        },
+        {
+          "line": 319,
+          "text": "            {\"path\": \"scw_env.py\", \"from\": str(LIB_DIR / \"scw_env.py\")},"
+        },
+        {
+          "line": 320,
+          "text": "            {\"path\": TASK_IN_WORKDIR,"
+        },
+        {
+          "line": 321,
+          "text": "             \"content\": json.dumps({\"task_name\": record[\"task_name\"],"
+        },
+        {
+          "line": 322,
+          "text": "                                    \"variation\": record[\"variation\"],"
+        },
+        {
+          "line": 323,
+          "text": "                                    \"simplifications\": \"\"})},"
+        },
+        {
+          "line": 324,
+          "text": "            {\"path\": f\"{_LIB.JRE_RELDIR}/{_LIB.JRE_DIRNAME}\", \"from\": str(JRE_STAGED)},"
+        },
+        {
+          "line": 325,
+          "text": "        ],"
+        },
+        {
+          "line": 326,
+          "text": "        \"reward_file\": REWARD_FILE,"
+        },
+        {
+          "line": 327,
+          "text": "        \"evidence_file\": EVIDENCE_FILE,"
+        },
+        {
+          "line": 328,
+          "text": "        \"timeout_s\": 900,"
+        }
+      ],
+      "source": {
+        "bytes": 24958,
+        "path": "/tmp/hg-tbi2-audit/data/datasets/scienceworld.py",
+        "sha256": "e49b0c7ee0ddb5634214145cf7fff7726cdd1775ef7f97fb635cd47cf83f2366"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 125,
+          "text": "def main(argv) -> int:"
+        },
+        {
+          "line": 126,
+          "text": "    args = parse_args(argv)"
+        },
+        {
+          "line": 127,
+          "text": "    workdir = Path(args.workdir)"
+        },
+        {
+          "line": 128,
+          "text": "    evidence: dict = {"
+        },
+        {
+          "line": 129,
+          "text": "        \"task_file\": str(args.task),"
+        },
+        {
+          "line": 130,
+          "text": "        \"action_log\": str(args.log),"
+        },
+        {
+          "line": 131,
+          "text": "        \"budget\": args.budget,"
+        },
+        {
+          "line": 132,
+          "text": "    }"
+        },
+        {
+          "line": 133,
+          "text": ""
+        },
+        {
+          "line": 134,
+          "text": "    if not args.task.is_file():"
+        },
+        {
+          "line": 135,
+          "text": "        evidence.update(measured=False, error=f\"no task file at {args.task}\")"
+        },
+        {
+          "line": 136,
+          "text": "        write_evidence(args.evidence_file, evidence)"
+        },
+        {
+          "line": 137,
+          "text": "        print(f\"check cannot measure: {evidence['error']}\", file=sys.stderr)"
+        },
+        {
+          "line": 138,
+          "text": "        return 3"
+        },
+        {
+          "line": 139,
+          "text": ""
+        },
+        {
+          "line": 140,
+          "text": "    records = scw_env.action_log_records(args.log)"
+        },
+        {
+          "line": 141,
+          "text": "    actions = scw_env.actions_in(records)"
+        },
+        {
+          "line": 142,
+          "text": "    declared_done = any(r.get(\"kind\") == \"done\" for r in records)"
+        },
+        {
+          "line": 143,
+          "text": "    evidence.update(actions_in_log=len(actions), log_records=len(records),"
+        },
+        {
+          "line": 144,
+          "text": "                    agent_declared_done=declared_done,"
+        },
+        {
+          "line": 145,
+          "text": "                    unparseable_lines=None)"
+        },
+        {
+          "line": 146,
+          "text": ""
+        },
+        {
+          "line": 147,
+          "text": "    java_home = _point_at_the_jvm(workdir)"
+        },
+        {
+          "line": 148,
+          "text": "    evidence[\"java_home\"] = str(java_home) if java_home else None"
+        },
+        {
+          "line": 149,
+          "text": "    if java_home is None:"
+        },
+        {
+          "line": 150,
+          "text": "        evidence.update(measured=False,"
+        },
+        {
+          "line": 151,
+          "text": "                        error=\"no Java runtime in the workdir or under the dataset root\")"
+        },
+        {
+          "line": 152,
+          "text": "        write_evidence(args.evidence_file, evidence)"
+        },
+        {
+          "line": 153,
+          "text": "        print(f\"check cannot measure: {evidence['error']}\", file=sys.stderr)"
+        },
+        {
+          "line": 154,
+          "text": "        return 3"
+        },
+        {
+          "line": 155,
+          "text": ""
+        },
+        {
+          "line": 156,
+          "text": "    try:"
+        },
+        {
+          "line": 157,
+          "text": "        env = scw_env.load_task(workdir, step_budget=args.budget)"
+        },
+        {
+          "line": 158,
+          "text": "    except Exception as exc:  # noqa: BLE001 - a check that cannot run is not a zero"
+        },
+        {
+          "line": 159,
+          "text": "        evidence.update(measured=False,"
+        },
+        {
+          "line": 160,
+          "text": "                        error=f\"could not build the world: {exc}\","
+        },
+        {
+          "line": 161,
+          "text": "                        traceback=traceback.format_exc()[-2000:])"
+        },
+        {
+          "line": 162,
+          "text": "        write_evidence(args.evidence_file, evidence)"
+        },
+        {
+          "line": 163,
+          "text": "        print(f\"check cannot measure: {evidence['error']}\", file=sys.stderr)"
+        },
+        {
+          "line": 164,
+          "text": "        return 3"
+        }
+      ],
+      "source": {
+        "bytes": 10388,
+        "path": "/tmp/hg-tbi2-audit/data/datasets/scienceworld/verify/check.py",
+        "sha256": "afa6b10db53458afb02df9f25fb08e690f2f415019f28f1dec2e2508be69cf2f"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 115,
+          "text": "def make_env(workdir: Path, *, step_budget: int = STEP_BUDGET):"
+        },
+        {
+          "line": 116,
+          "text": "    \"\"\"A `ScienceWorldEnv` with the JVM pointed at the workdir's copy."
+        },
+        {
+          "line": 117,
+          "text": ""
+        },
+        {
+          "line": 118,
+          "text": "    The import is inside the function on purpose: `data/datasets/scienceworld.py` is imported by"
+        },
+        {
+          "line": 119,
+          "text": "    `data/scaffolds/registry.py::published` on machines that have not provisioned anything, and a"
+        },
+        {
+          "line": 120,
+          "text": "    module-level `import scienceworld` there would be a second thing that can fail."
+        },
+        {
+          "line": 121,
+          "text": "    \"\"\""
+        },
+        {
+          "line": 122,
+          "text": "    home = java_home(workdir)"
+        },
+        {
+          "line": 123,
+          "text": "    os.environ[\"JAVA_HOME\"] = str(home)"
+        },
+        {
+          "line": 124,
+          "text": "    os.environ[\"PATH\"] = str(home / \"bin\") + os.pathsep + os.environ.get(\"PATH\", \"\")"
+        },
+        {
+          "line": 125,
+          "text": "    from scienceworld import ScienceWorldEnv"
+        },
+        {
+          "line": 126,
+          "text": ""
+        },
+        {
+          "line": 127,
+          "text": "    return ScienceWorldEnv(\"\", None, envStepLimit=step_budget)"
+        },
+        {
+          "line": 128,
+          "text": ""
+        },
+        {
+          "line": 129,
+          "text": ""
+        },
+        {
+          "line": 130,
+          "text": "def load_task(workdir: Path, *, generate_gold: bool = False,"
+        },
+        {
+          "line": 131,
+          "text": "              step_budget: int = STEP_BUDGET):"
+        },
+        {
+          "line": 132,
+          "text": "    \"\"\"Build the world named by `scw_task.json` in `workdir`. Returns the live env."
+        },
+        {
+          "line": 133,
+          "text": ""
+        },
+        {
+          "line": 134,
+          "text": "    `generate_gold=True` asks the JVM for the reference action sequence, which is the"
+        },
+        {
+          "line": 135,
+          "text": "    oracle (`docs/dataset-onboarding-skill.md` \u00a712: `get_gold_action_sequence()` is \"the"
+        },
+        {
+          "line": 136,
+          "text": "    analogue of ALFWorld's `walkthrough`\"). It is requested only by the control and by the"
+        },
+        {
+          "line": 137,
+          "text": "    tests -- the agent's CLI never sets the flag, which is the leak boundary: the sequence"
+        },
+        {
+          "line": 138,
+          "text": "    is reachable through an API the agent's process does not call."
+        },
+        {
+          "line": 139,
+          "text": "    \"\"\""
+        },
+        {
+          "line": 140,
+          "text": "    spec = json.loads((workdir / TASK_FILENAME).read_text())"
+        },
+        {
+          "line": 141,
+          "text": "    env = make_env(workdir, step_budget=step_budget)"
+        },
+        {
+          "line": 142,
+          "text": "    env.load(spec[\"task_name\"], int(spec[\"variation\"]), spec.get(\"simplifications\", \"\"),"
+        },
+        {
+          "line": 143,
+          "text": "             generateGoldPath=generate_gold)"
+        },
+        {
+          "line": 144,
+          "text": "    return env"
+        }
+      ],
+      "source": {
+        "bytes": 10775,
+        "path": "/tmp/hg-tbi2-audit/data/datasets/scienceworld/lib/scw_env.py",
+        "sha256": "8d5ac70cbfdaaddecb6cb874368c9f123cbb47d901682c6b886086fa7587df13"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 113,
+          "text": "    for row in rows:"
+        },
+        {
+          "line": 114,
+          "text": "        task_id = str(row[\"id\"])"
+        },
+        {
+          "line": 115,
+          "text": "        # `dataset.json`'s `spreadsheet_path` is relative to the **release directory**, not to"
+        },
+        {
+          "line": 116,
+          "text": "        # the dataset root: the tarball extracts to `spreadsheetbench_verified_400/`. Measured"
+        },
+        {
+          "line": 117,
+          "text": "        # -- joining it to the root found `[]` for every task."
+        },
+        {
+          "line": 118,
+          "text": "        folder = DATASET_ROOT / RELEASE_DIR / str(row[\"spreadsheet_path\"])"
+        },
+        {
+          "line": 119,
+          "text": "        init = _find_workbook(folder, task_id, \"init\")"
+        },
+        {
+          "line": 120,
+          "text": "        golden = _find_workbook(folder, task_id, \"golden\")"
+        },
+        {
+          "line": 121,
+          "text": "        if init is None or golden is None:"
+        },
+        {
+          "line": 122,
+          "text": "            raise FileNotFoundError("
+        },
+        {
+          "line": 123,
+          "text": "                f\"spreadsheetbench: {task_id} is missing its workbook pair under {folder} \""
+        },
+        {
+          "line": 124,
+          "text": "                f\"(found {sorted(p.name for p in folder.glob('*.xlsx')) if folder.is_dir() else []})\")"
+        },
+        {
+          "line": 125,
+          "text": "        position = str(row.get(ANSWER_POSITION_KEY) or \"\").strip()"
+        },
+        {
+          "line": 126,
+          "text": "        if not position:"
+        },
+        {
+          "line": 127,
+          "text": "            raise ValueError(f\"spreadsheetbench: {task_id} has no {ANSWER_POSITION_KEY}\")"
+        },
+        {
+          "line": 128,
+          "text": "        records.append({"
+        },
+        {
+          "line": 129,
+          "text": "            \"task_id\": task_id,"
+        },
+        {
+          "line": 130,
+          "text": "            \"init_name\": init.name,"
+        },
+        {
+          "line": 131,
+          "text": "            \"golden_name\": golden.name,"
+        },
+        {
+          "line": 132,
+          "text": "            \"instruction\": str(row[\"instruction\"]).strip(),"
+        },
+        {
+          "line": 133,
+          "text": "            \"instruction_type\": str(row.get(\"instruction_type\") or \"\"),"
+        },
+        {
+          "line": 134,
+          "text": "            \"answer_position\": position,"
+        },
+        {
+          "line": 135,
+          "text": "            \"answer_sheet\": str(row.get(\"answer_sheet\") or \"\"),"
+        },
+        {
+          "line": 136,
+          "text": "            \"init_path\": init,"
+        },
+        {
+          "line": 137,
+          "text": "            \"golden_path\": golden,"
+        },
+        {
+          "line": 138,
+          "text": "        })"
+        },
+        {
+          "line": 231,
+          "text": "        \"argv\": ["
+        },
+        {
+          "line": 232,
+          "text": "            \"python3\", \"check.py\","
+        },
+        {
+          "line": 233,
+          "text": "            \"--workdir\", \".\","
+        },
+        {
+          "line": 234,
+          "text": "            \"--answer\", \"answer.txt\","
+        },
+        {
+          "line": 235,
+          "text": "            \"--result\", RESULT_WORKBOOK,"
+        },
+        {
+          "line": 236,
+          "text": "            \"--golden\", \"golden.xlsx\","
+        },
+        {
+          "line": 237,
+          "text": "            \"--task\", \"task.json\","
+        },
+        {
+          "line": 238,
+          "text": "            \"--reward-file\", REWARD_REL,"
+        },
+        {
+          "line": 239,
+          "text": "            \"--evidence-file\", EVIDENCE_REL,"
+        },
+        {
+          "line": 240,
+          "text": "        ],"
+        },
+        {
+          "line": 241,
+          "text": "        \"inputs\": ["
+        },
+        {
+          "line": 242,
+          "text": "            {\"path\": \"check.py\","
+        },
+        {
+          "line": 243,
+          "text": "             \"from\": str(Path(__file__).resolve().parent / \"spreadsheetbench\""
+        },
+        {
+          "line": 244,
+          "text": "                         / \"verify\" / \"check.py\")},"
+        },
+        {
+          "line": 245,
+          "text": "            {\"path\": \"golden.xlsx\", \"from\": str(record[\"golden_path\"])},"
+        },
+        {
+          "line": 246,
+          "text": "            {\"path\": \"task.json\","
+        },
+        {
+          "line": 247,
+          "text": "             \"content\": json.dumps({\"task_id\": record[\"task_id\"],"
+        },
+        {
+          "line": 248,
+          "text": "                                    \"answer_position\": record[\"answer_position\"],"
+        },
+        {
+          "line": 249,
+          "text": "                                    \"instruction_type\": record[\"instruction_type\"]})},"
+        },
+        {
+          "line": 250,
+          "text": "        ],"
+        },
+        {
+          "line": 251,
+          "text": "        \"reward_file\": REWARD_FILE,"
+        },
+        {
+          "line": 252,
+          "text": "        \"evidence_file\": EVIDENCE_FILE,"
+        },
+        {
+          "line": 253,
+          "text": "        \"timeout_s\": 300,"
+        }
+      ],
+      "source": {
+        "bytes": 16314,
+        "path": "/tmp/hg-tbi2-audit/data/datasets/spreadsheetbench.py",
+        "sha256": "8fdfad8f320bce041555ca3b4c8b769b79d07ad971af78f314852eb5f9799505"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 305,
+          "text": "    args = parse_args(argv)"
+        },
+        {
+          "line": 306,
+          "text": "    workdir = Path(args.workdir)"
+        },
+        {
+          "line": 307,
+          "text": "    task_path = workdir / args.task"
+        },
+        {
+          "line": 308,
+          "text": "    golden_path = workdir / args.golden"
+        },
+        {
+          "line": 309,
+          "text": "    answer_path = workdir / args.answer"
+        },
+        {
+          "line": 310,
+          "text": "    evidence: dict = {\"answer_file\": str(answer_path), \"golden\": str(golden_path)}"
+        },
+        {
+          "line": 311,
+          "text": ""
+        },
+        {
+          "line": 312,
+          "text": "    if not task_path.is_file():"
+        },
+        {
+          "line": 313,
+          "text": "        evidence.update(measured=False, error=f\"no task file at {task_path}\")"
+        },
+        {
+          "line": 314,
+          "text": "        write_evidence(args.evidence_file, evidence)"
+        },
+        {
+          "line": 315,
+          "text": "        print(f\"check cannot measure: {evidence['error']}\", file=sys.stderr)"
+        },
+        {
+          "line": 316,
+          "text": "        return 3"
+        },
+        {
+          "line": 317,
+          "text": "    if not golden_path.is_file():"
+        },
+        {
+          "line": 318,
+          "text": "        evidence.update(measured=False, error=f\"no golden workbook at {golden_path}\")"
+        },
+        {
+          "line": 319,
+          "text": "        write_evidence(args.evidence_file, evidence)"
+        },
+        {
+          "line": 320,
+          "text": "        print(f\"check cannot measure: {evidence['error']}\", file=sys.stderr)"
+        },
+        {
+          "line": 321,
+          "text": "        return 3"
+        },
+        {
+          "line": 322,
+          "text": ""
+        },
+        {
+          "line": 323,
+          "text": "    spec = json.loads(task_path.read_text())"
+        },
+        {
+          "line": 324,
+          "text": "    evidence.update(task_id=spec.get(\"task_id\"),"
+        },
+        {
+          "line": 325,
+          "text": "                    answer_position=spec.get(\"answer_position\"),"
+        },
+        {
+          "line": 326,
+          "text": "                    instruction_type=spec.get(\"instruction_type\"))"
+        },
+        {
+          "line": 327,
+          "text": ""
+        },
+        {
+          "line": 366,
+          "text": "            evidence[\"recalculated\"] = ok"
+        },
+        {
+          "line": 367,
+          "text": "            if not ok:"
+        },
+        {
+          "line": 368,
+          "text": "                raise RuntimeError(f\"could not recalculate the workbook: {why}\")"
+        },
+        {
+          "line": 369,
+          "text": "        else:"
+        },
+        {
+          "line": 370,
+          "text": "            evidence[\"recalculated\"] = False"
+        },
+        {
+          "line": 371,
+          "text": ""
+        },
+        {
+          "line": 372,
+          "text": "        phase = \"comparison\""
+        },
+        {
+          "line": 373,
+          "text": "        ok, message = compare_workbooks(str(golden_path), str(candidate),"
+        },
+        {
+          "line": 374,
+          "text": "                                        spec.get(\"instruction_type\"),"
+        },
+        {
+          "line": 375,
+          "text": "                                        str(spec[\"answer_position\"]))"
+        },
+        {
+          "line": 376,
+          "text": "    except Exception as exc:  # noqa: BLE001 - a failed tool/comparator is not a zero"
+        }
+      ],
+      "source": {
+        "bytes": 17228,
+        "path": "/tmp/hg-tbi2-audit/data/datasets/spreadsheetbench/verify/check.py",
+        "sha256": "9ec684b333d4d4ca648c76fe6991085a8c4d046f9a620566a945bf0cbcb7bd19"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 200,
+          "text": ""
+        },
+        {
+          "line": 201,
+          "text": "class StepwisePuzzle:"
+        },
+        {
+          "line": 202,
+          "text": "    \"\"\"Trusted session; only `public_task()` results may cross into the actor."
+        },
+        {
+          "line": 203,
+          "text": ""
+        },
+        {
+          "line": 204,
+          "text": "    Construct with verifier-owned gold. Present `public_task()`; receive exactly"
+        },
+        {
+          "line": 205,
+          "text": "    {\"uci\": \"e2e4\"}; call `submit()` and present its result before asking again."
+        },
+        {
+          "line": 206,
+          "text": "    Responses reveal the resulting board, turn number and verdict, never the expected"
+        },
+        {
+          "line": 207,
+          "text": "    solver move, future opponent response, line length, original FEN or reference line."
+        },
+        {
+          "line": 208,
+          "text": "    A runner must isolate this object and gold from the actor, and retain submissions"
+        },
+        {
+          "line": 209,
+          "text": "    itself; an actor-authored transcript is not evidence of interactive evaluation."
+        },
+        {
+          "line": 210,
+          "text": "    \"\"\""
+        },
+        {
+          "line": 211,
+          "text": ""
+        },
+        {
+          "line": 212,
+          "text": "    def __init__(self, gold: dict):"
+        },
+        {
+          "line": 213,
+          "text": "        self._board = None"
+        },
+        {
+          "line": 214,
+          "text": "        self._moves = list(gold[\"moves\"])"
+        },
+        {
+          "line": 215,
+          "text": "        self._index = 1"
+        },
+        {
+          "line": 370,
+          "text": "_SPEC = base.QASpec("
+        },
+        {
+          "line": 371,
+          "text": "    name=\"chessbench_puzzles\","
+        },
+        {
+          "line": 372,
+          "text": "    root=DATASET_ROOT,"
+        },
+        {
+          "line": 373,
+          "text": "    rows=_rows,"
+        },
+        {
+          "line": 374,
+          "text": "    question=_question,"
+        },
+        {
+          "line": 375,
+          "text": "    gold=_gold,"
+        },
+        {
+          "line": 376,
+          "text": "    goal=_goal,"
+        },
+        {
+          "line": 377,
+          "text": "    score=score,"
+        },
+        {
+          "line": 378,
+          "text": "    downloads=downloads,"
+        },
+        {
+          "line": 379,
+          "text": "    split=\"test\","
+        },
+        {
+          "line": 380,
+          "text": "    source=\"google-deepmind/searchless_chess@\" + REVISION + \" data/puzzles.csv\","
+        },
+        {
+          "line": 381,
+          "text": ")"
+        },
+        {
+          "line": 382,
+          "text": ""
+        },
+        {
+          "line": 423,
+          "text": ""
+        },
+        {
+          "line": 424,
+          "text": ""
+        },
+        {
+          "line": 425,
+          "text": "def control_task(task_id: str | None) -> dict:"
+        },
+        {
+          "line": 426,
+          "text": "    \"\"\"Get one trusted control record; the default eval id needs no pool read.\"\"\""
+        },
+        {
+          "line": 427,
+          "text": "    if task_id is None:"
+        },
+        {
+          "line": 428,
+          "text": "        task_id = next(f\"chessbench_puzzles/test/{index}\" for index in range(10000)"
+        },
+        {
+          "line": 429,
+          "text": "                       if base.is_eval(f\"chessbench_puzzles/test/{index}\"))"
+        },
+        {
+          "line": 430,
+          "text": "    return _selected_records([task_id])[0]"
+        },
+        {
+          "line": 431,
+          "text": ""
+        },
+        {
+          "line": 432,
+          "text": ""
+        },
+        {
+          "line": 433,
+          "text": "def setup_for(record: dict) -> dict:"
+        },
+        {
+          "line": 434,
+          "text": "    return _SPEC.setup(record)"
+        },
+        {
+          "line": 435,
+          "text": ""
+        },
+        {
+          "line": 436,
+          "text": ""
+        },
+        {
+          "line": 437,
+          "text": "def verify_for(record: dict) -> dict:"
+        },
+        {
+          "line": 438,
+          "text": "    return _SPEC.verifier(record)"
+        }
+      ],
+      "source": {
+        "bytes": 17396,
+        "path": "/tmp/hg-tbi2-audit/data/datasets/chessbench_puzzles.py",
+        "sha256": "61165a5351b9068ebdac5e66f34cba1b6ed3c658ee1198ebdaf789be4e11b261"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "        Also does basic init stuff."
+        },
+        {
+          "line": 26,
+          "text": "        :param taskName: The name of the task. Will be run through the infer_task method."
+        },
+        {
+          "line": 27,
+          "text": "            Tasks can also be loaded by the load method."
+        },
+        {
+          "line": 28,
+          "text": "        :param serverPath: The filepath to the server. By default, it is just scienceworld.jar."
+        },
+        {
+          "line": 29,
+          "text": "        :param envStepLimit: The maximum number of steps taken in the environment. Defaults to 100."
+        },
+        {
+          "line": 30,
+          "text": "        '''"
+        },
+        {
+          "line": 31,
+          "text": "        serverPath = serverPath or JAR_PATH  # Use the builtin jar."
+        },
+        {
+          "line": 32,
+          "text": ""
+        },
+        {
+          "line": 33,
+          "text": "        # Launch the server and connect to the JVM."
+        },
+        {
+          "line": 34,
+          "text": "        # Launch Java side with dynamic port and get back the port on which the"
+        },
+        {
+          "line": 35,
+          "text": "        # server was bound to."
+        },
+        {
+          "line": 36,
+          "text": "        if DEBUG_MODE:"
+        },
+        {
+          "line": 37,
+          "text": "            import sys"
+        },
+        {
+          "line": 38,
+          "text": "            import time"
+        },
+        {
+          "line": 39,
+          "text": "            port, proc = launch_gateway("
+        },
+        {
+          "line": 40,
+          "text": "                classpath=serverPath, die_on_exit=True, cwd=BASEPATH,"
+        },
+        {
+          "line": 41,
+          "text": "                javaopts=['-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005,quiet=y'],"
+        },
+        {
+          "line": 42,
+          "text": "                redirect_stdout=sys.stdout, redirect_stderr=sys.stderr, return_proc=True)"
+        },
+        {
+          "line": 43,
+          "text": "            logger.debug(\"Attach debugger within the next 10 seconds\")"
+        },
+        {
+          "line": 44,
+          "text": "            time.sleep(10)  # Give time for user to attach debugger"
+        },
+        {
+          "line": 45,
+          "text": "        else:"
+        },
+        {
+          "line": 46,
+          "text": "            port, proc = launch_gateway(classpath=serverPath, die_on_exit=True, cwd=BASEPATH, return_proc=True)"
+        },
+        {
+          "line": 47,
+          "text": ""
+        },
+        {
+          "line": 48,
+          "text": "        # Connect python side to Java side with Java dynamic port and start python"
+        },
+        {
+          "line": 49,
+          "text": "        # callback server with a dynamic port"
+        },
+        {
+          "line": 95,
+          "text": "        :param taskName: The name of the task. Will be modified by the infer_task function."
+        },
+        {
+          "line": 96,
+          "text": "        :param variationIdx: The index for the specific variation to use. Default is 0."
+        },
+        {
+          "line": 97,
+          "text": "        :param simplificationStr: The string of simplifications to use. Should be comma"
+        },
+        {
+          "line": 98,
+          "text": "            separated with no spaces. Defaults to \"\". For more, see get_possible_simplifications"
+        },
+        {
+          "line": 99,
+          "text": "        :param generateGoldPath: Boolean var to generate gold path or not. Defaults to False."
+        },
+        {
+          "line": 100,
+          "text": "        '''"
+        },
+        {
+          "line": 101,
+          "text": "        # Check loading arguments."
+        },
+        {
+          "line": 102,
+          "text": "        # Validate task name."
+        },
+        {
+          "line": 103,
+          "text": "        taskName = infer_task(taskName)"
+        },
+        {
+          "line": 104,
+          "text": "        if taskName not in self.get_task_names():"
+        },
+        {
+          "line": 105,
+          "text": "            msg = \"Unknown taskName: '{}'. \".format(taskName)"
+        },
+        {
+          "line": 106,
+          "text": "            msg += \"Supported tasks are: {}\".format(self.get_task_names())"
+        },
+        {
+          "line": 107,
+          "text": "            raise ValueError(msg)"
+        },
+        {
+          "line": 108,
+          "text": ""
+        },
+        {
+          "line": 109,
+          "text": "        self.taskName = taskName"
+        },
+        {
+          "line": 110,
+          "text": ""
+        },
+        {
+          "line": 111,
+          "text": "        # Validate simplification string."
+        },
+        {
+          "line": 112,
+          "text": "        possible_simplifications = [\"easy\"] + self.get_possible_simplifications()"
+        },
+        {
+          "line": 113,
+          "text": "        for simplification in simplificationStr.split(\",\"):"
+        },
+        {
+          "line": 114,
+          "text": "            if simplification and simplification not in possible_simplifications:"
+        }
+      ],
+      "source": {
+        "bytes": 27381,
+        "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/scienceworld/scienceworld.py",
+        "sha256": "23a37a2e9ed8e43d8c5e27d8660ea344d38a544abcd8c7e6af40071c7832ce68"
+      }
+    },
+    {
+      "excerpts": [
+        {
+          "line": 1,
+          "text": "import json"
+        },
+        {
+          "line": 2,
+          "text": "import os"
+        },
+        {
+          "line": 3,
+          "text": ""
+        },
+        {
+          "line": 4,
+          "text": "BASEPATH = os.path.dirname(os.path.abspath(__file__))"
+        },
+        {
+          "line": 5,
+          "text": "JAR_FILE = 'scienceworld.jar'"
+        },
+        {
+          "line": 6,
+          "text": "JAR_PATH = os.path.join(BASEPATH, JAR_FILE)"
+        },
+        {
+          "line": 7,
+          "text": "TASK_FILE = 'tasks.json'"
+        },
+        {
+          "line": 8,
+          "text": "TASK_PATH = os.path.join(BASEPATH, TASK_FILE)"
+        },
+        {
+          "line": 9,
+          "text": ""
+        },
+        {
+          "line": 10,
+          "text": ""
+        },
+        {
+          "line": 30,
+          "text": ""
+        },
+        {
+          "line": 31,
+          "text": "with open(TASK_PATH) as file:"
+        },
+        {
+          "line": 32,
+          "text": "    TASKS = json.load(file)"
+        },
+        {
+          "line": 33,
+          "text": ""
+        },
+        {
+          "line": 34,
+          "text": "ID2TASK = {task['task_id']: task['task_name'] for task in TASKS}"
+        },
+        {
+          "line": 35,
+          "text": "# Names used in the paper"
+        },
+        {
+          "line": 36,
+          "text": "NAME2ID = {f\"{task['topic']} {task['task']}\": task['task_id'] for task in TASKS}"
+        }
+      ],
+      "source": {
+        "bytes": 1123,
+        "path": "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/site-packages/scienceworld/constants.py",
+        "sha256": "23cd7dac0358a3bc1966b3fcb9111a1b303c3152195436d6a6b852782ada139a"
+      }
+    }
+  ]
+}
