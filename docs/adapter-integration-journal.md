@@ -3889,3 +3889,40 @@ clean; all four named deliverables present.
 - Four disposable cached-image prerequisite probes used network none, one CPU, 256 MiB, 64 PIDs and automatic removal; exact post-removal inspect errors are preserved. The first regex probe overrequired image-local Python; the host-interpreter fallback means its missing python3 is not a proven platform prerequisite failure. That unused identity remains intact; a distinct fresh regex driver attempt supplies the actual shared refusal.
 - `reports/w-tb89-receipts.md`, `reports/w-tb89-evidence/` and `reports/w-tb89-validation.txt` preserve exact commands, observed digests, source/hash bindings, raw refusals, cleanup/absence checks and immutable external artifact inventory. Original artifacts remain under the runs root recorded in `reports/w-tb89-evidence/batch.json`; no repository `runs/` or frozen receipt is touched.
 - This does not widen S4 verifier execution. Only shared `scorer-offline-closure` observed detail/evidence is appended at the refusal scope; S1/S3/S4/S5/S6 remain PARTIAL and all statuses, next_actions, dataset/history records and production_authorized=false remain unchanged. No gate is weakened, no blocker closes, and no task test, model, GPU or endpoint call ran. Commit is confined to registered `/tmp/hg-tb89` on `wg-tb89` for parent review.
+## Parent review and merge — w-e6fix, w-mkl2, w-resolver2, w-tb89 — 2026-10-15
+
+- Merged `1874e5ee`, `9495819e`, `48482bf6`, `52f42b07`. Registry valid: 28 datasets, 2 shared
+  blockers, 11 historical records, `production_authorized=false`; sequencer clean; all four
+  deliverables present.
+- **w-e6fix fixed the leak that w-e6 found.** The timeout killed the Docker client while leaving
+  its verifier container, recording bind and network endpoint alive, and that endpoint blocked
+  **network removal** (service removal still succeeded). The fix names each container uniquely and
+  removes it in `finally`, covering the shared mounted actor/verifier helper. Focused tests went
+  **7 failed / 1 passed -> 8 passed**, and a live control shows cleanup succeeding before the
+  collector would have rescued it. It also reported adjacent-route risks rather than assuming this
+  case was unique.
+- **w-mkl2 completed the DS-1000 import-payload profile**, the last partial one: it reproduced the
+  Gensim 4.3.2 / SciPy 1.13.1 failure and verified Gensim 4.3.2 with SciPy 1.12.0 offline, and
+  established that TensorFlow/XGBoost are required only by specific released contexts that are
+  already excluded from offered tasks, with upstream pins recorded. 19 module probes, six import
+  statements and 62 dependency checks passed with the network denied.
+- **w-resolver2 found that all three "missing" distributions were obtainable from PyPI.** Resolver
+  coverage is now **6/6 bounded profiles and 5/23 complete dataset profiles**, with missing-wheel
+  controls correctly refusing resolution. This is the **second** time in two rounds that a
+  "not obtainable" conclusion was overturned by checking harder (MKL was the first) - the brief for
+  this worker explicitly carried that lesson, and it paid off. Negative results in this phase are
+  research findings with a shelf life, not permanent facts.
+- **w-tb89 returned an honest zero and a useful constraint.** Execution could not widen: the
+  unchanged driver **rejected all four no-model diagnostic attempts because it requires a live
+  agent endpoint**. Coverage stays **1/89** and no gate was weakened to get around it. That is a
+  real platform property worth recording - the one successful Terminal-Bench measurement used the
+  local model, and a purely no-model TB diagnostic is not reachable through this route.
+- **My own merge damage was caught again, and this time it was subtler than a brace error.** The
+  conflict resolver dropped the `path` field from one evidence object, producing
+  `fields must be ['kind','locator','path']` from the checker. Repaired in a dedicated commit and
+  the entry verified present. **Fifth time the checker has caught my conflict handling** - the
+  practice that keeps working is validate-immediately-then-repair-exactly, never concatenate a JSON
+  array conflict and never complete a cherry-pick on an unvalidated registry.
+- Still in flight and NOT merged: `w-wal` (the SQLite WAL score-changing dependency loss).
+- Resource state: local containers, offline installs and tests only; w-tb89's attempts were
+  rejected before any container ran. No model, GPU or endpoint call.
