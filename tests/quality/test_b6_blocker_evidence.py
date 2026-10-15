@@ -168,20 +168,25 @@ def test_official_code_and_planning_receipt_do_not_become_a_smoke_execution():
 def test_active_registry_retires_reviews_without_promoting_historical_results():
     registry = json.loads((ROOT / "registry/dataset-blockers.json").read_bytes())
     rows = {r["dataset"]: r for r in registry["datasets"]}
-    assert {b["id"] for b in rows["twowikimultihopqa"]["blockers"]} == {"hub-data-provenance", "ujson-native-offline-closure"}
-    assert {b["id"] for b in rows["livecodebench"]["blockers"]} == {"row-attestation"}
+    assert {b["id"] for b in rows["twowikimultihopqa"]["blockers"]} == set()
+    assert {b["id"] for b in rows["livecodebench"]["blockers"]} == set()
+    withdrawal = (ROOT / "registry/withdrawn-requirements.md").read_text(encoding="utf-8")
     for name in ("twowikimultihopqa", "livecodebench"):
-        assert all(b["status"] == "external" for b in rows[name]["blockers"])
+        assert rows[name]["blockers"] == [], "withdrawal must not leave a residual active gate"
     assert registry["review"]["production_authorized"] is False
-    # Pin the exported review identity without pretending /site is a local file.
-    for name, blocker_id, locator in (
-        ("twowikimultihopqa", "ujson-native-offline-closure", "## 2Wiki: ujson-native-offline-closure"),
-        ("twowikimultihopqa", "hub-data-provenance", "## 2Wiki: hub-data-provenance"),
-        ("livecodebench", "row-attestation", "## LiveCodeBench: row-attestation"),
+    # The active carriers of the B6 locators were withdrawn; pin their failed searches.
+    for name, blocker_id, searched, result in (
+        ("twowikimultihopqa", "ujson-native-offline-closure", "**Searched:** PyPI build attestation",
+         "**Result:** the rebuild **did not reproduce**"),
+        ("twowikimultihopqa", "hub-data-provenance", "**Searched:** exact-revision upload history",
+         "**opaque ETag and no content digest**"),
+        ("livecodebench", "row-attestation", "**Searched:** the authoritative upstream source",
+         "**zero authoritative upstream row IDs obtainable**"),
     ):
-        blocker = next(b for b in rows[name]["blockers"] if b["id"] == blocker_id)
-        assert {"kind": "external-reference", "path": "/site/b6-dataset-blocker-review.md",
-                "locator": locator} in blocker["evidence"]
+        assert blocker_id not in {b["id"] for b in rows[name]["blockers"]}
+        section = withdrawal.split(f"### `{name} / {blocker_id}`", 1)[1].split("\n### ", 1)[0]
+        assert searched in section
+        assert result in section
 
 
 def test_archived_review_does_not_authorize_execution():

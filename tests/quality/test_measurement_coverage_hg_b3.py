@@ -159,19 +159,35 @@ def test_review_preserves_unresolved_gates_and_original_history(dataset, active_
     baseline = json.loads((ROOT / "tests/fixtures/dataset_blockers/history-codex178.json").read_text())
     target = next(row for row in document["datasets"] if row["dataset"] == dataset)
     blockers = {item["id"]: item for item in target["blockers"]}
-    if active_id is not None:
+    withdrawn = dataset in {"bird_minidev", "ds1000"}
+    if withdrawn:
+        assert active_id not in blockers
+        withdrawal = (ROOT / "registry/withdrawn-requirements.md").read_text(encoding="utf-8")
+        section = withdrawal.split(f"### `{dataset} / {active_id}`", 1)[1].split("\n##", 1)[0]
+        assert "**Searched:**" in section
+        if dataset == "bird_minidev":
+            assert "the tracked-source inventory" in section
+            assert "only summaries exist" in section
+            assert "**not present in\nthis repository**" in section
+            assert "not published upstream" in section
+        else:
+            assert "the same inventory" in section
+            assert "**do not exist in the repository**" in section
+            assert "`ds1000-v4-pending-review`" in section
+            assert "`effect=null`" in section
+    elif active_id is not None:
         assert blockers[active_id]["status"] == status
     if retired:
         assert retired not in blockers
-    if active_id is not None:
+    # BIRD/DS1000's old B3 citation membership checks lost their active carriers.
+    # Their failed archive searches are checked above; HotpotQA's gate stays pinned.
+    if active_id is not None and not withdrawn:
         locator = {
-            "bird_minidev": "## Bird MiniDev: label/semantics review closed; metadata reconciliation open",
-            "ds1000": "## DS1000: host-pool interpretation closed; archive acceptance open",
             "hotpotqa": "## HotpotQA: schema/timeout review closed; timeout aggregation still blocked",
         }[dataset]
         assert {"kind": "external-reference", "path": "/site/measurement-coverage-hg-b3-review.md",
                 "locator": locator} in blockers[active_id]["evidence"]
-    else:
+    elif active_id is None:
         # w-alf established current selected noop/scorer/limits/cleanup identity.
         # Raw scorer zero is distinct from deliberately withheld publication.
         assert dataset == "alfworld" and blockers == {}

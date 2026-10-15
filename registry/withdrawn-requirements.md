@@ -10,7 +10,11 @@ A requirement withdrawn here is one that no amount of further work in this repos
 satisfy — not one that is merely difficult. Each entry names what was searched and what
 came back empty or impossible.
 
-## Shared requirement withdrawn: S6 "validate live controls before pilots"
+## Shared requirement withdrawn: `scorer-offline-closure`
+
+The withdrawn shared requirement includes S6 "validate live controls before pilots".
+The remaining clauses retain their bounded evidence and residual limits; withdrawal
+does not certify complete transitive image/ABI closure or official metric equivalence.
 
 **Why it cannot be satisfied by work.** The clause asks for live controls whose staged
 receipts are *cleared*, but the observation flag that would clear them is hard-coded false:
@@ -32,6 +36,34 @@ actual scope — real raw results, each still publishing `score=null`:
 Terminal-Bench verifier coverage reached 13/89 real measurements; the 45th-round live
 control set is preserved in the journal and the run artifacts.
 
+## Shared requirement withdrawn: `artifact-only-state-export`
+
+**Searched:** `w-scope` reviewed all 28 declared datasets and the QA scaffold for
+pristine applicability; `w-quiesce2`, `w-e5`, `w-wal` and `w-e6b` examined selected-file
+custody, scoring equivalence and lifecycle observations at their recorded scopes.
+**Result:** zero pristine-offline declarations or selections. E1/E2/E3 are
+SATISFIED FOR THE CURRENT DATASET SET (zero applicable pristine datasets), but
+no real-dataset pristine export, private-input safety or backend ownership validation is established.
+Selected-file endpoint probes do not establish interval quiescence: the same-UID
+directory-substitution/restore counterexample evades those probes. Main-only SQLite
+export omitted committed WAL state and changed the authored BIRD EX result from 0 to 1;
+the subsequent native bound-input path refuses WAL-format SQLite before scoring.
+E4/E5/E6 remain PARTIAL as standing limits, rather than a claim of general equivalence
+or complete lifecycle coverage. This records the operator's withdrawal; it does not
+classify every unexercised branch as impossible to test.
+
+**Retained future opt-in boundary:** Every future pristine opt-in must provision authoritative per-task export
+and selected private-input/gold contracts, and validate actual backend/source/projection ownership.
+The former next_action remains the scope of that work, not an active shared blocker:
+
+> Provision authoritative per-task export and private-input contracts for pristine scorers;
+> validate ownership, quiescence/trial binding, scoring equivalence and live lifecycle/cleanup.
+> Review snapshot/service state and recording surfaces under their declared class without
+> forcing an inferred artifact allowlist.
+
+The original scope citation remains `/site/w-scope-pristine-applicability.md`,
+locator `## Exact registry wording`; its carrier was the withdrawn shared blocker.
+
 ## Dataset requirements withdrawn as unobtainable
 
 ### `livecodebench / row-attestation`
@@ -44,6 +76,7 @@ Six pinned shard identities were linked to the adapter's own declarations, and t
 selection and conditional split reproduce — that part is retained.
 
 ### `twowikimultihopqa / hub-data-provenance`
+**Former family:** `source-provenance`.
 **Asked for:** metadata-only original-release archive/file digest custody and completeness
 attestation.
 **Searched:** exact-revision upload history, release/tag inventories, a zero-result
@@ -54,6 +87,7 @@ as a substitute. The paper claims 192,606 examples while the witness card carrie
 conflicting counts, so no coverage attestation can be derived either.
 
 ### `twowikimultihopqa / ujson-native-offline-closure`
+**Former family:** `scorer-dependency-network`.
 **Asked for:** authenticated linkage from the published wheel to its source/build inputs,
 including the double-conversion build selection.
 **Searched:** PyPI build attestation (**404, "No provenance available"**) and then a full
@@ -96,3 +130,23 @@ that were never captured.
   operator-supplied selected manifest, which is an input rather than an impossibility.
 - Every withdrawn blocker's text, evidence list and historical record remain readable in the
   git history of `registry/dataset-blockers.json`; the removals are the diff.
+
+## Assertion migration - w-wd
+
+The former `/site/task-206-twowiki-provenance-review.md` locator membership checks
+(`38 passed in 0.24s` and `Hub/data provenance remains blocked`) no longer apply to
+the active registry: their only carriers were the withdrawn TwoWiki blockers.
+The tests instead pin each withdrawn ID, its former family and its failed search
+in this record. The old locators and evidence lists remain in git history; no
+historical run, partial measurement or null effect is reclassified.
+
+The combined registry validation also exposes stale B6 and B3 pins for these
+withdrawn carriers. `/site/b6-dataset-blocker-review.md` locator membership for
+`## 2Wiki: ujson-native-offline-closure`, `## 2Wiki: hub-data-provenance` and
+`## LiveCodeBench: row-attestation` no longer applies to active blockers. Likewise,
+`/site/measurement-coverage-hg-b3-review.md` locators
+`## Bird MiniDev: label/semantics review closed; metadata reconciliation open` and
+`## DS1000: host-pool interpretation closed; archive acceptance open` belonged only
+to the removed BIRD/DS1000 blockers. Their historical text remains available; tests
+pin the corresponding absence and failed searches here. HotpotQA's live gate and
+its citation, all archive-integrity tests and all frozen historical checks stay intact.

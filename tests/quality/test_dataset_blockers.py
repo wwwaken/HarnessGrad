@@ -90,22 +90,25 @@ def test_pristine_scope_inventory_requires_review_on_any_dataset_opt_in():
 
 
 def test_pristine_scope_finding_preserves_residual_requirements_and_open_blockers(document):
-    """w-scope corrects only E1/E2/E3 applicability; E4/E5/E6 still block closure.
+    """Withdrawn shared requirements retain w-scope boundaries and search evidence.
 
-    Pin the standing next_action and the evidence boundary in the same commit as
-    the visible registry annotation. No real-dataset pristine validation follows.
+    E4/E5/E6 are standing limits after the operator's withdrawal, not solved gates.
+    No real-dataset pristine validation follows.
     """
     shared = {item["id"]: item for item in document["shared_blockers"]}
-    assert set(shared) == {"scorer-offline-closure", "artifact-only-state-export"}
-    blocker = shared["artifact-only-state-export"]
-    assert blocker["status"] == "code-solvable"
-    assert blocker["next_action"] == (
+    assert set(shared) == set()
+    withdrawal = (ROOT / "registry/withdrawn-requirements.md").read_text(encoding="utf-8")
+    observed = withdrawal.split(
+        "## Shared requirement withdrawn: `artifact-only-state-export`", 1)[1].split(
+        "## Dataset requirements withdrawn", 1)[0]
+    assert "**Searched:** `w-scope` reviewed all 28 declared datasets" in observed
+    former_action = " ".join(line.removeprefix("> ") for line in observed.splitlines()
+                             if line.startswith("> "))
+    assert former_action == (
         "Provision authoritative per-task export and private-input contracts for pristine scorers; "
         "validate ownership, quiescence/trial binding, scoring equivalence and live lifecycle/cleanup. "
         "Review snapshot/service state and recording surfaces under their declared class without "
         "forcing an inferred artifact allowlist.")
-    observed = blocker["observed"].split(
-        "Pristine applicability scope determination 2026-10-15 - w-scope: ", 1)[1]
     for boundary in (
         "zero pristine-offline declarations or selections",
         "SATISFIED FOR THE CURRENT DATASET SET (zero applicable pristine datasets)",
@@ -113,12 +116,15 @@ def test_pristine_scope_finding_preserves_residual_requirements_and_open_blocker
         "Every future pristine opt-in must provision authoritative per-task export",
         "validate actual backend/source/projection ownership",
         "E4/E5/E6 remain PARTIAL",
-        "artifact-only-state-export remains OPEN/code-solvable with its full next_action unchanged",
+        "E4/E5/E6 remain PARTIAL as standing limits",
     ):
         assert boundary in observed
-    assert {"kind": "external-reference", "path": "/site/w-scope-pristine-applicability.md",
-            "locator": "## Exact registry wording"} in blocker["evidence"]
-    assert shared["scorer-offline-closure"]["status"] == "code-solvable"
+    assert "`/site/w-scope-pristine-applicability.md`,\nlocator `## Exact registry wording`" in observed
+    scorer = withdrawal.split("## Shared requirement withdrawn: `scorer-offline-closure`", 1)[1].split(
+        "## Shared requirement withdrawn: `artifact-only-state-export`", 1)[0]
+    assert "`w-s6` traced the path" in scorer
+    assert "flag only flips after the admission the clause itself\nhelps withhold" in scorer
+    assert "directory-substitution/restore counterexample evades those probes" in observed
     assert document["review"]["production_authorized"] is False
 
 
@@ -315,11 +321,14 @@ def test_scienceworld_code_review_keeps_runtime_and_v4_history_blocked(document)
     assert [item["id"] for item in target["blockers"]] == [], (
         "prevent-platform-writes was withdrawn; if a blocker has returned, this test should "
         "name it and say why it is back")
-    # w-obs completes the observation/refusal source review; dataset runtime
-    # dependencies/export gates and incomplete historical evidence still stand.
-    assert set(target["shared_blockers"]) == {
-        "scorer-offline-closure", "artifact-only-state-export",
-    }
+    # The shared requirements are withdrawn with limits; incomplete history stands.
+    assert set(target["shared_blockers"]) == set()
+    withdrawal = (ROOT / "registry/withdrawn-requirements.md").read_text(encoding="utf-8")
+    for blocker_id in ("scorer-offline-closure", "artifact-only-state-export"):
+        assert blocker_id not in {item["id"] for item in document["shared_blockers"]}
+        assert f"## Shared requirement withdrawn: `{blocker_id}`" in withdrawal
+    assert "flag only flips after the admission the clause itself\nhelps withhold" in withdrawal
+    assert "directory-substitution/restore counterexample evades those probes" in withdrawal
     assert document["review"]["production_authorized"] is False
     baseline = checker.read_json(checker.HISTORY)
     assert target["historical_runs"] == [
@@ -403,17 +412,22 @@ def test_twowiki_source_closure_keeps_dependency_and_data_gates_external(documen
     blockers = {item["id"]: item for item in target["blockers"]}
     assert "independent-evaluator-source" not in blockers
     assert "independent-evaluator-source" not in target["shared_blockers"]
+    withdrawal = (ROOT / "registry/withdrawn-requirements.md").read_text(encoding="utf-8")
     for blocker_id, family in (
         ("ujson-native-offline-closure", "scorer-dependency-network"),
         ("hub-data-provenance", "source-provenance"),
     ):
-        blocker = blockers[blocker_id]
-        assert blocker["status"] == "external"
-        assert blocker["family"] == family
-        locator = ("38 passed in 0.24s" if blocker_id == "ujson-native-offline-closure"
-                   else "Hub/data provenance remains blocked")
-        assert {"kind": "external-reference", "path": "/site/task-206-twowiki-provenance-review.md",
-                "locator": locator} in blocker["evidence"]
+        assert blocker_id not in blockers
+        section = withdrawal.split(f"### `twowikimultihopqa / {blocker_id}`", 1)[1].split(
+            "\n### ", 1)[0]
+        assert f"**Former family:** `{family}`" in section
+        if blocker_id == "ujson-native-offline-closure":
+            assert '**Searched:** PyPI build attestation (**404, "No provenance available"**)' in section
+            assert "**reproducible rebuild** from the pinned commit `59875e08`" in section
+            assert "**Result:** the rebuild **did not reproduce**" in section
+        else:
+            assert "**Searched:** exact-revision upload history, release/tag inventories" in section
+            assert "**opaque ETag and no content digest**" in section
 
 
 def test_twowiki_source_closure_preserves_shared_gates_and_mixed_metric_history(document):
@@ -434,12 +448,16 @@ def test_twowiki_source_closure_preserves_shared_gates_and_mixed_metric_history(
     # w-obs also completes `runtime-observations`: ChessBench records its real
     # controller class; w-fix preserves unknown evidence as noncomparable and
     # refuses comparison (docs/w-fix-unknown-isolation-records.md). Remove exactly these two
-    # completed review gates; keep the real dependency/export gates pinned.
-    # w-scope narrows E1/E2/E3 to their current empty pristine instance set;
-    # E4/E5/E6 remain partial, so neither shared gate nor this pin is removed.
-    assert set(target["shared_blockers"]) == {
-        "scorer-offline-closure", "artifact-only-state-export",
-    }
+    # completed review gates. The operator subsequently withdrew the dependency/export
+    # requirements with search evidence; E4/E5/E6 remain partial as standing limits.
+    assert set(target["shared_blockers"]) == set()
+    withdrawal = (ROOT / "registry/withdrawn-requirements.md").read_text(encoding="utf-8")
+    for blocker_id in ("scorer-offline-closure", "artifact-only-state-export"):
+        assert blocker_id not in {b["id"] for b in document["shared_blockers"]}
+        assert f"## Shared requirement withdrawn: `{blocker_id}`" in withdrawal
+    assert "`w-s6` traced the path" in withdrawal
+    assert "flag only flips after the admission the clause itself\nhelps withhold" in withdrawal
+    assert "directory-substitution/restore counterexample evades those probes" in withdrawal
     assert "pristine-verifier" not in {b["id"] for b in document["shared_blockers"]}
     assert "runtime-observations" not in {b["id"] for b in document["shared_blockers"]}
     notes = "\n".join(document["review"]["notes"])

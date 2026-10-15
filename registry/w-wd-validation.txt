@@ -1,0 +1,111 @@
+w-wd: documented-withdrawal regression validation
+Date: 2026-10-15
+Worktree: /tmp/hg-wd (registered git worktree)
+Branch: withdraw-unobtainable
+Starting commit: 6b5b5c345ba664f306f9ea04c62f0af26b424781
+
+Scope
+-----
+Replaced the four named stale open-gate tests with absence plus documented-search
+checks. The requested combined run exposed three additional stale cases: the B6
+active-registry test and the B3 bird_minidev/ds1000 parameter instances. These were
+updated by the same rule; HotpotQA's active requirement/citations are unchanged.
+No benchmark, model, server, endpoint or paid service was used.
+
+Local evidence provisioning (not tracked)
+---------------------------------------
+As checked out, the standalone checker exited 2:
+{"valid": false, "error": "bfcl_v3: missing evidence tests/fixtures/hg_bfcl/README.md"}
+Only four missing registry-cited text files were copied read-only from the main
+checkout into existing ignored paths. No main file was written and no evidence
+was reconstructed, downloaded or staged:
+  tests/fixtures/hg_bfcl/README.md       2963 bytes
+  tests/fixtures/hg_bfcl/inventory.json  153710 bytes
+  tests/fixtures/hg_trivia/README.md     5178 bytes
+  tests/fixtures/hg_wprov/README.md      10224 bytes
+This changes availability of existing observations, not test skip rules. Optional
+exported site/B6 packets remain absent. No tracked payload or bulk dump is added.
+
+Exact validation commands and before/after counts
+-----------------------------------------------
+Command:
+python3 -m pytest tests/quality/test_dataset_blockers.py -q
+Before edits, after local evidence provisioning (exit 1):
+  4 failed, 52 passed, 15 skipped
+After (exit 0):
+  56 passed, 15 skipped
+Total remains 71 collected cases.
+
+Command:
+python3 -m pytest tests/quality/test_dataset_blockers.py tests/quality/test_dataset_journal_coverage.py tests/quality/test_b6_blocker_evidence.py tests/quality/test_measurement_coverage_hg_b3.py -q
+As checked out, before evidence provisioning (exit 1):
+  7 failed, 29 passed, 73 skipped, 3 xfailed
+Before edits, after local evidence provisioning (exit 1):
+  7 failed, 69 passed, 33 skipped, 3 xfailed
+After (exit 0):
+  76 passed, 33 skipped, 3 xfailed
+Total remains 112 collected cases. No new skip or xfail was introduced. The three
+existing strict journal-gap xfails and optional evidence skips remain unchanged.
+
+Command:
+python3 tools/check_dataset_blockers.py
+Before edits, after local evidence provisioning, and after (exit 0):
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+The standalone checker still requires the ignored source observations in a fresh
+worktree; pytest skips are not substitute evidence or authorization.
+
+Command:
+git diff --check
+After: exit 0, no output.
+
+Command:
+git diff --exit-code HEAD -- tools/check_dataset_blockers.py tests/fixtures/dataset_blockers/history-codex178.json registry/dataset-blockers.json
+After: exit 0, no output. Checker, independent pin, frozen history and already
+applied registry decision are byte-for-byte unchanged.
+
+Assertion audit
+---------------
+Count unit: existing assertion expectation sites, including one changed boundary
+loop value and the applicability of the two B3 assertions to parameter instances.
+17 sites affected: 14 rewritten, 3 obsolete locator-membership sites retired.
+Per test function:
+  pristine scope: 6 rewritten (including one loop value)
+  ScienceWorld: 1 rewritten
+  TwoWiki dependency/data: 2 rewritten, 1 obsolete locator site retired
+  TwoWiki shared/history: 1 rewritten
+  B6 active registry: 3 rewritten, 1 obsolete locator site retired
+  B3 review/history: 1 rewritten for BIRD/DS1000, 1 locator site retired only for
+                     those two instances; both original assertions still apply
+                     unchanged to HotpotQA.
+The six edited functions contain 50 -> 77 assert statements. All other test
+functions are AST-identical; the parameterized dataset/requirement pins remain.
+
+The retired locator checks represent seven former runtime checks:
+  2 task-206 locators (TwoWiki ujson and data provenance),
+  3 B6 locators (TwoWiki ujson/data and LiveCodeBench row attestation),
+  2 B3 locators (BIRD coverage and DS1000 archive review).
+Their only active carriers were removed by the operator's withdrawal. Requiring
+membership in nonexistent blockers would contradict that decision. The locators
+remain in git history and are named in registry/withdrawn-requirements.md; new
+checks require the withdrawn IDs and the actual failed search results instead.
+The former w-scope citation and full next_action are preserved and checked in the
+withdrawal record, along with all six unaffected applicability boundaries.
+
+Historical_runs equality, ScienceWorld incomplete/effect=null, TwoWiki original
+partial-measurement/effect=null, coverage facts, production_authorized=false and
+all unaffected active-gate, archive-integrity and frozen-baseline assertions are
+unchanged. Artifact export limits are transcribed from prior registry evidence,
+not represented as newly performed searches or complete production validation.
+
+Unchanged SHA-256 values:
+  tools/check_dataset_blockers.py
+    efe9304a754731e70e8721580ab5285143ce839a9c953dcd2a36cbc6894f381e
+  tests/fixtures/dataset_blockers/history-codex178.json (matches independent pin)
+    4c778d435f4147eb04dbcee4e37a2bac3f0ac5a55584e3adf252ab12972d1300
+  registry/dataset-blockers.json
+    d457424b66dccf0b4c93db8e1703d4663464ba8d04b7cd8997a785d6a2e7eeed
+
+Disposition
+-----------
+Ready for parent diff review, focused verification and merge on top of the
+operator's current checkout. No checkout, commit or merge to main by this worker.
