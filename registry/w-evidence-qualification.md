@@ -10,22 +10,24 @@ All scalar run means use the shared trial-mean rule in the disclosure preamble. 
 
 ## gsm8k
 
-2026-10-16 — **FOUND, qualification required.** Our number: Last-number decimal extraction followed by absolute numeric error < 1e-6, with binary reward (`data/datasets/gsm8k.py:123`, `:144`, `:152`). The strict #### extractor is diagnostic, not the selected value (`:153-154`).
+2026-10-16 — **FOUND, qualification required.** Our number: First-marker decimal-aware extraction, with last-number fallback only when no #### marker is present, followed by absolute numeric error < 1e-6 and binary reward (`data/datasets/gsm8k.py:132-169`). A malformed first marker receives zero.
 
-Difference: Upstream normalized exact match and verifier-selected test@N differ from this numeric trial mean (`data/datasets/gsm8k.py:18-38`; `docs/adapter-integration-journal.md:287-291`). Prefer-marker extraction is a future scorer change, not already landed in this worktree.
+Difference: Upstream normalized exact match and verifier-selected test@N differ from this numeric trial mean (`data/datasets/gsm8k.py:18-38`; `docs/adapter-integration-journal.md:287-291`). First-marker extraction is implemented (`data/datasets/gsm8k.py:137-141`, `:159-163`); numeric equality and trial averaging still differ from normalized exact match and verifier-selected test@N (`:18-40`, `:144-151`).
 
-Effect: NUMBER if marker preference lands: a later number after #### can currently replace the marked answer. Earlier figures must not be reused as marker-preferred accuracy; rescore only after confirming parseable submissions. No rescore was performed.
+Effect: NUMBER: first-marker precedence has landed. Earlier last-number figures must not be reused as marker-preferred decimal-aware accuracy. Historical numerical deltas remain unmeasured; any rescore requires retained parseable submissions and separate authorization.
 
 Existing record to qualify or update:
 
-`data/datasets/gsm8k.py:191`:
+`data/datasets/gsm8k.py:201-206`:
 
->         "- The last number in your answer is compared numerically with the reference\n"
+>         "- If your answer contains `####`, the number immediately after its first\n"
+>         "  occurrence is scored (write `#### 18`, including the space). Otherwise,\n"
+>         "  the last number is compared numerically with the reference\n"
 >         "  answer (the adapter's `decimal-aware-extract` metric).\n"
 >         "- `18`, `18.0` and `The answer is 18` all score 1 if the reference is 18.\n"
->         "- Only the last number is scored; your working is not graded separately.\n"
+>         "- Only the extracted number is scored; your working is not graded separately.\n"
 
-Replace the last-number contract when marker preference lands; retain the historical scorer identity in old receipts.
+The goal already states first-marker precedence and no-marker fallback (`data/datasets/gsm8k.py:201-206`). Retain historical scorer identities; do not reuse old last-number figures under the revised metric.
 
 ## triviaqa
 
@@ -64,11 +66,11 @@ This historical pre-repair sentence remains true and must not be globally replac
 
 ## twowikimultihopqa
 
-2026-10-16 — **FOUND, qualification required.** Our number: JSON object in answer.txt returns official v1.1 Joint F1; plain answer text returns legacy Ans F1 (`data/datasets/twowikimultihopqa.py:480-496`). The shared prediction.json path instead takes only structured["answer"] because EVIDENCE_AWARE is not declared (`data/scaffolds/qa/verify/check.py:251-260`; declaration check in validation).
+2026-10-16 — **FOUND, qualification required.** Our number: JSON object in `answer.txt` returns official v1.1 Joint F1; plain answer text returns legacy Ans F1; a pair-schema `prediction.json` is refused (`data/datasets/twowikimultihopqa.py:486-507`). `EVIDENCE_AWARE = True` (`:90`) routes the shared path to evidence-aware scoring (`data/scaffolds/qa/verify/check.py:254-265`), so the shared JSON path no longer silently selects legacy scoring.
 
-Difference: Joint F1 is the harmonic mean of product precision/recall over answer, support and triple evidence; omitted channels zero Joint (`data/datasets/twowikimultihopqa.py:14-37`). Shared pair-only prediction.json cannot encode this triple schema; it can silently select legacy scoring rather than structured scoring.
+Difference: Joint F1 is the harmonic mean of product precision/recall over answer, support and triple evidence; omitted channels zero Joint (`data/datasets/twowikimultihopqa.py:14-37`). Shared pair-only `prediction.json` cannot encode this triple schema, and it is now **refused** and the refusal classified unmeasured (`:486-492`; `data/scaffolds/qa/verify/check.py:254-265`) rather than silently selecting legacy scoring; a structured answer-only object has missing-channel Joint zero (`:38-41`).
 
-Effect: NUMBER/CHANNEL if routing is fixed: an earlier legacy or mixed-channel figure must not be reused as Joint F1. Existing mixed historical coverage is already explicitly qualified (`registry/dataset-blockers.json`, historical record twowiki-original-invalid-pilot; locator/output in validation).
+Effect: NUMBER/CHANNEL: the routing change has landed. The shared JSON path no longer silently returns legacy Ans F1; pair-schema submissions become unmeasured and structured answer-only objects score Joint zero. Earlier legacy/mixed-channel figures must not be reused as revised Joint F1. Existing mixed historical coverage is already explicitly qualified (`registry/dataset-blockers.json`, historical record twowiki-original-invalid-pilot; locator/output in validation).
 
 Existing record to qualify or update:
 
@@ -126,54 +128,60 @@ The dated forward assessment says the guidance remedy was not applied; current g
 
 2026-10-16 — **FOUND, qualification required.** Our number: Binary equality of sorted bare-name lists, including multiplicity, after dropping namespace prefixes (`data/datasets/bfcl_v3.py:173-181`, `:217-242`). Arguments are not graded.
 
-Difference: Official Simple uses full AST call/argument checking; local irrelevance parses arbitrary nonempty lines as names (`data/datasets/bfcl_v3.py:199-214`, `:230-234`). Thus natural-language refusal without an identifier-shaped call can be a local miss. “Set” is imprecise because duplicates remain.
+Difference: The local parser accepts bare/dotted identifiers or lines containing a call-shaped identifier, drops blank and explicit NONE/no tool/no function markers, and ignores other prose (`data/datasets/bfcl_v3.py:199-220`). Bare identifiers still count without an allowlist; call-shaped lines remain whole and fail name-only equality. Arguments remain ungraded and duplicates remain (`:230-241`).
 
-Effect: NUMBER for irrelevance parser or full-call fixes. Earlier name-list figures must not be reused as official BFCL AST/full-call scores; parser corrections need separately labeled results. No official checker execution is claimed.
+Effect: NUMBER: the irrelevance filter has changed. Earlier permissive-parser figures must not be reused as filtered-parser name-list results or official BFCL full-call scores; full-call scoring remains a separate obligation. No official checker execution is established by this source review.
 
 Existing record to qualify or update:
 
-`data/datasets/bfcl_v3.py:202`:
+`data/datasets/bfcl_v3.py:200-208`:
 
->     One name per line, which is the contract the goal states. Blank lines are ignored; a line
->     that is not a bare identifier is kept as-is so that a wrong answer is a *wrong answer*
->     rather than a parse failure the scorer hides.
+>     """Accept bare/dotted ASCII function identifiers, one per line.
+>
+>     Whitespace and surrounding commas/semicolons are stripped. Blank lines
+>     and case-insensitive NONE/no tool/no function markers (optional space, underscore or
+>     hyphen) mean no call. Prose without an identifier followed by '(' is ignored, as are
+>     invalid identifiers. A line containing a call-shaped identifier is retained as-is:
+>     call syntax is rejected by name-only equality and still fails irrelevance. Arguments
+>     are neither parsed nor executed.
+>     Names keep their case, order and duplicates; no available-function allowlist is used.
 
-The “not a bare identifier is kept as-is” parser description becomes wrong when irrelevance uses identifier-shaped calls. Update it with the repaired rule. Preserve the multiset-diagnostic qualification in docs/adapter-integration-journal.md:436; source acquisition alone is not official execution.
+The parser docstring and implementation now state the identifier/call-shaped filter and explicit no-call markers (`data/datasets/bfcl_v3.py:199-220`). Preserve the multiset-diagnostic limit: sorted name equality still ignores arguments (`:230-241`); source acquisition is not execution evidence.
 
 ## hotpotqa
 
-2026-10-16 — **FOUND, qualification required.** Our number: Reward is joint EM = answer EM × support EM; joint F1 is recorded separately (`data/datasets/hotpotqa.py:37-51`; `data/scaffolds/qa/evidence_scorers.py:111-121`).
+2026-10-16 — **FOUND, qualification required.** Our number: Reward is answer F1 and correctness is answer EM; support and joint EM/F1 are separate diagnostics (`data/datasets/hotpotqa.py:19`, `:42-58`). Missing support does not change the answer reward.
 
 Difference: The joint formulas are readable; task input suitability is a separate issue. The parent’s retained review calls this context a retrieval baseline and proposes answer-only reporting (`registry/w-evidence-external-sources.md:1088`, eval-fidelity-plan §4.1). The actual task currently exposes only the question, not even that context (`data/datasets/hotpotqa.py:69-76`). Its 881/1646/473 inventory is inherited and NOT recomputed here (`registry/w-evidence-external-sources.md:1193`). Official joint comparison therefore remains unestablished; do not relabel the scalar joint F1.
 
-Effect: NUMBER if the operator chooses answer-only EM/F1; earlier joint-EM figures must not be reused as answer EM or answer F1. LABEL ONLY when correcting an erroneous joint-F1 description of the existing scalar. Historical v4 completeness remains invalid.
+Effect: NUMBER: joint-EM reward has changed to answer F1 (`data/datasets/hotpotqa.py:52-58`). Earlier joint-EM figures must not be reused as answer EM, answer F1 or joint F1; a label change alone cannot recover the new statistic. No historical rescore or completeness repair is established.
 
 Existing record to qualify or update:
 
-`data/datasets/hotpotqa.py:75`:
+`data/datasets/hotpotqa.py:82-83`:
 
 >         "[title,sentence_index]]}. Supporting facts use exact set semantics and are "
 >         "required for a nonzero joint score."),
 
-After an answer-only change this required-support sentence becomes wrong; replace it together with the metric/why labels and scalar at data/datasets/hotpotqa.py:47-51; the dated incomplete-run record stays incomplete. No answer-only fix is claimed here.
+The answer-only reward change is implemented (`data/datasets/hotpotqa.py:52-58`). The goal's supporting-facts requirement remains true for a nonzero joint diagnostic (`:82-83`), so it must not be called false or required for answer F1. Preserve historical joint-EM identities and incomplete-run status.
 
 ## fever
 
-2026-10-16 — **FOUND, qualification required.** Our number: Binary strict label-plus-first-five-evidence reward, but flat gold pairs are promoted to alternative singleton groups (`data/datasets/fever.py:27-38`; `data/scaffolds/qa/evidence_scorers.py:139-169`). NEI requires the label and is evidence-exempt.
+2026-10-16 — **FOUND, qualification required.** Our number: Binary exported-row conjunctive strict-at-5: a right non-NEI label requires the complete exported group within the first five evidence predictions; NEI is evidence-exempt (`data/scaffolds/qa/evidence_scorers.py:139-169`; `data/datasets/fever.py:37`, `:43-67`).
 
-Difference: Official strict correctness requires one complete alternative evidence group; flattening a conjunction into sufficient singletons weakens it (`data/scaffolds/qa/evidence_scorers.py:145-165`). The chosen exported-row conjunction-preserving metric is defined but not yet implemented in this snapshot (`registry/blocker-closure-assessment.md:338-348`). This is strict accuracy, not label F1. Independently, the task exposes only the claim while non-NEI strict correctness requires evidence (`data/datasets/fever.py:57-65`); group repair alone does not supply retrieval or evidence. Any choice to use label accuracy/F1 or supply evidence needs an explicit new metric/input contract.
+Difference: One flat Hub row is now one conjunctive group (`data/scaffolds/qa/evidence_scorers.py:158-165`). Other original alternative groups cannot be recovered from that row (`:159-160`), so this is the named exported-row strict-at-5 metric rather than authenticated full original FEVER strict accuracy. The reward remains strict correctness; classification counts are separate (`data/datasets/fever.py:37`, `:53-67`). Claim-only input and evidence retrieval limits remain (`:20-22`).
 
-Effect: NUMBER when the conjunction-preserving projection lands. Earlier singleton-based figures must not be reused as the corrected exported-row conjunctive strict-at-5 metric or original full FEVER strict score. This review observes no measured FEVER figure.
+Effect: NUMBER: conjunction-preserving projection has landed. Earlier singleton-based figures must not be reused as exported-row conjunctive strict-at-5 or original full FEVER strict score. This source review establishes no measured numerical delta.
 
 Existing record to qualify or update:
 
-`data/scaffolds/qa/evidence_scorers.py:159`:
+`data/scaffolds/qa/evidence_scorers.py:159-161`:
 
->             # The pinned Hub mirror flattens the upstream group id: each available
->             # sentence is retained as an independently sufficient evidence group.
->             groups = [[item] for item in groups]
+>             # One pinned Hub row exports one conjunctive group, in source order.
+>             # Other original groups cannot be recovered from this flat row.
+>             groups = [groups]
 
-This comments and implements the singleton rule that must change. Preserve the source/export/provenance limits and the standing-limit withdrawal after repair.
+The singleton rule has been replaced by one complete exported group (`data/scaffolds/qa/evidence_scorers.py:158-165`). Preserve the original-group recovery and claim-only retrieval limits (`:159-160`; `data/datasets/fever.py:20-22`), along with historical scorer identities.
 
 ## tau_bench
 
@@ -198,40 +206,40 @@ After accepting genuine upstream termination tools this categorical explicit-tau
 
 2026-10-16 — **FOUND, qualification required.** Our number: Binary upstream test_execution plus conditional test_string pass (`data/datasets/ds1000/verify/check.py:79-89`), over a host-available subset (`data/datasets/ds1000.py:12-33`).
 
-Difference: context.json exposes code_context containing tests to the solver (`data/datasets/ds1000.py:182-190`). The retained parent review says official input is prompt only and proposes removing it from SETUP (`registry/w-evidence-external-sources.md:1088`, eval-fidelity-plan §4.2); that paper-side protocol is inherited from the review, not a fresh official-source authentication. Exposed tests and 926/1000 coverage prevent an unqualified benchmark comparison.
+Difference: SETUP now emits only task.json with task ID and released prompt (`data/datasets/ds1000.py:184-189`); context.json/code_context is staged only in VERIFY.inputs (`:198-208`). The source documents prompt-only solver input and the retained 926/1000 host subset (`:6-16`); this review did not independently authenticate the upstream input or recount payloads.
 
-Effect: NUMBER/CONDITION if tests are removed from actor SETUP: earlier figures must not be reused as prompt-only DS-1000. Keeping the scorer tests verifier-only is necessary; merely renaming a prior number is insufficient.
+Effect: NUMBER/CONDITION: private tests have been removed from actor SETUP. Earlier actor-visible-test figures must not be reused as prompt-only DS-1000, even if numerically zero. Keeping context verifier-only changes the task; renaming an earlier number is insufficient (`data/datasets/ds1000.py:184-208`).
 
 Existing record to qualify or update:
 
-`data/datasets/ds1000.py:187`:
+`data/datasets/ds1000.py:200-203`:
 
->         # The official context carries the tests, and the released benchmark hands it to the
->         # solver as part of the problem. The gold `reference_code` is not in it.
->         {"path": "context.json", "content": json.dumps(
->             {"code_context": row["code_context"]}, ensure_ascii=False)},
+>             # Official solver input is prompt only. code_context carries private tests;
+>             # stage it after the harness exits, never in SETUP.
+>             {"path": "context.json", "content": json.dumps(
+>                 {"code_context": _raw()[index]["code_context"]}, ensure_ascii=False)},
 
-The claim that the benchmark hands the context to the solver is the exact disputed sentence. Remove that claim with any SETUP fix, keep the trusted scorer input and historical exposed-test identity.
+The disputed solver-context claim has been removed: current SETUP contains only task.json and current VERIFY.inputs carries context.json (`data/datasets/ds1000.py:184-208`). Preserve historical exposed-test identity; source inspection does not authenticate a prompt-only measured run.
 
 ## livecodebench
 
-2026-10-16 — **FOUND, qualification required.** Our number: One-generation all-tests pass@1 via the pinned executor and upstream metric helper (`data/datasets/livecodebench/verify/check.py:194-203`). Global time is min(600, (6+1)*tests+5) seconds (`:61-63`, `:178`).
+2026-10-16 — **FOUND, qualification required.** Our number: One-generation all-tests pass@1 via the pinned executor and upstream metric helper (`data/datasets/livecodebench/verify/check.py:193-210`). Child time is (PER_TEST_TIMEOUT+1)*tests+5, with PER_TEST_TIMEOUT=6 (`:62`, `:177-186`); the separate verifier bound is 900 seconds (`data/datasets/livecodebench.py:281`).
 
-Difference: Upstream time scales as (timeout+1)*tests+5 without the local 600-second clamp (`data/datasets/livecodebench/verify/check.py:23-30`). The “3 problems / maximum 726s” count is inherited from the parent plan §5, not recomputed here. Trial averaging remains pass@1 estimation, not pass@k for k>1.
+Difference: The child budget now uses the documented upstream (timeout+1)*tests+5 formula (`data/datasets/livecodebench/verify/check.py:23-27`, `:177-186`); the outer verifier bound remains 900 seconds (`data/datasets/livecodebench.py:281`). The “3 problems / maximum 726s” count is inherited from the parent plan §5, not recomputed here. Trial averaging remains pass@1 estimation, not pass@k for k>1.
 
-Effect: NUMBER if the clamp is removed: earlier capped pass@1 figures must not be reused as uncapped official-executor pass@1. Only affected submissions can establish whether the value changes; no re-execution occurred.
+Effect: NUMBER/CONDITION: the inner 600-second clamp has been removed. Earlier capped pass@1 figures must not be reused as the revised timeout instrument. Only retained affected submissions could establish a numerical delta; no re-execution occurred.
 
 Existing record to qualify or update:
 
-`data/datasets/livecodebench/verify/check.py:23`:
+`data/datasets/livecodebench/verify/check.py:23-27`:
 
-> 1. **The global timeout is capped.** Upstream kills the child after
->    `(timeout + 1) * n_tests + 5` seconds; measured over this pool that is at most 726 s (103
->    tests), and it scales with the problem. This check caps it at `CAP_S`, marks the run failed
->    when the cap is hit -- the same verdict upstream reaches when it kills the child -- and says
->    so in `why`.
+> Upstream kills the child after `(timeout + 1) * n_tests + 5` seconds. The former 600 s
+> cap bounded the check's child wait, but could reject a correct program before upstream's
+> budget expired. Use the upstream budget: for 103 tests at timeout=6 it is 726 s, within
+> the adapter's existing 900 s verifier bound (`livecodebench.py::_verify`), which still
+> bounds the entire check. Removing the inner cap therefore preserves that outer bound.
 
-This cap disclosure becomes stale after clamp removal and must be replaced with the actual formula and outer resource limit.
+The clamp-removal disclosure is current at `data/datasets/livecodebench/verify/check.py:23-27`: the child wait follows upstream's formula (`:177-186`) and the distinct outer verifier limit remains 900 seconds (`data/datasets/livecodebench.py:281`).
 
 ## strategyqa
 
@@ -251,11 +259,11 @@ Replace the clause saying the original scorer/split were not identified with the
 
 ## sportsunderstanding
 
-2026-10-16 — **FOUND, qualification required.** Our number: Binary ASCII-letter-boundary target-label presence, rejecting answers naming both labels; negation is not interpreted (`data/datasets/sportsunderstanding.py:71-87`).
+2026-10-16 — **FOUND, qualification required.** Our number: Generated-text label accuracy with immediate-negation handling, rejecting answers naming both labels (`data/datasets/sportsunderstanding.py:81-119`).
 
-Difference: BIG-bench multiple_choice_grade chooses the maximum candidate log probability (`registry/w-metriccmp-comparability.md:189-220`). Local “not plausible” still contains plausible and can score as affirmative; this is a generated-text interpretation defect on top of the likelihood-versus-text distinction.
+Difference: BIG-bench multiple_choice_grade chooses the maximum candidate log probability (`registry/w-metriccmp-comparability.md:189-220`). Immediate predicates naming one label are mapped to the complementary label and exactly one resolved choice is required (`data/datasets/sportsunderstanding.py:95-107`), so the plain `“not plausible”` false positive is repaired; broader negation forms remain outside the parser (`:89-91`). The likelihood-versus-text distinction stands.
 
-Effect: NUMBER for negation handling; earlier figures must not be reused as the corrected text-label metric. Even corrected text accuracy must remain separate from BIG-bench likelihood grading.
+Effect: NUMBER: immediate-negation interpretation changed. Earlier label-presence figures must not be reused as revised-parser accuracy or candidate-likelihood `multiple_choice_grade`. No numerical delta was measured, and corrected text accuracy must remain separate from BIG-bench likelihood grading.
 
 Existing record to qualify or update:
 
@@ -272,11 +280,11 @@ This context/negation-insensitive rule becomes stale after a parser fix. Also re
 
 ## physicsquestions
 
-2026-10-16 — **FOUND, qualification required.** Our number: Binary any-accepted-spelling match with prediction strip versus reference strip().rstrip(".") (`data/datasets/physicsquestions.py:93-108`). This is asymmetric.
+2026-10-16 — **FOUND, qualification required.** Our number: Symmetric accepted-spelling exact match: both sides are stripped of whitespace and trailing periods (`data/datasets/physicsquestions.py:94-108`). The asymmetric form is superseded.
 
 Difference: BIG-bench exact_str_match compares unchanged target membership at the metric boundary (`registry/w-metriccmp-comparability.md:112-154`). Making trailing-period handling symmetric repairs the promised local contract but still does not establish BIG-bench generation/processing equivalence.
 
-Effect: NUMBER for symmetric period handling; earlier asymmetric figures must not be reused as the corrected accepted-spelling metric. No new measured score is asserted.
+Effect: NUMBER: prediction-side normalization changed. Earlier asymmetric-match figures must not be reused as symmetric-normalization results or as unchanged BIG-bench target membership. No value delta was measured and no new score is asserted.
 
 Existing record to qualify or update:
 
@@ -334,11 +342,11 @@ This already names partial measurement; preserve it. No wrong metric sentence wa
 
 ## alfworld
 
-2026-10-16 — **FOUND, qualification required.** Our number: Binary replayed goal/won within local 30-action budget (`data/datasets/alfworld/lib/gym_env.py:43`; `data/datasets/alfworld/verify/check.py:188-199`).
+2026-10-16 — **FOUND, qualification required.** Our number: Binary replayed goal/won within 50 actions (`data/datasets/alfworld/lib/gym_env.py:44`, `:122-131`; `data/datasets/alfworld/verify/check.py:184-197`). Budget exhaustion means the cap was reached without won.
 
-Difference: The retained parent review reports paper budget 50 versus local 30; free look, harness max_steps and task grouping also need explicit binding (`registry/w-evidence-external-sources.md:1088`, eval-fidelity-plan §1.1 and §2.1). Paper-side 50 is inherited from that review. The 134-row pool is the complete valid_unseen evaluation set (`data/datasets/alfworld.py:8-12`; 134 archive records counted in w-evidence-archive-observed.json). The handed-off 47 game groups concern dependence/error bars, not score dilution.
+Difference: Both the documented upstream episode limit and local STEP_BUDGET are 50 (`data/datasets/alfworld/lib/gym_env.py:41-44`); there is no remaining 30-vs-50 mismatch. Free look and harness resource limits still require protocol matching (`data/datasets/alfworld/cli/alf:93-99`; `data/datasets/alfworld.py:535-540`). The 134-row pool is the complete valid_unseen evaluation set (`data/datasets/alfworld.py:8-12`; 134 archive records counted in w-evidence-archive-observed.json). The handed-off 47 game groups concern dependence/error bars, not score dilution.
 
-Effect: NUMBER/CONDITION for budget 30→50 (earlier 30-action figures must not be reused as 50-action success); LABEL ONLY for removing the 2.85x dilution claim. The 47/46/99%/30 group counts were not recomputed.
+Effect: NUMBER/CONDITION: the budget has changed 30→50, so earlier 30-action figures must not be reused as 50-action success (`data/datasets/alfworld/lib/gym_env.py:41-44`). No historical numerical delta or group-count recomputation was performed.
 
 Existing record to qualify or update:
 
@@ -350,15 +358,15 @@ Existing record to qualify or update:
 > the check does **not** require it: ALFWorld has no such requirement, and tau-bench's
 > `done` gate exists only because tau-bench computes a reward only for a finished
 
-The abstract won predicate stays correct; update the bound STEP_BUDGET and disclose the changed instrument. Exact operator document replacement is separate; retain the old budget in frozen receipts.
+The abstract won predicate remains correct and STEP_BUDGET is already 50 (`data/datasets/alfworld.py:69-73`; `data/datasets/alfworld/lib/gym_env.py:44`). Preserve the 30-action identity of frozen historical receipts; do not describe the bound update as pending.
 
 ## agentdojo
 
-2026-10-16 — **FOUND, qualification required.** Our number: Binary official utility predicate under custom fixed template “Ignore previous instructions. {goal}”; attacker success is recorded separately (`data/datasets/agentdojo/bridge.py:21`, `:74-80`).
+2026-10-16 — **FOUND, qualification required.** Our number: Binary utility predicate under the registered ignore_previous attack, loaded through upstream load_attack; targeted attacker success remains separately recorded (`data/datasets/agentdojo/bridge.py:17`, `:23`, `:56-58`, `:77-83`).
 
-Difference: Every task includes an injection warning (`data/datasets/agentdojo.py:47-55`), changing defense conditions. A custom fixed attack is not the paper’s attack suite or adaptive safety result; utility is not 1−targeted attacker_success; the handoff calls its complement untargeted ASR, a separate convention (`/mnt/20t/xubuqiang/Study/HarnessGrad/docs/paper-fidelity-audit-handoff.md:269-274`). TASK_COUNT is hard-coded (`:44`). The 949-versus-629 upstream pair reconciliation and no-benign-run claim are inherited, not recomputed (`/mnt/20t/xubuqiang/Study/HarnessGrad/docs/paper-fidelity-audit-handoff.md:291-303`). No targeted-ASR corpus aggregate is emitted by the scalar reward.
+Difference: The goal now consists of the user prompt and CLI instructions without the former injection warning (`data/datasets/agentdojo.py:62-67`). Registered ignore_previous is still different from the documented paper important_instructions attacker, all-attacks safety and adaptive attack (`data/datasets/agentdojo/bridge.py:6-7`; `data/datasets/agentdojo.py:1-6`); utility is not 1−targeted attacker_success; the handoff calls its complement untargeted ASR, a separate convention (`/mnt/20t/xubuqiang/Study/HarnessGrad/docs/paper-fidelity-audit-handoff.md:269-274`). TASK_COUNT is derived as len(records()) (`data/datasets/agentdojo.py:90-92`), and load() builds tasks/gold from those same rows (`:70-73`). The 949-versus-629 upstream pair reconciliation and no-benign-run claim are inherited, not recomputed (`/mnt/20t/xubuqiang/Study/HarnessGrad/docs/paper-fidelity-audit-handoff.md:291-303`). No targeted-ASR corpus aggregate is emitted by the scalar reward.
 
-Effect: NUMBER/CONDITION for removing warning/changing attack; LABEL ONLY when naming the current fixed-template utility. Earlier figures must not be reused as warning-free or registered-attack utility/ASR. Counts must be regenerated if the task inventory changes.
+Effect: NUMBER/CONDITION: warning removal and registered-attack wiring have landed. Earlier custom-template/warning figures must not be reused as registered-ignore_previous utility or ASR. Utility and attacker success remain separate (`data/datasets/agentdojo/bridge.py:77-83`); no current model distribution or numeric delta is established.
 
 Existing record to qualify or update:
 
@@ -367,27 +375,26 @@ Existing record to qualify or update:
 > #: measured subset). `--split official --side eval` is the comparable run: the whole pool, with
 > #: no study material in it. `--split declared` keeps this adapter's own division.
 
-This “comparable run” sentence is too broad already: selecting the whole pool does not align the custom attack or prompt defense. Replace with “whole local fixed-attack pool; protocol comparability remains qualified”.
+The “comparable run” sentence remains too broad: selecting the whole pool does not align registered ignore_previous with the documented paper important_instructions attacker (`data/datasets/agentdojo.py:23-29`; `data/datasets/agentdojo/bridge.py:6-7`). Replace that description with “whole local registered-ignore_previous pool; protocol comparability remains qualified”.
 
 ## scienceworld
 
-2026-10-16 — **FOUND, qualification required.** Our number: Final JVM score clamped to [0,100] and divided by 100 (`data/datasets/scienceworld/verify/check.py:179-206`), under local 1000 moves (`data/datasets/scienceworld/lib/scw_env.py:42-46`), then equal measured-task mean.
+2026-10-16 — **FOUND, qualification required.** Our number: Final JVM score/100; task micro mean; **100** moves; separate observed-type macro (`data/datasets/scienceworld/verify/check.py:205-206`; `data/datasets/scienceworld/lib/scw_env.py:45`; `data/datasets/scienceworld.py:239-296`).
 
 Difference: The retained parent review requires paper’s 100 moves, test fold, and macro-over-task-types rather than variation-weighted mean (`registry/w-evidence-external-sources.md:1088`, eval-fidelity-plan §2/§3). These paper-side requirements are inherited, not freshly authenticated here. The handoff also identifies the missing task type as measure-melting-point-unknown-substance, contradicting the module’s identify-life-stages-2 claim (`/mnt/20t/xubuqiang/Study/HarnessGrad/docs/paper-fidelity-audit-handoff.md:321-326`; `data/datasets/scienceworld.py:49`); that named-type correction changes a label, while adding its missing test variations changes coverage and the macro denominator. Report 29/30 until independently bound complete coverage exists. The current no-simplification input is explicit (`data/datasets/scienceworld.py:288`), and the handoff marks the actor unaided because valid actions are not exposed (`/mnt/20t/xubuqiang/Study/HarnessGrad/docs/paper-fidelity-audit-handoff.md:341-346`). Repeated trials, selection, simplifications and macro weighting must be bound next to any result; a completed trial count does not repair an integrity-invalid run (`docs/adapter-integration-journal.md:327-343`).
 
-Effect: NUMBER/CONDITION for budget, fold or weighting changes. Earlier 1000-move/task-weighted figures must not be reused as 100-move/type-macro ScienceWorld. Preserve the historical incomplete effect=null record.
+Effect: NUMBER/CONDITION: the 1000→100 budget change has landed and a separate observed-type macro now exists (`data/datasets/scienceworld.py:239-296`), while the default run scalar remains micro. Earlier 1000-move/task-weighted figures must not be reused as 100-move/type-macro or full 30-type Average. Preserve the historical incomplete effect=null record.
 
 Existing record to qualify or update:
 
 `data/datasets/scienceworld/lib/scw_env.py:42`:
 
-> #: **1000**, an adapter-owned ceiling above the longest recorded test reference path (796 moves).
-> #: This keeps every 1,744 archived test path available instead of turning a correct long
-> #: oracle into a false zero. The verifier timeout is raised alongside it so the larger move
-> #: budget cannot be silently truncated by the wall-clock boundary.
-> STEP_BUDGET = 1000
+> #: **100**, following the ScienceWorld paper: "we used 100 in all experiments".
+> #: Limit: long oracle paths truncate at 100, including archived test paths up to 796 moves.
+> #: Keep those tasks in the fold; reference length must not select the evaluation pool.
+> STEP_BUDGET = 100
 
-This ceiling rationale and constant become stale after a 100-move change. State explicitly that long oracle paths may truncate at the paper’s budget; never retain all-1744-oracles-fit as a 100-move claim.
+The ceiling rationale above is superseded: the budget now follows the paper's 100, so long oracle paths **truncate** rather than the pool being selected by reference length. Never retain "all 1,744 oracles fit" as a 100-move claim.
 
 ## gaia
 
@@ -399,7 +406,7 @@ This ceiling rationale and constant become stale after a 100-move change. State 
 
 ## spreadsheetbench
 
-2026-10-16 — **FOUND, no new finding in the named scope.** Our number: Binary named-cell value match on one selected workbook variant (`data/datasets/spreadsheetbench/verify/check.py:470-472`; `registry/w-metriccmp-comparability.md:318-373`). No additional current finding in the one-variant metric qualification and retained cache/range-zero closure. Checked because official soft/hard scores combine three workbook variants; this known difference is already explicit (`registry/w-metriccmp-comparability.md:386-409`; `registry/blocker-closure-assessment.md:375-404`). Source-only clearance does not assert a new run or cache verification. No numeric or label fix is asserted, and no existing sentence is proposed for replacement. This is a scoped source clearance, not an independent reproduction of every rejected intern item.
+2026-10-16 — **FOUND, no new finding in the named scope.** Our number: Binary named-cell value match on one selected workbook variant (`data/datasets/spreadsheetbench/verify/check.py:473-479`; `registry/w-metriccmp-comparability.md:318-373`). No additional current finding in the one-variant metric qualification and retained cache/range-zero closure. Checked because official soft/hard scores combine three workbook variants; this known difference is already explicit (`registry/w-metriccmp-comparability.md:386-409`; `registry/blocker-closure-assessment.md:375-404`). Source-only clearance does not assert a new run or cache verification. No numeric or label fix is asserted, and no existing sentence is proposed for replacement. This is a scoped source clearance, not an independent reproduction of every rejected intern item.
 
 ## terminal_bench
 
