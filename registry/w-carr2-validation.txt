@@ -30,8 +30,15 @@ Change
    `docs/w-shared-verifier-review.md`, `reports/w-chess2-evidence/actor-command-line-19.sh`,
    `reports/w-chess3-evidence/corrected-blocker-before-run.json`, `reports/w-chess3-receipts.md`,
    `reports/w-fix-validation.txt`, `reports/w-jc2-review.md`, `reports/w-journalcov-review.md`,
-   `reports/w-obs-validation.txt`). Largest 67,005 bytes; total 183 KB. Every one is
-   `git check-ignore`-clean and tracked.
+   `reports/w-obs-validation.txt`). Largest 67,005 bytes; total 183 KB. **Correction:** the file claim "every one is
+   `git check-ignore`-clean and tracked" was wrong as first committed. `.gitignore:289`
+   (`/docs/*` with a name whitelist) silently ignored three of the restored documents -
+   `docs/w-fix-unknown-isolation-records.md`, `docs/w-obs-runtime-review.md` and
+   `docs/w-shared-verifier-review.md` - so `git add -A` skipped them while the on-disk test
+   passed and the provenance entries pointed at files that were never committed. The
+   follow-up commit whitelists those three paths next to the existing `/docs/*` whitelist
+   and commits the files; `test_site_evidence_carriers.py` catches exactly this, because a
+   provenance entry whose carrier is absent fails the byte-identity test in a fresh checkout.
 2. `tests/fixtures/hg_migration_site/PROVENANCE.json` now has 48 entries and an explicit `carrier`
    field per entry: 36 `/site/...` entries resolve through `tests/fixtures/hg_migration_site/`
    (`tests/quality/conftest.py:24`), 12 relative entries resolve at their own cited path. Each entry
