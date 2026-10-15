@@ -5164,3 +5164,42 @@ rows were checked. The correction lands as one commit.
 this file exist" catches none of these. All three kinds are caught by asking **"does the cited line still
 say what the row claims"** — which is a mechanical question, and it is the question `w-evidence2` was told
 to ask of every row.
+
+## 2026-10-16 (round 9) — The archive numbers reproduce exactly, and one guard is deliberately left alone
+
+**Independent reproduction of `w-evidence`'s archive finding, all of it.** I re-ran the enumeration myself
+rather than accepting the report, and every count matched:
+
+| check | recorded | reproduced |
+| --- | --- | --- |
+| `agentdojo-qwen-t1-train4` / `-train4-retry` / `-eval4` in `hg-census/runs/` | ABSENT | **ABSENT** (all three) |
+| `alfworld-qwen-t1-train2` / `-eval2` verdict files | 81 / 53 | **81 / 53** |
+| `gsm8k-qwen-t3-train-full` / `-train-resume-4367` / `-eval-full` | 0 / 3106 / 1319 | **0 / 3106 / 1319** |
+| `musique-full-qwen-t1-train` / `-train-resume-915` / `-eval` / `-eval-resume-191` / `-eval-last1` | 0 / 712 / 0 / 0 / 1 | **0 / 712 / 0 / 0 / 1** |
+| verdict files in each of the four archives | 0 | **0 / 0 / 0 / 0** |
+
+The census also holds *other* agentdojo runs (`-eval3`, `-train`, `-train3`, two probes) that must **not**
+be substituted for the three absent fold sources — that substitution is the specific way this finding could
+be quietly mis-closed. The archive deliverable is therefore verified, not merely reported, and the two
+handoff edits in round 7 (§4.4 and decision 5) rest on my own count rather than on w-evidence's.
+
+**The B5 per-entry disposition guard is deliberately NOT dispatched, and that is a decision.** The obvious
+follow-up — make `tests/quality/test_external_provenance_b5.py` assert a derived per-entry disposition
+(the 23 error-pinned, 3 live, 1 404, 5 retryable) instead of raising bare `FileNotFoundError`, following
+the `hg_wujson` / `hg_wpristine` explicit-skip convention — is a real improvement and would be fail-closed
+if written well (the 5 retryable would still fail). I am not doing it unilaterally, for two reasons: the
+phase brief is *code + evidence, no re-runs*, and a change that turns 27 failing bodies into 27 named skips
+is indistinguishable, to a reader who does not open the diff, from weakening a provenance guard — on a
+project whose standing rules forbid exactly that. It is offered to the operator instead, with the diff
+described. The record already carries the disposition in
+`registry/known-red-tests.md` ("The B5 packet's residue is not a rate limit"), so nothing is lost by
+waiting for a decision.
+
+**One reconciliation hazard to watch at merge time.** `registry/dataset-blockers.json` changed after
+`w-knownred` and `w-decisionpack` were branched (`39ee5331` rewrote `bfcl_v3`'s `next_action` and
+`observed`), and `w-evidence2`'s tree predates that too (base `0365c9ab`). Any citation they make to
+`bfcl_v3`'s registry record, or any corrected `bfcl_v3` fragment they emit, is written against the older
+text and must be re-checked against the current record before it is applied. This is the same
+merge-base/`main..HEAD` trap this phase has been bitten by twice; the check is
+`git diff $(git merge-base main HEAD)..HEAD` per worker, and for `bfcl_v3` specifically a diff of the
+`next_action` string.
