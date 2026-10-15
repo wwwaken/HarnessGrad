@@ -144,7 +144,7 @@ def test_source_failure_or_changed_hook_cannot_fall_through(monkeypatch, capsys,
             raise compatibility.CompatibilityError("private dirty path")
         monkeypatch.setattr(compatibility, "collect_source", collect)
     else:
-        monkeypatch.setattr(runner, "_refuse_unobserved_policies", lambda *args: None)
+        monkeypatch.setattr(runner, "_refuse_unobserved_policies", lambda *args, **kw: None)
     report = review(capsys)
     assert report["preflight_status"] == "invalid-metadata"
     assert "private" not in json.dumps(report)

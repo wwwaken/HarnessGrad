@@ -788,7 +788,7 @@ def test_synthetic_model_gateway_backend_still_isolates_the_internet(tmp_path, m
     _require_docker()
     # The real-admission test above pins production refusal. Exercise the dormant
     # backend here with an authored HTTP stand-in, never a model or benchmark run.
-    monkeypatch.setattr("eval.run.runner._refuse_unobserved_policies", lambda *a: None)
+    monkeypatch.setattr("eval.run.runner._refuse_unobserved_policies", lambda *a, **k: None)
     import http.server
     import threading
     from eval.service import modelgate

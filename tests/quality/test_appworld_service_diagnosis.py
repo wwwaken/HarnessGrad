@@ -76,7 +76,7 @@ def test_runner_mounts_dependency_overlay_once(tmp_path, monkeypatch):
     assert commands == [], "unobserved exec must not reach the mocked backend"
     # Keep the duplicate-mount regression at the mocked backend layer, after pinning
     # real admission. This test-local patch is not a production observer or override.
-    monkeypatch.setattr(runner, "_refuse_unobserved_policies", lambda *a: None)
+    monkeypatch.setattr(runner, "_refuse_unobserved_policies", lambda *a, **k: None)
     result = runner.run_one(repo, {"task_id": "train_1"}, env=env)
     assert commands and result["exit_code"] == 0
     assert "actor_started" in result["trace"]

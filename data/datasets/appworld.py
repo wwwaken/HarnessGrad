@@ -231,10 +231,16 @@ Call the documented methods as `apis.<app>.<api>(...)`. Discover supervisor
 APIs for account credentials when needed; use returned values and documented
 parameters rather than guessing method names, passwords or IDs.
 
-Perform the requested changes through these API actions, inspect their results,
-then give your final answer through your harness. A local script, plain text
-answer or print-only snippet does not change the world. The service records API
-calls automatically; its recording is not an actor file to create or edit.
+Perform the requested changes through these API actions and inspect their results.
+The service records API calls automatically; its recording is not an actor file to
+create or edit. A local script, plain text answer or print-only snippet does not
+change the world.
+
+Completing the task is itself a change the world records. If the APIs you discover
+expose a completion or submission operation, invoke it through an --code action so
+the world observes the completion, and then report what you did as your harness
+answer. The harness answer is a report, not the completion: on its own it leaves
+the task unfinished, however correct the state changes you made.
 CLI syntax help: `./aw --help` and `./aw action --help`.
 """
 

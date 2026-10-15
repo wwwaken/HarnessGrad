@@ -209,7 +209,7 @@ else:
     assert not (tmp_path / "recordings").exists()
     # Only this authored HTTP fixture reaches the dormant backend. No production
     # observer, pilot, dataset score or admission override is exposed by the platform.
-    monkeypatch.setattr("eval.run.runner._refuse_unobserved_policies", lambda *a: None)
+    monkeypatch.setattr("eval.run.runner._refuse_unobserved_policies", lambda *a, **k: None)
     import uuid
     network = services.create_network("web-isolation-" + uuid.uuid4().hex, "live-probe")
     try:
