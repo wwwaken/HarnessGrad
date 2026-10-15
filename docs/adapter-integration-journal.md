@@ -4347,3 +4347,16 @@ Receipt: reports/w-tb89e-receipts.md. Compact hash-bound evidence: reports/w-tb8
 - **Conservatism held.** The replacements keep every genuinely open dataset-specific obligation - FEVER's producing conversion/ID-group correspondence/flat-to-singleton comparability, Reasoning Gym's original generation receipt and behavioral family eligibility, HotpotQA's original historical receipts with the unknown run ID and `effect=null` preserved, SpreadsheetBench's row-level gradability and one-variant-vs-paper-aggregate distinction, StrategyQA's original-benchmark metric/split comparability, TriviaQA's immutable build/export execution provenance - and restate the withdrawn shared gates as the retained future pristine opt-in boundary instead of deleting them. **No blocker closes and no status, `observed`, evidence, historical record or permanent refusal changes.**
 - The audit's other two sections are retained as measured, with a parent addendum: the 22 unreadable `/site/...` paths cited there now have readable carriers at the `conftest` resolver path (the w-citefix commit that landed first), while `external-reference` remains unverifiable *as a kind*; and the two dead absolute archive citations (`.../codex/qa-h0-archive-v4/index.json`, `.../codex/qa-h0-incomplete-index.json`) were re-searched by the parent and do not exist in the archive at any depth. Both sit inside frozen `historical_runs` whose locator already declares them journal citations not opened during the review, and historical records are pinned whole, so they stay as declared rather than edited.
 - Checker valid after the change (`28 datasets, 0 shared, 11 historical, production_authorized=false`); `tests/quality/test_dataset_blockers.py` + `test_b6_blocker_evidence.py` 75 passed, 11 skipped, the 11 being the documented B6 payload skips. Merged as 4b599784 and b96d2688 on top of 7d9dbaa2; the operator's uncommitted `AGENTS.md` edit was left exactly as found.
+
+### Follow-up — pin the carrier invariant (parent)
+
+`tests/quality/test_site_evidence_carriers.py` now pins what w-citefix fixed, so the same gap cannot
+silently reopen: every `/site/...` reference in the registry and the withdrawal record must resolve to
+a file under `tests/fixtures/hg_migration_site/`; `PROVENANCE.json` must describe exactly the carrier
+files on disk; each carrier must be byte-identical (length + SHA-256) to the bytes recorded for it,
+with a non-empty source commit and a `reports/`/`docs/` source path; and the packet must stay text-only,
+under 4 MB, with no file at or above 1 MB. The test states explicitly that it checks the recorded
+provenance and the resolver convention only - it does not re-authenticate the underlying citation.
+Focused set with the new file: **101 passed, 15 skipped, 3 xfailed** (the 15 skips are the 11 B6 payload
+skips plus four optional archived-review skips; the 3 xfails are the pre-existing strict journal-gap
+cases).
