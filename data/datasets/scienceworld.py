@@ -336,6 +336,8 @@ def _verifier(record: dict) -> dict:
         "evidence_file": EVIDENCE_FILE,
         "timeout_s": 900,
     }
+    from data.runtimes import NATIVE_PINS
+    spec['native_runtime'] = NATIVE_PINS['scienceworld'].copy()
     return bind_scorer_input(spec, record["task_id"], [TASK_IN_WORKDIR, "scienceworld.jar"])
 
 

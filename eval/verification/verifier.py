@@ -467,7 +467,7 @@ def _verify(workdir: Path, verifier: dict | None, answer: str, **options) -> dic
     spec = verifier or {}
     if "native_runtime" not in spec:
         return _verify_existing(workdir, verifier, answer, **options)
-    from eval.verification.native_runtime import admit, NativeRuntimeUnavailable, SUPPORTED_DATASETS
+    from eval.verification.native_runtime import admit, NativeRuntimeUnavailable, SUPPORTED_DATASETS, CHECK_PATHS
     binding = spec["native_runtime"]
     receipt = {"verified": False, "sha256": binding.get("sha256") if isinstance(binding, dict) else None}
     try:
@@ -482,7 +482,7 @@ def _verify(workdir: Path, verifier: dict | None, answer: str, **options) -> dic
                 or spec.get("cwd") not in (None, ".")
                 or spec.get("reward_file") != "/verifier/reward.txt"
                 or spec.get("evidence_file") != "/verifier/evidence.json"
-                or spec.get("argv", [])[:2] != ["python3", "check.py"]):
+                or spec.get("argv", [])[:2] != ["python3", CHECK_PATHS[binding['dataset']]]):
             raise NativeRuntimeUnavailable("native runtime binding requires the supported host check route")
         with admit(binding) as runtime:
             receipt = runtime.receipt

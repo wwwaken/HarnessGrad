@@ -85,6 +85,13 @@ def java_home(workdir: Path) -> Path:
     start": a check that cannot build the world writes no reward file and says why
     (`verify/check.py`), and that only works if this is an exception.
     """
+    # The closed runtime sets this only after authenticating its manifest. Refuse
+    # missing sealed bytes; never fall through to an actor's prepared JRE.
+    if os.environ.get('HG_SEALED_JAVA_HOME'):
+        sealed = Path(os.environ['HG_SEALED_JAVA_HOME'])
+        if not (sealed / 'bin/java').is_file():
+            raise RuntimeError('sealed Java runtime is missing')
+        return sealed.resolve()
     candidates = [workdir / JRE_RELDIR / JRE_DIRNAME,
                   Path(os.environ["HG_SCIENCEWORLD_JAVA"]) if
                   os.environ.get("HG_SCIENCEWORLD_JAVA") else None,

@@ -18,7 +18,10 @@ import platform
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
-SUPPORTED_DATASETS = frozenset({'bird_minidev', 'jericho', 'alfworld'})
+CHECK_PATHS = {name: 'check.py' for name in
+               ('bird_minidev', 'jericho', 'alfworld', 'scienceworld')}
+CHECK_PATHS['chessbench_puzzles'] = 'qa/lib/verify/check.py'
+SUPPORTED_DATASETS = frozenset(CHECK_PATHS)
 
 
 class NativeRuntimeUnavailable(RuntimeError):
@@ -86,8 +89,9 @@ class FrozenRuntime:
         command = [self.manifest['loader'], '--inhibit-cache', '--library-path',
                    ':'.join(self.manifest['library_path']), interpreter,
                    *self.manifest['python_flags'], *argv[1:]]
-        if argv[1] == 'check.py':
-            command[command.index('check.py')] = '/scorer/check.py'
+        check_path = CHECK_PATHS[self.manifest['dataset']]
+        if argv[1] == check_path:
+            command[command.index(check_path)] = '/scorer/check.py'
         if self.manifest.get('python_path'):
             # -I -S excludes ambient sites. Add only digest-bound package roots.
             # The child control uses the same explicit bootstrap when it needs

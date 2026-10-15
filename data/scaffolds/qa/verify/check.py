@@ -51,7 +51,7 @@ from pathlib import Path
 #: `data.*`: the verification namespace hides the platform tree, and a check that
 #: reached back into it would either fail or read whatever the subject left there.
 HERE = Path(__file__).resolve().parent
-for candidate in (HERE.parent, Path.cwd()):
+for candidate in ((HERE,) if HERE == Path('/scorer') else (HERE.parent, Path.cwd())):
     if str(candidate) not in sys.path:
         sys.path.insert(0, str(candidate))
 

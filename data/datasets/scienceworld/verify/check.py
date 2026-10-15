@@ -55,11 +55,10 @@ import sys
 import traceback
 from pathlib import Path
 
-# Native staging supplies this dependency at the task root.
-sys.path.insert(0, str(Path.cwd()))
+# Resolve helpers beside trusted code, also in the sealed /scorer root.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from data.scaffolds.scorer_input import add_arguments, run_bound
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import scw_env  # noqa: E402
 
 DEFAULT_REWARD_FILE = "/verifier/reward.txt"

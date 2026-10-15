@@ -402,6 +402,8 @@ SPLIT_SOURCE = "hash"
 
 def __getattr__(name: str):
     global _BUILT
+    if name == "VERIFY":
+        return {record["task_id"]: verify_for(record) for record in _SPEC.ensure()}
     if name in {"ENV", "SPLIT"}:
         if _BUILT is None:
             _BUILT = _SPEC.build()
@@ -435,7 +437,10 @@ def setup_for(record: dict) -> dict:
 
 
 def verify_for(record: dict) -> dict:
-    return _SPEC.verifier(record)
+    from data.runtimes import NATIVE_PINS
+    spec = _SPEC.verifier(record)
+    spec['native_runtime'] = NATIVE_PINS['chessbench_puzzles'].copy()
+    return spec
 
 
 __all__ = ["KIND", "DATASET_ROOT", "REVISION", "load", "load_selected", "control_task",

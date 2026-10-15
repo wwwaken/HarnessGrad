@@ -22,7 +22,8 @@ def main():
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--manifest', type=Path, required=True)
     parser.add_argument('--store', type=Path, required=True)
-    parser.add_argument('--dataset', choices=['bird_minidev', 'jericho', 'alfworld'],
+    parser.add_argument('--dataset', choices=['bird_minidev', 'jericho', 'alfworld',
+                                             'scienceworld', 'chessbench_puzzles'],
                         default='bird_minidev')
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
@@ -67,8 +68,10 @@ def main():
         return f'{path}:{next(i for i, line in enumerate(lines, 1) if needle in line)}'
 
     adapter = f'data/datasets/{args.dataset}.py'
-    check = f'data/datasets/{args.dataset}/verify/check.py'
-    entry = site(adapter, '"python3", "check.py"')
+    check = ('data/scaffolds/qa/verify/check.py' if args.dataset == 'chessbench_puzzles'
+             else f'data/datasets/{args.dataset}/verify/check.py')
+    entry = (site('data/scaffolds/qa/base.py', '"python3", f"{CHECK_DIR}/{CHECK_NAME}"')
+             if args.dataset == 'chessbench_puzzles' else site(adapter, '"python3", "check.py"'))
     add(exe, entry + ' (interpreter selected by native_runtime binding)')
     add(exe.parent / 'python3', entry + ' (closed child PATH alias)')
     # Entire stdlib source/extension superset, excluding ambient site packages and caches.
@@ -84,13 +87,55 @@ def main():
         '/scorer/data/scaffolds/__init__.py': 'data/scaffolds/__init__.py',
         '/scorer/data/scaffolds/scorer_input.py': 'data/scaffolds/scorer_input.py',
     }
-    helper = {'jericho': 'jer_env', 'alfworld': 'gym_env'}.get(args.dataset)
+    helper = {'jericho': 'jer_env', 'alfworld': 'gym_env', 'scienceworld': 'scw_env'}.get(args.dataset)
     if helper:
         trusted[f'/scorer/{helper}.py'] = f'data/datasets/{args.dataset}/lib/{helper}.py'
+    if args.dataset == 'chessbench_puzzles':
+        trusted['/scorer/data/datasets/chessbench_puzzles.py'] = adapter
+        trusted['/scorer/data/datasets/__init__.py'] = 'data/datasets/__init__.py'
+        for name in ('__init__', 'base', 'read', 'evidence_scorers', 'prediction'):
+            source = f'data/scaffolds/qa/{name}.py'
+            trusted[f'/scorer/{source}'] = source
     for target, source in trusted.items():
         add(target, source + ':1 (trusted scorer code, separate from actor files)', source)
     packages = stdlib / 'site-packages'
-    if helper:
+    if args.dataset in {'scienceworld', 'chessbench_puzzles'}:
+        roots = (['scienceworld', 'py4j'] if args.dataset == 'scienceworld' else ['chess'])
+        for package in roots:
+            root = packages / package
+            if not root.is_dir():
+                raise ValueError(f'missing package root: {root}')
+            package_entry = (site(f'data/datasets/scienceworld/lib/scw_env.py', 'from scienceworld import')
+                             if args.dataset == 'scienceworld' else site(adapter, 'import chess'))
+            for directory, dirs, files in os.walk(root):
+                dirs[:] = sorted(d for d in dirs if d not in {'__pycache__', 'tests', 'test'})
+                for name in sorted(files):
+                    path = Path(directory) / name
+                    if path.suffix not in {'.pyc', '.pyo'}:
+                        add(path, package_entry + f' (trusted {package} package/resources superset)')
+        if args.dataset == 'scienceworld':
+            # Preserve the JRE layout (including non-ELF modules/config), so the
+            # child's $ORIGIN and java.home lookup never reach a task/host JRE.
+            import importlib.util
+            spec = importlib.util.spec_from_file_location('capture_scw_env',
+                                                        'data/datasets/scienceworld/lib/scw_env.py')
+            scw = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(scw)
+            java_home = scw.staged_jre().resolve(strict=True)
+            for path in sorted(java_home.rglob('*')):
+                if path.is_file():
+                    add('/opt/hg-jre/' + str(path.relative_to(java_home)),
+                        site(f'data/datasets/scienceworld/lib/scw_env.py', "HG_SEALED_JAVA_HOME")
+                        + ' (closed JRE tree)', path)
+            from py4j.java_gateway import find_jar_path
+            jar = Path(find_jar_path()).resolve(strict=True)
+            add(jar, site(packages / 'py4j/java_gateway.py', 'jarpath = find_jar_path()'))
+            java_identity, _ = capture([str(java_home / 'bin/java'), '-version'])
+            # -version writes its identity on stderr, retained by capture.
+            # glibc dlopens this at pthread_exit; it is absent from DT_NEEDED.
+            add('/lib/x86_64-linux-gnu/libgcc_s.so.1',
+                'glibc pthread_exit unwind provider (observed sealed JVM shutdown)')
+    if args.dataset in {'jericho', 'alfworld'}:
         # Closed package/resources superset for the synchronous replay route.
         # Optional NLP/ML modules are not imported; their absent dependencies
         # cannot resolve through the empty namespace to the host.
@@ -135,8 +180,15 @@ def main():
         path = queue.pop(0)
         if str(path) in elf:
             continue
-        dynamic, readelf_id = capture(['/usr/bin/readelf', '-lW', '-dW', str(path)])
-        providers, ldd_id = capture(['/usr/bin/ldd', str(path)])
+        source_path = entries[str(path)]['source']
+        dynamic, readelf_id = capture(['/usr/bin/readelf', '-lW', '-dW', source_path])
+        # JRE internal providers are resolved within the preserved tree. Collection
+        # uses its native search dirs; runtime remains confined to the manifest.
+        ldd_argv = ['/usr/bin/ldd', source_path]
+        if args.dataset == 'scienceworld':
+            ldd_argv = ['/usr/bin/env', 'LD_LIBRARY_PATH=' + str(java_home / 'lib')
+                        + ':' + str(java_home / 'lib/server'), *ldd_argv]
+        providers, ldd_id = capture(ldd_argv)
         if 'not found' in providers:
             raise ValueError(providers)
         graph = []
@@ -144,8 +196,13 @@ def main():
             match = re.search(r'=> (/\S+)|^\s*(/\S+)', line)
             if match:
                 dep = os.path.normpath(next(g for g in match.groups() if g))
-                add(dep, f'ELF provider from {path}; commands/{ldd_id}.stdout.txt')
-                graph.append(dep)
+                if args.dataset == 'scienceworld' and Path(dep).is_relative_to(java_home):
+                    target = '/opt/hg-jre/' + str(Path(dep).relative_to(java_home))
+                    add(target, f'ELF provider from {path}; commands/{ldd_id}.stdout.txt', dep)
+                else:
+                    target = dep
+                    add(dep, f'ELF provider from {path}; commands/{ldd_id}.stdout.txt')
+                graph.append(target)
         interp = re.search(r'Requesting program interpreter: ([^\]]+)', dynamic)
         if interp:
             add(interp[1], f'PT_INTERP from {path}; commands/{readelf_id}.stdout.txt')
@@ -168,9 +225,16 @@ def main():
                 'identity': json.loads(identity),
                 'launcher': {'path': str(bwrap), 'sha256': bwrap_hash.split()[0]},
                 'files': dict(sorted(entries.items()))}
-    if helper:
+    if helper or args.dataset == 'chessbench_puzzles':
         manifest['python_path'] = ['/scorer', str(packages)]
         manifest['environment']['LD_LIBRARY_PATH'] = ':'.join(manifest['library_path'])
+    if args.dataset == 'scienceworld':
+        manifest['environment']['HG_SEALED_JAVA_HOME'] = '/opt/hg-jre'
+        manifest['environment']['JAVA_HOME'] = '/opt/hg-jre'
+        # This installed Py4J defaults java_path="java"; JAVA_HOME is consulted
+        # only when java_path is false. Both resolutions must name sealed bytes.
+        manifest['environment']['PATH'] = '/opt/hg-jre/bin:' + str(exe.parent)
+        manifest['identity']['java_release'] = (java_home / 'release').read_text()
     args.manifest.write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\n')
     (args.out / 'manifest.json').write_bytes(args.manifest.read_bytes())
     manifest_hash, _ = capture(['/usr/bin/sha256sum', str(args.manifest)])
