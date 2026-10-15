@@ -1,0 +1,245 @@
+Baseline: python3 tools/check_dataset_blockers.py initially returned valid=false: missing evidence tests/fixtures/hg_wresolver/raw/inventory-final.stdout.txt.
+Restored 11 already-existing registry-cited ignored text files from the main checkout (read-only source), without changing checker, gates or registry. Reproduction helper and full copied-file digests are recorded below.
+
+$ python3 tests/fixtures/hg_wsel/packet.py --create --export-root /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f
+fever: first5 exact; side=mixed; scorer-input hashes=5; export_files=16; prior_selected_match=False
+hotpotqa: first5 exact; side=mixed; scorer-input hashes=5; export_files=16; prior_selected_match=False
+physicsquestions: first5 exact; side=mixed; scorer-input hashes=5; export_files=16; prior_selected_match=True
+reasoning_gym: first5 exact; side=mixed; scorer-input hashes=5; export_files=16; prior_selected_match=True
+sportsunderstanding: first5 exact; side=mixed; scorer-input hashes=5; export_files=16; prior_selected_match=True
+spreadsheetbench: first5 exact; side=mixed; scorer-input hashes=5; export_files=21; prior_selected_match=True
+strategyqa: first5 exact; side=mixed; scorer-input hashes=5; export_files=16; prior_selected_match=True
+triviaqa: first5 exact; side=eval; scorer-input hashes=5; export_files=16; prior_selected_match=False
+PASS: 8 datasets; 40 ordered tasks; 133 exact export files; no extra files; 0 scoring executions; all blockers remain open
+exit=0
+
+After initial export creation, explicitly reserve each fresh selection identifier as its prospective run_id. runtime_run_id remains null; no old run ID is resumed or overwritten. Command actually executed:
+$ python3 - <<'PY'
+from pathlib import Path
+import json
+for p in Path('tests/fixtures/hg_wsel').glob('*.json'):
+    d = json.loads(p.read_bytes())
+    d['run_id'] = d['selection_id']
+    d['run_state'] = 'reserved-selection-only; no execution'
+    p.write_text(json.dumps(d, indent=2, ensure_ascii=False) + '\n')
+PY
+
+Preparation: wrote compact restored-observations.json after direct byte equality of all 11 restored files to their read-only source; wrote preserved-custody.json after comparing actual manifest installed hashes/sizes/counts to hg_wjournalcov/observations.json. The exact recheck command and output follow.
+
+$ python3 tests/fixtures/hg_wsel/validate.py
+PASS: 11 restored ignored text observations byte-equal; 6 preserved installed source hashes/sizes/counts match
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit=0
+
+$ python3 tests/fixtures/hg_wsel/packet.py
+fever: first5 exact; side=mixed; scorer-input hashes=5; export_files=16; prior_selected_match=False
+hotpotqa: first5 exact; side=mixed; scorer-input hashes=5; export_files=16; prior_selected_match=False
+physicsquestions: first5 exact; side=mixed; scorer-input hashes=5; export_files=16; prior_selected_match=True
+reasoning_gym: first5 exact; side=mixed; scorer-input hashes=5; export_files=16; prior_selected_match=True
+sportsunderstanding: first5 exact; side=mixed; scorer-input hashes=5; export_files=16; prior_selected_match=True
+spreadsheetbench: first5 exact; side=mixed; scorer-input hashes=5; export_files=21; prior_selected_match=True
+strategyqa: first5 exact; side=mixed; scorer-input hashes=5; export_files=16; prior_selected_match=True
+triviaqa: first5 exact; side=eval; scorer-input hashes=5; export_files=16; prior_selected_match=False
+PASS: 8 datasets; 40 ordered tasks; 133 exact export files; no extra files; 0 scoring executions; all blockers remain open
+exit=0
+
+$ python3 tests/fixtures/hg_wsel/check_scope.py
+PASS: exactly 8 observed append-only changes; next_actions/statuses/history/shared gates and four permanent refusals unchanged; journal append-only
+exit=0
+
+$ sha256sum /mnt/20t/xubuqiang/datasets/fever/valid.jsonl /mnt/20t/xubuqiang/datasets/hotpotqa/fullwiki/validation-00000-of-00001.parquet /mnt/20t/xubuqiang/datasets/physicsquestions/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/physics_question.csv /mnt/20t/xubuqiang/datasets/reasoning_gym/pool.jsonl /mnt/20t/xubuqiang/datasets/sportsunderstanding/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/sports_understanding.csv /mnt/20t/xubuqiang/datasets/spreadsheetbench/spreadsheetbench_verified_400/dataset.json /mnt/20t/xubuqiang/datasets/strategyqa/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/strategy_qa.csv /mnt/20t/xubuqiang/datasets/triviaqa/rc.nocontext/validation-00000-of-00001.parquet /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/rows.jsonl /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/0/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/0/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/0/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/1/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/1/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/1/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/2/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/2/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/2/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/3/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/3/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/3/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/4/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/4/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/4/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/rows.jsonl /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/0/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/0/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/0/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/1/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/1/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/1/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/2/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/2/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/2/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/3/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/3/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/3/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/4/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/4/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/4/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/rows.csv /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/0/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/0/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/0/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/1/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/1/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/1/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/2/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/2/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/2/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/3/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/3/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/3/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/4/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/4/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/4/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/rows.jsonl /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/0/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/0/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/0/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/1/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/1/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/1/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/2/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/2/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/2/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/3/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/3/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/3/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/4/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/4/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/4/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/rows.csv /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/0/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/0/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/0/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/1/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/1/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/1/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/2/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/2/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/2/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/3/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/3/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/3/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/4/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/4/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/4/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/rows.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/0/golden.xlsx /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/0/task.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/0/workbook.xlsx /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/0/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/1/golden.xlsx /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/1/task.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/1/workbook.xlsx /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/1/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/2/golden.xlsx /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/2/task.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/2/workbook.xlsx /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/2/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/3/golden.xlsx /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/3/task.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/3/workbook.xlsx /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/3/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/4/golden.xlsx /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/4/task.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/4/workbook.xlsx /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/4/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/rows.csv /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/0/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/0/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/0/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/1/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/1/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/1/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/2/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/2/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/2/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/3/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/3/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/3/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/4/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/4/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/4/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/rows.jsonl /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/0/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/0/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/0/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/1/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/1/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/1/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/2/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/2/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/2/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/3/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/3/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/3/goal.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/4/gold.json /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/4/question.txt /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/4/goal.txt
+5da0ccc0ccf77f974611de13f8aac6f78c6bba6293912835099eb6029baa85d9  /mnt/20t/xubuqiang/datasets/fever/valid.jsonl
+78933c0a31a5f7b420d4effdf4cd4eed573b28c6a3da6179dcf7a02b39e51d03  /mnt/20t/xubuqiang/datasets/hotpotqa/fullwiki/validation-00000-of-00001.parquet
+7747cf185111aaa58493b5d804ba7b496cb152a6ae89a69a66a0c443adfd34aa  /mnt/20t/xubuqiang/datasets/physicsquestions/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/physics_question.csv
+c0ff4eaef318cd59afcc61472ebe206362fc0211c4b589ed0d53946a569bd177  /mnt/20t/xubuqiang/datasets/reasoning_gym/pool.jsonl
+5cfc24702b7a809409f42634f0b958f0d61c4d5aec8d732fd89889281c63d45e  /mnt/20t/xubuqiang/datasets/sportsunderstanding/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/sports_understanding.csv
+bcecaa89a005bd4e3bbe98da150a86e8062c27f262e575d5e47bd9861b3525e7  /mnt/20t/xubuqiang/datasets/spreadsheetbench/spreadsheetbench_verified_400/dataset.json
+c1fd0c271bf98741b68ac1ea3d167c5ccf2ed46da66645d5fc0ed6222e45f055  /mnt/20t/xubuqiang/datasets/strategyqa/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/strategy_qa.csv
+48a5005c0eb4f8a4ae5b9868644297fd5bf1e694aeb3dc9c8ab958cac0d5b201  /mnt/20t/xubuqiang/datasets/triviaqa/rc.nocontext/validation-00000-of-00001.parquet
+41189af8735e749797dd26415a69b7075adb7ba54692b6039a0879d20450f72b  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/rows.jsonl
+4f25c1ca5756408dd82f17ff1757afe5ec1982d405326869d5ff895c040cba21  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/0/gold.json
+b82677396dd817bce97181774bdc3587a89cba276bfe61fbee166f32925d85f8  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/0/question.txt
+ab27f1df3dab0d21ee8ea2f891ca9bd2a5c490e963f7294513cbab174d9552c5  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/0/goal.txt
+e1d804cccd806c5d50a4eabbb0b1c4512439dffe3d172545810009c210509e1f  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/1/gold.json
+9ad92c4a66d3f6f4cf8f23c6cfcb1ffc9e8a89c8872a1b1222562a82601d8ec3  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/1/question.txt
+196e861f36755600cc0eb1138d4298faf1ae75886fc51d0fad35761e4c5f4f9d  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/1/goal.txt
+a346faf754cc26c891d88468f5a2a742b039b38a74db5397193a57a943bca24e  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/2/gold.json
+96a1c7f58d7e1bdfbadb0be12cdc445f7ee387ce91e47ef85a00146e1a133c95  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/2/question.txt
+0e67b25139b1be28c2bd24abdb792548b7515b8483a7126b652c5ff6af54340f  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/2/goal.txt
+73d42e0505825789348baeb368eae9154a35fdc8718cd44a2364b2d8480a9f2e  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/3/gold.json
+a6757f97611acbd9e0a8fd0572732942c811a42c1344dfccf93aca830ab37a4f  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/3/question.txt
+ef8e1910452e8b946e83c281b506e18ad8b9dadacb3e9023e0be6157d9889706  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/3/goal.txt
+c2d1f23d10359627dbc1b917d5bb59cba095a5e78a39542c59190df6ef74f1d2  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/4/gold.json
+67659908365c88f235d2a0aef14d3b04ed17ae56244c2119ef2544ceb73668bf  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/4/question.txt
+762e8ed83bfa9fa473966b3e3ecabdd279f3c19fc6c312af058f55467347018a  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/fever/inputs/4/goal.txt
+0cfe16ffdf0984132e537236d1e701900217984d3219889eeeca43fc3356ec01  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/rows.jsonl
+496f379ebdbe94d738dbccbd7f5be5228d8a133f1248243bfd8d14c4da770bc2  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/0/gold.json
+5dda555f7bbde715cefa2f2ba0d287c9215cca56b33fe5b0c4c1bb7fc8362c48  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/0/question.txt
+3694716e1d9de0e45c690eafdfb3099149fc27731faefc55d514c40b2655a903  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/0/goal.txt
+08fcfad039524654f2ac28777dd8c1222b8d0150a670d041d55e1ea3a57aba74  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/1/gold.json
+61137c25525c022ce9c3e8c8ca23ae73ea730deeb225cbde124e13b96a1d073f  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/1/question.txt
+f0d9e5eecd82432633768aaa1122ef5135ef05246c8e2163ccb00132d1a041fe  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/1/goal.txt
+8dddf51756e383d070b12e18149cb7f5159361df97d48b4130f7b053115d0a82  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/2/gold.json
+c727af252f4ae661ec46e8c7ca9ad35cffe7e07c067e086ecc88ac0d100ca2cf  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/2/question.txt
+2adc307aeba60bfe760637500ddd210048aad55b461523d5286e92c78d7c6302  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/2/goal.txt
+7f433eac614d88b3b7c3e18fb1c3ff702a912ba1b3910ae9b7a44847042b0ca4  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/3/gold.json
+0db9cfa6230f80bbd2ce64e7d8cdbf116b3564b1c8db88f3d9bd82804477c1f6  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/3/question.txt
+10a29d9e69813cc722f22c554be980095dc85f3ee2eef587edcf174de64a18bf  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/3/goal.txt
+981d56be264f12e6c7a574f1cf89489e9cfdfd831de655e8bcc6b6ff81bbb832  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/4/gold.json
+94e21d6ecc92a6b4de24e0e30ceff8bb9af097d1b7eb21ed0039ae87dce69436  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/4/question.txt
+ffa6a40a0864ad9eec0517f91c3efd08f5acfd7b8258991911de6ae9d92a37d8  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/hotpotqa/inputs/4/goal.txt
+7ab817d5ea33b40aee19e753bf439f0b19b25f42d6dadc6e3d62829de4c6b8a2  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/rows.csv
+d7e4af51a0ac9bf8429c2e26c004267f5965fb1de0757ce3627c891d4167b9da  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/0/gold.json
+a517c763f28f6dea0ddce957eb327af7640b3151af2e39b347015107578b4dd1  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/0/question.txt
+06e1f40301dc7961631da2a82498ad9c4e8e7abf13c5ace3fdeca7444cd9df27  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/0/goal.txt
+28c2127b6214532abb4d159f711c51eab1c17c39390a9a01d5746e6ad099ae98  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/1/gold.json
+30ebf5631f25ba9d8daa44fb8dc1a4a9a451ca8d20894d6e94db277e276705dc  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/1/question.txt
+6face82bb8d1a6af7ed3fc5134bab6e012aae6df67f4fa2deff2f4dc617abf4b  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/1/goal.txt
+b14deeafaa1741dd300253596fa58e2858492a85fb8f516e90c253427cc3ed92  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/2/gold.json
+360e23955bf1e41489acf8397e9e6ba4d78ac8eb6d8f7946a4be27b7976ada93  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/2/question.txt
+b4e03860da1dccd33bb9db5d85967a627e188eefb5c462afebba1196bfe29619  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/2/goal.txt
+7f9afda7f51a9e1053dbf9861803d2f66a6c37e59f0b9046c04f5aa9daf11e9f  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/3/gold.json
+cd11a4c5af069ecfea1f663f92c1c2bcd0cbb7f2f4058a505612e7398db84214  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/3/question.txt
+f4211a185b87cd5dc953f47da8e01b0f4ca653bd1e0a32ee0f6712f0cbafb47e  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/3/goal.txt
+367f715b004916a5dc598a5e770048700aa870253ad7751c9028765b910ee0d0  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/4/gold.json
+e3cd0a74be08784d4c843f9437030080f54541c1449aa541db3062ae88aedb21  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/4/question.txt
+757d286553053b7ee1464875428c83ecfcf711aa741028a3fa04af5f0b7c2c13  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/physicsquestions/inputs/4/goal.txt
+0d00e9c9517e549af76bfda59d0183f5682c3eacab0fb35597753664d87d863f  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/rows.jsonl
+3a1ad75316cfbfd5c8ef3d68eaebdf472e1ecbc87e09cf8c0177eefff4fdc54b  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/0/gold.json
+a99681321df820ef456006d8981881e7840f6141c7ba530c82fa45cac885e2ce  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/0/question.txt
+1f259bcd0c0615f70be21072191ee8b9fc3547ecb3752f46ef3014e1468ad0e5  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/0/goal.txt
+558794148fb33f99f643369924266c5882319282c9f500e528bfa5519e394b06  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/1/gold.json
+4e5513d6376bfcb1b4adc7c07e511b78f3945d461ca2c11093aa8d48a51c5f9d  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/1/question.txt
+a4d885c130f65b384380ccb36fdd63292bf8af56de63f4237ba64315129c4108  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/1/goal.txt
+02bacf660571f552f0ccd99fb69912dc71d5762504d35646f8f436b9b52a6d9d  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/2/gold.json
+3cbd94882fc529be161207991cd21e67a7c60eea8b388ffc2e6f85ccd4fefb5e  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/2/question.txt
+11dce146656d0bece1a31a1fcd6b20144dad16e9169cabdca94c9ffa5a2a563a  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/2/goal.txt
+c0be328d2aafcf2bf683a10cf780623cf8b7819434d319b52724f54fbda68ed9  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/3/gold.json
+326a177dd54fa9c9b97b2a283f48acc64c9f0f4988647f3a0f958a8cfb793b96  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/3/question.txt
+2a15600ca135648d2239657f5ee692a9a950d2c9a2ae9da7b81df0bc1b33dfc2  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/3/goal.txt
+8f7b7c61d23a04e9a70c8d1033fc9d2e72e893009d1a9e95e902a33919150ac6  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/4/gold.json
+ae999d766a015cf84c8033cc382a939983fcf5fc9adc22344da764c884f061a8  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/4/question.txt
+49835bb577132cb34b96a51be3a5b30bfbe79ead2cf41aa34992e7fd1266a67b  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/reasoning_gym/inputs/4/goal.txt
+7aac56567d1b27d589ef1c87928736ffba0168f13a61711326058a8f31e414dd  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/rows.csv
+84aae3b8b93374b61016a847d0b59910a1cd2df101f979c04352fddffeb252dc  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/0/gold.json
+39f83d77c62c2eb69b550cada19f45238f678611caeb388da33860dde3755680  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/0/question.txt
+f3919dc7e8eb2ab893d4d499fec1b951fcc5e3853ac55aba9f64d53f173d3556  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/0/goal.txt
+84aae3b8b93374b61016a847d0b59910a1cd2df101f979c04352fddffeb252dc  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/1/gold.json
+67b9afe5c92ac129d572d4d708658236fd7d8a6e002c550e95208936f0b43903  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/1/question.txt
+6df97f653e0a4b07822904ec99302b487e404f1861b08db8ee3ee73f4dbb8910  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/1/goal.txt
+84aae3b8b93374b61016a847d0b59910a1cd2df101f979c04352fddffeb252dc  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/2/gold.json
+d9b6b27157d132af41e469d2d9d185f194ded27660f879eb1112cf1b1f1684d6  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/2/question.txt
+11be6980b4dbf970b05724847d690b62dba08d821366719b386d91a0f13ba137  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/2/goal.txt
+0b316498690671df4dc5553af217c425178dd658ff6b30f085120d0b3285f0b2  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/3/gold.json
+3835ebdff0010168b4403f35ac98f7c5dc9bfffcb8341836534ec14a20e78e80  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/3/question.txt
+31c775eeefde7ff5ff2304b8379e0f1637e5ee04f8fe2aad0595d04efa856552  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/3/goal.txt
+0b316498690671df4dc5553af217c425178dd658ff6b30f085120d0b3285f0b2  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/4/gold.json
+13c209391da58884c8c59550f4ce5e4a31f80439efc065be61ed4cb4dad382a6  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/4/question.txt
+4a8741d353da928aa2e846785f55860b3ef7eace5122986ded86f5f401b87eda  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/sportsunderstanding/inputs/4/goal.txt
+395b1fff129d8de3ba59b79ed09b7c20bebd74560d9377ec3e147cd7170f6c50  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/rows.json
+a8eaf5ec1991c35ae785fb82efce2ecd24f6268410a8a89f78ca07843fcaf140  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/0/golden.xlsx
+a8a0039e0c42fca97d1574a21706a34c14ef9246543bb7fee1a4eaff061d3e1a  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/0/task.json
+36e7e5238ac29a506d06a27b73aab4ac6249530c9cfd4b1c40835c7823a39da5  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/0/workbook.xlsx
+1d86f70540300379f93e82adf40007ba86120698137e1a1c384819b5beff0a55  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/0/goal.txt
+2e35c3957c9025cc60a3b4bd10984b709037eb674c1ab26e18805c99f9543ce4  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/1/golden.xlsx
+fec79b694b4bc3329a325963edd23883fd3d85d68003ad3b2f5b391876a5c744  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/1/task.json
+50ba7b30308e0579e4141120349c0c97103fb6b58b315051e9bafd3764c75feb  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/1/workbook.xlsx
+44e87d63ee5715692382e270dd68fe30bc655c86e098cb5deea747dbfebc8c87  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/1/goal.txt
+2dd6719f5d3b37eca3b51e3d3cbc57f1f4791bc194e30f3932f2ce0acd4695c8  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/2/golden.xlsx
+0338b0a05f80f427325fbfc9d84ee3fe7f95c2d904ed2149d0ce77b790bca5b3  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/2/task.json
+d06080c377499133d6ccb6a0efc9a88f78cfa98b3ea76b53c2443acbf21afa6e  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/2/workbook.xlsx
+b50fb291d1a6a1b120b276fd258cded1dbda288054849184c9a35d0b97f3367b  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/2/goal.txt
+f0aed39194734eb7c471aa80fb5a0ec9677ba60a35b7b7fb1c10de38dc21b2b6  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/3/golden.xlsx
+e21c3e0026cfc9264b23c8509aba6aa8493ca35d2a237184e50e6f7740256830  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/3/task.json
+9edd14173d1e42f481a909f07e9ad9e56c2c38c0782f20a25cf6280020ce9cd5  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/3/workbook.xlsx
+830b55892b671a3975add704c10a67215b8d7efd147ed6f2999451e51fb2745f  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/3/goal.txt
+150050ea865c40456eeae47ccbb8a5cc5d9f064313220b664303c851c7ef7351  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/4/golden.xlsx
+4e70c968a19643a8da3596cf8c4b30023e704965c9706bda377aab1ba4ca5037  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/4/task.json
+ad398fa79f63391cbfeb808d96e9af8b0c8d6e98de29c096c9d6f4a53f204a1a  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/4/workbook.xlsx
+cdd85305ec4b5e10ab58a6fbe47b9ab891eb0c5ca4209f8b3b4d5391861a92f3  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/spreadsheetbench/inputs/4/goal.txt
+18bb5a754bbe04124b73396b1b7b80b522d3a59b525a6173d0d06914086bd1ba  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/rows.csv
+cff9d5e72adf611516ac710d89c9a03e0425882e14d024b4ceb68002224cbe83  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/0/gold.json
+7ca37bc7d6dc6e9a722083beb58b2d86599e344fa3bcce0f5bc46aedda3218e1  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/0/question.txt
+0105b3101dbac19434c64ba1cbcd9885942fbfad567ea0de5651fea88201d9f6  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/0/goal.txt
+f7aaf09b54e1832b32bc6cfed983ebb0755a35b0ac15382e247d23a77cd5f2db  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/1/gold.json
+792821c00e4dc1f67abf26d12efb1aafb282ae93849e2c9bf72aaac0ca693ff6  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/1/question.txt
+1358dca7aa41463bbc162fcc4760b9ad665e5b12cc50025b061eb671fab3d631  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/1/goal.txt
+f7aaf09b54e1832b32bc6cfed983ebb0755a35b0ac15382e247d23a77cd5f2db  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/2/gold.json
+9212bf26b78334e975a1912d30458e832f1f404e9f66da96b9454c3d7ffd67dc  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/2/question.txt
+142ebe030a18e9588888259d6bda25463a35c78319d01bd080911f1eb506ce20  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/2/goal.txt
+cff9d5e72adf611516ac710d89c9a03e0425882e14d024b4ceb68002224cbe83  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/3/gold.json
+715cfc122da3c951b7331ee069cac92b706b815f18c0c10f625333ab547d0b0f  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/3/question.txt
+ef9728f4599fd2d9e139cb5e4558d2bfdf94ad1fa864c9a5f986693de5c0be07  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/3/goal.txt
+f7aaf09b54e1832b32bc6cfed983ebb0755a35b0ac15382e247d23a77cd5f2db  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/4/gold.json
+659811a294b0cfb1eb0fe49195cde1340d10801de77fca052fc33426cc26d0ea  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/4/question.txt
+f426cd7c3ccc2d2d2cfede898b524b5e66bde98bf73a37992f3b1b8adf569f95  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/strategyqa/inputs/4/goal.txt
+0b1b6ad5db09414a3b1316b4cd04f9b1f9c27ced671f730e85c01203b36dbf5c  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/rows.jsonl
+9259788e9162f97b630000d5e8bb2a8c8c4cfbf9875d098c96d6f87e1d6db715  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/0/gold.json
+d9a79b1136d48af7ae43021e80b25e2e48911d30ec6e9dd10ff59b4f34783032  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/0/question.txt
+eb4c00e3c6fcb931d963bb5c64949ba0072d269b91c9ea08586357e642ab22e3  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/0/goal.txt
+4401266f67049c7fc15b36d591cd00eb94d43bdb8ddaf7f81afa36521452ce0a  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/1/gold.json
+5bf1bca52f7fccea632e0feb5f51524dcdc0f3a55d8f87d3619a949009a62372  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/1/question.txt
+fefeff834c7f0a26bcc5d620b8ac95d1027a72bff6774c973a3ac6323f0858a3  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/1/goal.txt
+da0735bc8d9cb9dc3375346c1bcc546447efe47662ec4dce9b7281ae010f57c4  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/2/gold.json
+a867243d90242ade21d6c9c8b69ce5121c5fe6bfed47fe97286c856ed8ca9bdc  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/2/question.txt
+aea3addf2393ceb5442122c415a209b5a96ff2cf5e7e0fbdd7b3dff74585b81a  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/2/goal.txt
+f0d50314982d21592223c4fd48d51881677af320c3f1eca59f6c477a8e92a483  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/3/gold.json
+385bb55323c18ffe3552b046ef6b8f6eb515a1ffe49756d3731ea2c1906369d6  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/3/question.txt
+b2c2272cfdb4497e0ff3a26356514c7ce584ab8e19550787eb2a3fdddaa0d22a  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/3/goal.txt
+cb217fac1d1f8c731a2f0ae25d50b052721cacaf7d3947572cd63e734ee667be  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/4/gold.json
+fa89c23952d62760c7b9d755ced3f087d8b49a4bb54b4a4ac2d7df8b182c0cad  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/4/question.txt
+6b3feaf0e9bc1a8285c3a652a6b60942df485a058bba09625a3e8416d64f31fb  /tmp/hg-wsel-exports-20261015T081758Z-e8bf2cb83f6f/triviaqa/inputs/4/goal.txt
+exit=0
+PASS: independent sha256sum agrees for 8 installed sources and 133 export files
+
+$ python3 -m pytest -q tests/quality/test_dataset_blockers.py tests/quality/test_dataset_journal_coverage.py --basetemp=/tmp/harnessgrad-pytest-w-sel
+....ssssss.....................s..sss.s..sss.......................s.... [ 86%]
+..xxxssssss                                                              [100%]
+59 passed, 21 skipped, 3 xfailed in 3.98s
+exit=0
+
+$ sha256sum -c tests/fixtures/hg_wsel/SHA256SUMS
+tests/fixtures/hg_wsel/README.md: 成功
+tests/fixtures/hg_wsel/check_scope.py: 成功
+tests/fixtures/hg_wsel/fever.json: 成功
+tests/fixtures/hg_wsel/hotpotqa.json: 成功
+tests/fixtures/hg_wsel/packet.py: 成功
+tests/fixtures/hg_wsel/physicsquestions.json: 成功
+tests/fixtures/hg_wsel/preserved-custody.json: 成功
+tests/fixtures/hg_wsel/reasoning_gym.json: 成功
+tests/fixtures/hg_wsel/restored-observations.json: 成功
+tests/fixtures/hg_wsel/sportsunderstanding.json: 成功
+tests/fixtures/hg_wsel/spreadsheetbench.json: 成功
+tests/fixtures/hg_wsel/strategyqa.json: 成功
+tests/fixtures/hg_wsel/triviaqa.json: 成功
+tests/fixtures/hg_wsel/validate.py: 成功
+exit=0
+
+$ git diff --check
+exit=0
+
+Focused test scope: 59 passed, 21 skipped, 3 xfailed. Existing skip conventions retain absent ignored/internal or archived evidence checks; the three strict journal-gap xfails remain. No test, assertion or skip policy was modified. This is not a full-suite or benchmark execution claim.
+Independent read-only agent review also checked eight installed first-five row selections and all 133 exported files, finding no blocking discrepancy. Parent independently reran packet reconstruction and system sha256sum above. Temporary registered review worktree /tmp/hg-wsel-review was clean and removed; its branch contains no commits beyond the starting baseline.
+
+$ git diff --cached --check
+registry/w-sel-manifests.md:234: new blank line at EOF.
+exit=2
+Corrected report trailing blank line only; no manifest/export/digest/registry content changed.
+
+$ git diff --cached --check
+exit=0
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit=0
+
+$ python3 tests/fixtures/hg_wsel/check_scope.py
+PASS: exactly 8 observed append-only changes; next_actions/statuses/history/shared gates and four permanent refusals unchanged; journal append-only
+exit=0
+
+$ python3 -c 'import subprocess; from pathlib import Path; names=subprocess.check_output(['"'"'git'"'"','"'"'diff'"'"','"'"'--cached'"'"','"'"'--name-only'"'"','"'"'--diff-filter=A'"'"','"'"'-z'"'"']).decode().split('"'"'\0'"'"'); files=[Path(n) for n in names if n]; sizes=[(p.stat().st_size,str(p)) for p in files]; assert len(files)==17, len(files); assert all(s<1000000 for s,p in sizes), sizes; assert all(b'"'"'\0'"'"' not in p.read_bytes() for p in files); assert all(p.suffix in {'"'"'.py'"'"','"'"'.json'"'"','"'"'.md'"'"','"'"'.txt'"'"'} or p.name=='"'"'SHA256SUMS'"'"' for p in files); print('"'"'PASS: 17 added text-only files; no payload extensions; largest added file:'"'"',max(sizes)); print('"'"'All new payload bytes remain external; registry checker and assertions unchanged.'"'"')'
+PASS: 17 added text-only files; no payload extensions; largest added file: (41123, 'registry/w-sel-manifests.md')
+All new payload bytes remain external; registry checker and assertions unchanged.
+exit=0
