@@ -1,0 +1,1571 @@
+w-journalcov final validation; exact argv, raw stdout/stderr and exits.
+No adapter/scorer/model/endpoint or benchmark trial is executed.
+
+PRESERVED CAPTURE command-0 {"argv": ["python3", "tests/fixtures/hg_wjournalcov/audit.py"], "exit_code": 1}
+STDOUT
+
+STDERR
+Traceback (most recent call last):
+  File "/tmp/hg-journalcov/tests/fixtures/hg_wjournalcov/audit.py", line 253, in <module>
+    main()
+  File "/tmp/hg-journalcov/tests/fixtures/hg_wjournalcov/audit.py", line 225, in main
+    summary, inventories, lines = derive()
+                                  ^^^^^^^^
+  File "/tmp/hg-journalcov/tests/fixtures/hg_wjournalcov/audit.py", line 75, in derive
+    raw = read(path)
+          ^^^^^^^^^^
+  File "/tmp/hg-journalcov/tests/fixtures/hg_wjournalcov/audit.py", line 39, in read
+    raw = path.read_bytes()
+          ^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py", line 1019, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/hg-journalcov/data/scaffolds/scorer_inputs.py'
+
+PRESERVED CAPTURE command-1 {"argv": ["python3", "tests/fixtures/hg_wprov/build_custody.py", "--check"], "exit_code": 0}
+STDOUT
+{
+  "valid": true,
+  "datasets": {
+    "physicsquestions": {
+      "installed_sha256": "7747cf185111aaa58493b5d804ba7b496cb152a6ae89a69a66a0c443adfd34aa",
+      "installed_bytes": 17953,
+      "source_rows": 53,
+      "loaded_rows": 53,
+      "nonempty_questions": 53,
+      "declared_train_ids": 37,
+      "declared_eval_ids": 16,
+      "split_sha256": "820869d7fcf7eb40651fdf3e747609e3c57a72e1bb9d64a12deb948400528212",
+      "structural_eligible_digest": "2abb5f75bc5e44aea4b168e2539e4442c8a2387af79840571b83426b199bc598",
+      "selected_manifest": null,
+      "run_id": null,
+      "measured_trials": null,
+      "invalid_trials": null,
+      "unmeasured_trials": null,
+      "production_authorized": false
+    },
+    "strategyqa": {
+      "installed_sha256": "c1fd0c271bf98741b68ac1ea3d167c5ccf2ed46da66645d5fc0ed6222e45f055",
+      "installed_bytes": 200453,
+      "source_rows": 2290,
+      "loaded_rows": 2290,
+      "nonempty_questions": 2290,
+      "declared_train_ids": 1520,
+      "declared_eval_ids": 770,
+      "split_sha256": "c4baab58c4101d28b981a771a4bb1ef198f020e64764905eda23a7379f396969",
+      "structural_eligible_digest": "2e877247b30d4526b0b7c40f982975ac770fea93c9536c597d78f2f9b8052993",
+      "selected_manifest": null,
+      "run_id": null,
+      "measured_trials": null,
+      "invalid_trials": null,
+      "unmeasured_trials": null,
+      "production_authorized": false
+    },
+    "sportsunderstanding": {
+      "installed_sha256": "5cfc24702b7a809409f42634f0b958f0d61c4d5aec8d732fd89889281c63d45e",
+      "installed_bytes": 137846,
+      "source_rows": 1000,
+      "loaded_rows": 1000,
+      "nonempty_questions": 1000,
+      "declared_train_ids": 663,
+      "declared_eval_ids": 337,
+      "split_sha256": "91207272facb1c63a51966f3e1815f3e0174d9857a2255f198dd85b68dfe232c",
+      "structural_eligible_digest": "4f29ce38773a9507a6ec0c83250858aee0893b8d404b8b998d5b102655a20a5e",
+      "selected_manifest": null,
+      "run_id": null,
+      "measured_trials": null,
+      "invalid_trials": null,
+      "unmeasured_trials": null,
+      "production_authorized": false
+    },
+    "reasoning_gym": {
+      "installed_sha256": "c0ff4eaef318cd59afcc61472ebe206362fc0211c4b589ed0d53946a569bd177",
+      "installed_bytes": 3315981,
+      "source_rows": 1780,
+      "loaded_rows": 1780,
+      "nonempty_questions": 1780,
+      "declared_train_ids": 1216,
+      "declared_eval_ids": 564,
+      "split_sha256": "d3d860be5c2b3a26a25a0a9e0ee96c2b3dfd258685a1d682128bf13d2d81d195",
+      "structural_eligible_digest": "0b22cb778b4e42dcc8741f809960fa40f4a41b921a87cce992c1883f897746a0",
+      "selected_manifest": null,
+      "run_id": null,
+      "measured_trials": null,
+      "invalid_trials": null,
+      "unmeasured_trials": null,
+      "production_authorized": false,
+      "family_rule_reference_empty_scores_verified": false,
+      "generation_seed_verified_by_structural_check": false
+    }
+  },
+  "scorer_generator_model_gpu_pilot_executed_by_this_check": false
+}
+
+STDERR
+
+PRESERVED CAPTURE command-2 {"argv": ["python3", "tests/fixtures/hg_wprov/rewoo/verify.py"], "exit_code": 0}
+STDOUT
+{
+  "valid": true,
+  "rewoo": {
+    "revision": "9cd0283043ff4be0c9d614fda2789d143ca6ffd1",
+    "root_tree_sha1": "a617af22c7e487167fd671c60b2b0315d225de8a",
+    "reconstructed_trees": 20
+  },
+  "bigbench": {
+    "revision": "092b196c1f8f14a54bbc62f24759d43bde46dd3b",
+    "root_tree_sha1": "bd35c2e487af183ea54c4847f4824d36f7956f28",
+    "reconstructed_trees": 1367
+  },
+  "installed_archive_sha256": "7fe653d18faad40bf10ddcc7d85415782af975d80792bb26401393203b9ce136",
+  "datasets": {
+    "physicsquestions": {
+      "path": "data/bigbench/physics_question.csv",
+      "size_bytes": 17953,
+      "sha256": "7747cf185111aaa58493b5d804ba7b496cb152a6ae89a69a66a0c443adfd34aa",
+      "git_blob_sha1": "c31840a357210ea5b653aa457b6c8f1fe027075b",
+      "runtime_csv_path": "/mnt/20t/xubuqiang/datasets/physicsquestions/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/physics_question.csv",
+      "installed_bytes_match_archive_and_revision_blob": true,
+      "row_count": 53,
+      "adapter_imports": [
+        "from __future__ import annotations",
+        "import csv",
+        "import re",
+        "from data.scaffolds.qa import base"
+      ],
+      "installed_evaluator_or_bigbench_package_used": false,
+      "actual_selected_run_manifest_authenticated": false,
+      "bigbench_task": {
+        "path": "bigbench/benchmark_tasks/physics_questions/task.json",
+        "size_bytes": 21395,
+        "sha256": "ea55d3ee0d688b7f6f023f9d607313d8b7d3a4bd9151451141c239cd10d82eb5",
+        "git_blob_sha1": "e888016a8bbabf9f924a6342bffe50536d96bed9"
+      },
+      "ordered_bigbench_nonblank_pairs_match": 53
+    },
+    "strategyqa": {
+      "path": "data/bigbench/strategy_qa.csv",
+      "size_bytes": 200453,
+      "sha256": "c1fd0c271bf98741b68ac1ea3d167c5ccf2ed46da66645d5fc0ed6222e45f055",
+      "git_blob_sha1": "e372e1d0720b9160ec72366fbbd259f10ff6729a",
+      "runtime_csv_path": "/mnt/20t/xubuqiang/datasets/strategyqa/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/strategy_qa.csv",
+      "installed_bytes_match_archive_and_revision_blob": true,
+      "row_count": 2290,
+      "adapter_imports": [
+        "from __future__ import annotations",
+        "import csv",
+        "import re",
+        "import string",
+        "from data.scaffolds.qa import base"
+      ],
+      "installed_evaluator_or_bigbench_package_used": false,
+      "actual_selected_run_manifest_authenticated": false,
+      "normalizer_ast_matches_for_string_inputs": true
+    },
+    "sportsunderstanding": {
+      "path": "data/bigbench/sports_understanding.csv",
+      "size_bytes": 137846,
+      "sha256": "5cfc24702b7a809409f42634f0b958f0d61c4d5aec8d732fd89889281c63d45e",
+      "git_blob_sha1": "4111fb257ab706d2e7edd85237511e805a1d57fa",
+      "runtime_csv_path": "/mnt/20t/xubuqiang/datasets/sportsunderstanding/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/sports_understanding.csv",
+      "installed_bytes_match_archive_and_revision_blob": true,
+      "row_count": 1000,
+      "adapter_imports": [
+        "from __future__ import annotations",
+        "import csv",
+        "import re",
+        "from data.scaffolds.qa import base"
+      ],
+      "installed_evaluator_or_bigbench_package_used": false,
+      "actual_selected_run_manifest_authenticated": false,
+      "bigbench_task": {
+        "path": "bigbench/benchmark_tasks/sports_understanding/task.json",
+        "size_bytes": 196765,
+        "sha256": "925617612d19ca02d7b13bfb263300cc13701dca8851151a77be8ce986feadab",
+        "git_blob_sha1": "406204f3540173ffc7a0ae1152a960c5af7628ff"
+      },
+      "ordered_bigbench_prefix_and_winner_pairs_match": 1000,
+      "official_scorer": {
+        "path": "bigbench/api/task_metrics.py",
+        "size_bytes": 19463,
+        "sha256": "0d210ed501882ee38742f689b5e4bbc363a7481ef39dc8ee9959bfbc39903e73",
+        "git_blob_sha1": "6e94e8be90c570065d32ca2df2f62e0d30f88b12"
+      },
+      "official_metric_uses_choice_logprob_argmax": true,
+      "adapter_free_text_word_boundary_metric_equivalence_established": false
+    }
+  },
+  "preserved_failed_requests": [
+    {
+      "receipt": "bigbench-sports-raw.receipt.json",
+      "error": "URLError: <urlopen error [Errno 104] Connection reset by peer>",
+      "artifact_acquired": false
+    },
+    {
+      "receipt": "rewoo-evaluator-raw.receipt.json",
+      "error": "URLError: <urlopen error [Errno 104] Connection reset by peer>",
+      "artifact_acquired": false
+    }
+  ],
+  "rewoo_evaluator": {
+    "path": "utils/Evaluator.py",
+    "size_bytes": 8584,
+    "sha256": "9194fa90f17dec47af827ca42cb1ef423166b30f9f330f4c6a1cc77356d73de3",
+    "git_blob_sha1": "0c0e59d89298cce6520dff22a860a6dad902bbe5"
+  },
+  "hub_revision_or_export_bytes_used": false,
+  "production_runtime_or_offline_pristine_verifier_evidence_established": false
+}
+
+STDERR
+<unknown>:167: SyntaxWarning: invalid escape sequence '\s'
+
+PRESERVED CAPTURE command-3 {"argv": ["python3", "tests/fixtures/hg_wprov/reasoning_gym/verify.py"], "exit_code": 0}
+STDOUT
+PASS responses=8; PyPI wheel/sdist hashes+sizes; wheel RECORD=204; package members matching installed+sdist+Git commit=200; installed wheel members matching=204/205 (RECORD rewrite only)
+PASS installed pool bytes=3315981 sha256=c0ff4eaef318cd59afcc61472ebe206362fc0211c4b589ed0d53946a569bd177 rows=1780 families=89 x20; nonempty-answer structure; derived platform train=1216 eval=564
+PASS preserved attempt scripts/stdout/stderr; final completed regeneration receipt reports false equality, 84 mismatching rows in 6 families, cleanup complete; package/seed-to-pool reproduction remains OPEN
+OPEN behavioral eligibility/offline scorer, transitive dependency custody, pristine verifier/runtime and run-selected manifest; static derived splits are not pilot selection.
+
+STDERR
+
+PRESERVED CAPTURE command-4 {"argv": ["python3", "tests/fixtures/hg_wjournalcov/audit.py"], "exit_code": 1}
+STDOUT
+
+STDERR
+Traceback (most recent call last):
+  File "/tmp/hg-journalcov/tests/fixtures/hg_wjournalcov/audit.py", line 263, in <module>
+    main()
+  File "/tmp/hg-journalcov/tests/fixtures/hg_wjournalcov/audit.py", line 235, in main
+    summary, inventories, lines = derive()
+                                  ^^^^^^^^
+  File "/tmp/hg-journalcov/tests/fixtures/hg_wjournalcov/audit.py", line 168, in derive
+    metadata_path = root / literal(adapter, "TASKS_JSON")
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/hg-journalcov/tests/fixtures/hg_wjournalcov/audit.py", line 49, in literal
+    return ast.literal_eval(node.value)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/ast.py", line 112, in literal_eval
+    return _convert(node_or_string)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/ast.py", line 111, in _convert
+    return _convert_signed_num(node)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/ast.py", line 85, in _convert_signed_num
+    return _convert_num(node)
+           ^^^^^^^^^^^^^^^^^^
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/ast.py", line 76, in _convert_num
+    _raise_malformed_node(node)
+  File "/mnt/8t/xubuqiang/anaconda3/lib/python3.12/ast.py", line 73, in _raise_malformed_node
+    raise ValueError(msg + f': {node!r}')
+ValueError: malformed node or string on line 88: <ast.JoinedStr object at 0x73f48c03b290>
+
+PRESERVED CAPTURE command-5 {"argv": ["python3", "tests/fixtures/hg_wjournalcov/audit.py"], "exit_code": 0}
+STDOUT
+{
+  "valid": true,
+  "observations": {
+    "datasets": {
+      "fever": {
+        "source_path": "/mnt/20t/xubuqiang/datasets/fever/valid.jsonl",
+        "source_bytes": 6471611,
+        "source_sha256": "5da0ccc0ccf77f974611de13f8aac6f78c6bba6293912835099eb6029baa85d9",
+        "source_pool_split": "validation",
+        "loaded_rows": 15935,
+        "declared_train": 10559,
+        "declared_eval": 5376,
+        "declared_split_sha256": "5be7ed7984c321960d5098cbd111d1fdaf90eaec6c37efb61e2f8c679f5183f1",
+        "matches_prior_local_gold_byte_observation": true,
+        "label_counts": {
+          "NOT ENOUGH INFO": 6410,
+          "REFUTES": 4887,
+          "SUPPORTS": 4638
+        },
+        "nonempty_claims": 15935,
+        "rows_with_id_field": 15935,
+        "raw_evidence_container_counts": {
+          "list": 15935
+        },
+        "upstream_id_group_correspondence_authenticated": false,
+        "installed_git_blob_sha1": "ae61c5b6cb11eafcc7d6c33069c68dd5c848f91f",
+        "authenticated_tree_member": {
+          "type": "file",
+          "oid": "ae61c5b6cb11eafcc7d6c33069c68dd5c848f91f",
+          "size": 6471611,
+          "path": "valid.jsonl"
+        },
+        "authenticated_hub_revision": "a6b8d891d393e97a4efac791afffb2d7de5e57c6",
+        "installed_matches_authenticated_tree_blob_and_size": true,
+        "run_id": null,
+        "selected_manifest": null,
+        "selected_only_export": null,
+        "chosen_split_mode": null,
+        "chosen_side": null,
+        "selected_tasks": null,
+        "expected_trials": null,
+        "measured_trials": null,
+        "invalid_trials": null,
+        "unmeasured_trials": null,
+        "production_authorized": false
+      },
+      "physicsquestions": {
+        "source_path": "/mnt/20t/xubuqiang/datasets/physicsquestions/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/physics_question.csv",
+        "source_bytes": 17953,
+        "source_sha256": "7747cf185111aaa58493b5d804ba7b496cb152a6ae89a69a66a0c443adfd34aa",
+        "source_pool_split": "test",
+        "loaded_rows": 53,
+        "declared_train": 37,
+        "declared_eval": 16,
+        "declared_split_sha256": "820869d7fcf7eb40651fdf3e747609e3c57a72e1bb9d64a12deb948400528212",
+        "preserved_wprov_bytes_rows_split_match": true,
+        "run_id": null,
+        "selected_manifest": null,
+        "selected_only_export": null,
+        "chosen_split_mode": null,
+        "chosen_side": null,
+        "selected_tasks": null,
+        "expected_trials": null,
+        "measured_trials": null,
+        "invalid_trials": null,
+        "unmeasured_trials": null,
+        "production_authorized": false
+      },
+      "reasoning_gym": {
+        "source_path": "/mnt/20t/xubuqiang/datasets/reasoning_gym/pool.jsonl",
+        "source_bytes": 3315981,
+        "source_sha256": "c0ff4eaef318cd59afcc61472ebe206362fc0211c4b589ed0d53946a569bd177",
+        "source_pool_split": "eval",
+        "loaded_rows": 1780,
+        "declared_train": 1216,
+        "declared_eval": 564,
+        "declared_split_sha256": "d3d860be5c2b3a26a25a0a9e0ee96c2b3dfd258685a1d682128bf13d2d81d195",
+        "preserved_wprov_bytes_rows_split_match": true,
+        "families": 89,
+        "per_family_counts": {
+          "ab": 20,
+          "acre": 20,
+          "aiw": 20,
+          "arc_1d": 20,
+          "base_conversion": 20,
+          "basic_arithmetic": 20,
+          "bf": 20,
+          "binary_alternation": 20,
+          "binary_matrix": 20,
+          "bitwise_arithmetic": 20,
+          "caesar_cipher": 20,
+          "calendar_arithmetic": 20,
+          "chain_sum": 20,
+          "circuit_logic": 20,
+          "codeio": 20,
+          "coin_flip": 20,
+          "complex_arithmetic": 20,
+          "count_bits": 20,
+          "count_primes": 20,
+          "course_schedule": 20,
+          "cryptarithm": 20,
+          "decimal_arithmetic": 20,
+          "decimal_chain_sum": 20,
+          "dice": 20,
+          "family_relationships": 20,
+          "figlet_font": 20,
+          "futoshiki": 20,
+          "game_of_life": 20,
+          "game_of_life_halting": 20,
+          "gcd": 20,
+          "group_anagrams": 20,
+          "gsm_symbolic": 20,
+          "intermediate_integration": 20,
+          "isomorphic_strings": 20,
+          "jugs": 20,
+          "kakurasu": 20,
+          "knight_swap": 20,
+          "knights_knaves": 20,
+          "largest_island": 20,
+          "lcm": 20,
+          "leg_counting": 20,
+          "letter_counting": 20,
+          "letter_jumble": 20,
+          "list_functions": 20,
+          "mahjong_puzzle": 20,
+          "manipulate_matrix": 20,
+          "maze": 20,
+          "mini_sudoku": 20,
+          "modulo_grid": 20,
+          "n_queens": 20,
+          "needle_haystack": 20,
+          "number_filtering": 20,
+          "number_format": 20,
+          "number_sequence": 20,
+          "number_sorting": 20,
+          "palindrome_generation": 20,
+          "palindrome_partitioning": 20,
+          "path_star": 20,
+          "polynomial_equations": 20,
+          "polynomial_multiplication": 20,
+          "pool_matrix": 20,
+          "products": 20,
+          "quantum_lock": 20,
+          "ransom_note": 20,
+          "rectangle_count": 20,
+          "rotate_matrix": 20,
+          "rotten_oranges": 20,
+          "self_reference": 20,
+          "shortest_path": 20,
+          "simple_equations": 20,
+          "simple_geometry": 20,
+          "simple_integration": 20,
+          "sokoban": 20,
+          "spell_backward": 20,
+          "spiral_matrix": 20,
+          "string_insertion": 20,
+          "string_manipulation": 20,
+          "string_splitting": 20,
+          "string_synthesis": 20,
+          "sudoku": 20,
+          "survo": 20,
+          "syllogism": 20,
+          "time_intervals": 20,
+          "tower_of_hanoi": 20,
+          "tsumego": 20,
+          "word_ladder": 20,
+          "word_sequence_reversal": 20,
+          "word_sorting": 20,
+          "zebra_puzzles": 20
+        },
+        "declared_pool_digest_matches": true,
+        "behavioral_eligibility_established": false,
+        "run_id": null,
+        "selected_manifest": null,
+        "selected_only_export": null,
+        "chosen_split_mode": null,
+        "chosen_side": null,
+        "selected_tasks": null,
+        "expected_trials": null,
+        "measured_trials": null,
+        "invalid_trials": null,
+        "unmeasured_trials": null,
+        "production_authorized": false
+      },
+      "sportsunderstanding": {
+        "source_path": "/mnt/20t/xubuqiang/datasets/sportsunderstanding/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/sports_understanding.csv",
+        "source_bytes": 137846,
+        "source_sha256": "5cfc24702b7a809409f42634f0b958f0d61c4d5aec8d732fd89889281c63d45e",
+        "source_pool_split": "test",
+        "loaded_rows": 1000,
+        "declared_train": 663,
+        "declared_eval": 337,
+        "declared_split_sha256": "91207272facb1c63a51966f3e1815f3e0174d9857a2255f198dd85b68dfe232c",
+        "preserved_wprov_bytes_rows_split_match": true,
+        "run_id": null,
+        "selected_manifest": null,
+        "selected_only_export": null,
+        "chosen_split_mode": null,
+        "chosen_side": null,
+        "selected_tasks": null,
+        "expected_trials": null,
+        "measured_trials": null,
+        "invalid_trials": null,
+        "unmeasured_trials": null,
+        "production_authorized": false
+      },
+      "strategyqa": {
+        "source_path": "/mnt/20t/xubuqiang/datasets/strategyqa/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/strategy_qa.csv",
+        "source_bytes": 200453,
+        "source_sha256": "c1fd0c271bf98741b68ac1ea3d167c5ccf2ed46da66645d5fc0ed6222e45f055",
+        "source_pool_split": "test",
+        "loaded_rows": 2290,
+        "declared_train": 1520,
+        "declared_eval": 770,
+        "declared_split_sha256": "c4baab58c4101d28b981a771a4bb1ef198f020e64764905eda23a7379f396969",
+        "preserved_wprov_bytes_rows_split_match": true,
+        "run_id": null,
+        "selected_manifest": null,
+        "selected_only_export": null,
+        "chosen_split_mode": null,
+        "chosen_side": null,
+        "selected_tasks": null,
+        "expected_trials": null,
+        "measured_trials": null,
+        "invalid_trials": null,
+        "unmeasured_trials": null,
+        "production_authorized": false
+      },
+      "spreadsheetbench": {
+        "source_path": "/mnt/20t/xubuqiang/datasets/spreadsheetbench/spreadsheetbench_verified_400/dataset.json",
+        "source_bytes": 306533,
+        "source_sha256": "bcecaa89a005bd4e3bbe98da150a86e8062c27f262e575d5e47bd9861b3525e7",
+        "source_pool_split": "verified_400",
+        "loaded_rows": 400,
+        "declared_train": 291,
+        "declared_eval": 109,
+        "declared_split_sha256": "7b315d59759ce97d9ee33a76c59b744d5d04003d61af744c75a1a521df382e7d",
+        "archive_path": "/mnt/20t/xubuqiang/datasets/spreadsheetbench/_src/spreadsheetbench_verified_400.tar.gz",
+        "archive_sha256": "10ef893dd29cb13ab97143ea787e68cdc9574a13873ab9a54e50b31dc03fc949",
+        "archive_matches_adapter_pin": true,
+        "metadata_archive_equal": true,
+        "workbook_members_compared": 800,
+        "all_workbook_members_archive_equal": true,
+        "independent_upstream_authentication_established": false,
+        "gradable_eligibility_established": false,
+        "run_id": null,
+        "selected_manifest": null,
+        "selected_only_export": null,
+        "chosen_split_mode": null,
+        "chosen_side": null,
+        "selected_tasks": null,
+        "expected_trials": null,
+        "measured_trials": null,
+        "invalid_trials": null,
+        "unmeasured_trials": null,
+        "production_authorized": false
+      }
+    },
+    "w_prov_markdown_report_matches": [],
+    "selection_authority": "No independent run-specific manifest, fresh run ID, split mode or side supplied. Inventory is not authorization.",
+    "environment_observations": {
+      "HG_SPREADSHEETBENCH_DATA": null,
+      "HG_SPREADSHEETBENCH_SPLIT": null,
+      "HG_QA_SPLIT": null
+    },
+    "scope": "Read-only host/default-path observation and inert source derivation; no upstream/scorer/adapter execution, network, model, endpoint, run or filesystem export."
+  },
+  "hashed_files": 842,
+  "closed_blockers": []
+}
+
+STDERR
+
+PRESERVED CAPTURE e1-integrity {"argv": ["python3", "tests/fixtures/hg_e1_review/verify.py"], "exit_code": 0}
+STDOUT
+{
+  "valid": true,
+  "checksummed_files": 64,
+  "successful_http_responses": [
+    "bigbench-head.receipt.json",
+    "bigbench-json-task-api.receipt.json",
+    "bigbench-metrics-api.receipt.json",
+    "bigbench-task-api.receipt.json",
+    "fever-conversion-head.receipt.json",
+    "fever-conversion-reader-api.receipt.json",
+    "fever-conversion-source-api.receipt.json",
+    "fever-conversion-tree.receipt.json",
+    "fever-hub-proxy-readme.receipt.json",
+    "fever-hub-proxy-revision.receipt.json",
+    "fever-hub-proxy-tree.receipt.json",
+    "fever-scorer-head.receipt.json",
+    "fever-scorer-releases.receipt.json",
+    "fever-scorer-setup-api.receipt.json",
+    "fever-scorer-source-api.receipt.json",
+    "fever-scorer-tags.receipt.json",
+    "rewoo-archive.receipt.json",
+    "rewoo-commit.receipt.json"
+  ],
+  "preserved_failed_requests": [
+    "bigbench-metrics.receipt.json",
+    "bigbench-task.receipt.json",
+    "fever-hub-proxy-loader.receipt.json",
+    "fever-hub-revision.receipt.json",
+    "fever-hub-www-revision.receipt.json",
+    "fever-scorer-setup.receipt.json",
+    "fever-scorer-source.receipt.json"
+  ],
+  "decoded_sources": {
+    "fever-upstream-scorer.py": {
+      "sha256": "fa12eaab2c88208f990948fc5d533ad4f91a6b8f48640f29317d1f00ab410ac9",
+      "git_blob_sha1": "ecae63dcd900f84c498ad0f2e5d7dd06e305e329"
+    },
+    "fever-upstream-setup.py": {
+      "sha256": "1e1c494d70d6a201552c718d719d0c6b0ec5a0d0159b093b0027695a997daeb5",
+      "git_blob_sha1": "8e3c37cbac636e04101bb5d82cd4d48d18f61abd"
+    },
+    "bigbench-physics-task.json": {
+      "sha256": "ea55d3ee0d688b7f6f023f9d607313d8b7d3a4bd9151451141c239cd10d82eb5",
+      "git_blob_sha1": "e888016a8bbabf9f924a6342bffe50536d96bed9"
+    },
+    "bigbench-task-metrics.py": {
+      "sha256": "0d210ed501882ee38742f689b5e4bbc363a7481ef39dc8ee9959bfbc39903e73",
+      "git_blob_sha1": "6e94e8be90c570065d32ca2df2f62e0d30f88b12"
+    },
+    "bigbench-json-task.py": {
+      "sha256": "105c1edad3c2d1f398be3f831f44a38937866f3088d4413f126edd20245a8e59",
+      "git_blob_sha1": "808d37329309c72f0248404f9a1256a1f97f93de"
+    },
+    "fever-create-nli-dataset.py": {
+      "sha256": "09054c04a53eb5f3f035d94fd2fe8a271a57bf69c5768eadd0535497f8cec884",
+      "git_blob_sha1": "7a82da41e51c9d41ec259f67f9230f7c3f2917e5"
+    },
+    "fever-conversion-datareader.py": {
+      "sha256": "6c66ec132b327cdcafe76f3af15eb9d26b75ccaa15e14bf0758a8d44b351c3f6",
+      "git_blob_sha1": "af2815307479f0262e018c64fd6f6e3da2f28421"
+    }
+  },
+  "fever": {
+    "hub_revision": "a6b8d891d393e97a4efac791afffb2d7de5e57c6",
+    "valid_export_git_blob_sha1_from_metadata": "ae61c5b6cb11eafcc7d6c33069c68dd5c848f91f",
+    "valid_export_bytes_from_metadata": 6471611,
+    "hub_readme_matches_revision_tree": true,
+    "referenced_conversion_source_revision": "aaa126ec4f3cf7163f69b82a0a0976d2579a04a6",
+    "conversion_source_to_hub_export_binding_verified": false,
+    "original_evidence_group_preservation_verified": false
+  },
+  "physics": {
+    "archive_sha256_matches_declaration": true,
+    "csv_member_sha256": "7747cf185111aaa58493b5d804ba7b496cb152a6ae89a69a66a0c443adfd34aa",
+    "csv_rows": 53,
+    "bigbench_examples": 54,
+    "ordered_input_and_target_list_matches": 53,
+    "bigbench_revision": "092b196c1f8f14a54bbc62f24759d43bde46dd3b",
+    "installed_source_or_selected_manifest_verified": false
+  },
+  "bird_original_metadata_present_in_packet": false,
+  "production_runtime_or_measurement_verified": false
+}
+
+STDERR
+
+PRESERVED CAPTURE wprov-integrity {"argv": ["python3", "tests/fixtures/hg_wprov/verify.py"], "exit_code": 1}
+STDOUT
+
+STDERR
+Traceback (most recent call last):
+  File "/tmp/hg-journalcov/tests/fixtures/hg_wprov/verify.py", line 62, in <module>
+    print(json.dumps(verify(), indent=2))
+                     ^^^^^^^^
+  File "/tmp/hg-journalcov/tests/fixtures/hg_wprov/verify.py", line 31, in verify
+    assert raw == (REPO / name).read_bytes(), f"source changed: {name}"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: source changed: data/scaffolds/qa/base.py
+
+PRESERVED CAPTURE offscorer2-integrity {"argv": ["python3", "tests/fixtures/hg_woffscorer2/verify.py"], "exit_code": 1}
+STDOUT
+
+STDERR
+Traceback (most recent call last):
+  File "/tmp/hg-journalcov/tests/fixtures/hg_woffscorer2/verify.py", line 25, in <module>
+    assert path.is_file() and not path.is_symlink(), name
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: bird_ds/SHA256SUMS
+
+
+FINAL COMMAND ["python3", "tests/fixtures/hg_wjournalcov/audit.py", "--check"]
+STDOUT
+{
+  "valid": true,
+  "observations": {
+    "datasets": {
+      "fever": {
+        "source_path": "/mnt/20t/xubuqiang/datasets/fever/valid.jsonl",
+        "source_bytes": 6471611,
+        "source_sha256": "5da0ccc0ccf77f974611de13f8aac6f78c6bba6293912835099eb6029baa85d9",
+        "source_pool_split": "validation",
+        "loaded_rows": 15935,
+        "declared_train": 10559,
+        "declared_eval": 5376,
+        "declared_split_sha256": "5be7ed7984c321960d5098cbd111d1fdaf90eaec6c37efb61e2f8c679f5183f1",
+        "matches_prior_local_gold_byte_observation": true,
+        "label_counts": {
+          "NOT ENOUGH INFO": 6410,
+          "REFUTES": 4887,
+          "SUPPORTS": 4638
+        },
+        "nonempty_claims": 15935,
+        "rows_with_id_field": 15935,
+        "raw_evidence_container_counts": {
+          "list": 15935
+        },
+        "upstream_id_group_correspondence_authenticated": false,
+        "installed_git_blob_sha1": "ae61c5b6cb11eafcc7d6c33069c68dd5c848f91f",
+        "authenticated_tree_member": {
+          "type": "file",
+          "oid": "ae61c5b6cb11eafcc7d6c33069c68dd5c848f91f",
+          "size": 6471611,
+          "path": "valid.jsonl"
+        },
+        "authenticated_hub_revision": "a6b8d891d393e97a4efac791afffb2d7de5e57c6",
+        "installed_matches_authenticated_tree_blob_and_size": true,
+        "run_id": null,
+        "selected_manifest": null,
+        "selected_only_export": null,
+        "chosen_split_mode": null,
+        "chosen_side": null,
+        "selected_tasks": null,
+        "expected_trials": null,
+        "measured_trials": null,
+        "invalid_trials": null,
+        "unmeasured_trials": null,
+        "production_authorized": false
+      },
+      "physicsquestions": {
+        "source_path": "/mnt/20t/xubuqiang/datasets/physicsquestions/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/physics_question.csv",
+        "source_bytes": 17953,
+        "source_sha256": "7747cf185111aaa58493b5d804ba7b496cb152a6ae89a69a66a0c443adfd34aa",
+        "source_pool_split": "test",
+        "loaded_rows": 53,
+        "declared_train": 37,
+        "declared_eval": 16,
+        "declared_split_sha256": "820869d7fcf7eb40651fdf3e747609e3c57a72e1bb9d64a12deb948400528212",
+        "preserved_wprov_bytes_rows_split_match": true,
+        "run_id": null,
+        "selected_manifest": null,
+        "selected_only_export": null,
+        "chosen_split_mode": null,
+        "chosen_side": null,
+        "selected_tasks": null,
+        "expected_trials": null,
+        "measured_trials": null,
+        "invalid_trials": null,
+        "unmeasured_trials": null,
+        "production_authorized": false
+      },
+      "reasoning_gym": {
+        "source_path": "/mnt/20t/xubuqiang/datasets/reasoning_gym/pool.jsonl",
+        "source_bytes": 3315981,
+        "source_sha256": "c0ff4eaef318cd59afcc61472ebe206362fc0211c4b589ed0d53946a569bd177",
+        "source_pool_split": "eval",
+        "loaded_rows": 1780,
+        "declared_train": 1216,
+        "declared_eval": 564,
+        "declared_split_sha256": "d3d860be5c2b3a26a25a0a9e0ee96c2b3dfd258685a1d682128bf13d2d81d195",
+        "preserved_wprov_bytes_rows_split_match": true,
+        "families": 89,
+        "per_family_counts": {
+          "ab": 20,
+          "acre": 20,
+          "aiw": 20,
+          "arc_1d": 20,
+          "base_conversion": 20,
+          "basic_arithmetic": 20,
+          "bf": 20,
+          "binary_alternation": 20,
+          "binary_matrix": 20,
+          "bitwise_arithmetic": 20,
+          "caesar_cipher": 20,
+          "calendar_arithmetic": 20,
+          "chain_sum": 20,
+          "circuit_logic": 20,
+          "codeio": 20,
+          "coin_flip": 20,
+          "complex_arithmetic": 20,
+          "count_bits": 20,
+          "count_primes": 20,
+          "course_schedule": 20,
+          "cryptarithm": 20,
+          "decimal_arithmetic": 20,
+          "decimal_chain_sum": 20,
+          "dice": 20,
+          "family_relationships": 20,
+          "figlet_font": 20,
+          "futoshiki": 20,
+          "game_of_life": 20,
+          "game_of_life_halting": 20,
+          "gcd": 20,
+          "group_anagrams": 20,
+          "gsm_symbolic": 20,
+          "intermediate_integration": 20,
+          "isomorphic_strings": 20,
+          "jugs": 20,
+          "kakurasu": 20,
+          "knight_swap": 20,
+          "knights_knaves": 20,
+          "largest_island": 20,
+          "lcm": 20,
+          "leg_counting": 20,
+          "letter_counting": 20,
+          "letter_jumble": 20,
+          "list_functions": 20,
+          "mahjong_puzzle": 20,
+          "manipulate_matrix": 20,
+          "maze": 20,
+          "mini_sudoku": 20,
+          "modulo_grid": 20,
+          "n_queens": 20,
+          "needle_haystack": 20,
+          "number_filtering": 20,
+          "number_format": 20,
+          "number_sequence": 20,
+          "number_sorting": 20,
+          "palindrome_generation": 20,
+          "palindrome_partitioning": 20,
+          "path_star": 20,
+          "polynomial_equations": 20,
+          "polynomial_multiplication": 20,
+          "pool_matrix": 20,
+          "products": 20,
+          "quantum_lock": 20,
+          "ransom_note": 20,
+          "rectangle_count": 20,
+          "rotate_matrix": 20,
+          "rotten_oranges": 20,
+          "self_reference": 20,
+          "shortest_path": 20,
+          "simple_equations": 20,
+          "simple_geometry": 20,
+          "simple_integration": 20,
+          "sokoban": 20,
+          "spell_backward": 20,
+          "spiral_matrix": 20,
+          "string_insertion": 20,
+          "string_manipulation": 20,
+          "string_splitting": 20,
+          "string_synthesis": 20,
+          "sudoku": 20,
+          "survo": 20,
+          "syllogism": 20,
+          "time_intervals": 20,
+          "tower_of_hanoi": 20,
+          "tsumego": 20,
+          "word_ladder": 20,
+          "word_sequence_reversal": 20,
+          "word_sorting": 20,
+          "zebra_puzzles": 20
+        },
+        "declared_pool_digest_matches": true,
+        "behavioral_eligibility_established": false,
+        "run_id": null,
+        "selected_manifest": null,
+        "selected_only_export": null,
+        "chosen_split_mode": null,
+        "chosen_side": null,
+        "selected_tasks": null,
+        "expected_trials": null,
+        "measured_trials": null,
+        "invalid_trials": null,
+        "unmeasured_trials": null,
+        "production_authorized": false
+      },
+      "sportsunderstanding": {
+        "source_path": "/mnt/20t/xubuqiang/datasets/sportsunderstanding/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/sports_understanding.csv",
+        "source_bytes": 137846,
+        "source_sha256": "5cfc24702b7a809409f42634f0b958f0d61c4d5aec8d732fd89889281c63d45e",
+        "source_pool_split": "test",
+        "loaded_rows": 1000,
+        "declared_train": 663,
+        "declared_eval": 337,
+        "declared_split_sha256": "91207272facb1c63a51966f3e1815f3e0174d9857a2255f198dd85b68dfe232c",
+        "preserved_wprov_bytes_rows_split_match": true,
+        "run_id": null,
+        "selected_manifest": null,
+        "selected_only_export": null,
+        "chosen_split_mode": null,
+        "chosen_side": null,
+        "selected_tasks": null,
+        "expected_trials": null,
+        "measured_trials": null,
+        "invalid_trials": null,
+        "unmeasured_trials": null,
+        "production_authorized": false
+      },
+      "strategyqa": {
+        "source_path": "/mnt/20t/xubuqiang/datasets/strategyqa/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/strategy_qa.csv",
+        "source_bytes": 200453,
+        "source_sha256": "c1fd0c271bf98741b68ac1ea3d167c5ccf2ed46da66645d5fc0ed6222e45f055",
+        "source_pool_split": "test",
+        "loaded_rows": 2290,
+        "declared_train": 1520,
+        "declared_eval": 770,
+        "declared_split_sha256": "c4baab58c4101d28b981a771a4bb1ef198f020e64764905eda23a7379f396969",
+        "preserved_wprov_bytes_rows_split_match": true,
+        "run_id": null,
+        "selected_manifest": null,
+        "selected_only_export": null,
+        "chosen_split_mode": null,
+        "chosen_side": null,
+        "selected_tasks": null,
+        "expected_trials": null,
+        "measured_trials": null,
+        "invalid_trials": null,
+        "unmeasured_trials": null,
+        "production_authorized": false
+      },
+      "spreadsheetbench": {
+        "source_path": "/mnt/20t/xubuqiang/datasets/spreadsheetbench/spreadsheetbench_verified_400/dataset.json",
+        "source_bytes": 306533,
+        "source_sha256": "bcecaa89a005bd4e3bbe98da150a86e8062c27f262e575d5e47bd9861b3525e7",
+        "source_pool_split": "verified_400",
+        "loaded_rows": 400,
+        "declared_train": 291,
+        "declared_eval": 109,
+        "declared_split_sha256": "7b315d59759ce97d9ee33a76c59b744d5d04003d61af744c75a1a521df382e7d",
+        "archive_path": "/mnt/20t/xubuqiang/datasets/spreadsheetbench/_src/spreadsheetbench_verified_400.tar.gz",
+        "archive_sha256": "10ef893dd29cb13ab97143ea787e68cdc9574a13873ab9a54e50b31dc03fc949",
+        "archive_matches_adapter_pin": true,
+        "metadata_archive_equal": true,
+        "workbook_members_compared": 800,
+        "all_workbook_members_archive_equal": true,
+        "independent_upstream_authentication_established": false,
+        "gradable_eligibility_established": false,
+        "run_id": null,
+        "selected_manifest": null,
+        "selected_only_export": null,
+        "chosen_split_mode": null,
+        "chosen_side": null,
+        "selected_tasks": null,
+        "expected_trials": null,
+        "measured_trials": null,
+        "invalid_trials": null,
+        "unmeasured_trials": null,
+        "production_authorized": false
+      }
+    },
+    "w_prov_markdown_report_matches": [],
+    "selection_authority": "No independent run-specific manifest, fresh run ID, split mode or side supplied. Inventory is not authorization.",
+    "environment_observations": {
+      "HG_SPREADSHEETBENCH_DATA": null,
+      "HG_SPREADSHEETBENCH_SPLIT": null,
+      "HG_QA_SPLIT": null
+    },
+    "scope": "Read-only host/default-path observation and inert source derivation; no upstream/scorer/adapter execution, network, model, endpoint, run or filesystem export."
+  },
+  "hashed_files": 842,
+  "closed_blockers": []
+}
+
+STDERR
+
+EXIT 0
+
+FINAL COMMAND ["sha256sum", "-c", "tests/fixtures/hg_wjournalcov/SHA256SUMS"]
+STDOUT
+tests/fixtures/hg_wjournalcov/README.md: 成功
+tests/fixtures/hg_wjournalcov/audit.py: 成功
+tests/fixtures/hg_wjournalcov/command-0.json: 成功
+tests/fixtures/hg_wjournalcov/command-0.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/command-0.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/command-1.json: 成功
+tests/fixtures/hg_wjournalcov/command-1.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/command-1.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/command-2.json: 成功
+tests/fixtures/hg_wjournalcov/command-2.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/command-2.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/command-3.json: 成功
+tests/fixtures/hg_wjournalcov/command-3.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/command-3.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/command-4.json: 成功
+tests/fixtures/hg_wjournalcov/command-4.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/command-4.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/command-5.json: 成功
+tests/fixtures/hg_wjournalcov/command-5.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/command-5.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/e1-integrity.command.json: 成功
+tests/fixtures/hg_wjournalcov/e1-integrity.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/e1-integrity.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/fever-inventory.json: 成功
+tests/fixtures/hg_wjournalcov/file-hashes.json: 成功
+tests/fixtures/hg_wjournalcov/independent-sha256sum.command.json: 成功
+tests/fixtures/hg_wjournalcov/independent-sha256sum.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/independent-sha256sum.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/observations.json: 成功
+tests/fixtures/hg_wjournalcov/offscorer2-integrity.command.json: 成功
+tests/fixtures/hg_wjournalcov/offscorer2-integrity.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/offscorer2-integrity.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/physicsquestions-inventory.json: 成功
+tests/fixtures/hg_wjournalcov/prior-availability.json: 成功
+tests/fixtures/hg_wjournalcov/prior-file-hashes.json: 成功
+tests/fixtures/hg_wjournalcov/prior-sha256sum.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/prior-sha256sum.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/reasoning_gym-inventory.json: 成功
+tests/fixtures/hg_wjournalcov/registry-after-edit.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/registry-after-edit.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/registry-before.json: 成功
+tests/fixtures/hg_wjournalcov/registry-format-preserved.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/registry-format-preserved.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/source-lines.txt: 成功
+tests/fixtures/hg_wjournalcov/sportsunderstanding-inventory.json: 成功
+tests/fixtures/hg_wjournalcov/spreadsheetbench-inventory.json: 成功
+tests/fixtures/hg_wjournalcov/strategyqa-inventory.json: 成功
+tests/fixtures/hg_wjournalcov/wprov-integrity.command.json: 成功
+tests/fixtures/hg_wjournalcov/wprov-integrity.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/wprov-integrity.stdout.txt: 成功
+
+STDERR
+
+EXIT 0
+
+FINAL COMMAND ["python3", "tools/check_dataset_blockers.py"]
+STDOUT
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+
+STDERR
+
+EXIT 0
+
+FINAL COMMAND ["python3", "-m", "pytest", "-q", "tests/quality/test_dataset_blockers.py", "tests/quality/test_dataset_journal_coverage.py", "--basetemp=/tmp/harnessgrad-pytest-w-journalcov"]
+STDOUT
+...........................................................xxx           [100%]
+59 passed, 3 xfailed in 7.17s
+
+STDERR
+
+EXIT 0
+
+FINAL COMMAND ["git", "diff", "--check"]
+STDOUT
+
+STDERR
+
+EXIT 0
+
+INITIAL FULL STAGED WHITESPACE CHECK (raw output losslessly JSON-encoded)
+{"argv": ["git", "diff", "--cached", "--check"], "exit_code": 2, "stdout": "tests/fixtures/hg_wjournalcov/source-lines.txt:3: trailing whitespace.\n+2: \ntests/fixtures/hg_wjournalcov/source-lines.txt:11: trailing whitespace.\n+10: \ntests/fixtures/hg_wjournalcov/source-lines.txt:14: trailing whitespace.\n+13: \ntests/fixtures/hg_wjournalcov/source-lines.txt:16: trailing whitespace.\n+15: \ntests/fixtures/hg_wjournalcov/source-lines.txt:23: trailing whitespace.\n+22: \ntests/fixtures/hg_wjournalcov/source-lines.txt:26: trailing whitespace.\n+25: \ntests/fixtures/hg_wjournalcov/source-lines.txt:27: trailing whitespace.\n+26: \ntests/fixtures/hg_wjournalcov/source-lines.txt:40: trailing whitespace.\n+39: \ntests/fixtures/hg_wjournalcov/source-lines.txt:41: trailing whitespace.\n+40: \ntests/fixtures/hg_wjournalcov/source-lines.txt:45: trailing whitespace.\n+44: \ntests/fixtures/hg_wjournalcov/source-lines.txt:46: trailing whitespace.\n+45: \ntests/fixtures/hg_wjournalcov/source-lines.txt:52: trailing whitespace.\n+51: \ntests/fixtures/hg_wjournalcov/source-lines.txt:53: trailing whitespace.\n+52: \ntests/fixtures/hg_wjournalcov/source-lines.txt:96: trailing whitespace.\n+95: \ntests/fixtures/hg_wjournalcov/source-lines.txt:103: trailing whitespace.\n+102: \ntests/fixtures/hg_wjournalcov/source-lines.txt:104: trailing whitespace.\n+103: \ntests/fixtures/hg_wjournalcov/source-lines.txt:107: trailing whitespace.\n+106: \ntests/fixtures/hg_wjournalcov/source-lines.txt:108: trailing whitespace.\n+107: \ntests/fixtures/hg_wjournalcov/source-lines.txt:111: trailing whitespace.\n+110: \ntests/fixtures/hg_wjournalcov/source-lines.txt:112: trailing whitespace.\n+111: \ntests/fixtures/hg_wjournalcov/source-lines.txt:115: trailing whitespace.\n+114: \ntests/fixtures/hg_wjournalcov/source-lines.txt:116: trailing whitespace.\n+115: \ntests/fixtures/hg_wjournalcov/source-lines.txt:119: trailing whitespace.\n+118: \ntests/fixtures/hg_wjournalcov/source-lines.txt:120: trailing whitespace.\n+119: \ntests/fixtures/hg_wjournalcov/source-lines.txt:124: trailing whitespace.\n+2: \ntests/fixtures/hg_wjournalcov/source-lines.txt:128: trailing whitespace.\n+6: \ntests/fixtures/hg_wjournalcov/source-lines.txt:134: trailing whitespace.\n+12: \ntests/fixtures/hg_wjournalcov/source-lines.txt:137: trailing whitespace.\n+15: \ntests/fixtures/hg_wjournalcov/source-lines.txt:142: trailing whitespace.\n+20: \ntests/fixtures/hg_wjournalcov/source-lines.txt:151: trailing whitespace.\n+29: \ntests/fixtures/hg_wjournalcov/source-lines.txt:154: trailing whitespace.\n+32: \ntests/fixtures/hg_wjournalcov/source-lines.txt:162: trailing whitespace.\n+40: \ntests/fixtures/hg_wjournalcov/source-lines.txt:168: trailing whitespace.\n+46: \ntests/fixtures/hg_wjournalcov/source-lines.txt:171: trailing whitespace.\n+49: \ntests/fixtures/hg_wjournalcov/source-lines.txt:173: trailing whitespace.\n+51: \ntests/fixtures/hg_wjournalcov/source-lines.txt:175: trailing whitespace.\n+53: \ntests/fixtures/hg_wjournalcov/source-lines.txt:179: trailing whitespace.\n+57: \ntests/fixtures/hg_wjournalcov/source-lines.txt:180: trailing whitespace.\n+58: \ntests/fixtures/hg_wjournalcov/source-lines.txt:181: trailing whitespace.\n+59: \ntests/fixtures/hg_wjournalcov/source-lines.txt:182: trailing whitespace.\n+60: \ntests/fixtures/hg_wjournalcov/source-lines.txt:188: trailing whitespace.\n+66: \ntests/fixtures/hg_wjournalcov/source-lines.txt:193: trailing whitespace.\n+71: \ntests/fixtures/hg_wjournalcov/source-lines.txt:194: trailing whitespace.\n+72: \ntests/fixtures/hg_wjournalcov/source-lines.txt:197: trailing whitespace.\n+75: \ntests/fixtures/hg_wjournalcov/source-lines.txt:210: trailing whitespace.\n+88: \ntests/fixtures/hg_wjournalcov/source-lines.txt:211: trailing whitespace.\n+89: \ntests/fixtures/hg_wjournalcov/source-lines.txt:213: trailing whitespace.\n+91: \ntests/fixtures/hg_wjournalcov/source-lines.txt:214: trailing whitespace.\n+92: \ntests/fixtures/hg_wjournalcov/source-lines.txt:217: trailing whitespace.\n+95: \ntests/fixtures/hg_wjournalcov/source-lines.txt:223: trailing whitespace.\n+101: \ntests/fixtures/hg_wjournalcov/source-lines.txt:224: trailing whitespace.\n+102: \ntests/fixtures/hg_wjournalcov/source-lines.txt:237: trailing whitespace.\n+115: \ntests/fixtures/hg_wjournalcov/source-lines.txt:238: trailing whitespace.\n+116: \ntests/fixtures/hg_wjournalcov/source-lines.txt:240: trailing whitespace.\n+118: \ntests/fixtures/hg_wjournalcov/source-lines.txt:241: trailing whitespace.\n+119: \ntests/fixtures/hg_wjournalcov/source-lines.txt:255: trailing whitespace.\n+133: \ntests/fixtures/hg_wjournalcov/source-lines.txt:256: trailing whitespace.\n+134: \ntests/fixtures/hg_wjournalcov/source-lines.txt:260: trailing whitespace.\n+138: \ntests/fixtures/hg_wjournalcov/source-lines.txt:261: trailing whitespace.\n+139: \ntests/fixtures/hg_wjournalcov/source-lines.txt:286: trailing whitespace.\n+164: \ntests/fixtures/hg_wjournalcov/source-lines.txt:287: trailing whitespace.\n+165: \ntests/fixtures/hg_wjournalcov/source-lines.txt:297: trailing whitespace.\n+175: \ntests/fixtures/hg_wjournalcov/source-lines.txt:298: trailing whitespace.\n+176: \ntests/fixtures/hg_wjournalcov/source-lines.txt:311: trailing whitespace.\n+189: \ntests/fixtures/hg_wjournalcov/source-lines.txt:312: trailing whitespace.\n+190: \ntests/fixtures/hg_wjournalcov/source-lines.txt:341: trailing whitespace.\n+219: \ntests/fixtures/hg_wjournalcov/source-lines.txt:343: trailing whitespace.\n+221: \ntests/fixtures/hg_wjournalcov/source-lines.txt:347: trailing whitespace.\n+225: \ntests/fixtures/hg_wjournalcov/source-lines.txt:357: trailing whitespace.\n+235: \ntests/fixtures/hg_wjournalcov/source-lines.txt:361: trailing whitespace.\n+239: \ntests/fixtures/hg_wjournalcov/source-lines.txt:362: trailing whitespace.\n+240: \ntests/fixtures/hg_wjournalcov/source-lines.txt:365: trailing whitespace.\n+243: \ntests/fixtures/hg_wjournalcov/source-lines.txt:366: trailing whitespace.\n+244: \ntests/fixtures/hg_wjournalcov/source-lines.txt:369: trailing whitespace.\n+247: \ntests/fixtures/hg_wjournalcov/source-lines.txt:370: trailing whitespace.\n+248: \ntests/fixtures/hg_wjournalcov/source-lines.txt:373: trailing whitespace.\n+251: \ntests/fixtures/hg_wjournalcov/source-lines.txt:374: trailing whitespace.\n+252: \ntests/fixtures/hg_wjournalcov/source-lines.txt:377: trailing whitespace.\n+255: \ntests/fixtures/hg_wjournalcov/source-lines.txt:378: trailing whitespace.\n+256: \ntests/fixtures/hg_wjournalcov/source-lines.txt:383: trailing whitespace.\n+2: \ntests/fixtures/hg_wjournalcov/source-lines.txt:388: trailing whitespace.\n+7: \ntests/fixtures/hg_wjournalcov/source-lines.txt:395: trailing whitespace.\n+14: \ntests/fixtures/hg_wjournalcov/source-lines.txt:401: trailing whitespace.\n+20: \ntests/fixtures/hg_wjournalcov/source-lines.txt:407: trailing whitespace.\n+26: \ntests/fixtures/hg_wjournalcov/source-lines.txt:416: trailing whitespace.\n+35: \ntests/fixtures/hg_wjournalcov/source-lines.txt:418: trailing whitespace.\n+37: \ntests/fixtures/hg_wjournalcov/source-lines.txt:425: trailing whitespace.\n+44: \ntests/fixtures/hg_wjournalcov/source-lines.txt:434: trailing whitespace.\n+53: \ntests/fixtures/hg_wjournalcov/source-lines.txt:436: trailing whitespace.\n+55: \ntests/fixtures/hg_wjournalcov/source-lines.txt:438: trailing whitespace.\n+57: \ntests/fixtures/hg_wjournalcov/source-lines.txt:442: trailing whitespace.\n+61: \ntests/fixtures/hg_wjournalcov/source-lines.txt:444: trailing whitespace.\n+63: \ntests/fixtures/hg_wjournalcov/source-lines.txt:450: trailing whitespace.\n+69: \ntests/fixtures/hg_wjournalcov/source-lines.txt:455: trailing whitespace.\n+74: \ntests/fixtures/hg_wjournalcov/source-lines.txt:459: trailing whitespace.\n+78: \ntests/fixtures/hg_wjournalcov/source-lines.txt:460: trailing whitespace.\n+79: \ntests/fixtures/hg_wjournalcov/source-lines.txt:469: trailing whitespace.\n+88: \ntests/fixtures/hg_wjournalcov/source-lines.txt:470: trailing whitespace.\n+89: \ntests/fixtures/hg_wjournalcov/source-lines.txt:473: trailing whitespace.\n+92: \ntests/fixtures/hg_wjournalcov/source-lines.txt:474: trailing whitespace.\n+93: \ntests/fixtures/hg_wjournalcov/source-lines.txt:477: trailing whitespace.\n+96: \ntests/fixtures/hg_wjournalcov/source-lines.txt:485: trailing whitespace.\n+104: \ntests/fixtures/hg_wjournalcov/source-lines.txt:486: trailing whitespace.\n+105: \ntests/fixtures/hg_wjournalcov/source-lines.txt:490: trailing whitespace.\n+109: \ntests/fixtures/hg_wjournalcov/source-lines.txt:506: trailing whitespace.\n+125: \ntests/fixtures/hg_wjournalcov/source-lines.txt:507: trailing whitespace.\n+126: \ntests/fixtures/hg_wjournalcov/source-lines.txt:519: trailing whitespace.\n+138: \ntests/fixtures/hg_wjournalcov/source-lines.txt:520: trailing whitespace.\n+139: \ntests/fixtures/hg_wjournalcov/source-lines.txt:532: trailing whitespace.\n+151: \ntests/fixtures/hg_wjournalcov/source-lines.txt:533: trailing whitespace.\n+152: \ntests/fixtures/hg_wjournalcov/source-lines.txt:547: trailing whitespace.\n+166: \ntests/fixtures/hg_wjournalcov/source-lines.txt:549: trailing whitespace.\n+168: \ntests/fixtures/hg_wjournalcov/source-lines.txt:555: trailing whitespace.\n+174: \ntests/fixtures/hg_wjournalcov/source-lines.txt:556: trailing whitespace.\n+175: \ntests/fixtures/hg_wjournalcov/source-lines.txt:560: trailing whitespace.\n+179: \ntests/fixtures/hg_wjournalcov/source-lines.txt:561: trailing whitespace.\n+180: \ntests/fixtures/hg_wjournalcov/source-lines.txt:564: trailing whitespace.\n+183: \ntests/fixtures/hg_wjournalcov/source-lines.txt:565: trailing whitespace.\n+184: \ntests/fixtures/hg_wjournalcov/source-lines.txt:568: trailing whitespace.\n+187: \ntests/fixtures/hg_wjournalcov/source-lines.txt:569: trailing whitespace.\n+188: \ntests/fixtures/hg_wjournalcov/source-lines.txt:572: trailing whitespace.\n+191: \ntests/fixtures/hg_wjournalcov/source-lines.txt:585: trailing whitespace.\n+204: \ntests/fixtures/hg_wjournalcov/source-lines.txt:586: trailing whitespace.\n+205: \ntests/fixtures/hg_wjournalcov/source-lines.txt:592: trailing whitespace.\n+2: \ntests/fixtures/hg_wjournalcov/source-lines.txt:596: trailing whitespace.\n+6: \ntests/fixtures/hg_wjournalcov/source-lines.txt:603: trailing whitespace.\n+13: \ntests/fixtures/hg_wjournalcov/source-lines.txt:610: trailing whitespace.\n+20: \ntests/fixtures/hg_wjournalcov/source-lines.txt:614: trailing whitespace.\n+24: \ntests/fixtures/hg_wjournalcov/source-lines.txt:623: trailing whitespace.\n+33: \ntests/fixtures/hg_wjournalcov/source-lines.txt:627: trailing whitespace.\n+37: \ntests/fixtures/hg_wjournalcov/source-lines.txt:630: trailing whitespace.\n+40: \ntests/fixtures/hg_wjournalcov/source-lines.txt:632: trailing whitespace.\n+42: \ntests/fixtures/hg_wjournalcov/source-lines.txt:634: trailing whitespace.\n+44: \ntests/fixtures/hg_wjournalcov/source-lines.txt:638: trailing whitespace.\n+48: \ntests/fixtures/hg_wjournalcov/source-lines.txt:639: trailing whitespace.\n+49: \ntests/fixtures/hg_wjournalcov/source-lines.txt:640: trailing whitespace.\n+50: \ntests/fixtures/hg_wjournalcov/source-lines.txt:641: trailing whitespace.\n+51: \ntests/fixtures/hg_wjournalcov/source-lines.txt:648: trailing whitespace.\n+58: \ntests/fixtures/hg_wjournalcov/source-lines.txt:649: trailing whitespace.\n+59: \ntests/fixtures/hg_wjournalcov/source-lines.txt:651: trailing whitespace.\n+61: \ntests/fixtures/hg_wjournalcov/source-lines.txt:652: trailing whitespace.\n+62: \ntests/fixtures/hg_wjournalcov/source-lines.txt:655: trailing whitespace.\n+65: \ntests/fixtures/hg_wjournalcov/source-lines.txt:663: trailing whitespace.\n+73: \ntests/fixtures/hg_wjournalcov/source-lines.txt:664: trailing whitespace.\n+74: \ntests/fixtures/hg_wjournalcov/source-lines.txt:668: trailing whitespace.\n+78: \ntests/fixtures/hg_wjournalcov/source-lines.txt:669: trailing whitespace.\n+79: \ntests/fixtures/hg_wjournalcov/source-lines.txt:686: trailing whitespace.\n+96: \ntests/fixtures/hg_wjournalcov/source-lines.txt:687: trailing whitespace.\n+97: \ntests/fixtures/hg_wjournalcov/source-lines.txt:689: trailing whitespace.\n+99: \ntests/fixtures/hg_wjournalcov/source-lines.txt:690: trailing whitespace.\n+100: \ntests/fixtures/hg_wjournalcov/source-lines.txt:700: trailing whitespace.\n+110: \ntests/fixtures/hg_wjournalcov/source-lines.txt:701: trailing whitespace.\n+111: \ntests/fixtures/hg_wjournalcov/source-lines.txt:707: trailing whitespace.\n+117: \ntests/fixtures/hg_wjournalcov/source-lines.txt:708: trailing whitespace.\n+118: \ntests/fixtures/hg_wjournalcov/source-lines.txt:729: trailing whitespace.\n+139: \ntests/fixtures/hg_wjournalcov/source-lines.txt:730: trailing whitespace.\n+140: \ntests/fixtures/hg_wjournalcov/source-lines.txt:740: trailing whitespace.\n+150: \ntests/fixtures/hg_wjournalcov/source-lines.txt:741: trailing whitespace.\n+151: \ntests/fixtures/hg_wjournalcov/source-lines.txt:754: trailing whitespace.\n+164: \ntests/fixtures/hg_wjournalcov/source-lines.txt:755: trailing whitespace.\n+165: \ntests/fixtures/hg_wjournalcov/source-lines.txt:783: trailing whitespace.\n+193: \ntests/fixtures/hg_wjournalcov/source-lines.txt:785: trailing whitespace.\n+195: \ntests/fixtures/hg_wjournalcov/source-lines.txt:789: trailing whitespace.\n+199: \ntests/fixtures/hg_wjournalcov/source-lines.txt:799: trailing whitespace.\n+209: \ntests/fixtures/hg_wjournalcov/source-lines.txt:803: trailing whitespace.\n+213: \ntests/fixtures/hg_wjournalcov/source-lines.txt:804: trailing whitespace.\n+214: \ntests/fixtures/hg_wjournalcov/source-lines.txt:807: trailing whitespace.\n+217: \ntests/fixtures/hg_wjournalcov/source-lines.txt:808: trailing whitespace.\n+218: \ntests/fixtures/hg_wjournalcov/source-lines.txt:811: trailing whitespace.\n+221: \ntests/fixtures/hg_wjournalcov/source-lines.txt:812: trailing whitespace.\n+222: \ntests/fixtures/hg_wjournalcov/source-lines.txt:815: trailing whitespace.\n+225: \ntests/fixtures/hg_wjournalcov/source-lines.txt:816: trailing whitespace.\n+226: \ntests/fixtures/hg_wjournalcov/source-lines.txt:819: trailing whitespace.\n+229: \ntests/fixtures/hg_wjournalcov/source-lines.txt:820: trailing whitespace.\n+230: \ntests/fixtures/hg_wjournalcov/source-lines.txt:825: trailing whitespace.\n+2: \ntests/fixtures/hg_wjournalcov/source-lines.txt:829: trailing whitespace.\n+6: \ntests/fixtures/hg_wjournalcov/source-lines.txt:836: trailing whitespace.\n+13: \ntests/fixtures/hg_wjournalcov/source-lines.txt:838: trailing whitespace.\n+15: \ntests/fixtures/hg_wjournalcov/source-lines.txt:842: trailing whitespace.\n+19: \ntests/fixtures/hg_wjournalcov/source-lines.txt:850: trailing whitespace.\n+27: \ntests/fixtures/hg_wjournalcov/source-lines.txt:854: trailing whitespace.\n+31: \ntests/fixtures/hg_wjournalcov/source-lines.txt:861: trailing whitespace.\n+38: \ntests/fixtures/hg_wjournalcov/source-lines.txt:875: trailing whitespace.\n+52: \ntests/fixtures/hg_wjournalcov/source-lines.txt:877: trailing whitespace.\n+54: \ntests/fixtures/hg_wjournalcov/source-lines.txt:881: trailing whitespace.\n+58: \ntests/fixtures/hg_wjournalcov/source-lines.txt:883: trailing whitespace.\n+60: \ntests/fixtures/hg_wjournalcov/source-lines.txt:887: trailing whitespace.\n+64: \ntests/fixtures/hg_wjournalcov/source-lines.txt:888: trailing whitespace.\n+65: \ntests/fixtures/hg_wjournalcov/source-lines.txt:897: trailing whitespace.\n+74: \ntests/fixtures/hg_wjournalcov/source-lines.txt:901: trailing whitespace.\n+78: \ntests/fixtures/hg_wjournalcov/source-lines.txt:908: trailing whitespace.\n+85: \ntests/fixtures/hg_wjournalcov/source-lines.txt:913: trailing whitespace.\n+90: \ntests/fixtures/hg_wjournalcov/source-lines.txt:917: trailing whitespace.\n+94: \ntests/fixtures/hg_wjournalcov/source-lines.txt:922: trailing whitespace.\n+99: \ntests/fixtures/hg_wjournalcov/source-lines.txt:925: trailing whitespace.\n+102: \ntests/fixtures/hg_wjournalcov/source-lines.txt:926: trailing whitespace.\n+103: \ntests/fixtures/hg_wjournalcov/source-lines.txt:928: trailing whitespace.\n+105: \ntests/fixtures/hg_wjournalcov/source-lines.txt:929: trailing whitespace.\n+106: \ntests/fixtures/hg_wjournalcov/source-lines.txt:965: trailing whitespace.\n+142: \ntests/fixtures/hg_wjournalcov/source-lines.txt:966: trailing whitespace.\n+143: \ntests/fixtures/hg_wjournalcov/source-lines.txt:972: trailing whitespace.\n+149: \ntests/fixtures/hg_wjournalcov/source-lines.txt:973: trailing whitespace.\n+150: \ntests/fixtures/hg_wjournalcov/source-lines.txt:976: trailing whitespace.\n+153: \ntests/fixtures/hg_wjournalcov/source-lines.txt:994: trailing whitespace.\n+171: \ntests/fixtures/hg_wjournalcov/source-lines.txt:995: trailing whitespace.\n+172: \ntests/fixtures/hg_wjournalcov/source-lines.txt:998: trailing whitespace.\n+175: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1030: trailing whitespace.\n+207: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1031: trailing whitespace.\n+208: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1034: trailing whitespace.\n+211: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1045: trailing whitespace.\n+222: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1046: trailing whitespace.\n+223: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1049: trailing whitespace.\n+226: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1081: trailing whitespace.\n+258: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1082: trailing whitespace.\n+259: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1115: trailing whitespace.\n+292: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1116: trailing whitespace.\n+293: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1118: trailing whitespace.\n+295: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1119: trailing whitespace.\n+296: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1122: trailing whitespace.\n+299: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1123: trailing whitespace.\n+300: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1131: trailing whitespace.\n+308: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1132: trailing whitespace.\n+309: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1143: trailing whitespace.\n+320: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1144: trailing whitespace.\n+321: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1155: trailing whitespace.\n+332: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1156: trailing whitespace.\n+333: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1166: trailing whitespace.\n+343: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1167: trailing whitespace.\n+344: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1176: trailing whitespace.\n+353: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1177: trailing whitespace.\n+354: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1181: trailing whitespace.\n+358: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1182: trailing whitespace.\n+359: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1184: trailing whitespace.\n+361: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1185: trailing whitespace.\n+362: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1200: trailing whitespace.\n+377: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1201: trailing whitespace.\n+378: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1206: trailing whitespace.\n+2: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1210: trailing whitespace.\n+6: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1217: trailing whitespace.\n+13: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1223: trailing whitespace.\n+19: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1228: trailing whitespace.\n+24: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1230: trailing whitespace.\n+26: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1236: trailing whitespace.\n+32: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1244: trailing whitespace.\n+40: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1248: trailing whitespace.\n+44: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1250: trailing whitespace.\n+46: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1252: trailing whitespace.\n+48: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1256: trailing whitespace.\n+52: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1257: trailing whitespace.\n+53: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1258: trailing whitespace.\n+54: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1259: trailing whitespace.\n+55: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1265: trailing whitespace.\n+61: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1266: trailing whitespace.\n+62: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1268: trailing whitespace.\n+64: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1269: trailing whitespace.\n+65: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1272: trailing whitespace.\n+68: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1275: trailing whitespace.\n+71: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1278: trailing whitespace.\n+74: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1281: trailing whitespace.\n+77: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1284: trailing whitespace.\n+80: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1286: trailing whitespace.\n+82: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1287: trailing whitespace.\n+83: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1291: trailing whitespace.\n+87: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1292: trailing whitespace.\n+88: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1306: trailing whitespace.\n+102: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1307: trailing whitespace.\n+103: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1309: trailing whitespace.\n+105: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1310: trailing whitespace.\n+106: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1320: trailing whitespace.\n+116: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1321: trailing whitespace.\n+117: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1327: trailing whitespace.\n+123: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1328: trailing whitespace.\n+124: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1353: trailing whitespace.\n+149: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1354: trailing whitespace.\n+150: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1364: trailing whitespace.\n+160: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1365: trailing whitespace.\n+161: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1378: trailing whitespace.\n+174: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1379: trailing whitespace.\n+175: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1405: trailing whitespace.\n+201: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1407: trailing whitespace.\n+203: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1411: trailing whitespace.\n+207: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1421: trailing whitespace.\n+217: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1425: trailing whitespace.\n+221: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1426: trailing whitespace.\n+222: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1429: trailing whitespace.\n+225: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1430: trailing whitespace.\n+226: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1433: trailing whitespace.\n+229: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1434: trailing whitespace.\n+230: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1437: trailing whitespace.\n+233: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1438: trailing whitespace.\n+234: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1441: trailing whitespace.\n+237: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1442: trailing whitespace.\n+238: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1447: trailing whitespace.\n+2: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1452: trailing whitespace.\n+7: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1459: trailing whitespace.\n+14: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1467: trailing whitespace.\n+22: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1477: trailing whitespace.\n+32: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1487: trailing whitespace.\n+42: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1494: trailing whitespace.\n+49: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1505: trailing whitespace.\n+60: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1508: trailing whitespace.\n+63: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1514: trailing whitespace.\n+69: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1517: trailing whitespace.\n+72: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1522: trailing whitespace.\n+77: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1531: trailing whitespace.\n+86: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1534: trailing whitespace.\n+89: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1541: trailing whitespace.\n+96: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1553: trailing whitespace.\n+108: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1562: trailing whitespace.\n+117: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1566: trailing whitespace.\n+121: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1567: trailing whitespace.\n+122: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1570: trailing whitespace.\n+125: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1577: trailing whitespace.\n+132: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1578: trailing whitespace.\n+133: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1581: trailing whitespace.\n+136: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1585: trailing whitespace.\n+140: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1591: trailing whitespace.\n+146: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1637: trailing whitespace.\n+192: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1639: trailing whitespace.\n+194: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1642: trailing whitespace.\n+197: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1659: trailing whitespace.\n+214: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1663: trailing whitespace.\n+218: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1668: trailing whitespace.\n+223: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1707: trailing whitespace.\n+262: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1709: trailing whitespace.\n+264: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1734: trailing whitespace.\n+289: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1737: trailing whitespace.\n+292: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1758: trailing whitespace.\n+313: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1766: trailing whitespace.\n+321: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1769: trailing whitespace.\n+324: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1774: trailing whitespace.\n+329: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1839: trailing whitespace.\n+394: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1842: trailing whitespace.\n+397: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1868: trailing whitespace.\n+423: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1870: trailing whitespace.\n+425: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1873: trailing whitespace.\n+428: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1876: trailing whitespace.\n+431: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1881: trailing whitespace.\n+436: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1917: trailing whitespace.\n+472: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1921: trailing whitespace.\n+476: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1930: trailing whitespace.\n+485: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1934: trailing whitespace.\n+489: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1937: trailing whitespace.\n+492: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1938: trailing whitespace.\n+493: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1941: trailing whitespace.\n+496: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1957: trailing whitespace.\n+512: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1958: trailing whitespace.\n+513: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1961: trailing whitespace.\n+516: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1967: trailing whitespace.\n+522: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1968: trailing whitespace.\n+523: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1974: trailing whitespace.\n+2: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1984: trailing whitespace.\n+12: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1990: trailing whitespace.\n+18: \ntests/fixtures/hg_wjournalcov/source-lines.txt:1999: trailing whitespace.\n+27: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2003: trailing whitespace.\n+31: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2007: trailing whitespace.\n+35: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2008: trailing whitespace.\n+36: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2016: trailing whitespace.\n+44: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2017: trailing whitespace.\n+45: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2026: trailing whitespace.\n+54: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2027: trailing whitespace.\n+55: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2030: trailing whitespace.\n+58: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2043: trailing whitespace.\n+71: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2044: trailing whitespace.\n+72: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2049: trailing whitespace.\n+77: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2056: trailing whitespace.\n+84: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2063: trailing whitespace.\n+91: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2074: trailing whitespace.\n+102: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2080: trailing whitespace.\n+108: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2087: trailing whitespace.\n+115: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2110: trailing whitespace.\n+138: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2119: trailing whitespace.\n+147: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2120: trailing whitespace.\n+148: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2124: trailing whitespace.\n+152: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2133: trailing whitespace.\n+161: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2134: trailing whitespace.\n+162: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2137: trailing whitespace.\n+165: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2151: trailing whitespace.\n+179: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2152: trailing whitespace.\n+180: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2157: trailing whitespace.\n+3: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2161: trailing whitespace.\n+7: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2166: trailing whitespace.\n+12: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2171: trailing whitespace.\n+17: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2179: trailing whitespace.\n+25: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2187: trailing whitespace.\n+33: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2192: trailing whitespace.\n+38: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2200: trailing whitespace.\n+46: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2211: trailing whitespace.\n+57: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2214: trailing whitespace.\n+60: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2215: trailing whitespace.\n+61: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2223: trailing whitespace.\n+69: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2228: trailing whitespace.\n+74: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2229: trailing whitespace.\n+75: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2244: trailing whitespace.\n+90: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2245: trailing whitespace.\n+91: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2249: trailing whitespace.\n+95: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2250: trailing whitespace.\n+96: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2259: trailing whitespace.\n+105: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2260: trailing whitespace.\n+106: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2267: trailing whitespace.\n+113: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2268: trailing whitespace.\n+114: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2272: trailing whitespace.\n+118: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2273: trailing whitespace.\n+119: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2277: trailing whitespace.\n+123: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2278: trailing whitespace.\n+124: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2287: trailing whitespace.\n+133: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2288: trailing whitespace.\n+134: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2292: trailing whitespace.\n+138: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2293: trailing whitespace.\n+139: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2304: trailing whitespace.\n+150: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2313: trailing whitespace.\n+159: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2321: trailing whitespace.\n+167: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2346: trailing whitespace.\n+192: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2356: trailing whitespace.\n+202: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2375: trailing whitespace.\n+221: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2404: trailing whitespace.\n+250: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2420: trailing whitespace.\n+266: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2432: trailing whitespace.\n+278: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2442: trailing whitespace.\n+288: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2443: trailing whitespace.\n+289: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2454: trailing whitespace.\n+2: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2459: trailing whitespace.\n+7: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2463: trailing whitespace.\n+11: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2467: trailing whitespace.\n+15: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2470: trailing whitespace.\n+18: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2471: trailing whitespace.\n+19: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2474: trailing whitespace.\n+22: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2479: trailing whitespace.\n+27: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2480: trailing whitespace.\n+28: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2483: trailing whitespace.\n+31: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2484: trailing whitespace.\n+32: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2487: trailing whitespace.\n+35: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2490: trailing whitespace.\n+38: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2493: trailing whitespace.\n+41: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2496: trailing whitespace.\n+44: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2499: trailing whitespace.\n+47: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2501: trailing whitespace.\n+49: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2502: trailing whitespace.\n+50: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2518: trailing whitespace.\n+66: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2519: trailing whitespace.\n+67: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2523: trailing whitespace.\n+71: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2524: trailing whitespace.\n+72: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2528: trailing whitespace.\n+76: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2535: trailing whitespace.\n+83: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2540: trailing whitespace.\n+88: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2541: trailing whitespace.\n+89: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2545: trailing whitespace.\n+93: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2561: trailing whitespace.\n+109: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2562: trailing whitespace.\n+110: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2565: trailing whitespace.\n+113: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2574: trailing whitespace.\n+122: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2575: trailing whitespace.\n+123: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2578: trailing whitespace.\n+126: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2579: trailing whitespace.\n+127: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2582: trailing whitespace.\n+130: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2589: trailing whitespace.\n+137: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2590: trailing whitespace.\n+138: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2596: trailing whitespace.\n+144: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2623: trailing whitespace.\n+171: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2624: trailing whitespace.\n+172: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2631: trailing whitespace.\n+2: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2633: trailing whitespace.\n+4: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2635: trailing whitespace.\n+6: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2644: trailing whitespace.\n+15: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2651: trailing whitespace.\n+22: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2664: trailing whitespace.\n+35: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2665: trailing whitespace.\n+36: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2669: trailing whitespace.\n+40: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2670: trailing whitespace.\n+41: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2674: trailing whitespace.\n+45: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2675: trailing whitespace.\n+46: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2681: trailing whitespace.\n+52: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2682: trailing whitespace.\n+53: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2685: trailing whitespace.\n+56: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2701: trailing whitespace.\n+72: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2702: trailing whitespace.\n+73: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2704: trailing whitespace.\n+75: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2705: trailing whitespace.\n+76: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2710: trailing whitespace.\n+81: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2711: trailing whitespace.\n+82: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2714: trailing whitespace.\n+85: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2719: trailing whitespace.\n+90: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2730: trailing whitespace.\n+101: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2731: trailing whitespace.\n+102: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2735: trailing whitespace.\n+106: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2739: trailing whitespace.\n+110: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2753: trailing whitespace.\n+124: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2763: trailing whitespace.\n+134: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2770: trailing whitespace.\n+141: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2777: trailing whitespace.\n+148: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2782: trailing whitespace.\n+153: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2783: trailing whitespace.\n+154: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2786: trailing whitespace.\n+157: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2794: trailing whitespace.\n+165: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2795: trailing whitespace.\n+166: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2798: trailing whitespace.\n+169: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2805: trailing whitespace.\n+176: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2806: trailing whitespace.\n+177: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2809: trailing whitespace.\n+180: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2818: trailing whitespace.\n+189: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2819: trailing whitespace.\n+190: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2822: trailing whitespace.\n+193: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2825: trailing whitespace.\n+196: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2826: trailing whitespace.\n+197: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2829: trailing whitespace.\n+200: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2838: trailing whitespace.\n+209: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2846: trailing whitespace.\n+217: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2847: trailing whitespace.\n+218: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2850: trailing whitespace.\n+221: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2859: trailing whitespace.\n+230: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2879: trailing whitespace.\n+250: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2880: trailing whitespace.\n+251: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2882: trailing whitespace.\n+253: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2888: trailing whitespace.\n+259: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2891: trailing whitespace.\n+262: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2897: trailing whitespace.\n+268: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2902: trailing whitespace.\n+273: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2908: trailing whitespace.\n+279: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2913: trailing whitespace.\n+284: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2919: trailing whitespace.\n+290: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2924: trailing whitespace.\n+295: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2925: trailing whitespace.\n+296: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2929: trailing whitespace.\n+300: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2939: trailing whitespace.\n+310: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2945: trailing whitespace.\n+316: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2951: trailing whitespace.\n+322: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2959: trailing whitespace.\n+330: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2970: trailing whitespace.\n+341: \ntests/fixtures/hg_wjournalcov/source-lines.txt:2981: trailing whitespace.\n+352: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3000: trailing whitespace.\n+371: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3003: trailing whitespace.\n+374: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3013: trailing whitespace.\n+384: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3020: trailing whitespace.\n+391: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3028: trailing whitespace.\n+399: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3034: trailing whitespace.\n+405: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3040: trailing whitespace.\n+411: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3056: trailing whitespace.\n+427: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3076: trailing whitespace.\n+447: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3077: trailing whitespace.\n+448: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3082: trailing whitespace.\n+453: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3088: trailing whitespace.\n+459: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3097: trailing whitespace.\n+468: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3104: trailing whitespace.\n+475: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3112: trailing whitespace.\n+483: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3130: trailing whitespace.\n+501: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3136: trailing whitespace.\n+507: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3160: trailing whitespace.\n+531: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3166: trailing whitespace.\n+537: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3167: trailing whitespace.\n+538: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3198: trailing whitespace.\n+569: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3199: trailing whitespace.\n+570: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3202: trailing whitespace.\n+573: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3212: trailing whitespace.\n+583: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3216: trailing whitespace.\n+587: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3221: trailing whitespace.\n+592: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3228: trailing whitespace.\n+599: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3229: trailing whitespace.\n+600: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3231: trailing whitespace.\n+602: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3236: trailing whitespace.\n+607: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3243: trailing whitespace.\n+614: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3253: trailing whitespace.\n+624: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3254: trailing whitespace.\n+625: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3263: trailing whitespace.\n+634: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3264: trailing whitespace.\n+635: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3291: trailing whitespace.\n+662: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3292: trailing whitespace.\n+663: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3358: trailing whitespace.\n+729: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3359: trailing whitespace.\n+730: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3362: trailing whitespace.\n+733: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3372: trailing whitespace.\n+743: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3375: trailing whitespace.\n+746: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3377: trailing whitespace.\n+748: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3399: trailing whitespace.\n+770: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3406: trailing whitespace.\n+777: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3410: trailing whitespace.\n+2: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3414: trailing whitespace.\n+6: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3421: trailing whitespace.\n+13: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3428: trailing whitespace.\n+20: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3429: trailing whitespace.\n+21: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3432: trailing whitespace.\n+24: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3433: trailing whitespace.\n+25: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3443: trailing whitespace.\n+35: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3444: trailing whitespace.\n+36: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3467: trailing whitespace.\n+59: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3468: trailing whitespace.\n+60: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3473: trailing whitespace.\n+65: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3474: trailing whitespace.\n+66: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3477: trailing whitespace.\n+69: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3535: trailing whitespace.\n+3: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3538: trailing whitespace.\n+6: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3542: trailing whitespace.\n+10: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3544: trailing whitespace.\n+12: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3550: trailing whitespace.\n+18: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3557: trailing whitespace.\n+25: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3560: trailing whitespace.\n+28: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3569: trailing whitespace.\n+37: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3580: trailing whitespace.\n+48: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3584: trailing whitespace.\n+52: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3587: trailing whitespace.\n+55: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3588: trailing whitespace.\n+56: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3593: trailing whitespace.\n+61: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3594: trailing whitespace.\n+62: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3609: trailing whitespace.\n+77: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3610: trailing whitespace.\n+78: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3616: trailing whitespace.\n+84: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3617: trailing whitespace.\n+85: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3632: trailing whitespace.\n+100: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3633: trailing whitespace.\n+101: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3641: trailing whitespace.\n+109: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3642: trailing whitespace.\n+110: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3649: trailing whitespace.\n+117: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3650: trailing whitespace.\n+118: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3667: trailing whitespace.\n+135: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3668: trailing whitespace.\n+136: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3676: trailing whitespace.\n+144: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3677: trailing whitespace.\n+145: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3693: trailing whitespace.\n+161: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3694: trailing whitespace.\n+162: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3697: trailing whitespace.\n+165: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3702: trailing whitespace.\n+170: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3711: trailing whitespace.\n+179: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3745: trailing whitespace.\n+213: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3746: trailing whitespace.\n+214: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3748: trailing whitespace.\n+216: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3749: trailing whitespace.\n+217: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3757: trailing whitespace.\n+225: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3758: trailing whitespace.\n+226: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3761: trailing whitespace.\n+229: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3788: trailing whitespace.\n+256: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3789: trailing whitespace.\n+257: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3793: trailing whitespace.\n+261: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3805: trailing whitespace.\n+273: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3806: trailing whitespace.\n+274: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3808: trailing whitespace.\n+276: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3809: trailing whitespace.\n+277: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3825: trailing whitespace.\n+293: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3826: trailing whitespace.\n+294: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3830: trailing whitespace.\n+298: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3831: trailing whitespace.\n+299: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3839: trailing whitespace.\n+307: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3840: trailing whitespace.\n+308: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3845: trailing whitespace.\n+313: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3846: trailing whitespace.\n+314: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3853: trailing whitespace.\n+321: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3864: trailing whitespace.\n+332: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3869: trailing whitespace.\n+337: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3884: trailing whitespace.\n+352: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3895: trailing whitespace.\n+363: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3913: trailing whitespace.\n+381: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3924: trailing whitespace.\n+392: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3934: trailing whitespace.\n+402: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3935: trailing whitespace.\n+403: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3947: trailing whitespace.\n+3: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3956: trailing whitespace.\n+12: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3964: trailing whitespace.\n+20: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3969: trailing whitespace.\n+25: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3975: trailing whitespace.\n+31: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3978: trailing whitespace.\n+34: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3980: trailing whitespace.\n+36: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3984: trailing whitespace.\n+40: \ntests/fixtures/hg_wjournalcov/source-lines.txt:3990: trailing whitespace.\n+46: \ntests/fixtures/hg_wjournalcov/source-lines.txt:4015: trailing whitespace.\n+71: \ntests/fixtures/hg_wjournalcov/source-lines.txt:4018: trailing whitespace.\n+74: \ntests/fixtures/hg_wjournalcov/source-lines.txt:4019: trailing whitespace.\n+75: \ntests/fixtures/hg_wjournalcov/source-lines.txt:4022: trailing whitespace.\n+78: \ntests/fixtures/hg_wjournalcov/source-lines.txt:4028: trailing whitespace.\n+84: \ntests/fixtures/hg_wjournalcov/source-lines.txt:4041: trailing whitespace.\n+97: \ntests/fixtures/hg_wjournalcov/source-lines.txt:4042: trailing whitespace.\n+98: \ntests/fixtures/hg_wjournalcov/source-lines.txt:4050: trailing whitespace.\n+106: \ntests/fixtures/hg_wjournalcov/source-lines.txt:4051: trailing whitespace.\n+107: \ntests/fixtures/hg_wjournalcov/source-lines.txt:4054: trailing whitespace.\n+110: \ntests/fixtures/hg_wjournalcov/source-lines.txt:4055: trailing whitespace.\n+111: \ntests/fixtures/hg_wjournalcov/source-lines.txt:4061: trailing whitespace.\n+117: \ntests/fixtures/hg_wjournalcov/source-lines.txt:4068: trailing whitespace.\n+124: \ntests/fixtures/hg_wjournalcov/source-lines.txt:4074: trailing whitespace.\n+130: \ntests/fixtures/hg_wjournalcov/source-lines.txt:4075: trailing whitespace.\n+131: \n", "stderr": ""}
+
+FINAL SOURCE-WRAPPER CORRECTION REVALIDATION
+ARGV ["python3", "tests/fixtures/hg_wjournalcov/audit.py", "--check"]
+STDOUT
+{
+  "valid": true,
+  "observations": {
+    "datasets": {
+      "fever": {
+        "source_path": "/mnt/20t/xubuqiang/datasets/fever/valid.jsonl",
+        "source_bytes": 6471611,
+        "source_sha256": "5da0ccc0ccf77f974611de13f8aac6f78c6bba6293912835099eb6029baa85d9",
+        "source_pool_split": "validation",
+        "loaded_rows": 15935,
+        "declared_train": 10559,
+        "declared_eval": 5376,
+        "declared_split_sha256": "5be7ed7984c321960d5098cbd111d1fdaf90eaec6c37efb61e2f8c679f5183f1",
+        "matches_prior_local_gold_byte_observation": true,
+        "label_counts": {
+          "NOT ENOUGH INFO": 6410,
+          "REFUTES": 4887,
+          "SUPPORTS": 4638
+        },
+        "nonempty_claims": 15935,
+        "rows_with_id_field": 15935,
+        "raw_evidence_container_counts": {
+          "list": 15935
+        },
+        "upstream_id_group_correspondence_authenticated": false,
+        "installed_git_blob_sha1": "ae61c5b6cb11eafcc7d6c33069c68dd5c848f91f",
+        "authenticated_tree_member": {
+          "type": "file",
+          "oid": "ae61c5b6cb11eafcc7d6c33069c68dd5c848f91f",
+          "size": 6471611,
+          "path": "valid.jsonl"
+        },
+        "authenticated_hub_revision": "a6b8d891d393e97a4efac791afffb2d7de5e57c6",
+        "installed_matches_authenticated_tree_blob_and_size": true,
+        "run_id": null,
+        "selected_manifest": null,
+        "selected_only_export": null,
+        "chosen_split_mode": null,
+        "chosen_side": null,
+        "selected_tasks": null,
+        "expected_trials": null,
+        "measured_trials": null,
+        "invalid_trials": null,
+        "unmeasured_trials": null,
+        "production_authorized": false
+      },
+      "physicsquestions": {
+        "source_path": "/mnt/20t/xubuqiang/datasets/physicsquestions/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/physics_question.csv",
+        "source_bytes": 17953,
+        "source_sha256": "7747cf185111aaa58493b5d804ba7b496cb152a6ae89a69a66a0c443adfd34aa",
+        "source_pool_split": "test",
+        "loaded_rows": 53,
+        "declared_train": 37,
+        "declared_eval": 16,
+        "declared_split_sha256": "820869d7fcf7eb40651fdf3e747609e3c57a72e1bb9d64a12deb948400528212",
+        "preserved_wprov_bytes_rows_split_match": true,
+        "run_id": null,
+        "selected_manifest": null,
+        "selected_only_export": null,
+        "chosen_split_mode": null,
+        "chosen_side": null,
+        "selected_tasks": null,
+        "expected_trials": null,
+        "measured_trials": null,
+        "invalid_trials": null,
+        "unmeasured_trials": null,
+        "production_authorized": false
+      },
+      "reasoning_gym": {
+        "source_path": "/mnt/20t/xubuqiang/datasets/reasoning_gym/pool.jsonl",
+        "source_bytes": 3315981,
+        "source_sha256": "c0ff4eaef318cd59afcc61472ebe206362fc0211c4b589ed0d53946a569bd177",
+        "source_pool_split": "eval",
+        "loaded_rows": 1780,
+        "declared_train": 1216,
+        "declared_eval": 564,
+        "declared_split_sha256": "d3d860be5c2b3a26a25a0a9e0ee96c2b3dfd258685a1d682128bf13d2d81d195",
+        "preserved_wprov_bytes_rows_split_match": true,
+        "families": 89,
+        "per_family_counts": {
+          "ab": 20,
+          "acre": 20,
+          "aiw": 20,
+          "arc_1d": 20,
+          "base_conversion": 20,
+          "basic_arithmetic": 20,
+          "bf": 20,
+          "binary_alternation": 20,
+          "binary_matrix": 20,
+          "bitwise_arithmetic": 20,
+          "caesar_cipher": 20,
+          "calendar_arithmetic": 20,
+          "chain_sum": 20,
+          "circuit_logic": 20,
+          "codeio": 20,
+          "coin_flip": 20,
+          "complex_arithmetic": 20,
+          "count_bits": 20,
+          "count_primes": 20,
+          "course_schedule": 20,
+          "cryptarithm": 20,
+          "decimal_arithmetic": 20,
+          "decimal_chain_sum": 20,
+          "dice": 20,
+          "family_relationships": 20,
+          "figlet_font": 20,
+          "futoshiki": 20,
+          "game_of_life": 20,
+          "game_of_life_halting": 20,
+          "gcd": 20,
+          "group_anagrams": 20,
+          "gsm_symbolic": 20,
+          "intermediate_integration": 20,
+          "isomorphic_strings": 20,
+          "jugs": 20,
+          "kakurasu": 20,
+          "knight_swap": 20,
+          "knights_knaves": 20,
+          "largest_island": 20,
+          "lcm": 20,
+          "leg_counting": 20,
+          "letter_counting": 20,
+          "letter_jumble": 20,
+          "list_functions": 20,
+          "mahjong_puzzle": 20,
+          "manipulate_matrix": 20,
+          "maze": 20,
+          "mini_sudoku": 20,
+          "modulo_grid": 20,
+          "n_queens": 20,
+          "needle_haystack": 20,
+          "number_filtering": 20,
+          "number_format": 20,
+          "number_sequence": 20,
+          "number_sorting": 20,
+          "palindrome_generation": 20,
+          "palindrome_partitioning": 20,
+          "path_star": 20,
+          "polynomial_equations": 20,
+          "polynomial_multiplication": 20,
+          "pool_matrix": 20,
+          "products": 20,
+          "quantum_lock": 20,
+          "ransom_note": 20,
+          "rectangle_count": 20,
+          "rotate_matrix": 20,
+          "rotten_oranges": 20,
+          "self_reference": 20,
+          "shortest_path": 20,
+          "simple_equations": 20,
+          "simple_geometry": 20,
+          "simple_integration": 20,
+          "sokoban": 20,
+          "spell_backward": 20,
+          "spiral_matrix": 20,
+          "string_insertion": 20,
+          "string_manipulation": 20,
+          "string_splitting": 20,
+          "string_synthesis": 20,
+          "sudoku": 20,
+          "survo": 20,
+          "syllogism": 20,
+          "time_intervals": 20,
+          "tower_of_hanoi": 20,
+          "tsumego": 20,
+          "word_ladder": 20,
+          "word_sequence_reversal": 20,
+          "word_sorting": 20,
+          "zebra_puzzles": 20
+        },
+        "declared_pool_digest_matches": true,
+        "behavioral_eligibility_established": false,
+        "run_id": null,
+        "selected_manifest": null,
+        "selected_only_export": null,
+        "chosen_split_mode": null,
+        "chosen_side": null,
+        "selected_tasks": null,
+        "expected_trials": null,
+        "measured_trials": null,
+        "invalid_trials": null,
+        "unmeasured_trials": null,
+        "production_authorized": false
+      },
+      "sportsunderstanding": {
+        "source_path": "/mnt/20t/xubuqiang/datasets/sportsunderstanding/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/sports_understanding.csv",
+        "source_bytes": 137846,
+        "source_sha256": "5cfc24702b7a809409f42634f0b958f0d61c4d5aec8d732fd89889281c63d45e",
+        "source_pool_split": "test",
+        "loaded_rows": 1000,
+        "declared_train": 663,
+        "declared_eval": 337,
+        "declared_split_sha256": "91207272facb1c63a51966f3e1815f3e0174d9857a2255f198dd85b68dfe232c",
+        "preserved_wprov_bytes_rows_split_match": true,
+        "run_id": null,
+        "selected_manifest": null,
+        "selected_only_export": null,
+        "chosen_split_mode": null,
+        "chosen_side": null,
+        "selected_tasks": null,
+        "expected_trials": null,
+        "measured_trials": null,
+        "invalid_trials": null,
+        "unmeasured_trials": null,
+        "production_authorized": false
+      },
+      "strategyqa": {
+        "source_path": "/mnt/20t/xubuqiang/datasets/strategyqa/ReWOO-9cd0283043ff4be0c9d614fda2789d143ca6ffd1/data/bigbench/strategy_qa.csv",
+        "source_bytes": 200453,
+        "source_sha256": "c1fd0c271bf98741b68ac1ea3d167c5ccf2ed46da66645d5fc0ed6222e45f055",
+        "source_pool_split": "test",
+        "loaded_rows": 2290,
+        "declared_train": 1520,
+        "declared_eval": 770,
+        "declared_split_sha256": "c4baab58c4101d28b981a771a4bb1ef198f020e64764905eda23a7379f396969",
+        "preserved_wprov_bytes_rows_split_match": true,
+        "run_id": null,
+        "selected_manifest": null,
+        "selected_only_export": null,
+        "chosen_split_mode": null,
+        "chosen_side": null,
+        "selected_tasks": null,
+        "expected_trials": null,
+        "measured_trials": null,
+        "invalid_trials": null,
+        "unmeasured_trials": null,
+        "production_authorized": false
+      },
+      "spreadsheetbench": {
+        "source_path": "/mnt/20t/xubuqiang/datasets/spreadsheetbench/spreadsheetbench_verified_400/dataset.json",
+        "source_bytes": 306533,
+        "source_sha256": "bcecaa89a005bd4e3bbe98da150a86e8062c27f262e575d5e47bd9861b3525e7",
+        "source_pool_split": "verified_400",
+        "loaded_rows": 400,
+        "declared_train": 291,
+        "declared_eval": 109,
+        "declared_split_sha256": "7b315d59759ce97d9ee33a76c59b744d5d04003d61af744c75a1a521df382e7d",
+        "archive_path": "/mnt/20t/xubuqiang/datasets/spreadsheetbench/_src/spreadsheetbench_verified_400.tar.gz",
+        "archive_sha256": "10ef893dd29cb13ab97143ea787e68cdc9574a13873ab9a54e50b31dc03fc949",
+        "archive_matches_adapter_pin": true,
+        "metadata_archive_equal": true,
+        "workbook_members_compared": 800,
+        "all_workbook_members_archive_equal": true,
+        "independent_upstream_authentication_established": false,
+        "gradable_eligibility_established": false,
+        "run_id": null,
+        "selected_manifest": null,
+        "selected_only_export": null,
+        "chosen_split_mode": null,
+        "chosen_side": null,
+        "selected_tasks": null,
+        "expected_trials": null,
+        "measured_trials": null,
+        "invalid_trials": null,
+        "unmeasured_trials": null,
+        "production_authorized": false
+      }
+    },
+    "w_prov_markdown_report_matches": [],
+    "selection_authority": "No independent run-specific manifest, fresh run ID, split mode or side supplied. Inventory is not authorization.",
+    "environment_observations": {
+      "HG_SPREADSHEETBENCH_DATA": null,
+      "HG_SPREADSHEETBENCH_SPLIT": null,
+      "HG_QA_SPLIT": null
+    },
+    "scope": "Read-only host/default-path observation and inert source derivation; no upstream/scorer/adapter execution, network, model, endpoint, run or filesystem export."
+  },
+  "hashed_files": 842,
+  "closed_blockers": []
+}
+
+STDERR
+
+EXIT 0
+ARGV ["sha256sum", "-c", "tests/fixtures/hg_wjournalcov/SHA256SUMS"]
+STDOUT
+tests/fixtures/hg_wjournalcov/README.md: 成功
+tests/fixtures/hg_wjournalcov/audit.py: 成功
+tests/fixtures/hg_wjournalcov/command-0.json: 成功
+tests/fixtures/hg_wjournalcov/command-0.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/command-0.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/command-1.json: 成功
+tests/fixtures/hg_wjournalcov/command-1.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/command-1.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/command-2.json: 成功
+tests/fixtures/hg_wjournalcov/command-2.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/command-2.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/command-3.json: 成功
+tests/fixtures/hg_wjournalcov/command-3.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/command-3.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/command-4.json: 成功
+tests/fixtures/hg_wjournalcov/command-4.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/command-4.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/command-5.json: 成功
+tests/fixtures/hg_wjournalcov/command-5.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/command-5.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/e1-integrity.command.json: 成功
+tests/fixtures/hg_wjournalcov/e1-integrity.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/e1-integrity.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/fever-inventory.json: 成功
+tests/fixtures/hg_wjournalcov/file-hashes.json: 成功
+tests/fixtures/hg_wjournalcov/independent-sha256sum.command.json: 成功
+tests/fixtures/hg_wjournalcov/independent-sha256sum.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/independent-sha256sum.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/observations.json: 成功
+tests/fixtures/hg_wjournalcov/offscorer2-integrity.command.json: 成功
+tests/fixtures/hg_wjournalcov/offscorer2-integrity.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/offscorer2-integrity.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/physicsquestions-inventory.json: 成功
+tests/fixtures/hg_wjournalcov/prior-availability.json: 成功
+tests/fixtures/hg_wjournalcov/prior-file-hashes.json: 成功
+tests/fixtures/hg_wjournalcov/prior-sha256sum.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/prior-sha256sum.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/reasoning_gym-inventory.json: 成功
+tests/fixtures/hg_wjournalcov/registry-after-edit.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/registry-after-edit.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/registry-before.json: 成功
+tests/fixtures/hg_wjournalcov/registry-format-preserved.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/registry-format-preserved.stdout.txt: 成功
+tests/fixtures/hg_wjournalcov/source-lines.txt: 成功
+tests/fixtures/hg_wjournalcov/sportsunderstanding-inventory.json: 成功
+tests/fixtures/hg_wjournalcov/spreadsheetbench-inventory.json: 成功
+tests/fixtures/hg_wjournalcov/strategyqa-inventory.json: 成功
+tests/fixtures/hg_wjournalcov/wprov-integrity.command.json: 成功
+tests/fixtures/hg_wjournalcov/wprov-integrity.stderr.txt: 成功
+tests/fixtures/hg_wjournalcov/wprov-integrity.stdout.txt: 成功
+
+STDERR
+
+EXIT 0
+ARGV ["python3", "tools/check_dataset_blockers.py"]
+STDOUT
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+
+STDERR
+
+EXIT 0
+
+SOURCE CITATION CHECK: current file lines match lossless JSON-quoted preimages
+[
+  {
+    "path": "data/datasets/fever.py",
+    "line": 46,
+    "verbatim": "def _rows() -> list[dict]:"
+  },
+  {
+    "path": "data/datasets/fever.py",
+    "line": 58,
+    "verbatim": "    gold=lambda row: {\"answer\": str(row[\"label\"]), \"evidence\": row.get(\"evidence\")},"
+  },
+  {
+    "path": "data/datasets/fever.py",
+    "line": 27,
+    "verbatim": "def score_prediction(prediction: dict, gold: dict) -> dict:"
+  },
+  {
+    "path": "data/datasets/physicsquestions.py",
+    "line": 120,
+    "verbatim": "def _rows() -> list[dict]:"
+  },
+  {
+    "path": "data/datasets/physicsquestions.py",
+    "line": 135,
+    "verbatim": "def _gold(row: dict) -> dict:"
+  },
+  {
+    "path": "data/datasets/physicsquestions.py",
+    "line": 103,
+    "verbatim": "def score(prediction: str, gold: dict) -> dict:"
+  },
+  {
+    "path": "data/datasets/reasoning_gym.py",
+    "line": 80,
+    "verbatim": "def _rows() -> dict[str, list[dict]]:"
+  },
+  {
+    "path": "data/datasets/reasoning_gym.py",
+    "line": 94,
+    "verbatim": "def _gold(row: dict) -> dict:"
+  },
+  {
+    "path": "data/datasets/reasoning_gym.py",
+    "line": 106,
+    "verbatim": "def score(prediction: str, gold: dict) -> dict:"
+  },
+  {
+    "path": "data/datasets/sportsunderstanding.py",
+    "line": 101,
+    "verbatim": "def _rows() -> list[dict]:"
+  },
+  {
+    "path": "data/datasets/sportsunderstanding.py",
+    "line": 112,
+    "verbatim": "def _gold(row: dict) -> dict:"
+  },
+  {
+    "path": "data/datasets/sportsunderstanding.py",
+    "line": 80,
+    "verbatim": "def score(prediction: str, gold: dict) -> dict:"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench.py",
+    "line": 107,
+    "verbatim": "def _tasks() -> list[dict]:"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench.py",
+    "line": 151,
+    "verbatim": "def _find_workbook(folder: Path, task_id: str, kind: str) -> Path | None:"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench.py",
+    "line": 224,
+    "verbatim": "def _verifier(record: dict) -> dict:"
+  },
+  {
+    "path": "data/datasets/strategyqa.py",
+    "line": 107,
+    "verbatim": "def _rows() -> list[dict]:"
+  },
+  {
+    "path": "data/datasets/strategyqa.py",
+    "line": 118,
+    "verbatim": "def _gold(row: dict) -> dict:"
+  },
+  {
+    "path": "data/datasets/strategyqa.py",
+    "line": 89,
+    "verbatim": "def score(prediction: str, gold: dict) -> dict:"
+  },
+  {
+    "path": "data/scaffolds/qa/base.py",
+    "line": 215,
+    "verbatim": "    def records(self) -> list[dict]:"
+  },
+  {
+    "path": "data/scaffolds/qa/base.py",
+    "line": 290,
+    "verbatim": "    def division(self) -> dict:"
+  },
+  {
+    "path": "data/scaffolds/qa/base.py",
+    "line": 339,
+    "verbatim": "        gold_content = json.dumps(record[\"gold\"], ensure_ascii=False, sort_keys=True)"
+  },
+  {
+    "path": "data/scaffolds/qa/verify/check.py",
+    "line": 171,
+    "verbatim": "        gold_bytes = gold_path.read_bytes()"
+  },
+  {
+    "path": "data/scaffolds/qa/verify/check.py",
+    "line": 254,
+    "verbatim": "        evidence_scorer = getattr(adapter, \"score_prediction\", None)"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 309,
+    "verbatim": "def main(argv) -> int:"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 315,
+    "verbatim": "def _score(args, inputs, receipt) -> int:"
+  },
+  {
+    "path": "data/datasets/spreadsheetbench/verify/check.py",
+    "line": 383,
+    "verbatim": "        ok, message = compare_workbooks(str(golden_path), str(candidate),"
+  },
+  {
+    "path": "data/scaffolds/qa/evidence_scorers.py",
+    "line": 161,
+    "verbatim": "            groups = [[item] for item in groups]"
+  }
+]
+
+FINAL STAGED REVIEW ARGV ["git", "diff", "--cached", "--check"]
+STDOUT
+
+STDERR
+
+EXIT 0
+
+FINAL STAGED REVIEW ARGV ["git", "diff", "--cached", "--numstat"]
+STDOUT
+38	0	docs/adapter-integration-journal.md
+6	6	docs/dataset-blockers.json
+312	0	reports/w-journalcov-review.md
+1015	0	reports/w-journalcov-validation.txt
+53	0	tests/fixtures/hg_wjournalcov/README.md
+50	0	tests/fixtures/hg_wjournalcov/SHA256SUMS
+268	0	tests/fixtures/hg_wjournalcov/audit.py
+7	0	tests/fixtures/hg_wjournalcov/command-0.json
+19	0	tests/fixtures/hg_wjournalcov/command-0.stderr.txt
+0	0	tests/fixtures/hg_wjournalcov/command-0.stdout.txt
+8	0	tests/fixtures/hg_wjournalcov/command-1.json
+0	0	tests/fixtures/hg_wjournalcov/command-1.stderr.txt
+76	0	tests/fixtures/hg_wjournalcov/command-1.stdout.txt
+7	0	tests/fixtures/hg_wjournalcov/command-2.json
+1	0	tests/fixtures/hg_wjournalcov/command-2.stderr.txt
+111	0	tests/fixtures/hg_wjournalcov/command-2.stdout.txt
+7	0	tests/fixtures/hg_wjournalcov/command-3.json
+0	0	tests/fixtures/hg_wjournalcov/command-3.stderr.txt
+4	0	tests/fixtures/hg_wjournalcov/command-3.stdout.txt
+7	0	tests/fixtures/hg_wjournalcov/command-4.json
+26	0	tests/fixtures/hg_wjournalcov/command-4.stderr.txt
+0	0	tests/fixtures/hg_wjournalcov/command-4.stdout.txt
+7	0	tests/fixtures/hg_wjournalcov/command-5.json
+0	0	tests/fixtures/hg_wjournalcov/command-5.stderr.txt
+270	0	tests/fixtures/hg_wjournalcov/command-5.stdout.txt
+7	0	tests/fixtures/hg_wjournalcov/e1-integrity.command.json
+0	0	tests/fixtures/hg_wjournalcov/e1-integrity.stderr.txt
+83	0	tests/fixtures/hg_wjournalcov/e1-integrity.stdout.txt
+127498	0	tests/fixtures/hg_wjournalcov/fever-inventory.json
+3370	0	tests/fixtures/hg_wjournalcov/file-hashes.json
+848	0	tests/fixtures/hg_wjournalcov/independent-sha256sum.command.json
+0	0	tests/fixtures/hg_wjournalcov/independent-sha256sum.stderr.txt
+842	0	tests/fixtures/hg_wjournalcov/independent-sha256sum.stdout.txt
+265	0	tests/fixtures/hg_wjournalcov/observations.json
+7	0	tests/fixtures/hg_wjournalcov/offscorer2-integrity.command.json
+5	0	tests/fixtures/hg_wjournalcov/offscorer2-integrity.stderr.txt
+0	0	tests/fixtures/hg_wjournalcov/offscorer2-integrity.stdout.txt
+442	0	tests/fixtures/hg_wjournalcov/physicsquestions-inventory.json
+5	0	tests/fixtures/hg_wjournalcov/prior-availability.json
+30	0	tests/fixtures/hg_wjournalcov/prior-file-hashes.json
+0	0	tests/fixtures/hg_wjournalcov/prior-sha256sum.stderr.txt
+7	0	tests/fixtures/hg_wjournalcov/prior-sha256sum.stdout.txt
+14258	0	tests/fixtures/hg_wjournalcov/reasoning_gym-inventory.json
+0	0	tests/fixtures/hg_wjournalcov/registry-after-edit.stderr.txt
+1	0	tests/fixtures/hg_wjournalcov/registry-after-edit.stdout.txt
+1737	0	tests/fixtures/hg_wjournalcov/registry-before.json
+0	0	tests/fixtures/hg_wjournalcov/registry-format-preserved.stderr.txt
+1	0	tests/fixtures/hg_wjournalcov/registry-format-preserved.stdout.txt
+4077	0	tests/fixtures/hg_wjournalcov/source-lines.txt
+8018	0	tests/fixtures/hg_wjournalcov/sportsunderstanding-inventory.json
+8818	0	tests/fixtures/hg_wjournalcov/spreadsheetbench-inventory.json
+18338	0	tests/fixtures/hg_wjournalcov/strategyqa-inventory.json
+7	0	tests/fixtures/hg_wjournalcov/wprov-integrity.command.json
+8	0	tests/fixtures/hg_wjournalcov/wprov-integrity.stderr.txt
+0	0	tests/fixtures/hg_wjournalcov/wprov-integrity.stdout.txt
+
+STDERR
+
+EXIT 0
+
+FINAL STAGED REVIEW ARGV ["git", "branch", "--show-current"]
+STDOUT
+wg-journalcov
+
+STDERR
+
+EXIT 0
+
+Staged scope: {"valid": true, "files": 55, "registry_mutations": "six observed fields only", "shared_blockers_changed": false, "runs_or_frozen_receipts_changed": false, "branch": "wg-journalcov"}

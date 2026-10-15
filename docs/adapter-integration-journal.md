@@ -4060,3 +4060,41 @@ clean; all four named deliverables present.
 - Resource state: local containers and tests only - no model, GPU or endpoint call. GPU samples
   stayed at 0 % and no utilisation is claimed. Historical runs, frozen receipts and archives were
   untouched.
+
+## 2026-10-15 Six journal-coverage clause bindings without selection - w-journalcov
+
+- Reviewed fever, physicsquestions, reasoning_gym, sportsunderstanding,
+  spreadsheetbench and strategyqa against their actual dataset-journal-gap
+  next_actions. FEVER and SpreadsheetBench have additional provenance/gradability
+  clauses beyond the four selection-dependent entries. All six blockers remain
+  measurement; neither shared blocker is edited or closed. Only these six
+  observed fields change; statuses, next_actions, evidence references, history,
+  gates and production_authorized=false are preserved.
+- Fresh FEVER installed valid.jsonl bytes bind to the preserved authenticated
+  Hub tree's Git blob/size, with full current row/task/split inventory. Producing
+  conversion and original ID/evidence-group correspondence remain unproved;
+  singleton projection is not declared equivalent to original group semantics.
+- Physics Questions, Reasoning Gym, Sports Understanding and StrategyQA current
+  bytes/row/task/split inventories exactly reproduce preserved w-prov custody;
+  ReWOO, Reasoning Gym and E1 provenance verifiers pass. Current scorer/expected
+  input source lines and whole-file digests are independently rebound. Local
+  metric identities are reported separately from original benchmark protocols.
+- SpreadsheetBench metadata and all 800 default-loader init/golden workbook
+  members match the actual local pinned archive. This establishes local
+  extraction custody, not independent mirror provenance or gradable eligibility.
+  The released parser-rejected task remains in the inventory; range-zero,
+  infrastructure-unmeasured and single-variant distinctions remain intact.
+- No authorized selected manifest, fresh run ID, chosen run split mode/side or
+  selected-only export was supplied or invented. Selected/task-trial coverage
+  fields remain null. Reasoning Gym generation metadata/reproduction and
+  all-family behavioral eligibility remain open. No diagnostic, model, GPU,
+  endpoint, container or model server is used; no utilization is claimed.
+- Preserved validation limits: inherited w-prov root verification refuses
+  changed qa/base.py; w-offscorer2 root verification stops at missing
+  bird_ds/SHA256SUMS and its SpreadsheetBench raw subpacket is absent. These
+  failures remain visible, with separate successful current inventory/source
+  checks; no historical receipt or production execution claim is upgraded.
+- Review: reports/w-journalcov-review.md. Fixture:
+  tests/fixtures/hg_wjournalcov/. Validation and raw commands/output:
+  reports/w-journalcov-validation.txt. Commit stays in the registered
+  /tmp/hg-journalcov worktree for parent review; main and runs/ are untouched.
