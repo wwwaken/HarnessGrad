@@ -5,8 +5,14 @@ from pathlib import Path
 import re
 import zipfile
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURE = ROOT / 'tests/fixtures/hg_wujson'
+if not FIXTURE.is_dir():
+    pytest.skip("tests/fixtures/hg_wujson is internal (see .gitignore) and absent from this clone",
+                allow_module_level=True)
+
 RUNTIME = FIXTURE / 'runtime-v9'
 WHEEL_SHA256 = 'f8ccb77b3e40b151e20519c6ae6d89bfe3f4c14e8e210d910287f778368bb3d1'
 

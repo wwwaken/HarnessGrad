@@ -9,6 +9,11 @@ from types import SimpleNamespace
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
+PACKET = ROOT / "tests/fixtures/hg_wwal"
+if not PACKET.is_dir():
+    pytest.skip("tests/fixtures/hg_wwal is internal (see .gitignore) and absent from this clone",
+                allow_module_level=True)
+
 spec = importlib.util.spec_from_file_location("w_wal_control", ROOT / "tests/fixtures/hg_wwal/control.py")
 control = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(control)

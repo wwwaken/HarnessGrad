@@ -9,6 +9,10 @@ import shutil
 import pytest
 
 HERE = Path(__file__).resolve().parents[1] / "fixtures/hg_we5"
+if not HERE.is_dir():
+    pytest.skip("tests/fixtures/hg_we5 is internal (see .gitignore) and absent from this clone",
+                allow_module_level=True)
+
 spec = importlib.util.spec_from_file_location("we5_packet", HERE / "verify.py")
 audit = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(audit)

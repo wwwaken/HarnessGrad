@@ -9,6 +9,13 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 EVIDENCE = ROOT / "reports/w-quiesce-evidence"
+if not EVIDENCE.is_dir():
+    pytest.skip("reports/w-quiesce-evidence is internal (see .gitignore) and absent from this clone",
+                allow_module_level=True)
+if not (ROOT / "tests/fixtures/hg_wpristine").is_dir():
+    pytest.skip("tests/fixtures/hg_wpristine is internal (see .gitignore) and absent from this clone",
+                allow_module_level=True)
+
 SPEC = importlib.util.spec_from_file_location("quiesce_audit", EVIDENCE / "audit.py")
 AUDIT = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(AUDIT)

@@ -27,8 +27,8 @@ def image_pin(label):
     return pin
 
 
-SNAPSHOT = image_pin('snapshot')
-FOREIGN = image_pin('base')
+SNAPSHOT = image_pin('snapshot') if PACKET.is_dir() else None
+FOREIGN = image_pin('base') if PACKET.is_dir() else None
 
 
 def route(tmp_path, snapshot=SNAPSHOT, expected=SNAPSHOT, **kwargs):
@@ -45,6 +45,8 @@ def route(tmp_path, snapshot=SNAPSHOT, expected=SNAPSHOT, **kwargs):
 
 @pytest.fixture
 def daemon(monkeypatch):
+    if not PACKET.is_dir():
+        pytest.skip("tests/fixtures/hg_wsnap is internal (see .gitignore) and absent from this clone")
     state = dict(file='committed-before-start\n', calls=[], removed=[], command=None,
                  consumed=SNAPSHOT, startup_write=True, entrypoint_write=True, healthcheck_write=True)
 

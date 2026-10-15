@@ -232,7 +232,10 @@ def test_different_class_executes_and_is_recorded_without_changing_service_mount
 
 
 def test_snapshot_verifier_keeps_dependency_network_and_records_actual_class(tmp_path, monkeypatch):
-    snapshot = (Path(__file__).resolve().parents[2] / "tests/fixtures/hg_wsnap/raw/015.stdout.txt").read_text().strip()
+    snapshot_path = Path(__file__).resolve().parents[2] / "tests/fixtures/hg_wsnap/raw/015.stdout.txt"
+    if not snapshot_path.is_file():
+        pytest.skip("tests/fixtures/hg_wsnap is internal (see .gitignore) and absent from this clone")
+    snapshot = snapshot_path.read_text().strip()
     monkeypatch.setattr(verifier.container_mod, "docker",
                         lambda *a, **k: subprocess.CompletedProcess(a, 0, snapshot, ""))
     seen = {}

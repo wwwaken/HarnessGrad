@@ -79,6 +79,8 @@ def test_route_mismatch_and_payload_refusal(dataset, tmp_path):
 
 
 def authored_spec(dataset, tmp_path):
+    if not (ROOT / 'tests/fixtures/hg_whp3').is_dir():
+        pytest.skip("tests/fixtures/hg_whp3 is internal (see .gitignore) and absent from this clone")
     sys.path.insert(0, str(ROOT / 'tests/fixtures/hg_whp3'))
     if dataset == 'jericho':
         from authored_rom import authored_rom

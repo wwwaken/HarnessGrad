@@ -35,7 +35,10 @@ def expired_verdict(request, monkeypatch, tmp_path):
     monkeypatch.setattr(verifier.container_mod, "run", denied)
     monkeypatch.setattr(verifier.container_mod, "create", denied)
     if mode == "snapshot":
-        snapshot = (ROOT / "tests/fixtures/hg_wsnap/raw/015.stdout.txt").read_text().strip()
+        snapshot_path = ROOT / "tests/fixtures/hg_wsnap/raw/015.stdout.txt"
+        if not snapshot_path.is_file():
+            pytest.skip("tests/fixtures/hg_wsnap is internal (see .gitignore) and absent from this clone")
+        snapshot = snapshot_path.read_text().strip()
         monkeypatch.setattr(verifier.container_mod, "docker",
                             lambda *a, **k: subprocess.CompletedProcess(a, 0, snapshot, ""))
         monkeypatch.setattr(verifier.container_mod, "create", lambda *a, **k: None)
