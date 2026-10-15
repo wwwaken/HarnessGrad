@@ -4880,3 +4880,44 @@ cases).
   the `retained source drift` assert rather than on a verdict, and **after** it they are 109 passed. No
   fabricated outcome changed, so the refresh was mechanical — but the fact that it is the third such
   refresh this session says adapter changes should expect to carry one.
+
+## 2026-10-16 (round 3) — Three dataset-fidelity merges, and two integration defects the broad suite found
+
+- **Merged `w-adaptfid2` (`87a8450a`), `w-alfworld` (`cdb43ac4`) and `w-scienceworld` (`a121b145`)**, plus
+  `7db0b44c` of parent corrections. All three are dataset-semantics changes and all three were reviewed
+  against their own merge-base (not `main..HEAD`, which shows *main's* newer commits as deletions and
+  has already misled once this phase).
+- **`w-scienceworld` is the model for a budget change.** `STEP_BUDGET 1000 -> 100` cites the paper
+  ("we used 100 in all experiments") **and** records the cost in three places: long oracle paths truncate
+  at 100, 299 archived test paths exceed it, the longest is 796, and reference length must not filter the
+  evaluation pool. It also fixed the *substantive* documentation error rather than the wording: the
+  missing task type is `measure-melting-point-unknown-substance` (300 variations, the 7,207 - 6,907 gap)
+  and `identify-life-stages-2` **is** present. Its macro aggregation is a **data** change, not a platform
+  one - `aggregate()` reports micro *and* macro-over-observed-types with per-type means and coverage via
+  the declared `corpus_metrics: ordered_macro_mean` policy, fails closed on unknown ids and invalid
+  rewards, and stamps `paper_30_type_average: None` with a comparability sentence saying a released-fold
+  result is 29/30 types and is not the paper's Average. It also carried the truncation limit and the
+  source run's step budget into the output, so a historical score's budget is never silently assumed.
+- **`data/runtimes/*` was in scope for both budget changes, and only one worker realised it.**
+  `lib/scw_env.py` and `verify/check.py` are **scorer** files pinned in the sealed native runtime
+  manifest, so changing their bytes requires refreshing the manifest entry *and* `NATIVE_PINS` in
+  `data/runtimes/__init__.py`. `w-scienceworld` did exactly that (verified: `scw_env.py` =
+  `71c48892...`, manifest = `78ed5155...`). `w-alfworld` did not, and the suite caught it as
+  `native runtime payload digest mismatch: data/datasets/alfworld/verify/check.py` - two stale entries
+  (`/scorer/check.py` 11,201 -> 11,470; `/scorer/gym_env.py` 7,174 -> 7,229). Refreshed by the parent;
+  24 passed. **A budget change is not a comment change; it invalidates a runtime pin.**
+- **`w-adaptfid2` restored prompt fidelity and isolated the private tests.** It removed the defence
+  sentence the paper reserves for a treatment arm from every goal, replaced the custom injection
+  template with the **registered `ignore_previous`** attack (keeping upstream's typo by loading it
+  verbatim), derived `TASK_COUNT` from `records()`, and moved DS-1000's `context.json` out of `SETUP`
+  into `VERIFY.inputs` (the tests are private; the official solver input is `prompt` only). Its edits to
+  five existing guards **strengthen** them - the metadata-privacy test now monkeypatches `_indices`
+  instead of `TASK_COUNT` so it must never open the mixed catalog, and the targeted-control test asserts
+  an exact id set plus a parametrized `TASK_COUNT == len(tasks) == len(gold)` derivation.
+- **One parent correction to that work.** `_indices()` preferred the legacy `prepared/` directory and
+  only fell back to the new `prepared-ignore_previous/`, which contradicts its own docstring and, on this
+  machine (949 legacy snapshots, no fresh ones yet), would advertise 949 tasks whose `SETUP` sources do
+  not exist. Preference swapped; the legacy directory survives only as a pre-preparation roster.
+  **Recorded consequence**: AgentDojo needs re-preparation before any future run because the existing
+  snapshots encode a different attacker. No AgentDojo run is authorized in this phase, so nothing is
+  blocked - but the next person to run it must prepare first.
