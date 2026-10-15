@@ -3444,3 +3444,29 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
 - Fresh bounded tooling bootstrap in cached openssl-selfsigned-cert image selected uv/uvx 0.9.5 and existing CPython 3.13.7, SOABI cpython-313-x86_64-linux-gnu, glibc 2.36. Captured six exact wheel artifacts, 19 apt .debs and the uv installer/archive; recomputed byte digests and supplied hash lock/manifests under tests/fixtures/hg_wuvx/. Preserved the first apt-cache capture failure and its cleanup. Historical w-net output omits complete transitive identities; no historical resolution was invented or receipt modified.
 - A separate fresh container with Docker network=none, no proxy, empty caches and a read-only payload installed all captured .debs, verified uv binaries, performed a hash-required six-wheel install, and independently created a uvx environment from a second empty cache. pytest --version and --help succeeded with CTRF registered; online/offline package/ABI/dpkg identities agree. External socket probes fail Network is unreachable. No task tests, benchmark scoring, model/GPU/endpoint calls, production adapter/scoring/gate edits, runs/ writes or frozen-receipt changes occurred; disposable containers were removed.
 - This demonstrates one task's frozen tooling bootstrap recipe, not the original online script or all 89 tasks. The cached base is a separate prerequisite, not exported/rebuilt here. Original apt/installer/Python/transitive declarations remain unpinned; other task branches, complete image/rebuild and dynamic ABI/input/snapshot custody remain. Only scorer-offline-closure.observed and additive report evidence change; S1, S3, S4 and S6 remain PARTIAL, no shared/dataset blocker closes, all statuses/next_actions/admission gates and production_authorized=false are preserved. Report: reports/w-uvx-bootstrap.md; exact validation commands and checker output: reports/w-uvx-validation.txt. Commit stays in registered /tmp/hg-uvx for parent review; main untouched.
+## Parent review and merge — w-uvx — 2026-10-15
+
+- Merged `77f6f8b` (w-uvx). Result `9246de3`. Registry valid: 28 datasets, 2 shared blockers,
+  11 historical records, `production_authorized=false`; sequencer clean; both named deliverables
+  present on `main`. 56 tests passed.
+- **The post-bootstrap `uvx` surface is now concrete for one task instead of unestablished in
+  general.** The OpenSSL bootstrap selects **uv/uvx 0.9.5**, **CPython 3.13.7** and ABI
+  `cpython-313-x86_64-linux-gnu`, plus six wheels (pytest, pytest-json-ctrf, iniconfig, packaging,
+  pluggy, Pygments). That is precisely the "Python patch/ABI subsequently selected by `uvx`" the
+  assessment said source pins alone do not supply.
+- **And it was demonstrated pinnable**: a fresh `--network=none` container installed 19 captured
+  Debian packages plus the six hash-pinned wheels and then started pytest with CTRF registered.
+  No task scoring ran. So the clause moved from "package availability in the base is not offline
+  bootstrap closure" to "this bootstrap's closure was replayed with the network denied".
+- **The scope is stated and it is small.** All 89 local task sources were inventoried but only
+  OpenSSL was bootstrapped; S3 still needs the other 88 task bootstraps, complete image/rebuild
+  dependencies, execution-selected ABI/input custody and snapshot integrity, and the original
+  script still fetches online inputs. S1/S4/S6 remain PARTIAL and no blocker closed. Recorded this
+  way so a later reader cannot mistake one replay for bootstrap closure of the benchmark.
+- Still in flight at the end of this round and NOT merged: `w-bind` (the native outer-run/trial
+  binding half of E4), which has uncommitted work in
+  `docs/pristine-scorer-protocol.md`, `eval/admission/artifact_admission.py` and
+  `eval/run/runner.py`. Nothing about its result is claimed.
+- Resource state: one bootstrap replay in a network-denied local container plus local source
+  inventory - no benchmark scoring run, model, GPU or endpoint call. Both GPUs stayed idle and no
+  utilisation is claimed. Historical runs, frozen receipts and archives were untouched.
