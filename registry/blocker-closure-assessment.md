@@ -31,7 +31,7 @@ the artefact.
 | `nestful / retain-contract-refusal` | external | permanent refusal | `REFUSED` |
 | `sotuqa / retain-contract-refusal` | external | permanent refusal | `REFUSED` |
 | `tau2_bench / retain-contract-refusal` | external | permanent refusal | `REFUSED` |
-| `appworld / successful-task-evidence` | measurement | open, diagnostic AUTHORIZED | `PENDING-RUN` |
+| `appworld / successful-task-evidence` | measurement | open | `PENDING-RUN`; one authorized diagnostic ran and did **not** confirm the guidance hypothesis; completion-aware control now implemented |
 | `spreadsheetbench / dataset-journal-gap` | measurement | open | `PENDING-RUN`, `PENDING-WORK` |
 | `bfcl_v3 / simple-ast-contract` | external | open | `PENDING-WORK`, then `PENDING-RUN` |
 | `fever / dataset-journal-gap` | measurement | open | `PENDING-UPSTREAM` (w-fevhub in flight) |
