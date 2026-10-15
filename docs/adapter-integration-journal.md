@@ -5203,3 +5203,45 @@ text and must be re-checked against the current record before it is applied. Thi
 merge-base/`main..HEAD` trap this phase has been bitten by twice; the check is
 `git diff $(git merge-base main HEAD)..HEAD` per worker, and for `bfcl_v3` specifically a diff of the
 `next_action` string.
+
+## 2026-10-16 (round 10) — The B5 pathology is B5's alone, and a rule I wrote was wrong
+
+**The negative result is the finding.** `w-provresidue` classified all **79** absences in the five
+non-B5 partially-tracked packets (`e3_bfcl_source`, `hg_wprov`, `upstream_provenance_e2`, `hg_trivia`,
+`hg_bfcl`) and found **zero** `pinned_error_payload` instances. Its summary: 62 `restorable`,
+11 `empty_body_legitimate`, 2 `recorded_404`, 3 `no_receipt_no_url`, 1 `unknown`. So B5's 23 error pins
+are **B5's pathology, not a property of our evidence packets**, and the corrected inventory row in
+`registry/known-red-tests.md` now states the residue by class and count instead of a bare `24/63/64`
+triple. Three packets (E3, Trivia, BFCL) have entirely recorded-200 residue; BFCL separately has a wrong
+*local* pin.
+
+**I wrote a rule that is false, and the worker falsified it with a counterexample.** The B5 section said
+"twenty-three distinct upstream blobs cannot share a digest, so the pin is provably not a pin of the
+artifact", and my brief to this worker generalised that into a classification test: *two or more distinct
+paths sharing one digest is the signature of an error page*. In `tests/fixtures/hg_trivia`,
+`responses/hub-added-selected-tree.body` and `responses/hub-selected-tree.body` both legitimately pin
+`40b807247f15bb2f5522bc69d0c4c4a031f30eb23f2632a8526bfb53f8df1ce2` at 973 bytes with `status: 200`,
+because they are the same three file-metadata objects at **two revisions** - the worker reconstructed
+exactly 973 bytes and that digest from retained views for both, and I re-verified the two pins and their
+statuses myself. The B5 conclusion survives (23 paths, one 279-byte body, `status: 403`), but the *reason*
+does not: the signature is **a small error body under a non-200 status multiplied across paths**, not a
+repeated digest. `registry/known-red-tests.md` now says this in the B5 section, so the next reader does not
+inherit the bad rule. This is the second time in this phase that a proxy-based inference survived review
+until someone opened the artifacts - the first was "the residue is a rate limit".
+
+**A silent defect class nobody had looked for: four present files that do not match their own packet's
+pins.** `hg_wprov` 2 (`SHA256SUMS:3`, `:114`), `upstream_provenance_e2` 1 (`:47`), `hg_bfcl` 1 (`:3`). All
+four recomputed by me, not taken from the report. `upstream_provenance_e2/verify.py`'s divergence is
+*explained* rather than merely flagged: its pin `eda7f157...` is the SHA-256 of that helper at Git object
+`21a7d7f3`, so the file was edited after the pin was recorded and the pin was never updated. None is
+reachable from a discovered suite test - the only suite path into these packets is registry-mediated
+metadata (`tests/quality/test_dataset_blockers.py:19`, `:57-58`) - so these are **broken pins in retained
+evidence**, not red tests, and **no fetch can fix them**. Recorded as its own section.
+
+**The worker also corrected two errors in the brief I gave it**, which is the behaviour the brief asked
+for: `hg_wprov`'s root manifest already covers both nested manifests (114 pins / 22 absences, not the
+200/43 my brief implied by adding the nested counts), and E3 and E2 *do* carry receipts (24 and 12 files)
+under names my `*.receipt.json` glob missed. I had reported "receipts present: 0" for both.
+
+**Merged:** `7364dcb1` (w-provresidue, evidence-only, 4 files, checker valid). **Corrected:**
+`edff98a5` (the inventory row by class, the false-positive rule, and the four pin mismatches).
