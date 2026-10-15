@@ -67,6 +67,14 @@ Source: `/mnt/20t/xubuqiang/HarnessGrad_experiments_result/musique/loop_qwen3.5-
 
 Insert the qualification paragraph above immediately before this table; leave every numerical cell unchanged. This also labels all hop rows consistently. The operator can use the same qualification if adding 0.3064 to eval-split-design.md; it is not currently present there in the retrieved version.
 
+**Parent verification of the figure, 2026-10-16.** The table's three hop rows are `mean` = 0.3272 (688
+tasks), 0.3077 (1251) and 0.2730 (478); those task counts sum to **2417**, which is exactly the archived
+per-task record count (`registry/w-evidence-archive-observed.json`). The task-weighted mean of the three
+rows is `(688x0.3272 + 1251x0.3077 + 478x0.2730) / 2417` = **0.306388**, i.e. **0.3064**. So the figure the
+label is for is the **task-weighted overall mean across hops**, and it is **not** any row of that table -
+the unweighted mean of the three rows would be 0.3026, which is a different number. When applying the
+relabel, do not attach the qualification to a hop row as if 0.3064 were one of them.
+
 ## Do not extend the MuSiQue formula sentence to 2Wiki
 
 **Parent addition 2026-10-16.** Any wording produced alongside the MuSiQue label must **not** be shared with

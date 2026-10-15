@@ -418,6 +418,14 @@ number*, which several records described incompletely or wrongly.
 `jericho`, `spreadsheetbench` before its locator drift, `terminal_bench`) and 4 are the permanent
 refusals (`api_bank`, `nestful`, `sotuqa`, `tau2_bench`), which are excluded and were not investigated.
 
+**The six the source review marked `must-fix`.** Of the 20, six carry the strongest inherited severity -
+`hotpotqa`, `sportsunderstanding`, `physicsquestions`, `alfworld`, `agentdojo` and `scienceworld`. That
+severity is a **judgment inherited from the fidelity handoff**, not a fresh measurement here: what is
+measured in this phase is the metric identity and whether the code changed (`registry/fidelity-acceptance.md`
+carries the fail-before/pass-after for each). All six appear in the table below with their effect class, and
+five of them are `NUMBER` changes that have **already landed on `main`**, so their archived figures predate
+the instrument now in the code.
+
 **What the operator needs from this table.** Of the 20, **13 lead with `NUMBER`** - the change alters the
 number, so an earlier figure must not be reported under the new metric name - **6 lead with `LABEL`**
 (label-only, though some carry a conditional NUMBER) and **1 leads with `CONDITION`** (appworld, where a
