@@ -15,6 +15,7 @@ from pathlib import Path, PurePosixPath
 import re
 import shutil
 import stat
+import time
 
 from eval.admission.pilot_admission import AdmissionError, LOG_CONFIG
 
@@ -265,6 +266,43 @@ def verify_scorer_closure(root: Path, raw: bytes, expected_sha256: str) -> dict:
     return dict(schema="harnessgrad.scorer-closure-receipt.v1", task_id=contract["task_id"],
                 contract_sha256=expected_sha256, source_sha256=contract["source_sha256"],
                 runtime_image_id=contract["runtime_image_id"], **counts)
+
+
+def observe_selected_source(source: Path, raw: bytes, expected_sha256: str) -> dict:
+    """Bounded endpoint probe, not writer exclusion or continuous quiescence.
+
+    Inspect only allowlisted regular files using the export's no-link traversal.
+    Ordinary writes (including write/restore and utime) leave metadata evidence.
+    Unselected files, directory history and changes hidden from both endpoint
+    probes are outside this observation. The host, observer and filesystem must
+    be trusted; a matching result does not prove absence of interval writes.
+    """
+    contract = load_contract(raw, expected_sha256)
+    started = time.monotonic_ns()
+    records, total = [], 0
+    for row in contract["export"]["files"]:
+        with _regular(source, row["path"], data_only=True) as (stream, info):
+            limit = min(row["max_bytes"], contract["export"]["max_bytes"] - total)
+            if info.st_size > limit:
+                raise AdmissionError("source observation byte quota exceeded")
+            digest, size = hashlib.sha256(), 0
+            while True:
+                chunk = stream.read(min(65536, limit - size + 1))
+                if not chunk:
+                    break
+                size += len(chunk)
+                if size > limit:
+                    raise AdmissionError("source observation byte quota exceeded")
+                digest.update(chunk)
+            if size != info.st_size:
+                raise AdmissionError("source size changed during observation")
+            records.append(dict(path=row["path"], bytes=size, sha256=digest.hexdigest(),
+                                **{key: getattr(info, key) for key in (
+                                    "st_dev", "st_ino", "st_size", "st_mtime_ns", "st_ctime_ns",
+                                    "st_nlink", "st_mode", "st_uid", "st_gid")}))
+            total += size
+    return dict(started_monotonic_ns=started, finished_monotonic_ns=time.monotonic_ns(),
+                files=records)
 
 
 def export_state(source: Path, destination: Path, raw: bytes, expected_sha256: str,

@@ -1,0 +1,92 @@
+Baseline regression selection (expected exit 1)
+python3 -m pytest -q tests/quality/test_quiesce2_regressions.py tests/quality/test_prifix_regressions.py -k "source_aba_is_unmeasured or d2_completed_checks_remain_measurements" --basetemp=/tmp/harnessgrad-pytest-w-quiesce2-before
+FF..                                                                     [100%]
+=================================== FAILURES ===================================
+_____________________ test_source_aba_is_unmeasured[False] _____________________
+
+tmp_path = PosixPath('/tmp/harnessgrad-pytest-w-quiesce2-before/test_source_aba_is_unmeasured_0')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...ne-offline', 'manifest': '/tmp/harnessgrad-pytest-w-quiesce2-before/test_source_aba_is_unmeasured_0/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-3144f2cbda8c48fc8c710e214ccf2e56', '--network', 'no... mutate=<function docker_double.<locals>.<lambda> at 0x788f1d901e40>, started=True, exit_code=0, cleanup_failure=False)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x788f1dbfac00>
+restore_mtime = False
+
+    @pytest.mark.parametrize("restore_mtime", [False, True])
+    def test_source_aba_is_unmeasured(tmp_path, scorer, docker_double, monkeypatch, restore_mtime):
+        source = actor(tmp_path)
+        answer = source / "answer.txt"
+        before = answer.stat()
+        original = container.docker
+    
+        def docker(*args, **kwargs):
+            if args[0] == "start":
+                answer.write_text("changed")  # Same length; remains changed through scoring.
+            result = original(*args, **kwargs)
+            if args[0] == "start":
+                answer.write_text("correct")
+                if restore_mtime:
+                    os.utime(answer, ns=(before.st_atime_ns, before.st_mtime_ns))
+            return result
+    
+        monkeypatch.setattr(container, "docker", docker)
+        verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t")
+        assert docker_double.started and answer.read_text() == "correct"
+>       assert verdict["score"] is None and verdict["outcome"] == "unmeasured"
+E       assert (1.0 is None)
+
+tests/quality/test_quiesce2_regressions.py:31: AssertionError
+_____________________ test_source_aba_is_unmeasured[True] ______________________
+
+tmp_path = PosixPath('/tmp/harnessgrad-pytest-w-quiesce2-before/test_source_aba_is_unmeasured_1')
+scorer = {'argv': ['/control-scorer/python', '/control-scorer/check.py', '/control-input/answer.txt'], 'kind': 'command', 'scor...ne-offline', 'manifest': '/tmp/harnessgrad-pytest-w-quiesce2-before/test_source_aba_is_unmeasured_1/bundle.json', ...}}
+docker_double = namespace(calls=[('create', '--pull=never', '--name', 'hg-pristine-2c17f65efb2c47c78f5113a6bdbb10d0', '--network', 'no... mutate=<function docker_double.<locals>.<lambda> at 0x788f1d9025c0>, started=True, exit_code=0, cleanup_failure=False)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x788f1dbf8800>
+restore_mtime = True
+
+    @pytest.mark.parametrize("restore_mtime", [False, True])
+    def test_source_aba_is_unmeasured(tmp_path, scorer, docker_double, monkeypatch, restore_mtime):
+        source = actor(tmp_path)
+        answer = source / "answer.txt"
+        before = answer.stat()
+        original = container.docker
+    
+        def docker(*args, **kwargs):
+            if args[0] == "start":
+                answer.write_text("changed")  # Same length; remains changed through scoring.
+            result = original(*args, **kwargs)
+            if args[0] == "start":
+                answer.write_text("correct")
+                if restore_mtime:
+                    os.utime(answer, ns=(before.st_atime_ns, before.st_mtime_ns))
+            return result
+    
+        monkeypatch.setattr(container, "docker", docker)
+        verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t")
+        assert docker_double.started and answer.read_text() == "correct"
+>       assert verdict["score"] is None and verdict["outcome"] == "unmeasured"
+E       assert (1.0 is None)
+
+tests/quality/test_quiesce2_regressions.py:31: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality/test_quiesce2_regressions.py::test_source_aba_is_unmeasured[False]
+FAILED tests/quality/test_quiesce2_regressions.py::test_source_aba_is_unmeasured[True]
+2 failed, 2 passed, 22 deselected in 0.75s
+
+Same selection after implementation (exit 0)
+python3 -m pytest -q tests/quality/test_quiesce2_regressions.py tests/quality/test_prifix_regressions.py -k "source_aba_is_unmeasured or d2_completed_checks_remain_measurements" --basetemp=/tmp/harnessgrad-pytest-w-quiesce2-after
+....                                                                     [100%]
+4 passed, 36 deselected in 0.65s
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 2, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ python3 -m pytest -q tests/quality/test_quiesce2_regressions.py tests/quality/test_prifix_regressions.py tests/quality/test_terminal_artifact_admission.py tests/quality/test_scorer_isolation_option_b.py tests/quality/test_quiesce_evidence.py tests/quality/test_dataset_blockers.py --basetemp=/tmp/harnessgrad-pytest-w-quiesce2-final-validation
+........................................................................ [ 40%]
+........................................................................ [ 80%]
+....................................                                     [100%]
+180 passed in 24.05s
+exit_code=0
+
+$ git diff --check
+exit_code=0
+

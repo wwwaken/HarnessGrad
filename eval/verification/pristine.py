@@ -64,10 +64,25 @@ def verify(workdir: Path, spec: dict, *, timeout_s: int, task_id: str | None = N
             contract = bundles.require_contract_bundle(contract_raw, contract_pin, raw, pin)
             if task_id is not None and contract["task_id"] != task_id:
                 raise AdmissionError("artifact contract task differs from selected task")
+            evidence["execution_binding"] = dict(
+                task_id=contract["task_id"], selected_task_checked=task_id is not None,
+                runtime_export_run_id=name, outer_run_id=None, trial_id=None,
+                scope="task_contract_and_generated_runtime_export_id",
+                outer_run_trial_binding="not_provided")
+            observation = evidence["source_observation"] = dict(
+                scope="selected_source_file_endpoint_probes", status="probe_unavailable",
+                quiescence_established=False,
+                interval="before_export_through_scorer_cleanup")
+            observation["before"] = artifacts.observe_selected_source(workdir, contract_raw, contract_pin)
             artifact_root = Path(scratch) / "input"
             exported = artifacts.export_state(workdir, artifact_root, contract_raw, contract_pin,
                                               run_id=name)
             evidence["export"] = exported
+            observation["export_content_matches_before"] = exported["files"] == [
+                {key: row[key] for key in ("path", "bytes", "sha256")}
+                for row in observation["before"]["files"]]
+            if not observation["export_content_matches_before"]:
+                raise AdmissionError("selected source differs between observation and export")
             argv = manifest["scorer"]["argv"]
             cmd = ["create", "--pull=never", "--name", name, "--network", "none",
                    "--user", artifacts.scorer_user(), "--read-only", "--cap-drop", "ALL", "--security-opt", "no-new-privileges",
@@ -139,5 +154,23 @@ def verify(workdir: Path, spec: dict, *, timeout_s: int, task_id: str | None = N
                 if not evidence["cleanup"]["removed"]:
                     verdict.update(passed=False, score=None, outcome="unmeasured",
                                    unmeasured="pristine scorer cleanup failed")
+            # Run even on scorer/admission/timeout failures, after any attempted
+            # scorer has been removed. Never turn a failed execution into a score.
+            observation = evidence.get("source_observation")
+            if observation is not None:
+                try:
+                    observation["after"] = artifacts.observe_selected_source(workdir, contract_raw, contract_pin)
+                    if "before" in observation:
+                        changed = observation["before"]["files"] != observation["after"]["files"]
+                        changed |= observation.get("export_content_matches_before") is False
+                        observation["status"] = "difference_observed" if changed else "no_change_observed"
+                        if changed and verdict.get("outcome") == "measured":
+                            verdict.update(passed=False, score=None, outcome="unmeasured",
+                                           unmeasured="selected source change observed across export/scoring interval")
+                except (AdmissionError, OSError) as exc:
+                    observation.update(status="probe_unavailable", error=f"{type(exc).__name__}: {exc}")
+                    if verdict.get("outcome") == "measured":
+                        verdict.update(passed=False, score=None, outcome="unmeasured",
+                                       unmeasured="selected source post-scoring observation unavailable")
     verdict["scorer_isolation_evidence"] = evidence
     return record_class(verdict, spec, actual)

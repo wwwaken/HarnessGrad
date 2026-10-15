@@ -3231,3 +3231,45 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
   runtimes and offline payload installs only - no benchmark scoring run, model, GPU or endpoint
   call. Both GPUs stayed idle and no utilisation is claimed. Historical runs, frozen receipts and
   archives were untouched; no existing run id was resumed.
+
+## 2026-10-15 — Selected-source export/scoring interval observations - w-quiesce2
+
+- Read the prior mutation receipt and caller-quiescence disclaimer first. Added
+  bounded selected-file SHA-256 and device/inode/size/mtime/ctime/link/mode/UID/GID
+  probes before pristine export and after attempted scorer cleanup. Export bytes
+  must match the first probe; changed or unavailable final observations prevent
+  measured scores. Existing projection/runtime checks, limits and scorer logic
+  remain intact. Native evidence says no_change_observed, difference_observed or
+  probe_unavailable, always quiescence_established=false.
+- Reused the prior real-daemon observer with fresh before/after run IDs and the
+  unchanged sealed fixture. The exact same-UID 41-to-42-through-scoring/restore
+  case was accepted as native measured 0.0 before, and is now unmeasured/null
+  because mtime/ctime changed despite equal endpoint digests. Unchanged 42 scores
+  1.0 with no_change_observed. Preserved one genuine environment-order refusal;
+  five created/five removed containers have raw absence observations. Baseline
+  accepted mutation is invalid source-integrity evidence, not a valid zero.
+- Focused assertions: 2 failed / 2 passed before, the same selection 4 passed
+  after. Final checker and focused suite: 180 passed. Historical receipt tests
+  now verify archived historical code against every original hash instead of
+  requiring today's production code to remain byte-identical. The historical
+  auditor, receipts and seals are unchanged; the initial stale-code failure is
+  retained separately.
+- Residual same-UID counterexample is tested: substitute a source directory
+  during scoring and restore its original selected file inodes before probing.
+  This evades file probes. Unselected state, directory history, sequential-probe
+  races and mutations hidden/restored from endpoint observations are not covered.
+  Trusted host/observer/filesystem and continuous writer custody are still needed.
+- Native execution_binding records checked task identity and generated
+  runtime/export UUID; outer_run_id/trial_id are null and outer_run_trial_binding
+  is not_provided. Observer task/run/trial=1 envelopes do not replace native
+  execution-enforced outer-run/trial inputs.
+- Report: `reports/w-quiesce2-receipts.md`. Raw before/after packets, exact
+  executed source archives, copy provenance, auditor and seals:
+  `reports/w-quiesce2-evidence/`. Checker/focused output:
+  `reports/w-quiesce2-validation.txt`. Registry changes only this shared
+  blocker's observed text/evidence locator. E1/E2/E3/E4/E5/E6 remain PARTIAL;
+  dataset-specific E5 equivalence, true E4 custody and native run/trial binding
+  remain. No shared or dataset blocker closes; statuses/next_actions/gates stay.
+- No model/GPU/endpoint, benchmark, production H0, runs/ write or historical
+  receipt/archive edit. Commit only on registered `/tmp/hg-quiesce2` branch
+  `wg-quiesce2`, for parent review and merge.

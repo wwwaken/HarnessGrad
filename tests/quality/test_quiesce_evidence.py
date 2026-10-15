@@ -14,6 +14,28 @@ AUDIT = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(AUDIT)
 
 
+@pytest.fixture(autouse=True)
+def historical_code_root(tmp_path, monkeypatch):
+    """Audit the immutable receipt against its historical code, not today's code.
+
+    The preserved auditor still checks every recorded SHA-256. No historical
+    receipt, seal or audit script is changed when production code advances.
+    """
+    historical = tmp_path / "historical-code"
+    launch = AUDIT.load(EVIDENCE / "final-control/launch.json")
+    archive = ROOT / "reports/w-quiesce2-evidence/before-source"
+    for name, pin in launch["source_hashes"].items():
+        raw = (archive / name).read_bytes()
+        assert hashlib.sha256(raw).hexdigest() == pin
+        target = historical / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(raw)
+    fixture = historical / "tests/fixtures/hg_wpristine"
+    fixture.parent.mkdir(parents=True)
+    shutil.copytree(ROOT / "tests/fixtures/hg_wpristine", fixture)
+    monkeypatch.setattr(AUDIT, "REPO", historical)
+
+
 def test_preserved_packet_establishes_only_its_bounded_claims():
     result = AUDIT.audit(EVIDENCE / "final-control")
     assert result == json.loads((EVIDENCE / "audit.json").read_text())

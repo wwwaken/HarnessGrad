@@ -36,6 +36,20 @@ source completeness, image ABI completeness, observer authenticity, freshness,
 ownership, CPU/memory/PID/deadline enforcement or cleanup. Those remain independent
 backend obligations. Dataset-specific production evidence remains unverified.
 
+The opt-in pristine execution path additionally records `source_observation`:
+bounded allowlisted-file metadata and SHA-256 probes before export and after
+scorer cleanup, with the export bytes compared to the first probe. A detected
+difference or unavailable final probe prevents a measured score. Its statuses
+are `no_change_observed`, `difference_observed`, and `probe_unavailable`;
+`quiescence_established` is always false. These are endpoint observations of
+selected regular files, not continuous monitoring, a filesystem-wide snapshot,
+or same-UID writer exclusion. In particular, a transient directory substitution
+can restore the original file inodes before the final probe and evade detection.
+Trusted source custody remains required. `execution_binding` records the task
+contract and generated runtime/export UUID, whether a selected task was checked,
+and explicitly missing outer-run/trial inputs (`outer_run_trial_binding` is
+`not_provided`). Those inputs still need an execution-enforced backend contract.
+
 For optional backend composition, ordinary-user access, lifecycle progression and
 preflight refusal handling, see the [scorer backend and lifecycle API](scorer-backend-lifecycle-api.md).
 
