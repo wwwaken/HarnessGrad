@@ -4015,3 +4015,21 @@ clean; all four named deliverables present.
 - Each fresh one-task loop/train diagnostic used rounds=0/trials=1/jobs=1, HG_TB_SPLIT=none and HG_EGRESS_PROXY=http://172.17.0.1:17890, bound to qwen3.5-9b-local at http://127.0.0.1:8002/v1. Worker concurrency was one; preflight and repeated process samples are checked for other platform drivers. No operator process or model server was changed. Native publication measured=0, invalid=0, unmeasured=5, all scores null; unknown policy enforcement stays unknown.
 - Full run/observer artifacts remain intact at `/tmp/w-tb89c-runs-20261015T043105Z-2bb62685`, with work roots outside the platform. Compact hash-bound review copies preserve CTRF/rewards, image/manifest/source/scorer bindings, model trace/gateway usage, resource samples, observed snapshots and scoped/exact cleanup probes. Resource/lifecycle observations do not establish trusted enforcement, offline transitive closure or production admission.
 - Only shared scorer-offline-closure observed/evidence gains this bounded S4 execution scope. S1/S3/S4/S5/S6 remain PARTIAL; no shared or dataset blocker closes. All statuses, next_actions, dataset/history records, gates and production_authorized=false remain unchanged. Runtime/admission/task/test/reference code, repository runs/ and frozen receipts are untouched. Validation: reports/w-tb89c-validation.txt. Commit only in registered /tmp/hg-tb89c for parent review; main is untouched.
+## Parent review and merge — w-tb89c — 2026-10-15
+
+- Merged `7ade92c8` (w-tb89c). Result `303dfeaa`. Registry valid: 28 datasets, 2 shared blockers, 11
+  historical records, `production_authorized=false`; sequencer clean; report present. 56 focused
+  tests passed.
+- **Terminal-Bench verifier coverage widened from 4/89 to 9/89**: five additional valid
+  CTRF-backed measurements, all raw scores **0.0**, with **zero invalid attempts**. Publication
+  scores remain null and no blocker closed, so this is coverage of a clause, not a closure.
+- This merge needed no conflict resolution, so the new semantic merge tool was not exercised in
+  anger this round - but it is committed, validated on a real historical conflict, and idempotent,
+  and it is the intended replacement for the textual reconstruction that damaged the registry six
+  times. Its guard behaviour (refusing rather than dropping a value) is the part that matters.
+- Still in flight and NOT merged: `w-hostpin`, which has committed
+  `1b76e806 Pin BIRD native scorer userland with sealed runtime` and is still working. Nothing about
+  its result is claimed.
+- Resource state: w-tb89c used the local model endpoint for an authorised diagnostic (five real TB
+  verifier measurements). No fabrication. GPU samples during this round were 0 %; historical runs,
+  frozen receipts and archives were untouched.
