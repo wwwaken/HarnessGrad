@@ -341,3 +341,45 @@ pytest invocation or keep going past a collection error (`--continue-on-collecti
 covered-file list must be compared against `ls tests/quality/test_*.py` rather than inferred from the
 absence of failures. A per-file pass over all 194 files was launched on 2026-10-15 to check for other
 files the chunking skipped; its results are appended below when it settles.
+
+## The strict-decoding crash class: the runnable harnesses are fixed, the referee side is not
+
+Measured 2026-10-15 and reported by the operator: one model-issued shell command printed a non-UTF-8
+byte, the harness's `subprocess.run(..., text=True)` decoded it strictly, `UnicodeDecodeError` propagated
+out of the harness, and the episode ended as a **zero for a task nobody finished**. The differential is
+reproducible in one line:
+
+```
+$ python3 -c 'import subprocess; subprocess.run(r"printf \x27before\300\377after\x27", shell=True, capture_output=True, text=True)'
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xc0 in position 6: invalid start byte
+# with errors="replace": rc 0, stdout 'before\ufffd\uffffafter', and json.dumps still yields valid UTF-8
+```
+
+**Fixed here:** the eight `base_harness/` sites, which are the code `driver.py --harness <name>` actually
+copies and runs - `loop/agent.py:685`, `loop_plain/agent.py:242`, `loop_rrsi_parse/agent.py:273`,
+`cli_agent/agent.py:158`, `oracle/agent.py:71`, `dsh_agent/agent.py:419`, `codex_agent/agent.py:104` now
+pass `errors="replace"`. `errors="replace"` rather than `surrogateescape`, deliberately: the harness writes
+its trace as UTF-8, and surrogates would make the trace write itself fail. `tests/quality/test_harness_decoding.py`
+pins the property over `base_harness/` and carries one written exemption
+(`dsh_agent/agent.py:202`, the platform-authored Node loader probe whose single JSON line is parsed
+immediately).
+
+**Not fixed, and deliberately not a drive-by edit - the referee side keeps the same strict decode:**
+
+* `eval/` (11 sites): `run/runner.py:506` (the no-sandbox harness run), `verification/verifier.py:722`
+  (the check process), `containers/sandbox.py:463` (the native sandbox run),
+  `containers/container.py:231,277,650`, `containers/harness_runtime.py:159,173`,
+  `verification/native_runtime.py:119`, `admission/pilot_admission.py:273`,
+  `policy/gaia_snapshot_attestation.py:111`. A check or CLI that prints non-UTF-8 crashes the *platform's*
+  decode here, which is the same class of outcome - a task nobody finished - reached from the other side.
+* `data/` (23 sites): the per-dataset `control.py` / `oracle_harness/agent.py` helpers, and four
+  `verify/check.py` files (`ds1000`, `spreadsheetbench`, `agentdojo`). **`data/*/verify/check.py` are
+  scored artefacts whose digests are recorded as custody in `registry/`** - `registry/w-spreadrt-runtime.md`
+  and the parent's post-fix note pin `data/datasets/spreadsheetbench/verify/check.py` at
+  `5c247413...` - so changing one is a scorer-identity change that needs its own reviewed pass with the
+  custody records updated, not a sweep.
+* `harnessgrad/` (6) and `tools/` (21) are tooling and lower risk; `current_harness/` (3) and `legacy/` are
+  **derived or historical records** and must not be edited.
+
+The guard's docstring carries the same scope and the reason it stops at `base_harness/`;
+`EXCEPTIONS` is asserted non-empty and asserted to still match a real site, so the exemption cannot rot.
