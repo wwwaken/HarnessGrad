@@ -1,0 +1,332 @@
+w-trivia4 reconciliation validation
+
+Scope: retained evidence only, in assigned worktree wg-w-trivia4.
+The reconciliation report supplies file:line citations for source inspections.
+The transcript below records exact substantive audit/validation commands,
+combined stdout/stderr exactly as observed, and process exit codes. No timestamps
+or upstream execution identities were inferred. The command recorder invokes each
+printed command verbatim via subprocess, in the assigned worktree.
+
+Commands and exact observed output
+==================================
+$ python3 tests/fixtures/hg_trivia3/verify_evidence.py
+{"complete_footers": 13, "complete_key_shards": 4, "official_numeric_denominator": "UNKNOWN", "range_bytes": 1556011, "range_requests": 228, "two_rc_shards": {"distinct_question_ids": 8202, "rows": 8972, "shared_question_ids": 770}, "verified": true}
+exit_code=0
+
+$ python3 tests/fixtures/hg_trivia4/reconcile.py --write
+{"complete_key_shards": 4, "custody_byte_identical": true, "official_numeric_denominator": "UNKNOWN", "section_verdicts": {"1": "UNKNOWN", "2": "DECIDED", "3": "UNKNOWN", "4": "UNKNOWN"}, "source_scope_files": 17, "two_rc_shards": {"candidate_doc_key_duplicate_excess": 1339, "candidate_doc_key_occurrences": 20647, "distinct_candidate_doc_keys": 19308, "distinct_question_ids": 8202, "question_id_duplicate_excess": 770, "rows": 8972}, "verified": true}
+exit_code=0
+
+$ python3 -c 'import json,subprocess; from pathlib import Path; scope=json.loads(Path("tests/fixtures/hg_trivia4/count-source-scope.json").read_text()); print("Enumerated count-source scope:", *scope, sep="\n", flush=True); raise SystemExit(subprocess.run(["rg","-n","-o",r"\b(18669|17944|725)\b|18,669|17,944",*scope]).returncode)'
+Enumerated count-source scope:
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body
+tests/fixtures/hg_trivia2/views/hub-revision-final.json
+tests/fixtures/hg_trivia2/views/viewer-info-proxy-retry.json
+tests/fixtures/hg_trivia2/views/viewer-splits.json
+tests/fixtures/hg_trivia2/responses/project-readme-proxy.body
+tests/fixtures/hg_trivia2/decoded/project-current-README.md
+tests/fixtures/hg_trivia2/responses/predecessor-source-attempt2.body
+tests/fixtures/hg_trivia2/decoded/project-converter.py
+tests/fixtures/triviaqa_hub_codex225/historical_loader/dataset_infos.json
+tests/fixtures/triviaqa_hub_codex225/historical_loader/trivia_qa.py
+tests/fixtures/hg_trivia3/declarations.json
+tests/fixtures/hg_trivia3/observations.json
+tests/fixtures/hg_trivia3/key-audit-summary.json
+tests/fixtures/hg_trivia3/partial-attempt-summary.json
+tests/fixtures/hg_trivia3/validation-attempt2-summary.json
+registry/w-trivia2-review.md
+registry/w-trivia3-review.md
+registry/w-trivia3-review.md:3:17,944
+registry/w-trivia3-review.md:89:17944
+registry/w-trivia3-review.md:90:17944
+registry/w-trivia3-review.md:109:18,669
+registry/w-trivia3-review.md:109:17,944
+registry/w-trivia3-review.md:113:18669
+registry/w-trivia3-review.md:113:18669
+registry/w-trivia3-review.md:114:17944
+registry/w-trivia3-review.md:115:17944
+registry/w-trivia3-review.md:115:17,944
+registry/w-trivia3-review.md:115:18,669
+registry/w-trivia3-review.md:115:725
+registry/w-trivia3-review.md:159:18669
+registry/w-trivia3-review.md:159:17944
+registry/w-trivia2-review.md:84:17944
+registry/w-trivia2-review.md:85:17944
+registry/w-trivia2-review.md:115:18669
+registry/w-trivia2-review.md:116:18669
+registry/w-trivia2-review.md:118:17944
+registry/w-trivia2-review.md:238:17,944
+registry/w-trivia2-review.md:245:17,944
+tests/fixtures/hg_trivia2/views/viewer-info-proxy-retry.json:139:17944
+tests/fixtures/hg_trivia2/views/viewer-info-proxy-retry.json:288:17944
+tests/fixtures/hg_trivia2/views/hub-revision-final.json:180:17944
+tests/fixtures/hg_trivia2/views/hub-revision-final.json:299:17944
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:82:17944
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:142:17944
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:996:18669
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:997:18669
+tests/fixtures/hg_trivia3/observations.json:135:17944
+tests/fixtures/hg_trivia3/declarations.json:8:17944
+tests/fixtures/hg_trivia3/declarations.json:31:17944
+tests/fixtures/triviaqa_hub_codex225/historical_loader/dataset_infos.json:1:17944
+tests/fixtures/triviaqa_hub_codex225/historical_loader/dataset_infos.json:1:17944
+exit_code=0
+
+$ python3 -c 'from pathlib import Path; p=Path("tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body"); lines=p.read_text().splitlines(); spans=[(1,5),(74,84),(134,144),(990,1003)]; print("PRIMARY CARD EXCERPTS"); [print(f"{p}:{i}:{lines[i-1]}") for a,b in spans for i in range(a,b+1)]'
+PRIMARY CARD EXCERPTS
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:1:---
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:2:annotations_creators:
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:3:- crowdsourced
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:4:language_creators:
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:5:- machine-generated
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:74:    - name: value
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:75:      dtype: string
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:76:  splits:
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:77:  - name: train
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:78:    num_bytes: 12749651131
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:79:    num_examples: 138384
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:80:  - name: validation
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:81:    num_bytes: 1662321188
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:82:    num_examples: 17944
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:83:  - name: test
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:84:    num_bytes: 1577710503
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:134:    - name: value
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:135:      dtype: string
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:136:  splits:
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:137:  - name: train
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:138:    num_bytes: 106882730
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:139:    num_examples: 138384
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:140:  - name: validation
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:141:    num_bytes: 14059830
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:142:    num_examples: 17944
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:143:  - name: test
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:144:    num_bytes: 3667903
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:990:- `value`: a `string` feature.
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:991:
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:992:### Data Splits
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:993:
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:994:|        name        |train |validation|test |
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:995:|--------------------|-----:|---------:|----:|
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:996:|rc                  |138384|     18669|17210|
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:997:|rc.nocontext        |138384|     18669|17210|
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:998:|unfiltered          | 87622|     11313|10832|
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:999:|unfiltered.nocontext| 87622|     11313|10832|
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:1000:
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:1001:## Dataset Creation
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:1002:
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:1003:### Curation Rationale
+exit_code=0
+
+$ python3 -c 'import json; from pathlib import Path; p=Path("tests/fixtures/triviaqa_hub_codex225/historical_loader/dataset_infos.json"); x=json.loads(p.read_text()); print("Historical metadata validation declarations (source JSON line 1):"); [print(k, x[k].get("splits",{}).get("validation",{}).get("num_examples")) for k in sorted(x)]'
+Historical metadata validation declarations (source JSON line 1):
+rc 17944
+rc.nocontext 17944
+rc.web 9951
+rc.web.nocontext 9951
+rc.wikipedia 7993
+rc.wikipedia.nocontext 7993
+unfiltered 11313
+unfiltered.nocontext 11313
+unfiltered.web 0
+unfiltered.web.nocontext 0
+unfiltered.wikipedia 0
+unfiltered.wikipedia.nocontext 0
+exit_code=0
+
+$ python3 -c 'import json; from pathlib import Path; p=Path("tests/fixtures/hg_trivia4/summary.json"); x=json.loads(p.read_text()); print(json.dumps(x["pairwise_sets"],indent=2)); print("Summary anchors:"); [print(f"{p}:{i}:{s.strip()}") for i,s in enumerate(p.read_text().splitlines(),1) if any(k in s for k in ("\"human_answers\"", "\"configurations\"", "\"validation_count_discrepancy\"", "\"complete_key_shards\"", "\"pairwise_sets\"", "\"two_rc_shards\"", "\"custody\"", "\"rows_with_no_exported_filenames\""))]'
+[
+  {
+    "a": "rc/validation-00002-of-00004.parquet",
+    "b": "rc/validation-00003-of-00004.parquet",
+    "shared_question_ids": 770,
+    "a_only_question_ids": 3716,
+    "b_only_question_ids": 3716,
+    "shared_candidate_doc_keys": 1339,
+    "a_only_candidate_doc_keys": 11498,
+    "b_only_candidate_doc_keys": 6471
+  },
+  {
+    "a": "rc/validation-00002-of-00004.parquet",
+    "b": "unfiltered.nocontext/validation-00000-of-00001.parquet",
+    "shared_question_ids": 4484,
+    "a_only_question_ids": 2,
+    "b_only_question_ids": 6829,
+    "shared_candidate_doc_keys": 0,
+    "a_only_candidate_doc_keys": 12837,
+    "b_only_candidate_doc_keys": 0
+  },
+  {
+    "a": "rc/validation-00002-of-00004.parquet",
+    "b": "unfiltered/validation-00003-of-00007.parquet",
+    "shared_question_ids": 66,
+    "a_only_question_ids": 4420,
+    "b_only_question_ids": 1550,
+    "shared_candidate_doc_keys": 124,
+    "a_only_candidate_doc_keys": 12713,
+    "b_only_candidate_doc_keys": 18893
+  },
+  {
+    "a": "rc/validation-00003-of-00004.parquet",
+    "b": "unfiltered.nocontext/validation-00000-of-00001.parquet",
+    "shared_question_ids": 4479,
+    "a_only_question_ids": 7,
+    "b_only_question_ids": 6834,
+    "shared_candidate_doc_keys": 0,
+    "a_only_candidate_doc_keys": 7810,
+    "b_only_candidate_doc_keys": 0
+  },
+  {
+    "a": "rc/validation-00003-of-00004.parquet",
+    "b": "unfiltered/validation-00003-of-00007.parquet",
+    "shared_question_ids": 1090,
+    "a_only_question_ids": 3396,
+    "b_only_question_ids": 526,
+    "shared_candidate_doc_keys": 1850,
+    "a_only_candidate_doc_keys": 5960,
+    "b_only_candidate_doc_keys": 17167
+  },
+  {
+    "a": "unfiltered.nocontext/validation-00000-of-00001.parquet",
+    "b": "unfiltered/validation-00003-of-00007.parquet",
+    "shared_question_ids": 1616,
+    "a_only_question_ids": 9697,
+    "b_only_question_ids": 0,
+    "shared_candidate_doc_keys": 0,
+    "a_only_candidate_doc_keys": 0,
+    "b_only_candidate_doc_keys": 19017
+  }
+]
+Summary anchors:
+tests/fixtures/hg_trivia4/summary.json:10:"human_answers": {
+tests/fixtures/hg_trivia4/summary.json:100:"configurations": {
+tests/fixtures/hg_trivia4/summary.json:133:"validation_count_discrepancy": {
+tests/fixtures/hg_trivia4/summary.json:247:"complete_key_shards": [
+tests/fixtures/hg_trivia4/summary.json:261:"rows_with_no_exported_filenames": 0,
+tests/fixtures/hg_trivia4/summary.json:292:"rows_with_no_exported_filenames": 0,
+tests/fixtures/hg_trivia4/summary.json:321:"rows_with_no_exported_filenames": 11313,
+tests/fixtures/hg_trivia4/summary.json:353:"rows_with_no_exported_filenames": 1,
+tests/fixtures/hg_trivia4/summary.json:365:"pairwise_sets": [
+tests/fixtures/hg_trivia4/summary.json:427:"two_rc_shards": {
+tests/fixtures/hg_trivia4/summary.json:439:"custody": {
+exit_code=0
+
+$ python3 -c 'from pathlib import Path; import json; scope=json.loads(Path("tests/fixtures/hg_trivia4/count-source-scope.json").read_text()); [print(p, "symlink="+str(Path(p).is_symlink()), "resolved="+str(Path(p).resolve())) for p in scope if p.endswith(".body")]'
+tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body symlink=False resolved=/mnt/20t/xubuqiang/hg-wt/w-trivia4/tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body
+tests/fixtures/hg_trivia2/responses/project-readme-proxy.body symlink=False resolved=/mnt/20t/xubuqiang/hg-wt/w-trivia4/tests/fixtures/hg_trivia2/responses/project-readme-proxy.body
+tests/fixtures/hg_trivia2/responses/predecessor-source-attempt2.body symlink=False resolved=/mnt/20t/xubuqiang/hg-wt/w-trivia4/tests/fixtures/hg_trivia2/responses/predecessor-source-attempt2.body
+exit_code=0
+
+$ python3 -c 'from pathlib import Path; p=Path("tests/fixtures/hg_trivia2/response-catalog.md"); lines=p.read_text().splitlines(); print("Retained card identity / acquisition record:"); [print(f"{p}:{i}:{lines[i-1]}") for i in range(62,68)]'
+Retained card identity / acquisition record:
+tests/fixtures/hg_trivia2/response-catalog.md:62:| hub-card-proxy-retry | FOUND / 200 | https://huggingface.co/datasets/mandarjoshi/trivia_qa/raw/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/README.md | 26668 | `c177aa2d70c4fff3b3427317801c32803805a2c9185ffa081715e93028bf5a3c` | `---` | `tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.body:1`; `tests/fixtures/hg_trivia2/responses/hub-card-proxy-retry.receipt.json:1` |
+tests/fixtures/hg_trivia2/response-catalog.md:63:| hub-card-proxy | UNKNOWN / unobserved | https://huggingface.co/datasets/mandarjoshi/trivia_qa/raw/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/README.md | unobserved | `unobserved` | `URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>` | `tests/fixtures/hg_trivia2/responses/hub-card-proxy.receipt.json:1` |
+tests/fixtures/hg_trivia2/response-catalog.md:64:| hub-card | UNKNOWN / unobserved | https://huggingface.co/datasets/mandarjoshi/trivia_qa/raw/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/README.md | unobserved | `unobserved` | `URLError: <urlopen error [Errno 101] Network is unreachable>` | `tests/fixtures/hg_trivia2/responses/hub-card.receipt.json:1` |
+tests/fixtures/hg_trivia2/response-catalog.md:65:| hub-conversion-history | FOUND / 200 | https://huggingface.co/api/datasets/mandarjoshi/trivia_qa/commits/8dc2b82074533f20e92858f3577f10ff192f48cc | 9773 | `c577899974387c8aa855a2dfd5337471cd2954818b2a28092dffc0904f3150e9` | `Delete data folder` | `tests/fixtures/hg_trivia2/responses/hub-conversion-history.body:1`; `tests/fixtures/hg_trivia2/responses/hub-conversion-history.receipt.json:1` |
+tests/fixtures/hg_trivia2/response-catalog.md:66:| hub-dataset-info-final | FOUND / 404 | https://huggingface.co/datasets/mandarjoshi/trivia_qa/raw/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/dataset_infos.json | 15 | `f36668ddf22403a332f978057d527cf285b01468bc3431b04094a7bafa6aba59` | `Entry not found` | `tests/fixtures/hg_trivia2/responses/hub-dataset-info-final.body:1`; `tests/fixtures/hg_trivia2/responses/hub-dataset-info-final.receipt.json:1` |
+tests/fixtures/hg_trivia2/response-catalog.md:67:| hub-dataset-info-proxy-retry | UNKNOWN / unobserved | https://huggingface.co/datasets/mandarjoshi/trivia_qa/raw/0f7faf33a3908546c6fd5b73a660e0f8ff173c2f/dataset_infos.json | unobserved | `unobserved` | `URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>` | `tests/fixtures/hg_trivia2/responses/hub-dataset-info-proxy-retry.receipt.json:1` |
+exit_code=0
+
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+exit_code=0
+
+$ python3 tests/fixtures/hg_trivia4/reconcile.py
+{"complete_key_shards": 4, "custody_byte_identical": true, "official_numeric_denominator": "UNKNOWN", "section_verdicts": {"1": "UNKNOWN", "2": "DECIDED", "3": "UNKNOWN", "4": "UNKNOWN"}, "source_scope_files": 17, "two_rc_shards": {"candidate_doc_key_duplicate_excess": 1339, "candidate_doc_key_occurrences": 20647, "distinct_candidate_doc_keys": 19308, "distinct_question_ids": 8202, "question_id_duplicate_excess": 770, "rows": 8972}, "verified": true}
+exit_code=0
+
+$ git check-ignore -v tests/fixtures/hg_trivia4/reconcile.py tests/fixtures/hg_trivia4/count-source-scope.json tests/fixtures/hg_trivia4/summary.json
+.gitignore:380:tests/fixtures/hg_*/	tests/fixtures/hg_trivia4/reconcile.py
+.gitignore:380:tests/fixtures/hg_*/	tests/fixtures/hg_trivia4/count-source-scope.json
+.gitignore:380:tests/fixtures/hg_*/	tests/fixtures/hg_trivia4/summary.json
+exit_code=0
+
+$ python3 -c 'import pathlib,re,json; root=pathlib.Path.cwd(); p=root/"registry/w-trivia4-reconciliation.md"; text=p.read_text(); aliases={"P":"tests/fixtures/hg_trivia2", "K":"tests/fixtures/hg_trivia3", "R":"tests/fixtures/hg_trivia4"}; checked=0; bad=[]; pattern=r"(?P<path>(?:P|K|R)/[\w./-]+|(?:registry|tests)/[\w./-]+):(?P<line>\d+)"; refs=list(re.finditer(pattern,text)); exec("for m in refs:\n name=m[\"path\"]; first,sep,rest=name.partition(\"/\"); name=aliases.get(first,first)+sep+rest; f=root/name; n=int(m[\"line\"]); checked+=1\n if not f.is_file() or n>len(f.read_text().splitlines()): bad.append(m.group())"); sections=re.split(r"(?m)^## [1-4]\. ",text)[1:]; verdicts=[]; exec("for s in sections:\n verdicts.append(re.findall(r\"(?m)^(DECIDED|BOUNDED-ABSENT|UNKNOWN) —\",s))"); assert len(sections)==4 and verdicts==[["UNKNOWN"],["DECIDED"],["UNKNOWN"],["UNKNOWN"]]; assert not bad,bad; print(json.dumps({"citations_with_existing_path_and_line":checked,"bad_citations":bad,"section_final_verdicts":verdicts},sort_keys=True))'
+{"bad_citations": [], "citations_with_existing_path_and_line": 64, "section_final_verdicts": [["UNKNOWN"], ["DECIDED"], ["UNKNOWN"], ["UNKNOWN"]]}
+exit_code=0
+
+$ git diff --cached --check
+exit_code=0
+
+$ python3 -c 'import pathlib,subprocess,hashlib,json; scope=["AGENTS.md","registry/dataset-blockers.json","docs/adapter-integration-journal.md","tests/fixtures/hg_wsel/triviaqa.json","data/datasets/triviaqa.py"]; rows=[]; exec("for name in scope:\n b=pathlib.Path(name).read_bytes(); assert b==subprocess.check_output([\"git\",\"show\",\"HEAD:\"+name]); rows.append({\"path\":name,\"bytes\":len(b),\"sha256\":hashlib.sha256(b).hexdigest(),\"byte_identical_to_HEAD\":True})"); print(json.dumps(rows,indent=2)); print("branch="+subprocess.check_output(["git","branch","--show-current"],text=True).strip()); print("cwd="+str(pathlib.Path.cwd()))'
+[
+  {
+    "path": "AGENTS.md",
+    "bytes": 5716,
+    "sha256": "c451af64f9c85585c4ba77f28b9434dd64284792093a84528249cdcd6c1ac6d6",
+    "byte_identical_to_HEAD": true
+  },
+  {
+    "path": "registry/dataset-blockers.json",
+    "bytes": 68575,
+    "sha256": "467cb309544cd53ca7d01d4ce4dd4122276359f0a740310413e0bc0cf63c91b3",
+    "byte_identical_to_HEAD": true
+  },
+  {
+    "path": "docs/adapter-integration-journal.md",
+    "bytes": 653283,
+    "sha256": "3cc0c5812886d350f079d3fd14d6d96b238f16e14c5cf387618d18e24814a2e5",
+    "byte_identical_to_HEAD": true
+  },
+  {
+    "path": "tests/fixtures/hg_wsel/triviaqa.json",
+    "bytes": 7773,
+    "sha256": "1ffd8cbd5319043f7120b05572682f6b170f860804c324e957d79600bb476c07",
+    "byte_identical_to_HEAD": true
+  },
+  {
+    "path": "data/datasets/triviaqa.py",
+    "bytes": 18723,
+    "sha256": "c4c9e7121672f482abd5ec5527daa07d893f27bfbdcb7255841782332597413c",
+    "byte_identical_to_HEAD": true
+  }
+]
+branch=wg-w-trivia4
+cwd=/mnt/20t/xubuqiang/hg-wt/w-trivia4
+exit_code=0
+
+
+Explicitly NOT verified
+======================
+- Immutable upstream build/export EXECUTION for Hub revision
+  0f7faf33a3908546c6fd5b73a660e0f8ff173c2f; PENDING-UPSTREAM remains inherited.
+  No execution-receipt search was rerun; no withdrawal or status change proposed.
+- HumanAnswers input incidence, absent/empty/nonempty counts, preservation,
+  truncation, deduplication, normalized containment, redundancy or conflict.
+- Cause of 18669 versus 17944, the provenance/counting procedure for 18669,
+  a prose-side member inventory, or a 725-member set difference.
+- Whole-export or installed-snapshot member equality, full rc row count,
+  complete source partition, original Domain/VerifiedEval and verification flags.
+- Official export-to-input/key correspondence, overwrite order, requested qid_list,
+  numeric official denominator, actual EM/F1 or leaderboard equivalence.
+- Full-content row duplication, answer equality or answer agreement under repeated
+  QuestionIds/document keys. Candidate keys remain candidate keys.
+- Upstream converter/runtime/writer/input execution identity or recomputed whole-
+  Parquet-file LFS digest. Prior range bindings are not execution evidence.
+- Payloads, questions, answers or aliases were not reconstructed, printed or read.
+  No network acquisition, dataset execution, model/API/GPU work, official scorer
+  run, pilot, or historical run resumption occurred. First-five fixture was only
+  byte-hashed/compared, not parsed for evidence or replaced.
+- Source reading plus offline evidence replay is not production authorization.
+
+Change boundary
+===============
+Only the five files listed below are to be committed. Registry/journal/AGENTS,
+local adapter, first-five custody and historical evidence are not edited. No
+proposal is created: current next_action obligations remain. This documentation
+and offline reconciliation cannot alter the dataset-blocker registry; the checker
+still reports valid=true as observed above. No pytest, temporary materialization,
+downloads, venv copies or /tmp task directories were needed. Scratch command
+receipt is retained under /mnt/20t/xubuqiang/hg-work/trivia4/commands.txt; the
+scratch recorder is removed at finish.
+
+Git staging commands (observed earlier; stdout empty, exit_code=0):
+git add registry/w-trivia4-reconciliation.md
+git add -f tests/fixtures/hg_trivia4/reconcile.py tests/fixtures/hg_trivia4/count-source-scope.json tests/fixtures/hg_trivia4/summary.json
+
+Final committed-file byte sizes
+==============================
+registry/w-trivia4-reconciliation.md: 17293 bytes
+registry/w-trivia4-validation.txt: 22770 bytes
+tests/fixtures/hg_trivia4/count-source-scope.json: 1015 bytes
+tests/fixtures/hg_trivia4/reconcile.py: 8033 bytes
+tests/fixtures/hg_trivia4/summary.json: 15364 bytes
