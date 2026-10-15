@@ -274,6 +274,9 @@ def _verify_container_state_inner(snapshot: str, verifier, *, task_mount: str,
     The container is fresh, so nothing the harness left running is present. The inputs go
     in at step 6 and the reward directory at step 7, both after the harness stopped --
     which is why this is a re-materialization and not a snapshot of the harness's view.
+
+    A missing reward file is unmeasured: the check produced no result. A present but
+    unparseable value is a malformed result and keeps the ordinary failed verdict.
     """
     spec = verifier or {"kind": "answer", "expected": None}
     kind = spec.get("kind", "answer")
@@ -339,10 +342,12 @@ def _verify_container_state_inner(snapshot: str, verifier, *, task_mount: str,
         if reward_file:
             got = staging / "reward.txt"
             if not container_mod.cp_out(name, reward_file, got):
+                detail = (f"the check wrote no {reward_file}; exit {code}, "
+                          + (_check_output_detail(out, err)
+                             or "and printed nothing at all"))
                 return {"kind": kind, "passed": False,
-                        "detail": f"the check wrote no {reward_file}; exit {code}, "
-                                  + (_check_output_detail(out, err)
-                                     or "and printed nothing at all")}
+                        "unmeasured": f"{detail}; this task was not measured",
+                        "detail": detail}
             raw = got.read_text().strip()
             try:
                 score = float(raw)

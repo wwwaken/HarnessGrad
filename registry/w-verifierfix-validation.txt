@@ -1,0 +1,362 @@
+w-verifierfix validation evidence
+
+Scope: authored unit/quality controls only; no measured dataset diagnostic or pilot.
+All suite logs below contain exact subprocess argv, observed stdout/stderr, exit codes, and basetemp deletion results. Tests used SSD /tmp basetemps, while logs are retained on HDD scratch.
+
+REPRODUCIBLE GUARD AND LAUNCHER SOURCES
+$ cat /tmp/verifierfix-guard/bin/docker
+#!/bin/sh
+exit 125
+EXIT_CODE=0
+$ cat /tmp/verifierfix-guard/python/sitecustomize.py
+import socket
+_original_connect = socket.socket.connect
+_original_connect_ex = socket.socket.connect_ex
+def connect(self, address):
+    if self.family in (socket.AF_INET, socket.AF_INET6):
+        raise RuntimeError("verifierfix checks prohibit network connects")
+    return _original_connect(self, address)
+def connect_ex(self, address):
+    if self.family in (socket.AF_INET, socket.AF_INET6):
+        raise RuntimeError("verifierfix checks prohibit network connects")
+    return _original_connect_ex(self, address)
+socket.socket.connect = connect
+socket.socket.connect_ex = connect_ex
+EXIT_CODE=0
+$ cat /mnt/20t/xubuqiang/hg-work/verifierfix/run_suite.py
+import os, pathlib, shutil, subprocess, sys
+phase = sys.argv[1]
+root = pathlib.Path('/mnt/20t/xubuqiang/hg-wt/w-verifierfix')
+env = dict(os.environ, TMPDIR='/tmp/verifierfix-tmp', PYTHONDONTWRITEBYTECODE='1',
+           PYTHONPATH='/tmp/verifierfix-guard/python:' + str(root),
+           PATH='/tmp/verifierfix-guard/bin:' + os.environ['PATH'], HG_AGENT_BACKEND='mock')
+for module in sys.argv[2:]:
+    base = '/tmp/verifierfix-' + phase + '-' + pathlib.Path(module).stem
+    args = [sys.executable, '-m', 'pytest', '-q', '-r', 's', '-p', 'no:cacheprovider', module, '--basetemp=' + base]
+    print('$ ' + ' '.join(args), flush=True)
+    try:
+        result = subprocess.run(args, cwd=root, env=env, text=True)
+        print('EXIT_CODE=' + str(result.returncode), flush=True)
+    finally:
+        shutil.rmtree(base, ignore_errors=True)
+        print('BASETEMP_REMOVED=' + str(not pathlib.Path(base).exists()), flush=True)
+EXIT_CODE=0
+$ cat /mnt/20t/xubuqiang/hg-work/verifierfix/pre_fix_pytest.py
+import pathlib, shutil, subprocess, sys
+import pytest
+from eval.verification import verifier
+source = subprocess.run(['git', 'show', 'HEAD:eval/verification/verifier.py'], capture_output=True, text=True, check=True).stdout
+revision = subprocess.run(['git', 'rev-parse', 'HEAD'], capture_output=True, text=True, check=True).stdout.strip()
+print('BASELINE_COMMIT=' + revision, flush=True)
+exec(compile(source, '<baseline verifier.py from git HEAD>', 'exec'), verifier.__dict__)
+base = '/tmp/verifierfix-final-regression-before'
+args = ['-q', '-r', 's', '-p', 'no:cacheprovider', 'tests/quality/test_verifier_reward_absence_w_verifierfix.py', '--basetemp=' + base]
+print('$ pytest.main(' + repr(args) + ') after loading baseline verifier source in memory', flush=True)
+try:
+    code = pytest.main(args)
+    print('EXIT_CODE=' + str(code), flush=True)
+finally:
+    shutil.rmtree(base, ignore_errors=True)
+    print('BASETEMP_REMOVED=' + str(not pathlib.Path(base).exists()), flush=True)
+sys.exit(int(code))
+EXIT_CODE=0
+Launch mechanics: run_suite.py before/after/final was launched using subprocess.Popen([sys.executable, scratch_script, phase, *modules], stdout=log, stderr=subprocess.STDOUT, start_new_session=True). The before-regression invocation used python3 run_suite.py before-regression tests/quality/test_verifier_reward_absence_w_verifierfix.py. The final-regression-before launcher supplied the identical env dictionary shown in run_suite.py. Background stdout/stderr was redirected to the logs reproduced below. pre_fix_pytest.py loads git HEAD verifier source into memory only; it does not rewrite the working verifier.
+
+BEFORE: unchanged requested suites
+$ cat /mnt/20t/xubuqiang/hg-work/verifierfix/before-suites.log
+$ /mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q -r s -p no:cacheprovider tests/quality/test_verifier.py --basetemp=/tmp/verifierfix-before-test_verifier
+.......................                                                  [100%]
+23 passed in 5.33s
+EXIT_CODE=0
+BASETEMP_REMOVED=True
+$ /mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q -r s -p no:cacheprovider tests/quality/test_container.py --basetemp=/tmp/verifierfix-before-test_container
+.s.ssssssssssss.....sss...                                               [100%]
+=========================== short test summary info ============================
+SKIPPED [16] tests/quality/test_container.py:39: no docker daemon: the exec environment cannot be exercised here
+10 passed, 16 skipped in 4.27s
+EXIT_CODE=0
+BASETEMP_REMOVED=True
+$ /mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q -r s -p no:cacheprovider tests/quality/test_staged_receipt_audit_codex193.py --basetemp=/tmp/verifierfix-before-test_staged_receipt_audit_codex193
+.......................                                                  [100%]
+23 passed in 0.65s
+EXIT_CODE=0
+BASETEMP_REMOVED=True
+$ /mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q -r s -p no:cacheprovider tests/quality/test_stop_semantics.py --basetemp=/tmp/verifierfix-before-test_stop_semantics
+....                                                                     [100%]
+4 passed in 30.82s
+EXIT_CODE=0
+BASETEMP_REMOVED=True
+EXIT_CODE=0
+BEFORE: initial regression and numeric/malformed controls
+$ cat /mnt/20t/xubuqiang/hg-work/verifierfix/before-regression.log
+$ /mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q -r s -p no:cacheprovider tests/quality/test_verifier_reward_absence_w_verifierfix.py --basetemp=/tmp/verifierfix-before-regression-test_verifier_reward_absence_w_verifierfix
+FF....                                                                   [100%]
+=================================== FAILURES ===================================
+__________________ test_missing_snapshot_reward_is_invalid[0] __________________
+
+snapshot_check = <function snapshot_check.<locals>.check at 0x79febc1fe200>
+tmp_path = PosixPath('/tmp/verifierfix-before-regression-test_verifier_reward_absence_w_verifierfix/test_missing_snapshot_reward_i0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x79febc166c90>
+exit_code = 0
+
+    @pytest.mark.parametrize("exit_code", [0, 3])
+    def test_missing_snapshot_reward_is_invalid(snapshot_check, tmp_path, monkeypatch, exit_code):
+        verdict = snapshot_check(None, exit_code)
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-task"}], {}, cache=cache,
+            sandbox=False, trials=1, jobs=1, progress_dir=tmp_path)
+        print(json.dumps({"exit_code": exit_code, "verdict": verdict,
+                          "per_task": result["per_task"], "invalid": result["invalid"]}, sort_keys=True))
+>       assert verdict.get("unmeasured"), "a missing reward is unmeasured, never a zero"
+E       AssertionError: a missing reward is unmeasured, never a zero
+E       assert None
+E        +  where None = <built-in method get of dict object at 0x79febc26e380>('unmeasured')
+E        +    where <built-in method get of dict object at 0x79febc26e380> = {'detail': 'the check wrote no /verifier/reward.txt; exit 0, stdout check starting | stderr check dependency unavailable', 'kind': 'command', 'passed': False, 'scorer_isolation_class': 'snapshot-service', ...}.get
+
+tests/quality/test_verifier_reward_absence_w_verifierfix.py:63: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{"exit_code": 0, "invalid": {}, "per_task": {"synthetic-task": 0.0}, "verdict": {"detail": "the check wrote no /verifier/reward.txt; exit 0, stdout check starting | stderr check dependency unavailable", "kind": "command", "passed": false, "scorer_isolation_class": "snapshot-service", "scorer_isolation_declared": "unknown"}}
+__________________ test_missing_snapshot_reward_is_invalid[3] __________________
+
+snapshot_check = <function snapshot_check.<locals>.check at 0x79febbe2afc0>
+tmp_path = PosixPath('/tmp/verifierfix-before-regression-test_verifier_reward_absence_w_verifierfix/test_missing_snapshot_reward_i1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x79febc1da9f0>
+exit_code = 3
+
+    @pytest.mark.parametrize("exit_code", [0, 3])
+    def test_missing_snapshot_reward_is_invalid(snapshot_check, tmp_path, monkeypatch, exit_code):
+        verdict = snapshot_check(None, exit_code)
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-task"}], {}, cache=cache,
+            sandbox=False, trials=1, jobs=1, progress_dir=tmp_path)
+        print(json.dumps({"exit_code": exit_code, "verdict": verdict,
+                          "per_task": result["per_task"], "invalid": result["invalid"]}, sort_keys=True))
+>       assert verdict.get("unmeasured"), "a missing reward is unmeasured, never a zero"
+E       AssertionError: a missing reward is unmeasured, never a zero
+E       assert None
+E        +  where None = <built-in method get of dict object at 0x79febc13eac0>('unmeasured')
+E        +    where <built-in method get of dict object at 0x79febc13eac0> = {'detail': 'the check wrote no /verifier/reward.txt; exit 3, stdout check starting | stderr check dependency unavailable', 'kind': 'command', 'passed': False, 'scorer_isolation_class': 'snapshot-service', ...}.get
+
+tests/quality/test_verifier_reward_absence_w_verifierfix.py:63: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{"exit_code": 3, "invalid": {}, "per_task": {"synthetic-task": 0.0}, "verdict": {"detail": "the check wrote no /verifier/reward.txt; exit 3, stdout check starting | stderr check dependency unavailable", "kind": "command", "passed": false, "scorer_isolation_class": "snapshot-service", "scorer_isolation_declared": "unknown"}}
+2 failed, 4 passed in 1.97s
+EXIT_CODE=1
+BASETEMP_REMOVED=True
+EXIT_CODE=0
+INTERMEDIATE AFTER: reason-only unmeasured marker; superseded by final branch carrying streams into persisted invalid detail
+$ cat /mnt/20t/xubuqiang/hg-work/verifierfix/after-suites.log
+$ /mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q -r s -p no:cacheprovider tests/quality/test_verifier.py --basetemp=/tmp/verifierfix-after-test_verifier
+.......................                                                  [100%]
+23 passed in 4.47s
+EXIT_CODE=0
+BASETEMP_REMOVED=True
+$ /mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q -r s -p no:cacheprovider tests/quality/test_container.py --basetemp=/tmp/verifierfix-after-test_container
+.s.ssssssssssss.....sss...                                               [100%]
+=========================== short test summary info ============================
+SKIPPED [16] tests/quality/test_container.py:39: no docker daemon: the exec environment cannot be exercised here
+10 passed, 16 skipped in 3.93s
+EXIT_CODE=0
+BASETEMP_REMOVED=True
+$ /mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q -r s -p no:cacheprovider tests/quality/test_staged_receipt_audit_codex193.py --basetemp=/tmp/verifierfix-after-test_staged_receipt_audit_codex193
+.......................                                                  [100%]
+23 passed in 0.71s
+EXIT_CODE=0
+BASETEMP_REMOVED=True
+$ /mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q -r s -p no:cacheprovider tests/quality/test_stop_semantics.py --basetemp=/tmp/verifierfix-after-test_stop_semantics
+....                                                                     [100%]
+4 passed in 32.23s
+EXIT_CODE=0
+BASETEMP_REMOVED=True
+$ /mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q -r s -p no:cacheprovider tests/quality/test_verifier_reward_absence_w_verifierfix.py --basetemp=/tmp/verifierfix-after-test_verifier_reward_absence_w_verifierfix
+......                                                                   [100%]
+6 passed in 1.51s
+EXIT_CODE=0
+BASETEMP_REMOVED=True
+EXIT_CODE=0
+FINAL BEFORE: final regression bytes against baseline verifier loaded in memory; numeric/malformed controls unchanged
+$ cat /mnt/20t/xubuqiang/hg-work/verifierfix/final-regression-before.log
+BASELINE_COMMIT=5e5441cc48f3ce79390895f8159e0666ff944587
+$ pytest.main(['-q', '-r', 's', '-p', 'no:cacheprovider', 'tests/quality/test_verifier_reward_absence_w_verifierfix.py', '--basetemp=/tmp/verifierfix-final-regression-before']) after loading baseline verifier source in memory
+FF....                                                                   [100%]
+=================================== FAILURES ===================================
+__________________ test_missing_snapshot_reward_is_invalid[0] __________________
+
+snapshot_check = <function snapshot_check.<locals>.check at 0x714a424c9b20>
+tmp_path = PosixPath('/tmp/verifierfix-final-regression-before/test_missing_snapshot_reward_i0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x714a42424830>
+exit_code = 0
+
+    @pytest.mark.parametrize("exit_code", [0, 3])
+    def test_missing_snapshot_reward_is_invalid(snapshot_check, tmp_path, monkeypatch, exit_code):
+        verdict = snapshot_check(None, exit_code)
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-task"}], {}, cache=cache,
+            sandbox=False, trials=1, jobs=1, progress_dir=tmp_path)
+        print(json.dumps({"exit_code": exit_code, "verdict": verdict,
+                          "per_task": result["per_task"], "invalid": result["invalid"]}, sort_keys=True))
+>       assert verdict.get("unmeasured"), "a missing reward is unmeasured, never a zero"
+E       AssertionError: a missing reward is unmeasured, never a zero
+E       assert None
+E        +  where None = <built-in method get of dict object at 0x714a4258a400>('unmeasured')
+E        +    where <built-in method get of dict object at 0x714a4258a400> = {'detail': 'the check wrote no /verifier/reward.txt; exit 0, stdout check starting | stderr check dependency unavailable', 'kind': 'command', 'passed': False, 'scorer_isolation_class': 'snapshot-service', ...}.get
+
+tests/quality/test_verifier_reward_absence_w_verifierfix.py:63: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{"exit_code": 0, "invalid": {}, "per_task": {"synthetic-task": 0.0}, "verdict": {"detail": "the check wrote no /verifier/reward.txt; exit 0, stdout check starting | stderr check dependency unavailable", "kind": "command", "passed": false, "scorer_isolation_class": "snapshot-service", "scorer_isolation_declared": "unknown"}}
+__________________ test_missing_snapshot_reward_is_invalid[3] __________________
+
+snapshot_check = <function snapshot_check.<locals>.check at 0x714a42202e80>
+tmp_path = PosixPath('/tmp/verifierfix-final-regression-before/test_missing_snapshot_reward_i1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x714a424b6d50>
+exit_code = 3
+
+    @pytest.mark.parametrize("exit_code", [0, 3])
+    def test_missing_snapshot_reward_is_invalid(snapshot_check, tmp_path, monkeypatch, exit_code):
+        verdict = snapshot_check(None, exit_code)
+        monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
+            "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
+        cache = {}
+        result = runner._evaluate(
+            tmp_path, [{"task_id": "synthetic-task"}], {}, cache=cache,
+            sandbox=False, trials=1, jobs=1, progress_dir=tmp_path)
+        print(json.dumps({"exit_code": exit_code, "verdict": verdict,
+                          "per_task": result["per_task"], "invalid": result["invalid"]}, sort_keys=True))
+>       assert verdict.get("unmeasured"), "a missing reward is unmeasured, never a zero"
+E       AssertionError: a missing reward is unmeasured, never a zero
+E       assert None
+E        +  where None = <built-in method get of dict object at 0x714a42385f00>('unmeasured')
+E        +    where <built-in method get of dict object at 0x714a42385f00> = {'detail': 'the check wrote no /verifier/reward.txt; exit 3, stdout check starting | stderr check dependency unavailable', 'kind': 'command', 'passed': False, 'scorer_isolation_class': 'snapshot-service', ...}.get
+
+tests/quality/test_verifier_reward_absence_w_verifierfix.py:63: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{"exit_code": 3, "invalid": {}, "per_task": {"synthetic-task": 0.0}, "verdict": {"detail": "the check wrote no /verifier/reward.txt; exit 3, stdout check starting | stderr check dependency unavailable", "kind": "command", "passed": false, "scorer_isolation_class": "snapshot-service", "scorer_isolation_declared": "unknown"}}
+2 failed, 4 passed in 1.23s
+EXIT_CODE=1
+BASETEMP_REMOVED=True
+EXIT_CODE=0
+FINAL AFTER: final production code and final tests
+$ cat /mnt/20t/xubuqiang/hg-work/verifierfix/final-suites.log
+$ /mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q -r s -p no:cacheprovider tests/quality/test_verifier.py --basetemp=/tmp/verifierfix-final-test_verifier
+.......................                                                  [100%]
+23 passed in 5.24s
+EXIT_CODE=0
+BASETEMP_REMOVED=True
+$ /mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q -r s -p no:cacheprovider tests/quality/test_container.py --basetemp=/tmp/verifierfix-final-test_container
+.s.ssssssssssss.....sss...                                               [100%]
+=========================== short test summary info ============================
+SKIPPED [16] tests/quality/test_container.py:39: no docker daemon: the exec environment cannot be exercised here
+10 passed, 16 skipped in 3.54s
+EXIT_CODE=0
+BASETEMP_REMOVED=True
+$ /mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q -r s -p no:cacheprovider tests/quality/test_staged_receipt_audit_codex193.py --basetemp=/tmp/verifierfix-final-test_staged_receipt_audit_codex193
+.......................                                                  [100%]
+23 passed in 0.70s
+EXIT_CODE=0
+BASETEMP_REMOVED=True
+$ /mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q -r s -p no:cacheprovider tests/quality/test_stop_semantics.py --basetemp=/tmp/verifierfix-final-test_stop_semantics
+....                                                                     [100%]
+4 passed in 27.30s
+EXIT_CODE=0
+BASETEMP_REMOVED=True
+$ /mnt/8t/xubuqiang/anaconda3/bin/python3 -m pytest -q -r s -p no:cacheprovider tests/quality/test_verifier_reward_absence_w_verifierfix.py --basetemp=/tmp/verifierfix-final-test_verifier_reward_absence_w_verifierfix
+......                                                                   [100%]
+6 passed in 1.94s
+EXIT_CODE=0
+BASETEMP_REMOVED=True
+EXIT_CODE=0
+FINAL CHECKER AND SCOPE INSPECTIONS
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+EXIT_CODE=0
+$ git diff --check
+EXIT_CODE=0
+$ git diff --exit-code HEAD -- eval/service/services.py AGENTS.md registry/dataset-blockers.json docs/adapter-integration-journal.md tests/quality/test_verifier.py tests/quality/test_container.py tests/quality/test_staged_receipt_audit_codex193.py tests/quality/test_stop_semantics.py
+EXIT_CODE=0
+$ git diff -- eval/verification/verifier.py
+diff --git a/eval/verification/verifier.py b/eval/verification/verifier.py
+index e69dba3b..e1ee59c0 100644
+--- a/eval/verification/verifier.py
++++ b/eval/verification/verifier.py
+@@ -274,6 +274,9 @@ def _verify_container_state_inner(snapshot: str, verifier, *, task_mount: str,
+     The container is fresh, so nothing the harness left running is present. The inputs go
+     in at step 6 and the reward directory at step 7, both after the harness stopped --
+     which is why this is a re-materialization and not a snapshot of the harness's view.
++
++    A missing reward file is unmeasured: the check produced no result. A present but
++    unparseable value is a malformed result and keeps the ordinary failed verdict.
+     """
+     spec = verifier or {"kind": "answer", "expected": None}
+     kind = spec.get("kind", "answer")
+@@ -339,10 +342,12 @@ def _verify_container_state_inner(snapshot: str, verifier, *, task_mount: str,
+         if reward_file:
+             got = staging / "reward.txt"
+             if not container_mod.cp_out(name, reward_file, got):
++                detail = (f"the check wrote no {reward_file}; exit {code}, "
++                          + (_check_output_detail(out, err)
++                             or "and printed nothing at all"))
+                 return {"kind": kind, "passed": False,
+-                        "detail": f"the check wrote no {reward_file}; exit {code}, "
+-                                  + (_check_output_detail(out, err)
+-                                     or "and printed nothing at all")}
++                        "unmeasured": f"{detail}; this task was not measured",
++                        "detail": detail}
+             raw = got.read_text().strip()
+             try:
+                 score = float(raw)
+EXIT_CODE=0
+$ git rev-parse HEAD
+5e5441cc48f3ce79390895f8159e0666ff944587
+EXIT_CODE=0
+NOT VERIFIED / UNKNOWN
+- Actual Docker daemon/container execution, physical cp_out absent-file versus permission/transport failure, real snapshot attestation/startup and production cleanup. These are mocked; 16 Docker-dependent cases are deliberately skipped.
+- Any model, GPU, benchmark dataset run, production H0 eligibility/authorization, scorer dependency/network closure, or frozen receipt. No such execution was requested or performed.
+- Full repository test suite or tests beyond the four requested modules and the new snapshot controls.
+- Exhaustive existence of parseability tests across every historical branch: the new numeric and malformed controls were introduced and passed before the fix, and stayed unchanged afterward. Existing requested modules are byte-unchanged per git diff --exit-code above.
+- Empty-output and oversized-output variants were not separately executed; the original _check_output_detail call, bounds and empty-output fallback are preserved in the branch diff.
+
+CLEANUP
+$ Python pathlib existence checks of every recorded --basetemp, then shutil.rmtree of this task's two guard/temp directories; unlink of embedded scratch helper scripts.
+/tmp/verifierfix-after-test_container: exists=False
+/tmp/verifierfix-after-test_staged_receipt_audit_codex193: exists=False
+/tmp/verifierfix-after-test_stop_semantics: exists=False
+/tmp/verifierfix-after-test_verifier: exists=False
+/tmp/verifierfix-after-test_verifier_reward_absence_w_verifierfix: exists=False
+/tmp/verifierfix-before-regression-test_verifier_reward_absence_w_verifierfix: exists=False
+/tmp/verifierfix-before-test_container: exists=False
+/tmp/verifierfix-before-test_staged_receipt_audit_codex193: exists=False
+/tmp/verifierfix-before-test_stop_semantics: exists=False
+/tmp/verifierfix-before-test_verifier: exists=False
+/tmp/verifierfix-final-regression-before: exists=False
+/tmp/verifierfix-final-test_container: exists=False
+/tmp/verifierfix-final-test_staged_receipt_audit_codex193: exists=False
+/tmp/verifierfix-final-test_stop_semantics: exists=False
+/tmp/verifierfix-final-test_verifier: exists=False
+/tmp/verifierfix-final-test_verifier_reward_absence_w_verifierfix: exists=False
+/tmp/verifierfix-final-regression-before: exists=False
+/tmp/verifierfix-guard: exists=False
+/tmp/verifierfix-tmp: exists=False
+/mnt/20t/xubuqiang/hg-work/verifierfix/run_suite.py: exists=False
+/mnt/20t/xubuqiang/hg-work/verifierfix/pre_fix_pytest.py: exists=False
+Retained scratch files are the exact test-output logs reproduced above.
+
+$ python3 tools/check_dataset_blockers.py (after evidence files were created)
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+EXIT_CODE=0
+
+COMMITTED FILE BYTE SIZES
+$ stat -c '%n %s bytes' eval/verification/verifier.py tests/quality/test_verifier_reward_absence_w_verifierfix.py registry/w-verifierfix.md registry/w-verifierfix-validation.txt
+eval/verification/verifier.py 47018 bytes
+tests/quality/test_verifier_reward_absence_w_verifierfix.py 4566 bytes
+registry/w-verifierfix.md 4286 bytes
+registry/w-verifierfix-validation.txt 24603 bytes
+EXIT_CODE=0
