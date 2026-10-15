@@ -4408,3 +4408,42 @@ cases).
   Second, `pytest tests/quality --collect-only` does not complete within 60 s, so the whole-directory
   run is not a usable gate; the focused four-file set plus `test_site_evidence_carriers.py` is the
   acceptance command (101 passed, 15 skipped, 3 xfailed).
+
+## 2026-10-15 — Every document the registry cites now has a readable carrier - w-carr2
+
+- **Second half of the same verifiability defect.** `registry/dataset-blockers.json` cites evidence
+  two ways: `external-reference` entries on an absolute path, which `tools/check_dataset_blockers.py`
+  deliberately does not test for existence, and ordinary repo-relative paths written into
+  `observed`/`next_action` prose. Nothing checked either form. A resolver run over the registry and
+  the withdrawal record found **13 distinct repo-relative citations**, of which only
+  `docs/adapter-integration-journal.md` still existed; the other 12 were deleted with the bulk
+  `reports/`/`docs/` trees in 1825cd0e. Concretely, seven blockers' `observed` fields said their
+  "per-clause satisfied/unmet findings and the next concrete dependency are in
+  `reports/w-journalcov-review.md`" - a file that did not exist.
+- **Measured, not assumed.** The resolver strips trailing `.,;:)` only while the shorter form is a
+  known document, so `... see reports/w-jc2-review.md.` resolves to the file rather than to
+  `reports/w-jc2-review.md.`; that produced 13 real citations, 12 recoverable and **0 dead**. The two
+  earlier near-miss readings (`eval/0`..`eval/4`, four trailing-dot artifacts) were false positives
+  from a looser pattern and are gone.
+- Restored all 12 to **the exact paths the registry cites**, so the pointer text is literally true
+  again and needs no registry edit: `docs/enforcement-proof-decision.md`,
+  `docs/independent-review-deferred.md`, `docs/w-fix-unknown-isolation-records.md`,
+  `docs/w-obs-runtime-review.md`, `docs/w-shared-verifier-review.md`,
+  `reports/w-chess2-evidence/actor-command-line-19.sh`,
+  `reports/w-chess3-evidence/corrected-blocker-before-run.json`, `reports/w-chess3-receipts.md`,
+  `reports/w-fix-validation.txt`, `reports/w-jc2-review.md`, `reports/w-journalcov-review.md`,
+  `reports/w-obs-validation.txt`. Largest 67,005 bytes, 183 KB total, every one `git check-ignore`-clean.
+- `tests/fixtures/hg_migration_site/PROVENANCE.json` now carries 48 entries, each with an explicit
+  `carrier` alongside `reference`, `source_path`, `source_commit`, `bytes` and `sha256`: the 36
+  `/site/...` references resolve through the conftest fixture path, the 12 relative references resolve
+  at their own cited path. `tests/quality/test_site_evidence_carriers.py` was generalised to both
+  citation forms and now asserts resolution, exact provenance coverage of the packet, byte-identity of
+  every carrier to its recorded recovery, and that the packet stays small text.
+- Scope: **no registry field is edited by this commit**; no blocker status, `observed`,
+  `next_action`, historical record, frozen receipt or run ID changes; the ~5,300 uncited `reports/`
+  files and 144 uncited `docs/` files stay deleted; `.gitignore` is untouched; and a present carrier
+  is explicitly *not* a claim that the citation is correct - only that the document it points at can
+  be read. The two dead absolute citations inside frozen `historical_runs`
+  (`.../codex/qa-h0-archive-v4/index.json`, `.../codex/qa-h0-incomplete-index.json`) are not
+  repo-relative and are left as declared. Checker valid; focused set 101 passed, 15 skipped, 3 xfailed.
+  Merged as 4551a243.
