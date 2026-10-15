@@ -339,7 +339,16 @@ by construction cannot find a file that was never executed.
 **Rule for this file.** A sweep is not evidence of coverage. Chunked sweeps must either run one file per
 pytest invocation or keep going past a collection error (`--continue-on-collection-errors`), and the
 covered-file list must be compared against `ls tests/quality/test_*.py` rather than inferred from the
-absence of failures. A per-file pass over all 194 files was launched on 2026-10-15 to check for other
+absence of failures.
+
+**`tools/quality_sweep.py` now does that**, so the rule does not depend on someone remembering it: one
+pytest process per file, a per-file timeout, an outcome recorded even when a file cannot be launched
+(`run_one` never raises, which is what keeps the coverage comparison from comparing a list with
+itself), a loud note when `--only` makes the run a subset rather than a sweep, and a JSON report
+carrying `discovered` / `selected` / `ran` / `missing` / `interrupted`. Exit status is 0 only when every
+selected file ran and passed. `tests/quality/test_quality_sweep.py` pins those properties - including
+that a launch failure is counted red rather than silently dropped, and that a subset run says out loud
+that it is not evidence the suite is green. A per-file pass over all 194 files was launched on 2026-10-15 to check for other
 files the chunking skipped; its results are appended below when it settles.
 
 ## The strict-decoding crash class: the runnable harnesses are fixed, the referee side is not
