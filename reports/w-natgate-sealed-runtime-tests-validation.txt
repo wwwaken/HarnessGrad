@@ -1,0 +1,424 @@
+w-natgate: exact verification evidence
+
+Starting revision and immutable/protected-path checks are recorded in checks.txt below.
+Commands ran in /mnt/20t/xubuqiang/hg-wt/w-natgate.
+Only tests/quality/test_alfworld_dataset.py changed among executable sources.
+The two report artifacts are required worker evidence; no registry proposal is needed.
+
+The supplied before-count (2 failed, 6 passed) was not independently rerun.
+Exact stdout/stderr follows for every measured verification and survey command;
+EXIT_CODE is runner metadata, not part of command stdout.
+The unchanged protected-file failures are deliberately retained as findings.
+
+===== alfworld-pytest.txt =====
+COMMAND: TMPDIR=/tmp/natgate-alfworld python3 -m pytest -q tests/quality/test_alfworld_dataset.py --basetemp=/tmp/natgate-alfworld/pytest -rP --durations=0
+........                                                                 [100%]
+==================================== PASSES ====================================
+_____________ test_the_sandboxed_check_can_still_write_its_verdict _____________
+----------------------------- Captured stdout call -----------------------------
+{"sandboxed_alfworld_verdict": {"detail": "reward 0 from /verifier/reward.txt (exit 1) | the log holds no actions, so the goal cannot have been satisfied | stdout reward 0: the log holds no actions, so the goal cannot have been satisfied (official game points 0; no-op actions 0)", "evidence": {"action_log": "alf_actions.jsonl", "actions_in_log": 0, "actions_not_replayed": 0, "actions_replayed": 0, "agent_declared_done": false, "budget": 30, "budget_exhausted": false, "episode_done": false, "game_file": "game.tw-pddl", "log_records": 0, "measured": true, "no_op_actions": [], "official_game_points": 0.0, "reward": 0, "reward_file": "verifier/reward.txt", "scorer_input": {"expected_sha256": "57a67e5ec5e75fa9421d95f57aebe7ffc54026c0fa00c079ac79d65f4d96cce8", "files": {"game.tw-pddl": "436323b6475ecf5284f9b9593797798316f96aeda1a21c5a291073c244ff594b"}, "path": "native-inputs", "sha256": "57a67e5ec5e75fa9421d95f57aebe7ffc54026c0fa00c079ac79d65f4d96cce8", "task_id": "look_at_obj_in_light-AlarmClock-None-DeskLamp-308__trial_T20190908_222917_366542", "verified": true}, "steps": [], "unparseable_lines": 0, "why": "the log holds no actions, so the goal cannot have been satisfied", "won": false, "won_at_step": null, "won_per_step": []}, "kind": "command", "native_runtime": {"dataset": "alfworld", "files": 2581, "identity": {"executable": "/mnt/8t/xubuqiang/anaconda3/bin/python3.12", "kernel": "6.8.0-136-generic", "machine": "x86_64", "soabi": "cpython-312-x86_64-linux-gnu", "sqlite": "3.45.3", "version": "3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]"}, "mechanism": "sealed-memfd-private-root-v1", "sha256": "8bf87ee279e407b7a5eda8b2dc5ee85ad297d04bbc29ddf496338a4adeebd6dc", "verified": true}, "passed": false, "score": 0.0, "scorer_isolation_class": "actor-workdir", "scorer_isolation_declared": "unknown"}}
+============================== slowest durations ===============================
+12.19s call     tests/quality/test_alfworld_dataset.py::test_the_sandboxed_check_can_still_write_its_verdict
+1.58s call     tests/quality/test_alfworld_dataset.py::test_the_check_re_materializes_its_inputs
+0.20s setup    tests/quality/test_alfworld_dataset.py::test_load_returns_the_benchmark_task_list
+
+(21 durations < 0.005s hidden.  Use -vv to show these durations.)
+8 passed in 14.68s
+EXIT_CODE: 0
+
+===== native-controls-pytest.txt =====
+COMMAND: TMPDIR=/tmp/natgate-native-controls python3 -m pytest -q tests/quality/test_native_runtime_hp3.py tests/quality/test_native_runtime_hp4.py tests/quality/test_native_runtime_hostpin.py --basetemp=/tmp/natgate-native-controls/pytest -ra --durations=10
+......ssss....................                                           [100%]
+============================= slowest 10 durations =============================
+18.73s call     tests/quality/test_native_runtime_hp3.py::test_admitted_runtime_can_repeat_readline_startup
+6.47s call     tests/quality/test_native_runtime_hostpin.py::test_actual_bound_bird_check_records_pin_and_preserves_ex_and_wal
+6.47s call     tests/quality/test_native_runtime_hp4.py::test_scienceworld_actual_check_unknown_authored_task_is_unmeasured
+5.66s call     tests/quality/test_native_runtime_hp4.py::test_chess_actual_bound_check_shadow_zero_and_input_refusal
+3.56s call     tests/quality/test_native_runtime_hp4.py::test_parent_and_child_native_maps_and_lifecycle[scienceworld]
+2.18s call     tests/quality/test_native_runtime_hp3.py::test_route_mismatch_and_payload_refusal[alfworld]
+2.18s call     tests/quality/test_native_runtime_hp4.py::test_parent_and_child_native_maps_and_lifecycle[chessbench_puzzles]
+2.16s call     tests/quality/test_native_runtime_hp3.py::test_route_mismatch_and_payload_refusal[jericho]
+1.50s call     tests/quality/test_native_runtime_hostpin.py::test_admitted_bytes_are_sealed_and_survive_source_replacement
+1.45s call     tests/quality/test_native_runtime_hostpin.py::test_namespace_closes_resolution_and_records_child_maps
+=========================== short test summary info ============================
+SKIPPED [4] tests/quality/test_native_runtime_hp3.py:83: tests/fixtures/hg_whp3 is internal (see .gitignore) and absent from this clone
+26 passed, 4 skipped in 52.12s
+EXIT_CODE: 0
+
+===== jericho-pytest.txt =====
+COMMAND: TMPDIR=/tmp/natgate-survey-controls python3 -m pytest -q tests/quality/test_jericho_runtime_boundaries.py -ra --basetemp=/tmp/natgate-survey-controls/pytest
+............s....                                                        [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/quality/test_jericho_runtime_boundaries.py:121: tests/fixtures/hg_wsnap is internal (see .gitignore) and absent from this clone
+16 passed, 1 skipped in 0.33s
+EXIT_CODE: 0
+
+===== protected-findings-pytest.txt =====
+COMMAND: TMPDIR=/tmp/natgate-survey-controls python3 -m pytest -q tests/quality/test_task_bound_scorer_inputs_w_tbi.py tests/quality/test_task_bound_native_inputs_w_tbi2.py -k '(chessbench_puzzles and test_native_matching_identity_preserves_reward) or (alfworld and test_real_materialization_check_and_dispatch)' --tb=short --basetemp=/tmp/natgate-survey-controls/pytest
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+______ test_native_matching_identity_preserves_reward[chessbench_puzzles] ______
+tests/quality/test_task_bound_scorer_inputs_w_tbi.py:166: in test_native_matching_identity_preserves_reward
+    assert not result.get("unmeasured")
+E   AssertionError: assert not 'native runtime requires sandbox=True'
+E    +  where 'native runtime requires sandbox=True' = <built-in method get of dict object at 0x7ac250752a00>('unmeasured')
+E    +    where <built-in method get of dict object at 0x7ac250752a00> = {'kind': 'command', 'native_runtime': {'sha256': 'b659926d93273b11654b140801c83e9a1d5231a3c679310a5981ab6befcbc20c', 'verified': False}, 'outcome': 'unmeasured', 'passed': False, ...}.get
+_______ test_real_materialization_check_and_dispatch[alfworld-matching] ________
+tests/quality/test_task_bound_native_inputs_w_tbi2.py:359: in test_real_materialization_check_and_dispatch
+    code, evidence, calls = results[0]
+E   IndexError: list index out of range
+____ test_real_materialization_check_and_dispatch[alfworld-foreign-payload] ____
+tests/quality/test_task_bound_native_inputs_w_tbi2.py:359: in test_real_materialization_check_and_dispatch
+    code, evidence, calls = results[0]
+E   IndexError: list index out of range
+_____ test_real_materialization_check_and_dispatch[alfworld-unbound-check] _____
+tests/quality/test_task_bound_native_inputs_w_tbi2.py:359: in test_real_materialization_check_and_dispatch
+    code, evidence, calls = results[0]
+E   IndexError: list index out of range
+=========================== short test summary info ============================
+FAILED tests/quality/test_task_bound_scorer_inputs_w_tbi.py::test_native_matching_identity_preserves_reward[chessbench_puzzles]
+FAILED tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[alfworld-matching]
+FAILED tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[alfworld-foreign-payload]
+FAILED tests/quality/test_task_bound_native_inputs_w_tbi2.py::test_real_materialization_check_and_dispatch[alfworld-unbound-check]
+4 failed, 258 deselected in 1.82s
+EXIT_CODE: 1
+
+===== checks.txt =====
+COMMAND: git rev-parse HEAD
+d2a8bad74b0a4ec79a27c5671c603bd552689473
+EXIT_CODE: 0
+
+COMMAND: python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+EXIT_CODE: 0
+
+COMMAND: git diff --check
+EXIT_CODE: 0
+
+COMMAND: git diff --exit-code -- AGENTS.md eval/verification/verifier.py eval/verification/native_runtime.py data/datasets data/scaffolds/qa/base.py registry docs/adapter-integration-journal.md tests/quality/test_task_bound_scorer_inputs_w_tbi.py tests/quality/test_task_bound_native_inputs_w_tbi2.py tests/quality/test_chess3_diagnostic_actor.py tests/quality/test_chessbench_selected_control.py tests/quality/test_chessbench_stepwise_runner.py tests/quality/test_chessbench_puzzles_strict_replay.py tests/quality/test_spreadsheetbench_classification_w_spread2.py tests/quality/test_alfworld_official_scorer.py tests/quality/test_livecodebench_official_scorer.py tests/quality/test_ds1000_official_scorer.py
+EXIT_CODE: 0
+
+COMMAND: rg -n 'sandbox\s*=\s*False' tests/quality/test_chess3_diagnostic_actor.py tests/quality/test_chessbench_selected_control.py tests/quality/test_chessbench_puzzles_strict_replay.py tests/quality/test_alfworld_official_scorer.py tests/quality/test_livecodebench_official_scorer.py tests/quality/test_ds1000_official_scorer.py
+EXIT_CODE: 1
+
+COMMAND: git show HEAD:tests/quality/test_alfworld_dataset.py | sed -n '143,147p;183,187p'
+    (workdir / "gym_env.py").write_text("raise SystemExit(1)\n")
+
+    verdict = _verify(workdir, dict(alfworld.VERIFY[tid]), "",
+                      sandbox=False, timeout_s=180, env=alfworld.ENV[tid])
+    assert verdict["score"] == 0.0, verdict
+
+    verdict = _verify(workdir, dict(alfworld.VERIFY[tid]), "",
+                      sandbox=True, timeout_s=300, env=alfworld.ENV[tid])
+    assert verdict["score"] == 0.0, verdict
+    assert verdict.get("evidence"), verdict
+EXIT_CODE: 0
+
+===== sandbox-false-survey.txt =====
+COMMAND: rg -n 'sandbox\s*=\s*False' tests/quality/
+tests/quality/test_alfworld_dataset.py:153:                      sandbox=False, timeout_s=180, env=alfworld.ENV[tid])
+tests/quality/test_jericho_runtime_boundaries.py:143:                               "timeout_s": 0.04}, "", sandbox=False, timeout_s=30)
+tests/quality/test_jericho_runtime_boundaries.py:156:    result = run_one(repo, {"task_id": "synthetic", "goal": "synthetic"}, sandbox=False,
+tests/quality/test_appworld_service_diagnosis.py:94:                             sandbox=False, progress_dir=tmp_path)
+tests/quality/test_w_e6fix_adjacent.py:70:    verdict = verifier._verify(actor(tmp_path), scorer, '', sandbox=False, timeout_s=5,
+tests/quality/test_native_runtime_hp3.py:62:    got = verifier._verify(tmp_path, spec, '', sandbox=False, timeout_s=20)
+tests/quality/test_chessbench_stepwise_runner.py:253:    bare = runner.run_one(repo, task, sandbox=False, verifier=verifier)
+tests/quality/test_chessbench_stepwise_runner.py:308:    refused = runner.evaluate(repo, [task], {}, cache=cache, sandbox=False,
+tests/quality/test_native_runtime_hostpin.py:41:    got = verifier._verify(tmp_path, spec(), '', sandbox=False, timeout_s=10)
+tests/quality/test_native_runtime_hp4.py:66:    got = verifier._verify(tmp_path, spec, '', sandbox=False, timeout_s=20)
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:202:    verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+tests/quality/test_task_bound_scorer_inputs_w_tbi.py:130:    result = verifier._verify(tmp_path, case.other, "", sandbox=False, timeout_s=5,
+tests/quality/test_task_bound_scorer_inputs_w_tbi.py:152:    result = verifier._verify(tmp_path, case.spec, "", sandbox=False, timeout_s=5,
+tests/quality/test_task_bound_scorer_inputs_w_tbi.py:164:    result = verifier._verify(tmp_path, case.spec, "", sandbox=False, timeout_s=5,
+tests/quality/test_task_bound_scorer_inputs_w_tbi.py:173:    result = verifier._verify(tmp_path, case.spec, "", sandbox=False, timeout_s=5)
+tests/quality/test_task_bound_scorer_inputs_w_tbi.py:199:    result = verifier._verify(tmp_path, spec, "", sandbox=False, timeout_s=5,
+tests/quality/test_scorer_isolation_option_b.py:136:    verdict = verifier._verify(work, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_scorer_isolation_option_b.py:142:    measured = runner._evaluate(tmp_path, [{"task_id": "t"}], {}, sandbox=False)
+tests/quality/test_scorer_isolation_option_b.py:159:    result = runner.evaluate(repo, [dict(task_id="t", goal="synthetic")], {}, sandbox=False,
+tests/quality/test_scorer_isolation_option_b.py:168:    bound = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5,
+tests/quality/test_scorer_isolation_option_b.py:196:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_scorer_isolation_option_b.py:205:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_scorer_isolation_option_b.py:230:    measured = runner._evaluate(tmp_path, [{"task_id": "t"}], {}, sandbox=False)
+tests/quality/test_scorer_isolation_option_b.py:268:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5,
+tests/quality/test_prifix_regressions.py:49:    verdict = verifier._verify(actor(tmp_path, "wrong"), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_prifix_regressions.py:59:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_prifix_regressions.py:66:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_prifix_regressions.py:84:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_prifix_regressions.py:95:    verdict = verifier._verify(actor(tmp_path, answer), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_prifix_regressions.py:105:    verdict = verifier._verify(actor(tmp_path, "wrong"), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_prifix_regressions.py:168:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_prifix_regressions.py:200:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_trial_binding.py:21:    return verifier._verify(source, scorer, "", sandbox=False, timeout_s=5,
+tests/quality/test_trial_binding.py:30:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, **inputs)
+tests/quality/test_trial_binding.py:94:        verifiers={expected["task_id"]: scorer}, sandbox=False)
+tests/quality/test_trial_binding.py:117:        round_no=2, harness_sha="revision-a", verifiers={"t": scorer}, cache=cache, sandbox=False)
+tests/quality/test_trial_binding.py:123:        round_no=2, harness_sha="revision-a", verifiers={"t": scorer}, cache=copy.deepcopy(cache), sandbox=False)
+tests/quality/test_isolation.py:281:    # `sandbox=False` on purpose: this test is about the DETECTION layer, which
+tests/quality/test_isolation.py:285:    res = evaluate(harness, tasks, scorable, harness_sha="evil", sandbox=False)
+tests/quality/test_isolation.py:299:    res = evaluate(clean, tasks, scorable, harness_sha="clean", sandbox=False)
+tests/quality/test_task_bound_native_inputs_w_tbi2.py:315:    result = verifier._verify(tmp_path, case.spec, "", sandbox=False, timeout_s=5, task_id=case.task_id)
+tests/quality/test_task_bound_native_inputs_w_tbi2.py:323:    result = verifier._verify(tmp_path, case.foreign, "", sandbox=False, timeout_s=5, task_id=case.task_id)
+tests/quality/test_task_bound_native_inputs_w_tbi2.py:332:    result = verifier._verify(tmp_path, case.spec, "", sandbox=False, timeout_s=5)
+tests/quality/test_task_bound_native_inputs_w_tbi2.py:358:    result = verifier._verify(tmp_path, spec, "", sandbox=False, timeout_s=5, task_id=case.task_id)
+tests/quality/test_measurement_coverage_hg_b3.py:92:        sandbox=False, timeout_s=1, env={"kind": "files"},
+tests/quality/test_quiesce2_regressions.py:34:    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_quiesce2_regressions.py:68:    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_quiesce2_regressions.py:88:    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_quiesce2_regressions.py:116:    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_quiesce2_regressions.py:136:    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_quiesce2_regressions.py:148:    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_quiesce2_regressions.py:154:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="other", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_quiesce2_regressions.py:181:    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_appworld_actor_protocol.py:124:    result = runner.run_one(repo, task, setup=setup, env=env, sandbox=False)
+tests/quality/test_verifier.py:116:    verdict = V._verify(work, spec, "", sandbox=False, timeout_s=30, env={"kind": "files"})
+tests/quality/test_verifier.py:149:            work, verifier, "", sandbox=False, timeout_s=2, env={"kind": "files"})
+tests/quality/test_verifier.py:159:        work, verifier, "", sandbox=False, timeout_s=2, env={"kind": "files"})
+tests/quality/test_verifier.py:210:    r = run_one(repo, _task("t"), sandbox=False,
+tests/quality/test_verifier.py:221:    r = run_one(repo, _task("v02"), sandbox=False,
+tests/quality/test_verifier.py:234:    r = run_one(repo, _task("v"), sandbox=False,
+tests/quality/test_verifier.py:261:    r = run_one(repo, task, sandbox=False,
+tests/quality/test_verifier.py:282:    r = run_one(repo, task, sandbox=False,
+tests/quality/test_verifier.py:370:    上面几条用的是 `sandbox=False`,只证明"重铺输入"这个逻辑对。这一条走真实路径,
+EXIT_CODE: 0
+
+===== outside-five-source-inspection.txt =====
+COMMAND: rg -n 'sandbox|datasets|load\(|registry|VERIFY|verifier|scorable' tests/quality/test_isolation.py tests/quality/test_appworld_actor_protocol.py tests/quality/test_appworld_service_diagnosis.py tests/quality/test_w_e6fix_adjacent.py tests/quality/test_scorer_isolation_option_b.py tests/quality/test_trial_binding.py tests/quality/test_prifix_regressions.py tests/quality/test_quiesce2_regressions.py tests/quality/test_spreadsheetbench_classification_w_spread2.py tests/quality/test_verifier.py
+tests/quality/test_verifier.py:24:import data.scaffolds.registry as registry                                  # noqa: E402
+tests/quality/test_verifier.py:30:            "reward_file": "/verifier/reward.txt",
+tests/quality/test_verifier.py:31:            "evidence_file": "/verifier/evidence.json"}
+tests/quality/test_verifier.py:38:    stale = work / ".verifier"
+tests/quality/test_verifier.py:42:    with patch("eval.verification.verifier.container_mod.run",
+tests/quality/test_verifier.py:44:         patch("eval.verification.verifier.container_mod.cp_out", return_value=False):
+tests/quality/test_verifier.py:45:        verdict = __import__("eval.verification.verifier", fromlist=["_verify"])._verify(
+tests/quality/test_verifier.py:46:            work, _exec_file_spec(), "", sandbox=True, timeout_s=2,
+tests/quality/test_verifier.py:63:    (work / ".verifier").symlink_to(outside, target_is_directory=True)
+tests/quality/test_verifier.py:64:    with patch("eval.verification.verifier.container_mod.run",
+tests/quality/test_verifier.py:66:         patch("eval.verification.verifier.container_mod.cp_out", return_value=False):
+tests/quality/test_verifier.py:67:        verdict = __import__("eval.verification.verifier", fromlist=["_verify"])._verify(
+tests/quality/test_verifier.py:68:            work, _exec_file_spec(), "", sandbox=True, timeout_s=2,
+tests/quality/test_verifier.py:80:    with patch("eval.verification.verifier.container_mod.run",
+tests/quality/test_verifier.py:82:         patch("eval.verification.verifier.container_mod.cp_out", return_value=False):
+tests/quality/test_verifier.py:83:        verdict = __import__("eval.verification.verifier", fromlist=["_verify"])._verify(
+tests/quality/test_verifier.py:84:            work, _exec_file_spec(), "", sandbox=True, timeout_s=2,
+tests/quality/test_verifier.py:115:    import eval.verification.verifier as V
+tests/quality/test_verifier.py:116:    verdict = V._verify(work, spec, "", sandbox=False, timeout_s=30, env={"kind": "files"})
+tests/quality/test_verifier.py:128:    with patch("eval.verification.verifier.container_mod.run", side_effect=subprocess.TimeoutExpired(["false"], 1)):
+tests/quality/test_verifier.py:129:        verdict = __import__("eval.verification.verifier", fromlist=["_verify"])._verify(
+tests/quality/test_verifier.py:130:            work, _exec_file_spec(), "", sandbox=True, timeout_s=1,
+tests/quality/test_verifier.py:139:    verifier = {"kind": "command", "argv": ["python3", "-c", "print('ok')"],
+tests/quality/test_verifier.py:140:                "reward_file": "/verifier/reward.txt",
+tests/quality/test_verifier.py:141:                "evidence_file": "/verifier/evidence.json"}
+tests/quality/test_verifier.py:142:    parent = work / "verifier"
+tests/quality/test_verifier.py:146:    with patch("eval.verification.verifier.subprocess.run",
+tests/quality/test_verifier.py:148:        verdict = __import__("eval.verification.verifier", fromlist=["_verify"])._verify(
+tests/quality/test_verifier.py:149:            work, verifier, "", sandbox=False, timeout_s=2, env={"kind": "files"})
+tests/quality/test_verifier.py:158:    verdict = __import__("eval.verification.verifier", fromlist=["_verify"])._verify(
+tests/quality/test_verifier.py:159:        work, verifier, "", sandbox=False, timeout_s=2, env={"kind": "files"})
+tests/quality/test_verifier.py:191:def test_the_datasets_that_predate_verifiers_behave_exactly_as_before():
+tests/quality/test_verifier.py:196:    tasks, setups, verifiers = registry.load_tasks("probe_set")
+tests/quality/test_verifier.py:199:               for v in verifiers.values())
+tests/quality/test_verifier.py:200:    assert verifiers["d01"]["expected"] == "42"
+tests/quality/test_verifier.py:202:    _, _, v2 = registry.load_tasks("demo")
+tests/quality/test_verifier.py:206:def test_an_answer_verifier_grades_on_the_artifact_not_the_exit_code(tmp_path):
+tests/quality/test_verifier.py:210:    r = run_one(repo, _task("t"), sandbox=False,
+tests/quality/test_verifier.py:211:                verifier={"kind": "answer", "expected": "alpha"})
+tests/quality/test_verifier.py:218:def test_a_setup_and_a_command_verifier_work_end_to_end(tmp_path):
+tests/quality/test_verifier.py:221:    r = run_one(repo, _task("v02"), sandbox=False,
+tests/quality/test_verifier.py:223:                verifier={"kind": "command", "argv": [
+tests/quality/test_verifier.py:234:    r = run_one(repo, _task("v"), sandbox=False,
+tests/quality/test_verifier.py:236:                verifier={"kind": "answer", "expected": "x"})
+tests/quality/test_verifier.py:258:    tasks, setups, verifiers = registry.load_tasks("verify_demo")
+tests/quality/test_verifier.py:261:    r = run_one(repo, task, sandbox=False,
+tests/quality/test_verifier.py:262:                setup=setups["v01"], verifier=verifiers["v01"])
+tests/quality/test_verifier.py:279:    tasks, setups, verifiers = registry.load_tasks("verify_demo")
+tests/quality/test_verifier.py:282:    r = run_one(repo, task, sandbox=False,
+tests/quality/test_verifier.py:283:                setup=setups["v01"], verifier=verifiers["v01"])
+tests/quality/test_verifier.py:298:        assert not ({"verify", "verifier", "setup", "expected", "scorable"}
+tests/quality/test_verifier.py:304:    bad = tmp_path / "data" / "datasets"
+tests/quality/test_verifier.py:310:        "def load():\n    return TASKS, SCORABLE\n")
+tests/quality/test_verifier.py:314:    import data.datasets as data_pkg
+tests/quality/test_verifier.py:316:                        [str(tmp_path / "data" / "datasets"), *list(data_pkg.__path__)])
+tests/quality/test_verifier.py:317:    monkeypatch.delitem(sys.modules, "data.datasets.leaky", raising=False)
+tests/quality/test_verifier.py:319:        registry.load_tasks("leaky")
+tests/quality/test_verifier.py:325:def test_curve_points_carry_the_verifier_kind_and_not_its_arguments(tmp_path):
+tests/quality/test_verifier.py:349:    assert set(point["verifier_kinds"]) == {"command"}, point["verifier_kinds"]
+tests/quality/test_verifier.py:350:    assert "answer" not in point["verifier_kinds"], \
+tests/quality/test_verifier.py:366:def test_the_same_rules_hold_inside_the_sandbox(tmp_path, monkeypatch,
+tests/quality/test_verifier.py:370:    上面几条用的是 `sandbox=False`,只证明"重铺输入"这个逻辑对。这一条走真实路径,
+tests/quality/test_verifier.py:379:    tasks, setups, verifiers = registry.load_tasks("verify_demo")
+tests/quality/test_verifier.py:382:    r = run_one(repo, task, sandbox=True,
+tests/quality/test_verifier.py:383:                setup=setups["v01"], verifier=verifiers["v01"])
+tests/quality/test_verifier.py:396:    # The verifier moved out of the runner (stage 4): the seam is the point,
+tests/quality/test_verifier.py:398:    from eval.verification.verifier import _test_report_failures
+tests/quality/test_verifier.py:424:    # The verifier moved out of the runner (stage 4): the seam is the point,
+tests/quality/test_verifier.py:426:    from eval.verification.verifier import _test_report_failures
+tests/quality/test_verifier.py:442:    from eval.verification.verifier import _check_output_detail
+tests/quality/test_verifier.py:451:    import data.datasets.terminal_bench as tb
+tests/quality/test_verifier.py:452:    spec = tb.VERIFY["cancel-async-tasks"]
+tests/quality/test_verifier.py:466:    # `_check_env` moved to `eval.verification.verifier` with the rest of the check-running layer
+tests/quality/test_verifier.py:470:    import eval.verification.verifier as runner
+tests/quality/test_verifier.py:471:    importlib.reload(runner)
+tests/quality/test_quiesce2_regressions.py:12:from eval.verification import verifier
+tests/quality/test_quiesce2_regressions.py:34:    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_quiesce2_regressions.py:68:    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_quiesce2_regressions.py:88:    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_quiesce2_regressions.py:116:    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_quiesce2_regressions.py:136:    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_quiesce2_regressions.py:148:    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_quiesce2_regressions.py:154:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="other", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_quiesce2_regressions.py:181:    verdict = verifier._verify(source, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_appworld_service_diagnosis.py:21:    loader = importlib.machinery.SourceFileLoader("aw_probe", str(ROOT / "data/datasets/appworld/cli/aw"))
+tests/quality/test_appworld_service_diagnosis.py:94:                             sandbox=False, progress_dir=tmp_path)
+tests/quality/test_appworld_actor_protocol.py:21:from data.scaffolds import registry
+tests/quality/test_appworld_actor_protocol.py:30:    # Extract public helpers only: importing data.datasets.appworld would read the mixed pool.
+tests/quality/test_appworld_actor_protocol.py:31:    tree = ast.parse((ROOT / "data/datasets/appworld.py").read_text())
+tests/quality/test_appworld_actor_protocol.py:34:    namespace = {"shlex": shlex, "ASSETS": ROOT / "data/datasets/appworld"}
+tests/quality/test_appworld_actor_protocol.py:43:        registry._check_setup({"runtime_prompt": bad}, "synthetic", "fixture")
+tests/quality/test_appworld_actor_protocol.py:48:def test_public_prompt_crosses_boundary_without_source_paths_or_verifier_metadata():
+tests/quality/test_appworld_actor_protocol.py:51:             "runtime_prompt": "Use ./client action", "verifier": "private-grade"}
+tests/quality/test_appworld_actor_protocol.py:52:    registry._check_setup(setup, "opaque", "fixture")
+tests/quality/test_appworld_actor_protocol.py:124:    result = runner.run_one(repo, task, setup=setup, env=env, sandbox=False)
+tests/quality/test_appworld_actor_protocol.py:247:    result = subprocess.run([sys.executable, str(ROOT / "data/datasets/appworld/cli/aw"), *args],
+tests/quality/test_appworld_actor_protocol.py:256:    cli = ROOT / "data/datasets/appworld/cli/aw"
+tests/quality/test_isolation.py:257:    import data.scaffolds.registry as registry
+tests/quality/test_isolation.py:266:    tasks_all, scorable = registry.load("demo")
+tests/quality/test_isolation.py:281:    # `sandbox=False` on purpose: this test is about the DETECTION layer, which
+tests/quality/test_isolation.py:283:    # unavailable. With the sandbox on, the same harness cannot write at all --
+tests/quality/test_isolation.py:284:    # see tests/quality/test_sandbox.py for that half.
+tests/quality/test_isolation.py:285:    res = evaluate(harness, tasks, scorable, harness_sha="evil", sandbox=False)
+tests/quality/test_isolation.py:299:    res = evaluate(clean, tasks, scorable, harness_sha="clean", sandbox=False)
+tests/quality/test_isolation.py:306:    `--no-sandbox` is passed deliberately. This is the layer that still works when
+tests/quality/test_isolation.py:346:         f"{sys.executable} {copy / 'methods/noop/run.py'}", "--no-sandbox"],
+tests/quality/test_isolation.py:378:    `sandboxed=False` is explicit, and the reason is worth keeping: a method is now
+tests/quality/test_isolation.py:379:    sandboxed like the harness, so a write to the platform is *prevented* rather than
+tests/quality/test_isolation.py:381:    layer, and it still has to work, because the sandbox is a `--no-sandbox` away and
+tests/quality/test_isolation.py:382:    because a sandbox that silently did not apply is the one failure this platform
+tests/quality/test_isolation.py:408:        f"{str(cheat)!r}], {{}}, 60, sandboxed=False)\n"
+tests/quality/test_isolation.py:594:    """Use a private platform outside /tmp, which the sandbox masks separately."""
+tests/quality/test_isolation.py:659:    `.state/` 用的是 tmpfs 而不是 bind,理由写在 `eval/containers/sandbox.py` 里:任务 N 留下的
+tests/quality/test_prifix_regressions.py:15:from eval.verification import verifier
+tests/quality/test_prifix_regressions.py:49:    verdict = verifier._verify(actor(tmp_path, "wrong"), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_prifix_regressions.py:59:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_prifix_regressions.py:66:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_prifix_regressions.py:84:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_prifix_regressions.py:95:    verdict = verifier._verify(actor(tmp_path, answer), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_prifix_regressions.py:105:    verdict = verifier._verify(actor(tmp_path, "wrong"), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_prifix_regressions.py:168:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_prifix_regressions.py:200:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:19:from eval.verification import verifier
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:58:                    ROOT / "data/datasets/spreadsheetbench/verify/check.py")
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:61:    adapter = _module("spreadsheet_adapter_w_spread2", ROOT / "data/datasets/spreadsheetbench.py")
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:87:    spec = adapter._verifier(record)
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:93:        def probe_load(*args, **kwargs):
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:96:            return load(*args, **kwargs)
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:105:        spec = adapter._verifier(record)
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:132:    monkeypatch.setattr(verifier.sandbox_mod, "run", denied)
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:133:    monkeypatch.setattr(verifier.container_mod, "run", denied)
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:134:    monkeypatch.setattr(verifier.container_mod, "create", denied)
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:164:            ROOT / "data/datasets/spreadsheetbench/verify/check.py").read_bytes()
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:175:    monkeypatch.setattr(verifier.subprocess, "run", synthetic_process)
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:199:def test_classification_survives_verifier_persistence_and_aggregation(
+tests/quality/test_spreadsheetbench_classification_w_spread2.py:202:    verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
+tests/quality/test_trial_binding.py:12:from eval.verification import verifier
+tests/quality/test_trial_binding.py:21:    return verifier._verify(source, scorer, "", sandbox=False, timeout_s=5,
+tests/quality/test_trial_binding.py:30:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, **inputs)
+tests/quality/test_trial_binding.py:94:        verifiers={expected["task_id"]: scorer}, sandbox=False)
+tests/quality/test_trial_binding.py:99:def test_verifier_dispatch_refuses_foreign_returned_verdict(tmp_path, scorer, docker_double, monkeypatch):
+tests/quality/test_trial_binding.py:117:        round_no=2, harness_sha="revision-a", verifiers={"t": scorer}, cache=cache, sandbox=False)
+tests/quality/test_trial_binding.py:123:        round_no=2, harness_sha="revision-a", verifiers={"t": scorer}, cache=copy.deepcopy(cache), sandbox=False)
+tests/quality/test_scorer_isolation_option_b.py:23:from eval.verification import verifier
+tests/quality/test_scorer_isolation_option_b.py:120:    monkeypatch.setattr(verifier.container_mod, "docker", docker)
+tests/quality/test_scorer_isolation_option_b.py:136:    verdict = verifier._verify(work, scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_scorer_isolation_option_b.py:142:    measured = runner._evaluate(tmp_path, [{"task_id": "t"}], {}, sandbox=False)
+tests/quality/test_scorer_isolation_option_b.py:159:    result = runner.evaluate(repo, [dict(task_id="t", goal="synthetic")], {}, sandbox=False,
+tests/quality/test_scorer_isolation_option_b.py:160:                             verifiers={"t": scorer}, run_id="binding-control")
+tests/quality/test_scorer_isolation_option_b.py:168:    bound = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5,
+tests/quality/test_scorer_isolation_option_b.py:172:    def run(*_a, verifier, **_kw):
+tests/quality/test_scorer_isolation_option_b.py:173:        calls.append(verifier["scorer_bundle"]["isolation_class"])
+tests/quality/test_scorer_isolation_option_b.py:181:            verifiers={"t": dict(scorer_bundle=dict(isolation_class=class_))})
+tests/quality/test_scorer_isolation_option_b.py:196:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_scorer_isolation_option_b.py:205:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5, task_id="t", run_id="binding-control", trial_id="round-0.harness-.trial-1")
+tests/quality/test_scorer_isolation_option_b.py:217:    monkeypatch.setattr(verifier.container_mod, "run", run)
+tests/quality/test_scorer_isolation_option_b.py:219:    monkeypatch.setattr(verifier.services_mod, "mounts_for", lambda *_: mounts)
+tests/quality/test_scorer_isolation_option_b.py:222:    v = verifier._verify(work, spec, "", sandbox=True, timeout_s=5,
+tests/quality/test_scorer_isolation_option_b.py:230:    measured = runner._evaluate(tmp_path, [{"task_id": "t"}], {}, sandbox=False)
+tests/quality/test_scorer_isolation_option_b.py:234:def test_snapshot_verifier_keeps_dependency_network_and_records_actual_class(tmp_path, monkeypatch):
+tests/quality/test_scorer_isolation_option_b.py:239:    monkeypatch.setattr(verifier.container_mod, "docker",
+tests/quality/test_scorer_isolation_option_b.py:242:    monkeypatch.setattr(verifier.container_mod, "create", lambda _name, **kw: seen.update(kw))
+tests/quality/test_scorer_isolation_option_b.py:243:    monkeypatch.setattr(verifier.container_mod, "start", lambda *_: None)
+tests/quality/test_scorer_isolation_option_b.py:244:    monkeypatch.setattr(verifier.container_mod, "remove_container", lambda *_: None)
+tests/quality/test_scorer_isolation_option_b.py:245:    monkeypatch.setattr(verifier.container_mod, "exec_in", lambda *_a, **_kw: subprocess.CompletedProcess([], 0, "", ""))
+tests/quality/test_scorer_isolation_option_b.py:248:    verdict = verifier._verify_container_state(snapshot, spec, expected_snapshot=snapshot, task_mount="/app", staging=tmp_path,
+tests/quality/test_scorer_isolation_option_b.py:255:    monkeypatch.setattr(verifier.container_mod, "create", lambda *_a, **_kw: pytest.fail("snapshot started"))
+tests/quality/test_scorer_isolation_option_b.py:256:    verdict = verifier._verify_container_state("actor-snapshot",
+tests/quality/test_scorer_isolation_option_b.py:268:    verdict = verifier._verify(actor(tmp_path), scorer, "", sandbox=False, timeout_s=5,
+tests/quality/test_w_e6fix_adjacent.py:8:from eval.verification import verifier
+tests/quality/test_w_e6fix_adjacent.py:41:        monkeypatch.setattr(verifier, '_copy_verifier_inputs', fail)
+tests/quality/test_w_e6fix_adjacent.py:42:    kwargs = {'reward_file': '/verifier/reward.txt'}
+tests/quality/test_w_e6fix_adjacent.py:70:    verdict = verifier._verify(actor(tmp_path), scorer, '', sandbox=False, timeout_s=5,
+EXIT_CODE: 0
+
+===== survey-inventory.txt =====
+COMMAND: python3 - <<'PY'
+from pathlib import Path
+import re
+
+names = ('alfworld', 'bird_minidev', 'chessbench_puzzles', 'jericho', 'scienceworld')
+files = sorted(p for p in Path('tests/quality').rglob('*.py') if re.search(r'sandbox\s*=\s*False', p.read_text()))
+lines = ["SCOPE: every *.py recursively under tests/quality containing r'sandbox\\s*=\\s*False'", f'MATCHING_FILES: {len(files)}']
+for p in files:
+    s = p.read_text()
+    involved = [n for n in names if n in s]
+    hits = [i for i,l in enumerate(s.splitlines(), 1) if re.search(r'sandbox\s*=\s*False', l)]
+    lines.append(f'{p}: lines={hits}; dataset-name text intersection={involved}')
+output = '\n'.join(lines) + '\n'
+Path('/mnt/20t/xubuqiang/hg-work/natgate/survey-inventory.txt').write_text(output)
+print(output, end='')
+PY
+SCOPE: every *.py recursively under tests/quality containing r'sandbox\s*=\s*False'
+MATCHING_FILES: 19
+tests/quality/test_alfworld_dataset.py: lines=[153]; dataset-name text intersection=['alfworld']
+tests/quality/test_appworld_actor_protocol.py: lines=[124]; dataset-name text intersection=[]
+tests/quality/test_appworld_service_diagnosis.py: lines=[94]; dataset-name text intersection=[]
+tests/quality/test_chessbench_stepwise_runner.py: lines=[253, 308]; dataset-name text intersection=['chessbench_puzzles']
+tests/quality/test_isolation.py: lines=[281, 285, 299]; dataset-name text intersection=[]
+tests/quality/test_jericho_runtime_boundaries.py: lines=[143, 156]; dataset-name text intersection=['jericho']
+tests/quality/test_measurement_coverage_hg_b3.py: lines=[92]; dataset-name text intersection=['alfworld', 'bird_minidev']
+tests/quality/test_native_runtime_hostpin.py: lines=[41]; dataset-name text intersection=['bird_minidev']
+tests/quality/test_native_runtime_hp3.py: lines=[62]; dataset-name text intersection=['alfworld', 'bird_minidev', 'jericho']
+tests/quality/test_native_runtime_hp4.py: lines=[66]; dataset-name text intersection=['chessbench_puzzles', 'scienceworld']
+tests/quality/test_prifix_regressions.py: lines=[49, 59, 66, 84, 95, 105, 168, 200]; dataset-name text intersection=[]
+tests/quality/test_quiesce2_regressions.py: lines=[34, 68, 88, 116, 136, 148, 154, 181]; dataset-name text intersection=[]
+tests/quality/test_scorer_isolation_option_b.py: lines=[136, 142, 159, 168, 196, 205, 230, 268]; dataset-name text intersection=[]
+tests/quality/test_spreadsheetbench_classification_w_spread2.py: lines=[202]; dataset-name text intersection=[]
+tests/quality/test_task_bound_native_inputs_w_tbi2.py: lines=[315, 323, 332, 358]; dataset-name text intersection=['alfworld', 'bird_minidev', 'jericho', 'scienceworld']
+tests/quality/test_task_bound_scorer_inputs_w_tbi.py: lines=[130, 152, 164, 173, 199]; dataset-name text intersection=['chessbench_puzzles']
+tests/quality/test_trial_binding.py: lines=[21, 30, 94, 117, 123]; dataset-name text intersection=[]
+tests/quality/test_verifier.py: lines=[116, 149, 159, 210, 221, 234, 261, 282, 370]; dataset-name text intersection=[]
+tests/quality/test_w_e6fix_adjacent.py: lines=[70]; dataset-name text intersection=[]
+EXIT_CODE: 0
+
+===== cleanup =====
+COMMAND: python3 -c "from pathlib import Path; [print(f'{p}: exists={Path(p).exists()}') for p in ('/tmp/natgate-alfworld', '/tmp/natgate-native-controls', '/tmp/natgate-survey-controls')]"
+/tmp/natgate-alfworld: exists=False
+/tmp/natgate-native-controls: exists=False
+/tmp/natgate-survey-controls: exists=False
+EXIT_CODE: 0
+
+WHAT WAS NOT VERIFIED
+- The unchanged ALFWorld before-count supplied by the parent.
+- The full tests/quality suite.
+- Remaining parametrizations in the protected w_tbi/w_tbi2 files; recommendations
+  outside the four selected failures are source-level analysis, not measured outcomes.
+- Four hp3 authored replay/map cases: existing tests/fixtures/hg_whp3 guard skipped them.
+- One Jericho snapshot case: existing tests/fixtures/hg_wsnap guard skipped it.
+- Any live released-task actions beyond ALFWorld's empty-log verifier control.
+- Any production H0/pilot/scoring authorization; this is test-route maintenance.
+- GPU/model/provider execution or server state; none was requested or used.
+- Cross-host portability or complete hostile-write coverage from an unchanged artifact.
+- A merged or parent-integrated result; the parent must review and merge this commit.
+
+FILE SIZES (bytes; all committed paths; measured after final artifact construction)
+tests/quality/test_alfworld_dataset.py: 9894
+reports/w-natgate-sealed-runtime-tests.md: 11833
+reports/w-natgate-sealed-runtime-tests-validation.txt: 46609

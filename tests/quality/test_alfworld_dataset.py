@@ -9,6 +9,7 @@ planting a rogue check that writes reward 1 and asserting the grade is still 0.
 """
 from __future__ import annotations
 
+import copy
 import importlib.util
 import json
 import sys
@@ -142,13 +143,24 @@ def test_the_check_re_materializes_its_inputs(alfworld, tmp_path):
         "print('agent wrote a win')\n")
     (workdir / "gym_env.py").write_text("raise SystemExit(1)\n")
 
-    verdict = _verify(workdir, dict(alfworld.VERIFY[tid]), "",
+    # This control targets generic input re-materialization. Keep the real inputs
+    # and scorer-input binding, but isolate it from sealed-runtime admission;
+    # test_native_runtime_hp3.py / test_native_runtime_hp4.py /
+    # test_native_runtime_hostpin.py cover the sealed route.
+    spec = copy.deepcopy(alfworld.VERIFY[tid])
+    spec.pop("native_runtime")
+    verdict = _verify(workdir, spec, "", task_id=tid,
                       sandbox=False, timeout_s=180, env=alfworld.ENV[tid])
     assert verdict["score"] == 0.0, verdict
     assert verdict["passed"] is False
     assert verdict.get("evidence"), "the verdict must carry the check's evidence"
     assert verdict["evidence"].get("why")
     assert "no actions" in verdict["evidence"]["why"]
+    assert verdict["evidence"]["scorer_input"]["verified"] is True
+    for name in ("check.py", "gym_env.py"):
+        source = next(entry["from"] for entry in spec["inputs"]
+                      if entry["path"] == name)
+        assert (workdir / name).read_bytes() == Path(source).read_bytes()
 
 
 def test_the_sandboxed_check_can_still_write_its_verdict(alfworld, tmp_path,
@@ -181,10 +193,16 @@ def test_the_sandboxed_check_can_still_write_its_verdict(alfworld, tmp_path,
     (workdir / "artifact.txt").write_text("the harness's work\n")
     monkeypatch.setenv("HARNESSGRAD_WORK_ROOT", str(root))
 
-    verdict = _verify(workdir, dict(alfworld.VERIFY[tid]), "",
+    # Exercise the real sealed sandbox with its dataset inputs and selected task.
+    spec = copy.deepcopy(alfworld.VERIFY[tid])
+    verdict = _verify(workdir, spec, "", task_id=tid,
                       sandbox=True, timeout_s=300, env=alfworld.ENV[tid])
+    print(json.dumps({"sandboxed_alfworld_verdict": verdict}, sort_keys=True))
     assert verdict["score"] == 0.0, verdict
+    assert verdict["native_runtime"]["verified"] is True, verdict
+    assert verdict["native_runtime"]["sha256"] == spec["native_runtime"]["sha256"]
     assert verdict.get("evidence"), verdict
+    assert verdict["evidence"]["scorer_input"]["verified"] is True
     assert (workdir / alfworld.REWARD_REL).is_file()
     assert (workdir / alfworld.EVIDENCE_REL).is_file()
     # The one guarantee the read-only mount exists for: the check cannot edit the
