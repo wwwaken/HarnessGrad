@@ -192,8 +192,8 @@
 {"destinations": [], "kind": "from", "line": 66, "outside_scope": [], "source": 25, "statement": "from contextlib import ExitStack", "targets": ["contextlib", "contextlib.ExitStack"]}
 {"destinations": [], "kind": "from", "line": 67, "outside_scope": [], "source": 25, "statement": "from pathlib import Path", "targets": ["pathlib", "pathlib.Path"]}
 {"destinations": [1, 128, 132, 133], "kind": "from", "line": 69, "outside_scope": [], "source": 25, "statement": "from data.scaffolds.qa import base", "targets": ["data.scaffolds.qa", "data.scaffolds.qa.base"]}
-{"destinations": [], "kind": "import", "line": 599, "outside_scope": [], "source": 25, "statement": "import hashlib", "targets": ["hashlib"]}
-{"destinations": [], "kind": "import", "line": 611, "outside_scope": [], "source": 25, "statement": "import os", "targets": ["os"]}
+{"destinations": [], "kind": "import", "line": 606, "outside_scope": [], "source": 25, "statement": "import hashlib", "targets": ["hashlib"]}
+{"destinations": [], "kind": "import", "line": 618, "outside_scope": [], "source": 25, "statement": "import os", "targets": ["os"]}
 {"destinations": [], "kind": "from", "line": 17, "outside_scope": [], "source": 26, "statement": "from __future__ import annotations", "targets": ["__future__", "__future__.annotations"]}
 {"destinations": [], "kind": "import", "line": 19, "outside_scope": [], "source": 26, "statement": "import argparse", "targets": ["argparse"]}
 {"destinations": [], "kind": "import", "line": 20, "outside_scope": [], "source": 26, "statement": "import sys", "targets": ["sys"]}
@@ -292,9 +292,9 @@
 {"destinations": [], "kind": "from", "line": 61, "outside_scope": [], "source": 39, "statement": "from pathlib import Path", "targets": ["pathlib", "pathlib.Path"]}
 {"destinations": [1, 128, 141], "kind": "from", "line": 63, "outside_scope": [], "source": 39, "statement": "from data.scaffolds import registry", "targets": ["data.scaffolds", "data.scaffolds.registry"]}
 {"destinations": [1, 3], "kind": "entry_initializers", "line": 1, "outside_scope": [], "source": 40, "statement": "<implicit parent package initialization>", "targets": ["data", "data.datasets"]}
-{"destinations": [], "kind": "from", "line": 57, "outside_scope": [], "source": 40, "statement": "from __future__ import annotations", "targets": ["__future__", "__future__.annotations"]}
-{"destinations": [], "kind": "import", "line": 59, "outside_scope": [], "source": 40, "statement": "import re", "targets": ["re"]}
-{"destinations": [1, 128, 132, 133], "kind": "from", "line": 61, "outside_scope": [], "source": 40, "statement": "from data.scaffolds.qa import base", "targets": ["data.scaffolds.qa", "data.scaffolds.qa.base"]}
+{"destinations": [], "kind": "from", "line": 60, "outside_scope": [], "source": 40, "statement": "from __future__ import annotations", "targets": ["__future__", "__future__.annotations"]}
+{"destinations": [], "kind": "import", "line": 62, "outside_scope": [], "source": 40, "statement": "import re", "targets": ["re"]}
+{"destinations": [1, 128, 132, 133], "kind": "from", "line": 64, "outside_scope": [], "source": 40, "statement": "from data.scaffolds.qa import base", "targets": ["data.scaffolds.qa", "data.scaffolds.qa.base"]}
 {"destinations": [1, 3], "kind": "entry_initializers", "line": 1, "outside_scope": [], "source": 41, "statement": "<implicit parent package initialization>", "targets": ["data", "data.datasets"]}
 {"destinations": [], "kind": "from", "line": 8, "outside_scope": [], "source": 41, "statement": "from __future__ import annotations", "targets": ["__future__", "__future__.annotations"]}
 {"destinations": [1, 128, 132, 133], "kind": "from", "line": 10, "outside_scope": [], "source": 41, "statement": "from data.scaffolds.qa import base", "targets": ["data.scaffolds.qa", "data.scaffolds.qa.base"]}
@@ -389,26 +389,26 @@
 {"destinations": [1, 3], "kind": "entry_initializers", "line": 1, "outside_scope": [], "source": 58, "statement": "<implicit parent package initialization>", "targets": ["data", "data.datasets"]}
 {"destinations": [], "kind": "import", "line": 1, "outside_scope": [], "source": 58, "statement": "import sys", "targets": ["sys"]}
 {"destinations": [1, 3], "kind": "entry_initializers", "line": 1, "outside_scope": [], "source": 59, "statement": "<implicit parent package initialization>", "targets": ["data", "data.datasets"]}
-{"destinations": [], "kind": "from", "line": 48, "outside_scope": [], "source": 59, "statement": "from __future__ import annotations", "targets": ["__future__", "__future__.annotations"]}
-{"destinations": [], "kind": "import", "line": 50, "outside_scope": [], "source": 59, "statement": "import argparse", "targets": ["argparse"]}
-{"destinations": [], "kind": "import", "line": 51, "outside_scope": [], "source": 59, "statement": "import json", "targets": ["json"]}
-{"destinations": [], "kind": "import", "line": 52, "outside_scope": [], "source": 59, "statement": "import multiprocessing", "targets": ["multiprocessing"]}
-{"destinations": [], "kind": "import", "line": 53, "outside_scope": [], "source": 59, "statement": "import sys", "targets": ["sys"]}
-{"destinations": [], "kind": "from", "line": 54, "outside_scope": [], "source": 59, "statement": "from pathlib import Path", "targets": ["pathlib", "pathlib.Path"]}
-{"destinations": [1, 128, 142], "kind": "from", "line": 58, "outside_scope": [], "source": 59, "statement": "from data.scaffolds.scorer_input import add_arguments, run_bound", "targets": ["data.scaffolds.scorer_input", "data.scaffolds.scorer_input.add_arguments", "data.scaffolds.scorer_input.run_bound"]}
-{"destinations": [], "kind": "from", "line": 90, "outside_scope": [], "source": 59, "statement": "from testing_util import run_test", "targets": ["testing_util", "testing_util.run_test"]}
-{"destinations": [], "kind": "from", "line": 202, "outside_scope": [], "source": 59, "statement": "from pass_k_utils import compute_metrics_from_results", "targets": ["pass_k_utils", "pass_k_utils.compute_metrics_from_results"]}
+{"destinations": [], "kind": "from", "line": 49, "outside_scope": [], "source": 59, "statement": "from __future__ import annotations", "targets": ["__future__", "__future__.annotations"]}
+{"destinations": [], "kind": "import", "line": 51, "outside_scope": [], "source": 59, "statement": "import argparse", "targets": ["argparse"]}
+{"destinations": [], "kind": "import", "line": 52, "outside_scope": [], "source": 59, "statement": "import json", "targets": ["json"]}
+{"destinations": [], "kind": "import", "line": 53, "outside_scope": [], "source": 59, "statement": "import multiprocessing", "targets": ["multiprocessing"]}
+{"destinations": [], "kind": "import", "line": 54, "outside_scope": [], "source": 59, "statement": "import sys", "targets": ["sys"]}
+{"destinations": [], "kind": "from", "line": 55, "outside_scope": [], "source": 59, "statement": "from pathlib import Path", "targets": ["pathlib", "pathlib.Path"]}
+{"destinations": [1, 128, 142], "kind": "from", "line": 59, "outside_scope": [], "source": 59, "statement": "from data.scaffolds.scorer_input import add_arguments, run_bound", "targets": ["data.scaffolds.scorer_input", "data.scaffolds.scorer_input.add_arguments", "data.scaffolds.scorer_input.run_bound"]}
+{"destinations": [], "kind": "from", "line": 89, "outside_scope": [], "source": 59, "statement": "from testing_util import run_test", "targets": ["testing_util", "testing_util.run_test"]}
+{"destinations": [], "kind": "from", "line": 201, "outside_scope": [], "source": 59, "statement": "from pass_k_utils import compute_metrics_from_results", "targets": ["pass_k_utils", "pass_k_utils.compute_metrics_from_results"]}
 {"destinations": [1, 3], "kind": "entry_initializers", "line": 1, "outside_scope": [], "source": 60, "statement": "<implicit parent package initialization>", "targets": ["data", "data.datasets"]}
-{"destinations": [], "kind": "from", "line": 57, "outside_scope": [], "source": 60, "statement": "from __future__ import annotations", "targets": ["__future__", "__future__.annotations"]}
-{"destinations": [1, 128, 142], "kind": "from", "line": 59, "outside_scope": [], "source": 60, "statement": "from data.scaffolds.scorer_input import bind as bind_scorer_input", "targets": ["data.scaffolds.scorer_input", "data.scaffolds.scorer_input.bind"]}
-{"destinations": [], "kind": "import", "line": 61, "outside_scope": [], "source": 60, "statement": "import base64", "targets": ["base64"]}
-{"destinations": [], "kind": "import", "line": 62, "outside_scope": [], "source": 60, "statement": "import json", "targets": ["json"]}
-{"destinations": [], "kind": "import", "line": 63, "outside_scope": [], "source": 60, "statement": "import pickle", "targets": ["pickle"]}
-{"destinations": [], "kind": "import", "line": 64, "outside_scope": [], "source": 60, "statement": "import zlib", "targets": ["zlib"]}
-{"destinations": [], "kind": "from", "line": 65, "outside_scope": [], "source": 60, "statement": "from pathlib import Path", "targets": ["pathlib", "pathlib.Path"]}
-{"destinations": [], "kind": "import", "line": 67, "outside_scope": [], "source": 60, "statement": "import numpy as np", "targets": ["numpy"]}
-{"destinations": [1, 128, 141], "kind": "from", "line": 69, "outside_scope": [], "source": 60, "statement": "from data.scaffolds import registry", "targets": ["data.scaffolds", "data.scaffolds.registry"]}
-{"destinations": [], "kind": "import", "line": 121, "outside_scope": [], "source": 60, "statement": "import itertools", "targets": ["itertools"]}
+{"destinations": [], "kind": "from", "line": 56, "outside_scope": [], "source": 60, "statement": "from __future__ import annotations", "targets": ["__future__", "__future__.annotations"]}
+{"destinations": [1, 128, 142], "kind": "from", "line": 58, "outside_scope": [], "source": 60, "statement": "from data.scaffolds.scorer_input import bind as bind_scorer_input", "targets": ["data.scaffolds.scorer_input", "data.scaffolds.scorer_input.bind"]}
+{"destinations": [], "kind": "import", "line": 60, "outside_scope": [], "source": 60, "statement": "import base64", "targets": ["base64"]}
+{"destinations": [], "kind": "import", "line": 61, "outside_scope": [], "source": 60, "statement": "import json", "targets": ["json"]}
+{"destinations": [], "kind": "import", "line": 62, "outside_scope": [], "source": 60, "statement": "import pickle", "targets": ["pickle"]}
+{"destinations": [], "kind": "import", "line": 63, "outside_scope": [], "source": 60, "statement": "import zlib", "targets": ["zlib"]}
+{"destinations": [], "kind": "from", "line": 64, "outside_scope": [], "source": 60, "statement": "from pathlib import Path", "targets": ["pathlib", "pathlib.Path"]}
+{"destinations": [], "kind": "import", "line": 66, "outside_scope": [], "source": 60, "statement": "import numpy as np", "targets": ["numpy"]}
+{"destinations": [1, 128, 141], "kind": "from", "line": 68, "outside_scope": [], "source": 60, "statement": "from data.scaffolds import registry", "targets": ["data.scaffolds", "data.scaffolds.registry"]}
+{"destinations": [], "kind": "import", "line": 120, "outside_scope": [], "source": 60, "statement": "import itertools", "targets": ["itertools"]}
 {"destinations": [1, 3], "kind": "entry_initializers", "line": 1, "outside_scope": [], "source": 61, "statement": "<implicit parent package initialization>", "targets": ["data", "data.datasets"]}
 {"destinations": [], "kind": "from", "line": 17, "outside_scope": [], "source": 61, "statement": "from __future__ import annotations", "targets": ["__future__", "__future__.annotations"]}
 {"destinations": [], "kind": "import", "line": 19, "outside_scope": [], "source": 61, "statement": "import collections", "targets": ["collections"]}
@@ -512,10 +512,10 @@
 {"destinations": [], "kind": "import", "line": 53, "outside_scope": [], "source": 73, "statement": "import csv", "targets": ["csv"]}
 {"destinations": [1, 128, 132, 133], "kind": "from", "line": 55, "outside_scope": [], "source": 73, "statement": "from data.scaffolds.qa import base", "targets": ["data.scaffolds.qa", "data.scaffolds.qa.base"]}
 {"destinations": [1, 3], "kind": "entry_initializers", "line": 1, "outside_scope": [], "source": 74, "statement": "<implicit parent package initialization>", "targets": ["data", "data.datasets"]}
-{"destinations": [], "kind": "from", "line": 36, "outside_scope": [], "source": 74, "statement": "from __future__ import annotations", "targets": ["__future__", "__future__.annotations"]}
-{"destinations": [], "kind": "import", "line": 38, "outside_scope": [], "source": 74, "statement": "import csv", "targets": ["csv"]}
-{"destinations": [], "kind": "import", "line": 39, "outside_scope": [], "source": 74, "statement": "import re", "targets": ["re"]}
-{"destinations": [1, 128, 132, 133], "kind": "from", "line": 41, "outside_scope": [], "source": 74, "statement": "from data.scaffolds.qa import base", "targets": ["data.scaffolds.qa", "data.scaffolds.qa.base"]}
+{"destinations": [], "kind": "from", "line": 37, "outside_scope": [], "source": 74, "statement": "from __future__ import annotations", "targets": ["__future__", "__future__.annotations"]}
+{"destinations": [], "kind": "import", "line": 39, "outside_scope": [], "source": 74, "statement": "import csv", "targets": ["csv"]}
+{"destinations": [], "kind": "import", "line": 40, "outside_scope": [], "source": 74, "statement": "import re", "targets": ["re"]}
+{"destinations": [1, 128, 132, 133], "kind": "from", "line": 42, "outside_scope": [], "source": 74, "statement": "from data.scaffolds.qa import base", "targets": ["data.scaffolds.qa", "data.scaffolds.qa.base"]}
 {"destinations": [1, 3], "kind": "entry_initializers", "line": 1, "outside_scope": [], "source": 75, "statement": "<implicit parent package initialization>", "targets": ["data", "data.datasets"]}
 {"destinations": [], "kind": "from", "line": 20, "outside_scope": [], "source": 75, "statement": "from __future__ import annotations", "targets": ["__future__", "__future__.annotations"]}
 {"destinations": [], "kind": "import", "line": 22, "outside_scope": [], "source": 75, "statement": "import argparse", "targets": ["argparse"]}
@@ -550,11 +550,12 @@
 {"destinations": [], "kind": "import", "line": 48, "outside_scope": [], "source": 77, "statement": "import tempfile", "targets": ["tempfile"]}
 {"destinations": [], "kind": "import", "line": 49, "outside_scope": [], "source": 77, "statement": "import traceback", "targets": ["traceback"]}
 {"destinations": [], "kind": "import", "line": 50, "outside_scope": [], "source": 77, "statement": "import zipfile", "targets": ["zipfile"]}
-{"destinations": [], "kind": "from", "line": 51, "outside_scope": [], "source": 77, "statement": "from pathlib import Path", "targets": ["pathlib", "pathlib.Path"]}
-{"destinations": [], "kind": "from", "line": 52, "outside_scope": [], "source": 77, "statement": "from xml.etree import ElementTree as ET", "targets": ["xml.etree", "xml.etree.ElementTree"]}
-{"destinations": [1, 128, 142], "kind": "from", "line": 56, "outside_scope": [], "source": 77, "statement": "from data.scaffolds.scorer_input import add_arguments, run_bound", "targets": ["data.scaffolds.scorer_input", "data.scaffolds.scorer_input.add_arguments", "data.scaffolds.scorer_input.run_bound"]}
-{"destinations": [], "kind": "import", "line": 176, "outside_scope": [], "source": 77, "statement": "import openpyxl", "targets": ["openpyxl"]}
-{"destinations": [], "kind": "import", "line": 330, "outside_scope": [], "source": 77, "statement": "import openpyxl", "targets": ["openpyxl"]}
+{"destinations": [], "kind": "from", "line": 51, "outside_scope": [], "source": 77, "statement": "from contextlib import ExitStack", "targets": ["contextlib", "contextlib.ExitStack"]}
+{"destinations": [], "kind": "from", "line": 52, "outside_scope": [], "source": 77, "statement": "from pathlib import Path", "targets": ["pathlib", "pathlib.Path"]}
+{"destinations": [], "kind": "from", "line": 53, "outside_scope": [], "source": 77, "statement": "from xml.etree import ElementTree as ET", "targets": ["xml.etree", "xml.etree.ElementTree"]}
+{"destinations": [1, 128, 142], "kind": "from", "line": 57, "outside_scope": [], "source": 77, "statement": "from data.scaffolds.scorer_input import add_arguments, run_bound", "targets": ["data.scaffolds.scorer_input", "data.scaffolds.scorer_input.add_arguments", "data.scaffolds.scorer_input.run_bound"]}
+{"destinations": [], "kind": "import", "line": 177, "outside_scope": [], "source": 77, "statement": "import openpyxl", "targets": ["openpyxl"]}
+{"destinations": [], "kind": "import", "line": 331, "outside_scope": [], "source": 77, "statement": "import openpyxl", "targets": ["openpyxl"]}
 {"destinations": [1, 3], "kind": "entry_initializers", "line": 1, "outside_scope": [], "source": 78, "statement": "<implicit parent package initialization>", "targets": ["data", "data.datasets"]}
 {"destinations": [], "kind": "from", "line": 51, "outside_scope": [], "source": 78, "statement": "from __future__ import annotations", "targets": ["__future__", "__future__.annotations"]}
 {"destinations": [1, 128, 142], "kind": "from", "line": 53, "outside_scope": [], "source": 78, "statement": "from data.scaffolds.scorer_input import bind as bind_scorer_input", "targets": ["data.scaffolds.scorer_input", "data.scaffolds.scorer_input.bind"]}
@@ -768,16 +769,16 @@
 {"destinations": [], "kind": "import", "line": 65, "outside_scope": [], "source": 123, "statement": "import string", "targets": ["string"]}
 {"destinations": [1, 128, 132, 133], "kind": "from", "line": 67, "outside_scope": [], "source": 123, "statement": "from data.scaffolds.qa import base", "targets": ["data.scaffolds.qa", "data.scaffolds.qa.base"]}
 {"destinations": [1, 3], "kind": "entry_initializers", "line": 1, "outside_scope": [], "source": 124, "statement": "<implicit parent package initialization>", "targets": ["data", "data.datasets"]}
-{"destinations": [], "kind": "from", "line": 72, "outside_scope": [], "source": 124, "statement": "from __future__ import annotations", "targets": ["__future__", "__future__.annotations"]}
-{"destinations": [], "kind": "import", "line": 74, "outside_scope": [], "source": 124, "statement": "import itertools", "targets": ["itertools"]}
-{"destinations": [], "kind": "import", "line": 75, "outside_scope": [], "source": 124, "statement": "import json", "targets": ["json"]}
-{"destinations": [], "kind": "import", "line": 76, "outside_scope": [], "source": 124, "statement": "import re", "targets": ["re"]}
-{"destinations": [], "kind": "import", "line": 77, "outside_scope": [], "source": 124, "statement": "import string", "targets": ["string"]}
-{"destinations": [], "kind": "from", "line": 78, "outside_scope": [], "source": 124, "statement": "from collections import Counter", "targets": ["collections", "collections.Counter"]}
-{"destinations": [], "kind": "from", "line": 79, "outside_scope": [], "source": 124, "statement": "from copy import deepcopy", "targets": ["copy", "copy.deepcopy"]}
-{"destinations": [], "kind": "from", "line": 80, "outside_scope": [], "source": 124, "statement": "from pathlib import Path", "targets": ["pathlib", "pathlib.Path"]}
-{"destinations": [1, 128, 132, 133], "kind": "from", "line": 82, "outside_scope": [], "source": 124, "statement": "from data.scaffolds.qa import base", "targets": ["data.scaffolds.qa", "data.scaffolds.qa.base"]}
-{"destinations": [1, 128, 129], "kind": "from", "line": 507, "outside_scope": [], "source": 124, "statement": "from data.scaffolds.aggregation import aggregation_denominator", "targets": ["data.scaffolds.aggregation", "data.scaffolds.aggregation.aggregation_denominator"]}
+{"destinations": [], "kind": "from", "line": 76, "outside_scope": [], "source": 124, "statement": "from __future__ import annotations", "targets": ["__future__", "__future__.annotations"]}
+{"destinations": [], "kind": "import", "line": 78, "outside_scope": [], "source": 124, "statement": "import itertools", "targets": ["itertools"]}
+{"destinations": [], "kind": "import", "line": 79, "outside_scope": [], "source": 124, "statement": "import json", "targets": ["json"]}
+{"destinations": [], "kind": "import", "line": 80, "outside_scope": [], "source": 124, "statement": "import re", "targets": ["re"]}
+{"destinations": [], "kind": "import", "line": 81, "outside_scope": [], "source": 124, "statement": "import string", "targets": ["string"]}
+{"destinations": [], "kind": "from", "line": 82, "outside_scope": [], "source": 124, "statement": "from collections import Counter", "targets": ["collections", "collections.Counter"]}
+{"destinations": [], "kind": "from", "line": 83, "outside_scope": [], "source": 124, "statement": "from copy import deepcopy", "targets": ["copy", "copy.deepcopy"]}
+{"destinations": [], "kind": "from", "line": 84, "outside_scope": [], "source": 124, "statement": "from pathlib import Path", "targets": ["pathlib", "pathlib.Path"]}
+{"destinations": [1, 128, 132, 133], "kind": "from", "line": 86, "outside_scope": [], "source": 124, "statement": "from data.scaffolds.qa import base", "targets": ["data.scaffolds.qa", "data.scaffolds.qa.base"]}
+{"destinations": [1, 128, 129], "kind": "from", "line": 518, "outside_scope": [], "source": 124, "statement": "from data.scaffolds.aggregation import aggregation_denominator", "targets": ["data.scaffolds.aggregation", "data.scaffolds.aggregation.aggregation_denominator"]}
 {"destinations": [1], "kind": "entry_initializers", "line": 1, "outside_scope": [], "source": 125, "statement": "<implicit parent package initialization>", "targets": ["data"]}
 {"destinations": [], "kind": "from", "line": 14, "outside_scope": [], "source": 125, "statement": "from __future__ import annotations", "targets": ["__future__", "__future__.annotations"]}
 {"destinations": [1], "kind": "entry_initializers", "line": 1, "outside_scope": [], "source": 126, "statement": "<implicit parent package initialization>", "targets": ["data"]}
@@ -1389,9 +1390,9 @@
 {"destinations": [162, 166], "kind": "from", "line": 31, "outside_scope": [], "source": 228, "statement": "from eval.containers.immutable_runtime import ImmutableRuntimeUnavailable, projections, targets", "targets": ["eval.containers.immutable_runtime", "eval.containers.immutable_runtime.ImmutableRuntimeUnavailable", "eval.containers.immutable_runtime.projections", "eval.containers.immutable_runtime.targets"]}
 {"destinations": [186, 191], "kind": "from", "line": 32, "outside_scope": [], "source": 228, "statement": "from eval.policy.runtime_policy import phase_timeout", "targets": ["eval.policy.runtime_policy", "eval.policy.runtime_policy.phase_timeout"]}
 {"destinations": [224, 225], "kind": "from", "line": 33, "outside_scope": [], "source": 228, "statement": "from eval.verification.isolation import declared_class, record_class", "targets": ["eval.verification.isolation", "eval.verification.isolation.declared_class", "eval.verification.isolation.record_class"]}
-{"destinations": [224, 226], "kind": "from", "line": 490, "outside_scope": [], "source": 228, "statement": "from eval.verification.native_runtime import admit, NativeRuntimeUnavailable, SUPPORTED_DATASETS, CHECK_PATHS", "targets": ["eval.verification.native_runtime", "eval.verification.native_runtime.admit", "eval.verification.native_runtime.NativeRuntimeUnavailable", "eval.verification.native_runtime.SUPPORTED_DATASETS", "eval.verification.native_runtime.CHECK_PATHS"]}
-{"destinations": [224, 227], "kind": "from", "line": 537, "outside_scope": [], "source": 228, "statement": "from eval.verification.pristine import verify, enforce_verdict_binding", "targets": ["eval.verification.pristine", "eval.verification.pristine.verify", "eval.verification.pristine.enforce_verdict_binding"]}
-{"destinations": [224, 226], "kind": "from", "line": 667, "outside_scope": [], "source": 228, "statement": "from eval.verification.native_runtime import NativeRuntimeUnavailable", "targets": ["eval.verification.native_runtime", "eval.verification.native_runtime.NativeRuntimeUnavailable"]}
+{"destinations": [224, 226], "kind": "from", "line": 495, "outside_scope": [], "source": 228, "statement": "from eval.verification.native_runtime import admit, NativeRuntimeUnavailable, SUPPORTED_DATASETS, CHECK_PATHS", "targets": ["eval.verification.native_runtime", "eval.verification.native_runtime.admit", "eval.verification.native_runtime.NativeRuntimeUnavailable", "eval.verification.native_runtime.SUPPORTED_DATASETS", "eval.verification.native_runtime.CHECK_PATHS"]}
+{"destinations": [224, 227], "kind": "from", "line": 542, "outside_scope": [], "source": 228, "statement": "from eval.verification.pristine import verify, enforce_verdict_binding", "targets": ["eval.verification.pristine", "eval.verification.pristine.verify", "eval.verification.pristine.enforce_verdict_binding"]}
+{"destinations": [224, 226], "kind": "from", "line": 672, "outside_scope": [], "source": 228, "statement": "from eval.verification.native_runtime import NativeRuntimeUnavailable", "targets": ["eval.verification.native_runtime", "eval.verification.native_runtime.NativeRuntimeUnavailable"]}
 {"destinations": [], "kind": "import", "line": 6, "outside_scope": [], "source": 229, "statement": "import sys as _sys", "targets": ["sys"]}
 {"destinations": [224, 228], "kind": "from", "line": 7, "outside_scope": [], "source": 229, "statement": "from eval.verification import verifier as _implementation", "targets": ["eval.verification", "eval.verification.verifier"]}
 {"destinations": [], "kind": "from", "line": 25, "outside_scope": [], "source": 230, "statement": "from __future__ import annotations", "targets": ["__future__", "__future__.annotations"]}
