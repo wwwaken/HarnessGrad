@@ -4471,3 +4471,24 @@ cases).
 - **The absence claim is bounded and is treated as bounded.** The producing-conversion execution receipt search covered local session/history transcripts, git object/history/reflog/stash, run/state/fixture/census and the named archives - and the worker explicitly said "bounded absence, not global impossibility". The requirement is about an *upstream* conversion, so the parent **declined to adopt the attached withdrawal proposal**: the operator's standing-limit rule requires that no further work here can satisfy it, and an upstream search had not been done. `next_action` was rewritten by the parent (1317 -> 2333 chars) to keep every obligation, record the determination, and say plainly that the local search cannot support a limit and an upstream search must come first.
 - **Follow-up launched, not assumed.** `w-fevhub` (branch `wg-fevhub`) is now searching the upstream record - Hub dataset repository history and generated-ref metadata, dataset-card/build metadata, the NEI aggregation input, and the upstream release/paper artefacts - for an artefact binding the export revision to the conversion run, with FOUND / enumerated-ABSENT / UNKNOWN states and retained response digests. Any withdrawal decision waits on that result.
 - Checker valid; focused set 102 passed, 15 skipped, 3 xfailed. Merged as 27c325fb and f4203c12. No historical record, frozen receipt or run ID is touched and no withdrawn shared gate is reinstated.
+
+## 2026-10-15 — TriviaQA source-only review and its limit argument launched (in flight)
+
+- `w-fevhub` (`wg-fevhub`) performs the FEVER **upstream** provenance search the local audit could not
+  do: the Hub export repository's own refs/commit history for the export path and the
+  conversion/aggregation scripts, dataset-card and build metadata, generated-ref metadata, the NEI
+  aggregation input and its revision, and the upstream release/paper artefacts - each reported as
+  FOUND with URL/status/verbatim excerpt/digest, enumerated ABSENT, or UNKNOWN. Any fever standing-limit
+  decision waits on it.
+- `w-trivia2` (`wg-trivia2`) does the half of `triviaqa / hub-export-scorer-linkage` that has never been
+  worked - the metadata-only "without rows" review of HumanAnswers preservation/absence/redundancy,
+  Domain/VerifiedEval/source membership, metadata-level duplicates, the pinned scorer's key mapping
+  against the export's declared schema, and the headline denominator/aggregation - plus its own
+  enumerated re-inspection of the authoritative upstream record for an immutable build/export execution
+  receipt. The brief requires it to state honestly whether that absence supports the operator's
+  standing-limit rule, and to set `withdrawal_entry` to `null` if it does not: a withdrawal wording
+  that overstates the search is worse than no withdrawal. It must not disturb the bound first-five
+  eval-side selection.
+- Neither worker may edit the registry or the journal; both emit a standalone evidence file plus
+  `registry/proposals/<worker>.json` for parent integration. This paragraph records their launch and is
+  not a claim that either has been reviewed or merged.
