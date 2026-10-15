@@ -1,0 +1,140 @@
+Parent closure of `spreadsheetbench / dataset-journal-gap` under reading (A), on an explicit operator
+decision that reading (A) covers a `PENDING-RUN` clause.
+
+Decision
+--------
+The parent filed the clause-by-clause candidate in `registry/blocker-closure-assessment.md` and asked one
+question with three options. The operator chose: **close under reading (A), with the remaining coverage
+clause held as a diagnostic-time precondition rather than a condition on closure** - the same reading that
+closed `reasoning_gym` with no measured run. The two rejected options are recorded because they are the
+contrast this closure rests on:
+
+* leaving it open would have made this the **first** journal/measurement-coverage blocker held as a
+  *condition*, with the record obliged to say so; and
+* running a 1 task x 1 trial diagnostic first was declined, so **no diagnostic is authorized here**.
+
+This is the seventh closure under reading (A), the second applied to a measurement-family blocker, and the
+first for which the parent had to *fix* a clause rather than only record one.
+
+Closed
+------
+* `spreadsheetbench / dataset-journal-gap`, removed from `registry/dataset-blockers.json`.
+  Open blockers: 8 -> 7 (4 permanent refusals + `appworld/successful-task-evidence`,
+  `bfcl_v3/simple-ast-contract`, `triviaqa/hub-export-scorer-linkage`).
+
+Clause-by-clause basis at closure
+---------------------------------
+* Establish authenticated row-level gradable eligibility -> SATISFIED.
+  `registry/w-spreadelig-eligibility.md`: all 400 installed rows classified - 394 structurally gradable
+  without a run, 1 (`283-32`) retained only by the explicit official-range-zero compatibility policy, 5 not
+  gradable as installed with a per-row reason; 794/800 workbooks open in both openpyxl modes and all 800
+  ZIP/XML structures are readable.
+* Review/fix the synthetic stale-cache formula-conversion failure -> SATISFIED (`w-spreadcache`). The cause
+  was LibreOffice's own load policy (default `OOXMLRecalcMode=1` at
+  `/usr/lib/libreoffice/share/registry/main.xcd:724`); the shipped check now forces mode 0 in a private
+  profile, strips scalar formula caches from a private ZIP copy and requires regenerated caches before the
+  converted file may replace the candidate. The opt-in real-engine control preserves the authored
+  `[999,888] -> [5,10]` bar.
+* Complete installed workbook/mirror authentication and bounded first-five selected-only custody ->
+  SATISFIED, `registry/w-jc2-review.md`, `registry/w-spreadrt-runtime.md`,
+  `tests/fixtures/hg_wsel/spreadsheetbench.json`.
+* The one-released-variant named-cell metric statement and the official-range-zero compatibility policy ->
+  SATISFIED, `registry/w-metriccmp-comparability.md`, `registry/w-spread2-reconciliation.md`.
+* Preserve failed receipts, missing engine package archives and conditional runtime/replay observations as
+  bounded limits -> SATISFIED, `registry/w-spreadcache` / `registry/w-spreadrt-runtime.md`.
+* A reference that expands to zero cells publishes a vacuous pass -> FIXED by `w-spreadvacuous`
+  (commit `803ef598`), merged into `main` the same day.
+* eligible/selected/task/trial/invalid/unmeasured coverage -> PRE-DIAGNOSTIC under the operator's decision,
+  not a closure condition. `measured`/`selected`/`trial`/`invalid`/`unmeasured` and `run_id` stay null.
+
+The soundness defect this closure had to fix first
+--------------------------------------------------
+`cell_level_compare` iterated `generate_cell_names(cell_range)`, which is **empty** for `'Sheet1'!BD2:308`
+because `parse_cell_range` gives an end column of 0, so the loop body never ran and the function returned
+`True`. The parent reproduced it with two authored workbooks whose only real cell differs
+(`golden A1=5`, `result A1=999`), in this checkout:
+
+    $ python3 -c "..."
+    generate_cell_names('BD2:308') -> []
+    compare_workbooks(..., "'Sheet1'!BD2:308") -> ok=True  msg=''
+    compare_workbooks(..., "'Sheet1'!A1")      -> ok=False msg='value difference at A1: golden has 5, result has 999'
+
+So a released row whose `answer_position` had a range end without column letters scored **1.0 for any
+submission** and was recorded as a measured pass. `w-spreadelig` had already classified released row `73-45`
+as `not_gradable_as_installed` for exactly this reason and flagged `130-9` as the
+quoted-sheet-name-with-commas variant. The fix makes an empty expansion exit 3 with a named reason and no
+reward file, and names an unaddressable component instead of skipping it; the released colon-range parser
+`ValueError` stays a measured zero exactly as before.
+
+Scorer custody moved with the fix
+---------------------------------
+The shipped checker now carries the stale-cache fix and the empty-expansion refusal in one file:
+`data/datasets/spreadsheetbench/verify/check.py`, SHA-256
+`98dd625481f091a8684dd4d7a66c17f07cf7a36c8bba160e27353e06988b1af7`. The parent rehashed the **committed
+blob**, not the working tree:
+
+    $ git rev-parse HEAD:data/datasets/spreadsheetbench/verify/check.py | xargs git cat-file -p | sha256sum
+    98dd625481f091a8684dd4d7a66c17f07cf7a36c8bba160e27353e06988b1af7  -
+
+The binding was applied through the parent-side tool rather than edited by hand:
+
+    $ python3 tools/apply_blocker_proposal.py registry/proposals/w-spreadvacuous-merged.json \
+        --dataset spreadsheetbench --blocker dataset-journal-gap \
+        --acknowledge "Bind dataset scorer custody to the current shipped checker digest 5c247413" \
+        --acknowledge "record as the dated pre-fix observation" --apply
+    spreadsheetbench/dataset-journal-gap
+      next_action  2584 -> 2547 chars
+      observed     9774 -> 10411 chars
+    applied
+
+The two `--acknowledge` phrases are the point: the tool **refused** the first dry run because the replaced
+`next_action` sentence bound custody to the superseded cache-only digest `5c247413...` and kept
+`e7131a26...` as the dated observation. Both sentences had to be named before it would write, so the
+supersession is recorded rather than silently lost. `registry/w-spreadrt-runtime.md` is retained
+**unedited** as the record of what was observed then - line 56 still carries `e7131a26...`.
+
+Verification transcript
+-----------------------
+    $ python3 tools/check_dataset_blockers.py
+    {"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+
+    $ TMPDIR=/tmp/... python3 -m pytest -q tests/quality/test_spreadsheetbench_classification_w_spread2.py \
+        tests/quality/test_spreadsheetbench_control_submit.py      # HG_SPREADCACHE_ENGINE_CONTROL=1
+    57 passed, 353 warnings in 107.26s
+
+    $ TMPDIR=/tmp/... python3 -m pytest -q tests/quality/test_closure_assessment.py \
+        tests/quality/test_dataset_blockers.py tests/quality/test_apply_blocker_proposal.py
+    90 passed in 5.10s
+
+    $ python3 -c "<round-trip check>"
+    round-trips byte-exactly: True
+
+One guard had to be repaired for the closure, and this is the honest record of it. With all six
+journal-coverage blockers closed, `tests/quality/test_dataset_blockers.py`'s
+`test_every_journal_coverage_dataset_points_to_its_migrated_review` lost its `assert covered`
+non-vacuity check because the live set is now empty. The assertion was **replaced, not deleted**: the
+guard now fails on a future journal-coverage blocker whose review identity was never mapped (instead of
+raising `KeyError`), asserts every migrated review identity still names a published dataset, and asserts
+there are still exactly six of them - which is what keeps the parametrized content check below it from
+shrinking silently.
+
+What this closure does NOT do
+-----------------------------
+THIS CLOSES NO MEASUREMENT AND CLAIMS NO SCORE. `spreadsheetbench` has never had a measured run here, no
+coverage count is promoted, and no diagnostic or pilot is authorized. Retained as preconditions on any
+future, separately authorized diagnostic (which must use its own fresh run ID and the current staged
+policy): the coverage obligation, the fresh bounded no-model regressions with real engine invocation,
+correct fresh cached values and explicit network isolation, and the reconciliation of any diagnostic
+manifest with the bounded first-five packet.
+
+What the parent did NOT verify here
+-----------------------------------
+* No upstream evaluator was re-authenticated or re-executed; the metric statement's upstream side rests on
+  the previously retained `registry/w-metriccmp-sources/` captures.
+* The `[999,888] -> [5,10]` engine control ran as part of the 57-passed suite above, but the parent did not
+  independently re-read the engine's own receipt from that run; `registry/w-spreadcache`'s own transcript is
+  the authority for the conversion detail.
+* The 5 not-gradable-as-installed rows and the 1 policy-retained row were **not** re-audited here; the
+  inventory in `registry/w-spreadelig-eligibility.md` was reviewed, not recomputed.
+* Whether a future diagnostic can actually select a single side for these tasks remains UNKNOWN; that is
+  exactly what the retained reconciliation clause is for.
