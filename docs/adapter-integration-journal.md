@@ -4953,3 +4953,32 @@ cases).
   `reward == f1 == 2/3` while `correct is False`, with the derivation in a comment - which is exactly the
   case EM-as-reward would have scored 0. The earlier `w-hotpotqa` branch (reward = EM) is superseded and
   must not be merged.
+
+## 2026-10-16 (round 5) — Two parent decisions, so the record does not leave them implicit
+
+- **The BFCL preflight gate stays unwired, and that is a decision rather than an omission.** The gate
+  (`tests/fixtures/hg_bfclguard/gate.py`) refuses every `BinOp` — because even `1 + 2` reaches the
+  upstream `eval` — and bounds input size, node count and depth; it ships with controls and its own
+  docstring says "TEST ONLY, UNWIRED ... No production containment or official execution authorization is
+  supplied here". Wiring it into `data/datasets/bfcl_v3.py` would guard a path that provably does not call
+  the decoder (`known_target_imports: 0`, `target_mechanisms: 0` over 317 enumerated files plus four
+  dynamic controls), i.e. **dead code that reads as containment**, and the actual risk lives in retained
+  upstream source that this platform must not patch. The obligation therefore lives in `bfcl_v3`'s
+  `next_action` instead: a future official-scorer execution routes prompting text through
+  `guarded_decode` or records why it does not. Recorded in the registry's `observed` field.
+- **The `exec` admission gate is a planning fact, not a defect to fix.** `eval/run/runner.py`'s
+  `_refuse_unobserved_policies` refuses a declaration this process does not apply, so an ordinary driver
+  run of AppWorld, GAIA, τ-bench or Terminal-Bench is refused at admission
+  (`backend_observation_unavailable`) and only a bound single-task diagnostic can execute them - which by
+  construction publishes no comparable score. That is what makes their numbers "diagnostic" rather than
+  "leaderboard", and it is the reason a full run of those four needs an explicit operator decision rather
+  than a code change. It will be stated in the disclosure table's preamble so a reader of a number meets
+  it there; it is recorded here so the next session does not rediscover it as a bug.
+- Also fixed this round: nothing needed a code change, so no merges. `w-evidence` is still writing its
+  Range-D packet (8 documents plus 3 registry proposals), and its **first version describes the pre-fix
+  tree** - eight disclosure rows and two qualification passages were written before this phase's fixes
+  landed (alfworld 30 actions, hotpotqa joint EM, the LiveCodeBench 600 s cap, AgentDojo's custom attack
+  and in-goal warning, FEVER's flat singletons, GSM8K's last-number rule, BFCL's non-call lines, DS-1000's
+  actor-visible `code_context`). Those rows are accurate about the code the worker could see and wrong
+  about the code that is now in `main`; a focused follow-up will re-derive them, with the row-by-row
+  correction list supplied by the parent rather than left to free interpretation.
