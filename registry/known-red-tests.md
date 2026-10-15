@@ -477,3 +477,40 @@ commit to `main` during it invalidates the driver-based files in it, which is ho
 appeared red. Second, the honest end state of this file is not "no reds" - `test_we5_equivalence.py` and
 `test_external_provenance_b5.py` are red for recorded, enumerated reasons, and `test_isolation.py` carries
 the known pre-existing failure.
+
+## A shared assertion constant is a pin whose blast radius is every importer
+
+`w-jerichoadm` narrowed `eval/run/runner.py:_refuse_unobserved_policies` so that a declaration is a
+refused field only when *this process* does not apply it, and correctly corrected the guard pins it was
+briefed on - four files, reported as 115 passed / 3 skipped, and independently reproduced by the parent.
+Eight further tests still failed at integration, in `test_container.py` (6) and `test_services.py` (2),
+because both import `EXEC_POLICY_FIELDS` from `tests/quality/policy_assertions.py`, and that constant
+still named `env.agent_timeout_s` and `env.verify_timeout_s`. The same constant is imported by
+`test_container_state.py`, `test_jericho_runtime_admission.py`, `test_web_gateway.py` and
+`test_appworld_service_diagnosis.py` as well, so the stale set had a blast radius of six files and none
+of them was in the worker's scope or its report.
+
+`EXEC_POLICY_FIELDS` is now the four fields these fixtures are actually refused for - `env.cpus`,
+`env.exec_defaults`, `env.memory_mb`, `env.network` - with the two timeout fields' absence explained
+beside it (`eval/run/runner.py:41-72`: they flow through `phase_timeout` to the platform's own subprocess
+deadlines, so they are not evidence a backend must supply). Verified after the fix:
+`test_container.py test_services.py test_container_state.py test_verifier.py test_sandbox.py
+test_parallel_tasks.py` = **136 passed**.
+
+**Method note.** "N guard files pass" is only as wide as the files that were run. When a change moves a
+value that a shared test module exports, grep for the symbol rather than for the files in the brief:
+`grep -rn "EXEC_POLICY_FIELDS" tests/` would have found all six importers in one command.
+
+## Closing the last journal-coverage blocker emptied a non-vacuity assertion
+
+`test_every_journal_coverage_dataset_points_to_its_migrated_review` asserted `covered` was non-empty so
+the guard could not become vacuous. All six journal-coverage blockers are now closed
+(`fever`, `physicsquestions`, `reasoning_gym`, `sportsunderstanding`, `spreadsheetbench`, `strategyqa`),
+so the live set is empty and that assertion had nothing left to assert.
+
+It was **replaced, not deleted**: the guard now fails on a future journal-coverage blocker whose review
+identity was never mapped (rather than raising `KeyError`), asserts every migrated review identity still
+names a published dataset, and asserts there are still exactly six of them - which is what keeps the
+parametrized content check below it from shrinking silently. The substitution is recorded in
+`registry/w-close7-validation.txt` because editing a guard to fit a closure is the exact move that can
+hide a defect.
