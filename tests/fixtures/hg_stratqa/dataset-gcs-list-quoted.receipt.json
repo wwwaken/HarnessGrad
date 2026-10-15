@@ -1,0 +1,59 @@
+{
+  "url": "https://storage.googleapis.com/ai2i?prefix=strategyqa%2Fdata%2F&max-keys=100",
+  "method": "GET",
+  "tls": "ssl.create_default_context()",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-source-audit/1.0",
+    "Accept-Encoding": "identity"
+  },
+  "max_response_bytes": 950000,
+  "redirects": [],
+  "final_url": "https://storage.googleapis.com/ai2i?prefix=strategyqa%2Fdata%2F&max-keys=100",
+  "status": 200,
+  "response_headers": [
+    [
+      "Content-Type",
+      "application/xml; charset=UTF-8"
+    ],
+    [
+      "X-GUploader-UploadID",
+      "AP6rU80Yh-Do4qB-yEzoCsGRQaYKtNtFN4O8X0eMjya5Gdq3AmxtLVPPaA9hX-wCKz36fylS-cEtLAI"
+    ],
+    [
+      "x-goog-metageneration",
+      "20"
+    ],
+    [
+      "Content-Length",
+      "1043"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 09:36:41 GMT"
+    ],
+    [
+      "Expires",
+      "Thu, 15 Oct 2026 09:36:41 GMT"
+    ],
+    [
+      "Cache-Control",
+      "private, max-age=0"
+    ],
+    [
+      "Server",
+      "UploadServer"
+    ],
+    [
+      "Alt-Svc",
+      "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+    ],
+    [
+      "Connection",
+      "close"
+    ]
+  ],
+  "body_path": "tests/fixtures/hg_stratqa/dataset-gcs-list-quoted.body",
+  "body_bytes": 1043,
+  "body_sha256": "5ad36b9105f97db169fbcddd907e898c87feba1fe8c092a14047471dd0be3fb6",
+  "complete": true
+}

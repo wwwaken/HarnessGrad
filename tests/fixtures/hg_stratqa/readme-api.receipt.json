@@ -1,0 +1,123 @@
+{
+  "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/feee1f309586a3cfb4151570af2763dc0726a3f6",
+  "method": "GET",
+  "tls": "ssl.create_default_context()",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-source-audit/1.0",
+    "Accept-Encoding": "identity"
+  },
+  "max_response_bytes": 950000,
+  "redirects": [],
+  "final_url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/feee1f309586a3cfb4151570af2763dc0726a3f6",
+  "status": 200,
+  "response_headers": [
+    [
+      "Date",
+      "Thu, 15 Oct 2026 09:29:58 GMT"
+    ],
+    [
+      "Content-Type",
+      "application/json; charset=utf-8"
+    ],
+    [
+      "Cache-Control",
+      "public, max-age=86400, s-maxage=86400"
+    ],
+    [
+      "Vary",
+      "Accept,Accept-Encoding, Accept, X-Requested-With"
+    ],
+    [
+      "ETag",
+      "W/\"5b2a93ec88615e11b89616e381660f2795b8d32dee37e5611549bfd45bb1c8fc\""
+    ],
+    [
+      "X-GitHub-Media-Type",
+      "github.v3; format=json"
+    ],
+    [
+      "x-github-api-version-selected",
+      "2022-11-28"
+    ],
+    [
+      "Access-Control-Expose-Headers",
+      "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset, Warning"
+    ],
+    [
+      "Access-Control-Allow-Origin",
+      "*"
+    ],
+    [
+      "Strict-Transport-Security",
+      "max-age=31536000; includeSubdomains; preload"
+    ],
+    [
+      "X-Frame-Options",
+      "deny"
+    ],
+    [
+      "X-Content-Type-Options",
+      "nosniff"
+    ],
+    [
+      "X-XSS-Protection",
+      "0"
+    ],
+    [
+      "Referrer-Policy",
+      "origin-when-cross-origin, strict-origin-when-cross-origin"
+    ],
+    [
+      "Content-Security-Policy",
+      "default-src 'none'"
+    ],
+    [
+      "Server",
+      "github.com"
+    ],
+    [
+      "Accept-Ranges",
+      "bytes"
+    ],
+    [
+      "X-RateLimit-Limit",
+      "60"
+    ],
+    [
+      "X-RateLimit-Remaining",
+      "4"
+    ],
+    [
+      "X-RateLimit-Used",
+      "56"
+    ],
+    [
+      "X-RateLimit-Resource",
+      "core"
+    ],
+    [
+      "X-RateLimit-Reset",
+      "1792059626"
+    ],
+    [
+      "Transfer-Encoding",
+      "chunked"
+    ],
+    [
+      "X-GitHub-Request-Id",
+      "DBEA:87125:16FAB2C:237357F:6AD09D15"
+    ],
+    [
+      "x-github-edge-region",
+      "southeastasia"
+    ],
+    [
+      "connection",
+      "close"
+    ]
+  ],
+  "body_path": "tests/fixtures/hg_stratqa/readme-api.body",
+  "body_bytes": 16014,
+  "body_sha256": "5b2a93ec88615e11b89616e381660f2795b8d32dee37e5611549bfd45bb1c8fc",
+  "complete": true
+}

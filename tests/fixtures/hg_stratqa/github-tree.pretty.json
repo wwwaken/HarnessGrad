@@ -1,0 +1,830 @@
+{
+  "sha": "b31bdc2f04bb48d60672e606ad5974a83f70127f",
+  "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/b31bdc2f04bb48d60672e606ad5974a83f70127f",
+  "tree": [
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c7500b0b248d9b01928c1c39bf64bd8aca8a9499",
+      "size": 32,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/c7500b0b248d9b01928c1c39bf64bd8aca8a9499"
+    },
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "48ca3c975810a2eebbe3621ddb7516386e761c1f",
+      "size": 1067,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/48ca3c975810a2eebbe3621ddb7516386e761c1f"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "feee1f309586a3cfb4151570af2763dc0726a3f6",
+      "size": 11408,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/feee1f309586a3cfb4151570af2763dc0726a3f6"
+    },
+    {
+      "path": "configs",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ba0397c30ffb43899caa213da0a30a3676fa0a89",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/ba0397c30ffb43899caa213da0a30a3676fa0a89"
+    },
+    {
+      "path": "configs/decomposition",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "aa1a79802b4da3f2fef976770cd3e06726b8b255",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/aa1a79802b4da3f2fef976770cd3e06726b8b255"
+    },
+    {
+      "path": "configs/decomposition/bart_decomp_strategy_qa.jsonnet",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2ef47a78627d749fe407b3fe82ea0ad74ed138e9",
+      "size": 212,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/2ef47a78627d749fe407b3fe82ea0ad74ed138e9"
+    },
+    {
+      "path": "configs/decomposition/base.jsonnet",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f792d079abf39c5ed0aed55296713212ed240f3e",
+      "size": 1897,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/f792d079abf39c5ed0aed55296713212ed240f3e"
+    },
+    {
+      "path": "configs/for_STAR",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "cb53ad13b5958e8a1a5fcda97bf47273d11889a7",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/cb53ad13b5958e8a1a5fcda97bf47273d11889a7"
+    },
+    {
+      "path": "configs/for_STAR/1_twentyquestions.jsonnet",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d6024aba92a7da855af52ae1fd8219e698fe80e",
+      "size": 569,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/8d6024aba92a7da855af52ae1fd8219e698fe80e"
+    },
+    {
+      "path": "configs/for_STAR/2_boolq.jsonnet",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "07246031452001456cf52aa01d2209ad9d11cf6b",
+      "size": 575,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/07246031452001456cf52aa01d2209ad9d11cf6b"
+    },
+    {
+      "path": "configs/for_STAR/base.jsonnet",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "db2495382c2f5a08e09ebffe18e5aba165385793",
+      "size": 1665,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/db2495382c2f5a08e09ebffe18e5aba165385793"
+    },
+    {
+      "path": "configs/squad",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9aa97ef4be8796410d004601cc59659e8b7f11db",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/9aa97ef4be8796410d004601cc59659e8b7f11db"
+    },
+    {
+      "path": "configs/squad/transformer_qa.jsonnet",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f338acc422b4771dbbcbd5c1dc4c4d9dc1acff87",
+      "size": 2922,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/f338acc422b4771dbbcbd5c1dc4c4d9dc1acff87"
+    },
+    {
+      "path": "configs/squad/transformer_qa_large.jsonnet",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ab86d3f22cd416d23fb2e7292656f9bda5f27788",
+      "size": 150,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/ab86d3f22cd416d23fb2e7292656f9bda5f27788"
+    },
+    {
+      "path": "configs/strategy_qa",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9b1bd075fb637e8f5fcb7697b8778b8a87b7e8ca",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/9b1bd075fb637e8f5fcb7697b8778b8a87b7e8ca"
+    },
+    {
+      "path": "configs/strategy_qa/1_STAR_no_context.jsonnet",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eed43046b9aa6c888788bb7e3672fe74bbbde3ab",
+      "size": 86,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/eed43046b9aa6c888788bb7e3672fe74bbbde3ab"
+    },
+    {
+      "path": "configs/strategy_qa/2_IR-Q.jsonnet",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e8df2699097d7c8357cad3301432d17e0260942c",
+      "size": 83,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/e8df2699097d7c8357cad3301432d17e0260942c"
+    },
+    {
+      "path": "configs/strategy_qa/3_STAR_IR-Q.jsonnet",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "437a7da07b30f13f2d83bdcf2839c699bdfeb209",
+      "size": 89,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/437a7da07b30f13f2d83bdcf2839c699bdfeb209"
+    },
+    {
+      "path": "configs/strategy_qa/4_STAR_IR-D.jsonnet",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bbb25908fbd883dcb97efc6bbde811ff78e02bd3",
+      "size": 354,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/bbb25908fbd883dcb97efc6bbde811ff78e02bd3"
+    },
+    {
+      "path": "configs/strategy_qa/5_STAR_IR-ORA-D.jsonnet",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5edb6001455b46929e7ea0e3d8ddc7c2d80d77cd",
+      "size": 92,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/5edb6001455b46929e7ea0e3d8ddc7c2d80d77cd"
+    },
+    {
+      "path": "configs/strategy_qa/6_STAR_ORA-P.jsonnet",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b368946e126593924b876904eb506c45a7c4b0f2",
+      "size": 89,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/b368946e126593924b876904eb506c45a7c4b0f2"
+    },
+    {
+      "path": "configs/strategy_qa/7_STAR_ORA-P-D-last-step-raw.jsonnet",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d3622b357f97b01dbd7d0a4f028f441670fa6d57",
+      "size": 226,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/d3622b357f97b01dbd7d0a4f028f441670fa6d57"
+    },
+    {
+      "path": "configs/strategy_qa/8_STAR_ORA-P-D-last-step.jsonnet",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4bdb7aedd4866d3c6d764e3c3965d2a38569fb2a",
+      "size": 429,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/4bdb7aedd4866d3c6d764e3c3965d2a38569fb2a"
+    },
+    {
+      "path": "configs/strategy_qa/STAR_base.jsonnet",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "041c533c9f1fea556b63dca902121b915ddc555a",
+      "size": 301,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/041c533c9f1fea556b63dca902121b915ddc555a"
+    },
+    {
+      "path": "configs/strategy_qa/base.jsonnet",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "88b4def39f3159917b89d926126c277b3d60fffd",
+      "size": 2296,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/88b4def39f3159917b89d926126c277b3d60fffd"
+    },
+    {
+      "path": "data",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3266d6501cce127c048629ee31d17562af0736fa",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/3266d6501cce127c048629ee31d17562af0736fa"
+    },
+    {
+      "path": "data/strategyqa",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1db0999a67c097b818d4aaec302d11ec9e3e80f6",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/1db0999a67c097b818d4aaec302d11ec9e3e80f6"
+    },
+    {
+      "path": "data/strategyqa/dev.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "32932a11f4d7033bb700cacf5826d85607ba868c",
+      "size": 424195,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/32932a11f4d7033bb700cacf5826d85607ba868c"
+    },
+    {
+      "path": "data/strategyqa/generated",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5c16d622244a1efd97f1f4409141801e23317f0c",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/5c16d622244a1efd97f1f4409141801e23317f0c"
+    },
+    {
+      "path": "data/strategyqa/generated/bart_decomp_dev_predictions.jsonl",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "93725a64b467a386b91f1340bc2711d5db86c049",
+      "size": 90162,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/93725a64b467a386b91f1340bc2711d5db86c049"
+    },
+    {
+      "path": "data/strategyqa/generated/transformer_qa_ORA-P_dev_no_placeholders.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa743d06aae6ca906662ea515a1608267094a6e8",
+      "size": 464609,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/fa743d06aae6ca906662ea515a1608267094a6e8"
+    },
+    {
+      "path": "data/strategyqa/generated/transformer_qa_ORA-P_train_no_placeholders.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "21477e14ee7cca6ff687a3136673f366c5bc0ab8",
+      "size": 4224774,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/21477e14ee7cca6ff687a3136673f366c5bc0ab8"
+    },
+    {
+      "path": "data/strategyqa/queries_cache.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dab0ebdef90b923cdf7ffa4365403aff0d5ac8ab",
+      "size": 66992065,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/dab0ebdef90b923cdf7ffa4365403aff0d5ac8ab"
+    },
+    {
+      "path": "data/strategyqa/strategyqa_train_paragraphs.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f6993c8530af30d92da218b8369f762769e0c7e5",
+      "size": 7748648,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/f6993c8530af30d92da218b8369f762769e0c7e5"
+    },
+    {
+      "path": "data/strategyqa/train.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "df79706e10671bebebb87a610fdd434576c27a18",
+      "size": 3857762,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/df79706e10671bebebb87a610fdd434576c27a18"
+    },
+    {
+      "path": "elasticsearch_index",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7b82686b0104c71aa79af9765bb732d03392418c",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/7b82686b0104c71aa79af9765bb732d03392418c"
+    },
+    {
+      "path": "elasticsearch_index/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f1653a31a3fa005f49014170242d498755a7c561",
+      "size": 988,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/f1653a31a3fa005f49014170242d498755a7c561"
+    },
+    {
+      "path": "elasticsearch_index/index_wikipedia.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c05b0b1d3ebde183c03765dd33ce5b514d97566f",
+      "size": 4211,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/c05b0b1d3ebde183c03765dd33ce5b514d97566f"
+    },
+    {
+      "path": "elasticsearch_index/requirements.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0f7a0ddac67a40ccf152e35207be238c359fb514",
+      "size": 79,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/0f7a0ddac67a40ccf152e35207be238c359fb514"
+    },
+    {
+      "path": "graphs",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8e43927d288318723f874fd2717736c60946cbd7",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/8e43927d288318723f874fd2717736c60946cbd7"
+    },
+    {
+      "path": "graphs/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9c90168ce08111b5ff6b9e9ef676a282e72b50d3",
+      "size": 177,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/9c90168ce08111b5ff6b9e9ef676a282e72b50d3"
+    },
+    {
+      "path": "graphs/graph1.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "03e0d09ac6d2adb270d012cb7ecd5f9f9b5f9a42",
+      "size": 50779,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/03e0d09ac6d2adb270d012cb7ecd5f9f9b5f9a42"
+    },
+    {
+      "path": "graphs/graph2.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "30c78cb9da6eba818dbea4b6de04ce69d438528d",
+      "size": 56168,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/30c78cb9da6eba818dbea4b6de04ce69d438528d"
+    },
+    {
+      "path": "graphs/graph3.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b865f1743c9080752f3f227ad1a7e548b34d01e4",
+      "size": 60645,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/b865f1743c9080752f3f227ad1a7e548b34d01e4"
+    },
+    {
+      "path": "graphs/graphs_small.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "81dac9850683fbf541dab88de4a3527e188d5a88",
+      "size": 52251,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/81dac9850683fbf541dab88de4a3527e188d5a88"
+    },
+    {
+      "path": "ir_evaluation",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6d167e2bf52701a2004e603876c6268603054476",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/6d167e2bf52701a2004e603876c6268603054476"
+    },
+    {
+      "path": "ir_evaluation/get_paragraphs_by_config.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9b9391d18ab91d08cf38aad956009a33082929ba",
+      "size": 1571,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/9b9391d18ab91d08cf38aad956009a33082929ba"
+    },
+    {
+      "path": "ir_evaluation/recall@10.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a2c95a825533f90567e81585cadccce82d81b6bc",
+      "size": 2223,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/a2c95a825533f90567e81585cadccce82d81b6bc"
+    },
+    {
+      "path": "pyproject.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "037585e81567a46b86bdb12cacb8fe7a6b26cc0d",
+      "size": 30,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/037585e81567a46b86bdb12cacb8fe7a6b26cc0d"
+    },
+    {
+      "path": "requirements.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "39bc41a854a68afb895a760b0da125fa0a8e8c73",
+      "size": 129,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/39bc41a854a68afb895a760b0da125fa0a8e8c73"
+    },
+    {
+      "path": "run_scripts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "661acfccdc222754cba742d80a7148bb769cf4e5",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/661acfccdc222754cba742d80a7148bb769cf4e5"
+    },
+    {
+      "path": "run_scripts/evaluate.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e682cf90fe9d803129ea707e1b6431091d88807e",
+      "size": 3660,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/e682cf90fe9d803129ea707e1b6431091d88807e"
+    },
+    {
+      "path": "run_scripts/predict.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca06884727d281f69c1bead9f9065b5ffd9abaf0",
+      "size": 2921,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/ca06884727d281f69c1bead9f9065b5ffd9abaf0"
+    },
+    {
+      "path": "run_scripts/run.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2f303cce2d990ba94228ea419ff7b30cedd3fc10",
+      "size": 1503,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/2f303cce2d990ba94228ea419ff7b30cedd3fc10"
+    },
+    {
+      "path": "run_scripts/train.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f2040c500999cc58c10ca8893967a5fdcb23fe80",
+      "size": 3023,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/f2040c500999cc58c10ca8893967a5fdcb23fe80"
+    },
+    {
+      "path": "run_scripts/train_RoBERTa_STAR.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8f3f7e4135d9548c5956a7d293d64a99a05efc23",
+      "size": 1647,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/8f3f7e4135d9548c5956a7d293d64a99a05efc23"
+    },
+    {
+      "path": "src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "016100a5c0beb41f4aaf45428530d605908f863d",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/016100a5c0beb41f4aaf45428530d605908f863d"
+    },
+    {
+      "path": "src/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "src/data",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "32ea383f44dbe83d88ef03ea2d55c5f5d988cdcd",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/32ea383f44dbe83d88ef03ea2d55c5f5d988cdcd"
+    },
+    {
+      "path": "src/data/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "src/data/dataset_readers",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2f03d6215ba7073fcba850e31a67087588fd208b",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/2f03d6215ba7073fcba850e31a67087588fd208b"
+    },
+    {
+      "path": "src/data/dataset_readers/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "src/data/dataset_readers/base",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a1a010e45c26d8e99047a3efcccdd714709d25a3",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/a1a010e45c26d8e99047a3efcccdd714709d25a3"
+    },
+    {
+      "path": "src/data/dataset_readers/base/base_dataset_reader.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "67f4325c74c2ba0930d211ee6c64e579fd3878a0",
+      "size": 3307,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/67f4325c74c2ba0930d211ee6c64e579fd3878a0"
+    },
+    {
+      "path": "src/data/dataset_readers/boolean_qa_reader.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "43c4e32ed8ec286cf2b7ea9de42b8a09aec8788e",
+      "size": 4271,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/43c4e32ed8ec286cf2b7ea9de42b8a09aec8788e"
+    },
+    {
+      "path": "src/data/dataset_readers/squad_reader.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b46619924c82b02360cc56d9f46084c5e8f79963",
+      "size": 9985,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/b46619924c82b02360cc56d9f46084c5e8f79963"
+    },
+    {
+      "path": "src/data/dataset_readers/strategy_decomposition_reader.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0ac6c27535d42a8c2b458ab035e427e82c96fffa",
+      "size": 3341,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/0ac6c27535d42a8c2b458ab035e427e82c96fffa"
+    },
+    {
+      "path": "src/data/dataset_readers/strategy_qa_reader.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2802ad51195fb3a460db3b1902b0a0ee5fd93dbb",
+      "size": 15343,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/2802ad51195fb3a460db3b1902b0a0ee5fd93dbb"
+    },
+    {
+      "path": "src/data/dataset_readers/utils",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "06d06dbfa23603ff2001321f0aac3a4e32762b42",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/06d06dbfa23603ff2001321f0aac3a4e32762b42"
+    },
+    {
+      "path": "src/data/dataset_readers/utils/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "src/data/dataset_readers/utils/elasticsearch_utils.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a4c388c423633e01ef0721420e3089633cc0a446",
+      "size": 3015,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/a4c388c423633e01ef0721420e3089633cc0a446"
+    },
+    {
+      "path": "src/data/dataset_readers/utils/pickle_utils.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "60577267db8f482f675df2f16c5ffa5cdce9f617",
+      "size": 948,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/60577267db8f482f675df2f16c5ffa5cdce9f617"
+    },
+    {
+      "path": "src/data/dataset_readers/utils/standardization_utils.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6288af6669a60a6b14d919aa9366e38414f3bd50",
+      "size": 653,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/6288af6669a60a6b14d919aa9366e38414f3bd50"
+    },
+    {
+      "path": "src/data/fields",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4741c272c7afc51d350d936950263a5080cf7487",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/4741c272c7afc51d350d936950263a5080cf7487"
+    },
+    {
+      "path": "src/data/fields/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "src/data/fields/dictionary_field.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "40b4bfaceb05521023a5bdd8029936b9666ef31d",
+      "size": 3544,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/40b4bfaceb05521023a5bdd8029936b9666ef31d"
+    },
+    {
+      "path": "src/data/fields/labels_field.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b22364b5a28df25364e50e5fa93eee364c081423",
+      "size": 5419,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/b22364b5a28df25364e50e5fa93eee364c081423"
+    },
+    {
+      "path": "src/data/tokenizers",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c21665de399f4e80f5724d6d491c207b874e518f",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/c21665de399f4e80f5724d6d491c207b874e518f"
+    },
+    {
+      "path": "src/data/tokenizers/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "src/data/tokenizers/hf_tokenizer_wrapper.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d9ce17c105eff30c9b856f38f5521643a07d2623",
+      "size": 2551,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/d9ce17c105eff30c9b856f38f5521643a07d2623"
+    },
+    {
+      "path": "src/data/tokenizers/offset_mapping_utils.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "02a4db7e0ba3c9a9d4d48851035a49f6f3c8ce43",
+      "size": 9821,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/02a4db7e0ba3c9a9d4d48851035a49f6f3c8ce43"
+    },
+    {
+      "path": "src/data/tokenizers/tokens_interpreter.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a84be74c82f9fbfa7e3cd2ee12da9f7bebb62765",
+      "size": 5593,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/a84be74c82f9fbfa7e3cd2ee12da9f7bebb62765"
+    },
+    {
+      "path": "src/data/types.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "693ee450ecf57e7f618364d17e0e5501d6ae5604",
+      "size": 277,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/693ee450ecf57e7f618364d17e0e5501d6ae5604"
+    },
+    {
+      "path": "src/metrics",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7ef46327294ec98923b492e8b459938f47c98c83",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/7ef46327294ec98923b492e8b459938f47c98c83"
+    },
+    {
+      "path": "src/metrics/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "src/metrics/sari.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "46c93ba9655e073cc17ca469a68cfb42ca7a5c41",
+      "size": 10879,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/46c93ba9655e073cc17ca469a68cfb42ca7a5c41"
+    },
+    {
+      "path": "src/metrics/squad2_em_and_f1.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5de3da465a579d2a8f1fde1c0467b7ef53a829c0",
+      "size": 2555,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/5de3da465a579d2a8f1fde1c0467b7ef53a829c0"
+    },
+    {
+      "path": "src/models",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d221f22ded72e374cce7688d7b222cc886d96154",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/d221f22ded72e374cce7688d7b222cc886d96154"
+    },
+    {
+      "path": "src/models/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "src/models/gen_model.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "66eb25efb61ad523958be3be24ce43d9b78cb52d",
+      "size": 9198,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/66eb25efb61ad523958be3be24ce43d9b78cb52d"
+    },
+    {
+      "path": "src/models/hf_classifier.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "81912d4ee2227653ea1056c87a72c3c82496337b",
+      "size": 4857,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/81912d4ee2227653ea1056c87a72c3c82496337b"
+    },
+    {
+      "path": "src/models/iterative",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f1747c410f7374973096051ef91a2a39115e9c69",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/f1747c410f7374973096051ef91a2a39115e9c69"
+    },
+    {
+      "path": "src/models/iterative/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "src/models/iterative/reference_utils.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2e53f38dd266f559b60542e83239361d10d18f9f",
+      "size": 1424,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/2e53f38dd266f559b60542e83239361d10d18f9f"
+    },
+    {
+      "path": "src/models/iterative/run_model.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8ee859ae24692bd44b77542d0bd85b458c6f0ebc",
+      "size": 7149,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/8ee859ae24692bd44b77542d0bd85b458c6f0ebc"
+    },
+    {
+      "path": "src/models/qa",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "959a70f9212e003bec29f2adf1103418dbda65cf",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/959a70f9212e003bec29f2adf1103418dbda65cf"
+    },
+    {
+      "path": "src/models/qa/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "src/models/qa/transformer_qa.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c1abb26d4625c101191de3d877b2bf46d90ba850",
+      "size": 10963,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/c1abb26d4625c101191de3d877b2bf46d90ba850"
+    },
+    {
+      "path": "src/predictors",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7cc42fd684aae7c3bee4cd7204e071734c55177d",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/7cc42fd684aae7c3bee4cd7204e071734c55177d"
+    },
+    {
+      "path": "src/predictors/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "src/predictors/transformer_qa.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ef225a4b79beee58defe266123b9af0cb2b2561e",
+      "size": 5812,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/ef225a4b79beee58defe266123b9af0cb2b2561e"
+    },
+    {
+      "path": "tools",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a147cfce781b5dcc47bde188768d4695370338b2",
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/a147cfce781b5dcc47bde188768d4695370338b2"
+    },
+    {
+      "path": "tools/archive.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "455d135364cd2fd85cf3affecf6eaf3efb7ae4af",
+      "size": 841,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/455d135364cd2fd85cf3affecf6eaf3efb7ae4af"
+    },
+    {
+      "path": "tools/clean_queries_cache.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "548ba6d1db1a0f750b12ab9aa3bb330ab2ee9b0f",
+      "size": 2133,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/548ba6d1db1a0f750b12ab9aa3bb330ab2ee9b0f"
+    },
+    {
+      "path": "tools/squadify_boolq.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca270ed253f1bd818e4f0dae6b66f7e8d0ee1d29",
+      "size": 2121,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/ca270ed253f1bd818e4f0dae6b66f7e8d0ee1d29"
+    },
+    {
+      "path": "tools/tar_to_tar.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "920d0eeebdd6f00e454035ec057cf79dd66328f2",
+      "size": 1085,
+      "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/920d0eeebdd6f00e454035ec057cf79dd66328f2"
+    }
+  ],
+  "truncated": false
+}

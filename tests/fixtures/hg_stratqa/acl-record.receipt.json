@@ -1,0 +1,51 @@
+{
+  "url": "https://aclanthology.org/2021.tacl-1.21/",
+  "method": "GET",
+  "tls": "ssl.create_default_context()",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-source-audit/1.0",
+    "Accept-Encoding": "identity"
+  },
+  "max_response_bytes": 950000,
+  "redirects": [],
+  "final_url": "https://aclanthology.org/2021.tacl-1.21/",
+  "status": 200,
+  "response_headers": [
+    [
+      "Date",
+      "Thu, 15 Oct 2026 09:28:06 GMT"
+    ],
+    [
+      "Server",
+      "Apache/2.4.41 (Ubuntu)"
+    ],
+    [
+      "Last-Modified",
+      "Mon, 12 Oct 2026 19:27:43 GMT"
+    ],
+    [
+      "ETag",
+      "\"a6b4-65da9b12638d5\""
+    ],
+    [
+      "Accept-Ranges",
+      "bytes"
+    ],
+    [
+      "Content-Length",
+      "42676"
+    ],
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "Content-Type",
+      "text/html; charset=utf-8"
+    ]
+  ],
+  "body_path": "tests/fixtures/hg_stratqa/acl-record.body",
+  "body_bytes": 42676,
+  "body_sha256": "29498e7ea07a6ef1644287ce345653721a9fcfb97965145fa9904d9a86207dc3",
+  "complete": true
+}

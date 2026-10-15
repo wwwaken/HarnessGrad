@@ -1,0 +1,47 @@
+{
+  "url": "https://strategyqa.s3.us-east-2.amazonaws.com/?list-type=2&prefix=data%2F&max-keys=100",
+  "method": "GET",
+  "tls": "ssl.create_default_context()",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-source-audit/1.0",
+    "Accept-Encoding": "identity"
+  },
+  "max_response_bytes": 950000,
+  "redirects": [],
+  "final_url": "https://strategyqa.s3.us-east-2.amazonaws.com/?list-type=2&prefix=data%2F&max-keys=100",
+  "status": 404,
+  "response_headers": [
+    [
+      "Server",
+      "AmazonS3"
+    ],
+    [
+      "x-amz-request-id",
+      "KME2BC8D534DT3YZ"
+    ],
+    [
+      "x-amz-id-2",
+      "FPIizvMJi9nGKF32cQPitx8Ejws5eJQ+IDsUe95I+E4DVaeyI4OpNnhcSKkoFTHWGOJmJbRykFwf2oWJXB5IHk5GuX+Lyt6y"
+    ],
+    [
+      "Content-Type",
+      "application/xml"
+    ],
+    [
+      "Transfer-Encoding",
+      "chunked"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 09:36:41 GMT"
+    ],
+    [
+      "Connection",
+      "close"
+    ]
+  ],
+  "body_path": "tests/fixtures/hg_stratqa/dataset-s3-list-quoted.body",
+  "body_bytes": 320,
+  "body_sha256": "25de5b558ecfc023960ca595d5b380be6c100b4bae4a24bad225e5fd66e48f47",
+  "complete": true
+}

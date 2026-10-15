@@ -1,0 +1,91 @@
+{
+  "url": "https://ar5iv.labs.arxiv.org/html/2101.02235",
+  "method": "GET",
+  "tls": "ssl.create_default_context()",
+  "request_headers": {
+    "User-Agent": "HarnessGrad-source-audit/1.0",
+    "Accept-Encoding": "identity"
+  },
+  "max_response_bytes": 950000,
+  "redirects": [],
+  "final_url": "https://ar5iv.labs.arxiv.org/html/2101.02235",
+  "status": 200,
+  "response_headers": [
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "Content-Length",
+      "200954"
+    ],
+    [
+      "server",
+      "nginx/1.18.0 (Ubuntu)"
+    ],
+    [
+      "content-type",
+      "text/html; charset=utf-8"
+    ],
+    [
+      "x-frame-options",
+      "SAMEORIGIN"
+    ],
+    [
+      "cache-control",
+      "public, max-age=3600"
+    ],
+    [
+      "x-content-type-options",
+      "nosniff"
+    ],
+    [
+      "via",
+      "1.1 google, 1.1 varnish, 1.1 varnish, 1.1 varnish"
+    ],
+    [
+      "permissions-policy",
+      "interest-cohort=()"
+    ],
+    [
+      "Accept-Ranges",
+      "bytes"
+    ],
+    [
+      "Age",
+      "0"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 09:29:19 GMT"
+    ],
+    [
+      "X-Served-By",
+      "cache-lga-kjfk8660079-LGA, cache-lga-kjfk8660079-LGA, cache-lga-kjfk8660036-LGA, cache-sin-wsss1830054-SIN"
+    ],
+    [
+      "X-Cache",
+      "MISS, MISS, MISS"
+    ],
+    [
+      "X-Cache-Hits",
+      "0, 0, 0"
+    ],
+    [
+      "X-Timer",
+      "S1792056560.517229,VS0,VE264"
+    ],
+    [
+      "Vary",
+      "Accept-Encoding"
+    ],
+    [
+      "Strict-Transport-Security",
+      "max-age=300"
+    ]
+  ],
+  "body_path": "tests/fixtures/hg_stratqa/arxiv-paper-html.body",
+  "body_bytes": 200954,
+  "body_sha256": "349e3bc2781e5aae797cff1d23fe3f4ab37c2f35e7ff3ed321a885080cff0292",
+  "complete": true
+}

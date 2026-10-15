@@ -1,0 +1,2002 @@
+[
+  {
+    "capture": "acl-record",
+    "receipt": "tests/fixtures/hg_stratqa/acl-record.receipt.json",
+    "url": "https://aclanthology.org/2021.tacl-1.21/",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://aclanthology.org/2021.tacl-1.21/",
+    "status": 200,
+    "response_headers": [
+      [
+        "Date",
+        "Thu, 15 Oct 2026 09:28:06 GMT"
+      ],
+      [
+        "Server",
+        "Apache/2.4.41 (Ubuntu)"
+      ],
+      [
+        "Last-Modified",
+        "Mon, 12 Oct 2026 19:27:43 GMT"
+      ],
+      [
+        "ETag",
+        "\"a6b4-65da9b12638d5\""
+      ],
+      [
+        "Accept-Ranges",
+        "bytes"
+      ],
+      [
+        "Content-Length",
+        "42676"
+      ],
+      [
+        "Connection",
+        "close"
+      ],
+      [
+        "Content-Type",
+        "text/html; charset=utf-8"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/acl-record.body",
+    "body_bytes": 42676,
+    "body_sha256": "29498e7ea07a6ef1644287ce345653721a9fcfb97965145fa9904d9a86207dc3",
+    "complete": true
+  },
+  {
+    "capture": "arxiv-paper-html",
+    "receipt": "tests/fixtures/hg_stratqa/arxiv-paper-html.receipt.json",
+    "url": "https://ar5iv.labs.arxiv.org/html/2101.02235",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://ar5iv.labs.arxiv.org/html/2101.02235",
+    "status": 200,
+    "response_headers": [
+      [
+        "Connection",
+        "close"
+      ],
+      [
+        "Content-Length",
+        "200954"
+      ],
+      [
+        "server",
+        "nginx/1.18.0 (Ubuntu)"
+      ],
+      [
+        "content-type",
+        "text/html; charset=utf-8"
+      ],
+      [
+        "x-frame-options",
+        "SAMEORIGIN"
+      ],
+      [
+        "cache-control",
+        "public, max-age=3600"
+      ],
+      [
+        "x-content-type-options",
+        "nosniff"
+      ],
+      [
+        "via",
+        "1.1 google, 1.1 varnish, 1.1 varnish, 1.1 varnish"
+      ],
+      [
+        "permissions-policy",
+        "interest-cohort=()"
+      ],
+      [
+        "Accept-Ranges",
+        "bytes"
+      ],
+      [
+        "Age",
+        "0"
+      ],
+      [
+        "Date",
+        "Thu, 15 Oct 2026 09:29:19 GMT"
+      ],
+      [
+        "X-Served-By",
+        "cache-lga-kjfk8660079-LGA, cache-lga-kjfk8660079-LGA, cache-lga-kjfk8660036-LGA, cache-sin-wsss1830054-SIN"
+      ],
+      [
+        "X-Cache",
+        "MISS, MISS, MISS"
+      ],
+      [
+        "X-Cache-Hits",
+        "0, 0, 0"
+      ],
+      [
+        "X-Timer",
+        "S1792056560.517229,VS0,VE264"
+      ],
+      [
+        "Vary",
+        "Accept-Encoding"
+      ],
+      [
+        "Strict-Transport-Security",
+        "max-age=300"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/arxiv-paper-html.body",
+    "body_bytes": 200954,
+    "body_sha256": "349e3bc2781e5aae797cff1d23fe3f4ab37c2f35e7ff3ed321a885080cff0292",
+    "complete": true
+  },
+  {
+    "capture": "dataset-gcs-list-quoted",
+    "receipt": "tests/fixtures/hg_stratqa/dataset-gcs-list-quoted.receipt.json",
+    "url": "https://storage.googleapis.com/ai2i?prefix=strategyqa%2Fdata%2F&max-keys=100",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://storage.googleapis.com/ai2i?prefix=strategyqa%2Fdata%2F&max-keys=100",
+    "status": 200,
+    "response_headers": [
+      [
+        "Content-Type",
+        "application/xml; charset=UTF-8"
+      ],
+      [
+        "X-GUploader-UploadID",
+        "AP6rU80Yh-Do4qB-yEzoCsGRQaYKtNtFN4O8X0eMjya5Gdq3AmxtLVPPaA9hX-wCKz36fylS-cEtLAI"
+      ],
+      [
+        "x-goog-metageneration",
+        "20"
+      ],
+      [
+        "Content-Length",
+        "1043"
+      ],
+      [
+        "Date",
+        "Thu, 15 Oct 2026 09:36:41 GMT"
+      ],
+      [
+        "Expires",
+        "Thu, 15 Oct 2026 09:36:41 GMT"
+      ],
+      [
+        "Cache-Control",
+        "private, max-age=0"
+      ],
+      [
+        "Server",
+        "UploadServer"
+      ],
+      [
+        "Alt-Svc",
+        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+      ],
+      [
+        "Connection",
+        "close"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/dataset-gcs-list-quoted.body",
+    "body_bytes": 1043,
+    "body_sha256": "5ad36b9105f97db169fbcddd907e898c87feba1fe8c092a14047471dd0be3fb6",
+    "complete": true
+  },
+  {
+    "capture": "dataset-gcs-list",
+    "receipt": "tests/fixtures/hg_stratqa/dataset-gcs-list.receipt.json",
+    "url": "https://storage.googleapis.com/ai2i?prefix=strategyqa%2Fdata%2F",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://storage.googleapis.com/ai2i?prefix=strategyqa%2Fdata%2F",
+    "status": 200,
+    "response_headers": [
+      [
+        "Content-Type",
+        "application/xml; charset=UTF-8"
+      ],
+      [
+        "X-GUploader-UploadID",
+        "AP6rU82KxedXPVxTkch26UEWkpmsbKjxX4150EOJL6qHUZhbYXtCA0UElEyrBtJjNr6gJieV"
+      ],
+      [
+        "x-goog-metageneration",
+        "20"
+      ],
+      [
+        "Content-Length",
+        "1021"
+      ],
+      [
+        "Date",
+        "Thu, 15 Oct 2026 09:35:41 GMT"
+      ],
+      [
+        "Expires",
+        "Thu, 15 Oct 2026 09:35:41 GMT"
+      ],
+      [
+        "Cache-Control",
+        "private, max-age=0"
+      ],
+      [
+        "Server",
+        "UploadServer"
+      ],
+      [
+        "Alt-Svc",
+        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+      ],
+      [
+        "Connection",
+        "close"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/dataset-gcs-list.body",
+    "body_bytes": 1021,
+    "body_sha256": "8072400b5f7ca7ecbecbe8df025519d465bd0b79bafac37ad6dd1582299e2b42",
+    "complete": true
+  },
+  {
+    "capture": "dataset-github-pages",
+    "receipt": "tests/fixtures/hg_stratqa/dataset-github-pages.receipt.json",
+    "url": "https://allenai.github.io/strategyqa/",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://allenai.github.io/strategyqa/",
+    "status": 404,
+    "response_headers": [
+      [
+        "Connection",
+        "close"
+      ],
+      [
+        "Content-Length",
+        "9115"
+      ],
+      [
+        "Server",
+        "GitHub.com"
+      ],
+      [
+        "Content-Type",
+        "text/html; charset=utf-8"
+      ],
+      [
+        "ETag",
+        "\"6abcf5c5-239b\""
+      ],
+      [
+        "Content-Security-Policy",
+        "default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'"
+      ],
+      [
+        "X-GitHub-Request-Id",
+        "4EB2:24847C:4097B2:43AC3E:6AD09D4B"
+      ],
+      [
+        "x-github-edge-region",
+        "southeastasia"
+      ],
+      [
+        "Accept-Ranges",
+        "bytes"
+      ],
+      [
+        "Age",
+        "0"
+      ],
+      [
+        "Date",
+        "Thu, 15 Oct 2026 09:30:51 GMT"
+      ],
+      [
+        "Via",
+        "1.1 varnish"
+      ],
+      [
+        "X-Served-By",
+        "cache-sin-wsss1830053-SIN"
+      ],
+      [
+        "X-Cache",
+        "MISS"
+      ],
+      [
+        "X-Cache-Hits",
+        "0"
+      ],
+      [
+        "X-Timer",
+        "S1792056651.313294,VS0,VE247"
+      ],
+      [
+        "Vary",
+        "Accept-Encoding"
+      ],
+      [
+        "X-Fastly-Request-ID",
+        "a5ff56447760fa574b1c7b18e90944f674899f63"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/dataset-github-pages.body",
+    "body_bytes": 9115,
+    "body_sha256": "70d613e3acfba24fd2876fcbacaf639e1e111ef4d54baf70761c47673f37d6a3",
+    "complete": true
+  },
+  {
+    "capture": "dataset-s3-list-quoted",
+    "receipt": "tests/fixtures/hg_stratqa/dataset-s3-list-quoted.receipt.json",
+    "url": "https://strategyqa.s3.us-east-2.amazonaws.com/?list-type=2&prefix=data%2F&max-keys=100",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://strategyqa.s3.us-east-2.amazonaws.com/?list-type=2&prefix=data%2F&max-keys=100",
+    "status": 404,
+    "response_headers": [
+      [
+        "Server",
+        "AmazonS3"
+      ],
+      [
+        "x-amz-request-id",
+        "KME2BC8D534DT3YZ"
+      ],
+      [
+        "x-amz-id-2",
+        "FPIizvMJi9nGKF32cQPitx8Ejws5eJQ+IDsUe95I+E4DVaeyI4OpNnhcSKkoFTHWGOJmJbRykFwf2oWJXB5IHk5GuX+Lyt6y"
+      ],
+      [
+        "Content-Type",
+        "application/xml"
+      ],
+      [
+        "Transfer-Encoding",
+        "chunked"
+      ],
+      [
+        "Date",
+        "Thu, 15 Oct 2026 09:36:41 GMT"
+      ],
+      [
+        "Connection",
+        "close"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/dataset-s3-list-quoted.body",
+    "body_bytes": 320,
+    "body_sha256": "25de5b558ecfc023960ca595d5b380be6c100b4bae4a24bad225e5fd66e48f47",
+    "complete": true
+  },
+  {
+    "capture": "dataset-s3-list",
+    "receipt": "tests/fixtures/hg_stratqa/dataset-s3-list.receipt.json",
+    "url": "https://strategyqa.s3.us-east-2.amazonaws.com/?list-type=2",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://strategyqa.s3.us-east-2.amazonaws.com/?list-type=2",
+    "status": 404,
+    "response_headers": [
+      [
+        "Server",
+        "AmazonS3"
+      ],
+      [
+        "x-amz-request-id",
+        "PDAR7HBNAA39K01X"
+      ],
+      [
+        "x-amz-id-2",
+        "fm7DQcj5jLGtHfiwd593qOvmgv1I74U9GTiR+ehjctUZxinUhVr6exu7YlASXrEEGuXtOk3YR9irBfEGXionItclTEtRI7Yd"
+      ],
+      [
+        "Content-Type",
+        "application/xml"
+      ],
+      [
+        "Transfer-Encoding",
+        "chunked"
+      ],
+      [
+        "Date",
+        "Thu, 15 Oct 2026 09:34:48 GMT"
+      ],
+      [
+        "Connection",
+        "close"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/dataset-s3-list.body",
+    "body_bytes": 320,
+    "body_sha256": "b1a5084824c6c4567dc93f8a3bf0db5448bf0b9107b0e747c547bae296ea3e48",
+    "complete": true
+  },
+  {
+    "capture": "dataset-zip-tail",
+    "receipt": "tests/fixtures/hg_stratqa/dataset-zip-tail.receipt.json",
+    "url": "https://storage.googleapis.com/ai2i/strategyqa/data/strategyqa_dataset.zip?generation=1610016136750122",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity",
+      "Range": "bytes=-4096"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://storage.googleapis.com/ai2i/strategyqa/data/strategyqa_dataset.zip?generation=1610016136750122",
+    "status": 206,
+    "response_headers": [
+      [
+        "Content-Type",
+        "application/zip"
+      ],
+      [
+        "X-GUploader-UploadID",
+        "AP6rU83S4cghs5t45mfkRNQ4QqmIT1J4ZLcyBEuEvNlupBISuSrKAOUsvYLKIGuWNAA9uZmz6Wq9HXY"
+      ],
+      [
+        "Expires",
+        "Thu, 15 Oct 2026 10:37:57 GMT"
+      ],
+      [
+        "Date",
+        "Thu, 15 Oct 2026 09:37:57 GMT"
+      ],
+      [
+        "Cache-Control",
+        "public, max-age=3600"
+      ],
+      [
+        "Last-Modified",
+        "Thu, 07 Jan 2021 10:42:16 GMT"
+      ],
+      [
+        "ETag",
+        "\"f4ae9d9296c06f90d80aee1e4a25d58a\""
+      ],
+      [
+        "x-goog-generation",
+        "1610016136750122"
+      ],
+      [
+        "x-goog-metageneration",
+        "2"
+      ],
+      [
+        "x-goog-stored-content-encoding",
+        "identity"
+      ],
+      [
+        "x-goog-stored-content-length",
+        "3434332"
+      ],
+      [
+        "x-goog-hash",
+        "crc32c=i/fHCg=="
+      ],
+      [
+        "x-goog-hash",
+        "md5=9K6dkpbAb5DYCu4eSiXVig=="
+      ],
+      [
+        "x-goog-storage-class",
+        "REGIONAL"
+      ],
+      [
+        "Accept-Ranges",
+        "bytes"
+      ],
+      [
+        "Content-Range",
+        "bytes 3430236-3434331/3434332"
+      ],
+      [
+        "Content-Length",
+        "4096"
+      ],
+      [
+        "Server",
+        "UploadServer"
+      ],
+      [
+        "Alt-Svc",
+        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+      ],
+      [
+        "Connection",
+        "close"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/dataset-zip-tail.body",
+    "body_bytes": 4096,
+    "body_sha256": "f764dced89fb17e3abb3f212aecad208b7a5cd238ffe0d5a786def584951df4b",
+    "complete": true
+  },
+  {
+    "capture": "evaluator-code-api",
+    "receipt": "tests/fixtures/hg_stratqa/evaluator-code-api.receipt.json",
+    "url": "https://api.github.com/repos/allenai/strategyqa-evaluator/git/blobs/9717ac6bfd7f3428cb15aa87f3e0ab5873458ce1",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://api.github.com/repos/allenai/strategyqa-evaluator/git/blobs/9717ac6bfd7f3428cb15aa87f3e0ab5873458ce1",
+    "status": 403,
+    "response_headers": [
+      [
+        "Date",
+        "Thu, 15 Oct 2026 09:34:48 GMT"
+      ],
+      [
+        "Server",
+        "Varnish"
+      ],
+      [
+        "Strict-Transport-Security",
+        "max-age=31536000; includeSubdomains; preload"
+      ],
+      [
+        "X-Content-Type-Options",
+        "nosniff"
+      ],
+      [
+        "X-Frame-Options",
+        "deny"
+      ],
+      [
+        "X-XSS-Protection",
+        "1; mode=block"
+      ],
+      [
+        "Content-Security-Policy",
+        "default-src 'none'; style-src 'unsafe-inline'"
+      ],
+      [
+        "Access-Control-Allow-Origin",
+        "*"
+      ],
+      [
+        "Access-Control-Expose-Headers",
+        "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, X-RateLimit-Used, X-RateLimit-Resource, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, Deprecation, Sunset"
+      ],
+      [
+        "Content-Type",
+        "application/json; charset=utf-8"
+      ],
+      [
+        "Referrer-Policy",
+        "origin-when-cross-origin, strict-origin-when-cross-origin"
+      ],
+      [
+        "X-GitHub-Media-Type",
+        "github.v3; format=json"
+      ],
+      [
+        "X-RateLimit-Limit",
+        "60"
+      ],
+      [
+        "X-RateLimit-Remaining",
+        "0"
+      ],
+      [
+        "X-RateLimit-Used",
+        "60"
+      ],
+      [
+        "X-RateLimit-Resource",
+        "core"
+      ],
+      [
+        "X-RateLimit-Reset",
+        "1792059626"
+      ],
+      [
+        "Content-Length",
+        "279"
+      ],
+      [
+        "X-GitHub-Request-Id",
+        "BA5C:295B39:1714904:23A3D10:6AD09E38"
+      ],
+      [
+        "x-github-edge-region",
+        "southeastasia"
+      ],
+      [
+        "connection",
+        "close"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/evaluator-code-api.body",
+    "body_bytes": 279,
+    "body_sha256": "fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b",
+    "complete": true
+  },
+  {
+    "capture": "evaluator-code-cdn",
+    "receipt": "tests/fixtures/hg_stratqa/evaluator-code-cdn.receipt.json",
+    "url": "https://cdn.jsdelivr.net/gh/allenai/strategyqa-evaluator@49b88ed2b2f1b57385c13e8a0699dee1d227f83e/evaluator/eval.py",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "status": null,
+    "error": "URLError: <urlopen error [Errno 104] Connection reset by peer>"
+  },
+  {
+    "capture": "evaluator-code-raw",
+    "receipt": "tests/fixtures/hg_stratqa/evaluator-code-raw.receipt.json",
+    "url": "https://raw.githubusercontent.com/allenai/strategyqa-evaluator/49b88ed2b2f1b57385c13e8a0699dee1d227f83e/evaluator/eval.py",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "status": null,
+    "error": "URLError: <urlopen error [Errno 104] Connection reset by peer>"
+  },
+  {
+    "capture": "evaluator-codeload",
+    "receipt": "tests/fixtures/hg_stratqa/evaluator-codeload.receipt.json",
+    "url": "https://codeload.github.com/allenai/strategyqa-evaluator/zip/49b88ed2b2f1b57385c13e8a0699dee1d227f83e",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://codeload.github.com/allenai/strategyqa-evaluator/zip/49b88ed2b2f1b57385c13e8a0699dee1d227f83e",
+    "status": 200,
+    "response_headers": [
+      [
+        "Access-Control-Allow-Origin",
+        "https://render.githubusercontent.com"
+      ],
+      [
+        "content-disposition",
+        "attachment; filename=strategyqa-evaluator-49b88ed2b2f1b57385c13e8a0699dee1d227f83e.zip"
+      ],
+      [
+        "Content-Security-Policy",
+        "default-src 'none'; style-src 'unsafe-inline'; sandbox"
+      ],
+      [
+        "Content-Type",
+        "application/zip"
+      ],
+      [
+        "cross-origin-resource-policy",
+        "cross-origin"
+      ],
+      [
+        "ETag",
+        "\"506cf24f0e74c0115f32e282073439c22c2128a2dd84e2104ebb18409d24e7c4\""
+      ],
+      [
+        "Strict-Transport-Security",
+        "max-age=31536000"
+      ],
+      [
+        "Vary",
+        "Authorization,Accept-Encoding"
+      ],
+      [
+        "X-Content-Type-Options",
+        "nosniff"
+      ],
+      [
+        "X-Frame-Options",
+        "deny"
+      ],
+      [
+        "X-XSS-Protection",
+        "1; mode=block"
+      ],
+      [
+        "Date",
+        "Thu, 15 Oct 2026 09:36:39 GMT"
+      ],
+      [
+        "Transfer-Encoding",
+        "chunked"
+      ],
+      [
+        "X-GitHub-Request-Id",
+        "EC74:737D7:ADC64:13B073:6AD09EA7"
+      ],
+      [
+        "x-github-edge-region",
+        "southeastasia"
+      ],
+      [
+        "connection",
+        "close"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/evaluator-codeload.body",
+    "body_bytes": 19726,
+    "body_sha256": "fd656478f987622655eca17a3a42995d83aaa407df05e71488146c2d47f0f1ba",
+    "complete": true
+  },
+  {
+    "capture": "evaluator-head",
+    "receipt": "tests/fixtures/hg_stratqa/evaluator-head.receipt.json",
+    "url": "https://api.github.com/repos/allenai/strategyqa-evaluator/commits/main",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://api.github.com/repos/allenai/strategyqa-evaluator/commits/main",
+    "status": 200,
+    "response_headers": [
+      [
+        "Date",
+        "Thu, 15 Oct 2026 09:31:23 GMT"
+      ],
+      [
+        "Content-Type",
+        "application/json; charset=utf-8"
+      ],
+      [
+        "Cache-Control",
+        "public, max-age=60, s-maxage=60"
+      ],
+      [
+        "Vary",
+        "Accept,Accept-Encoding, Accept, X-Requested-With"
+      ],
+      [
+        "ETag",
+        "W/\"892b546fd96f1c7844c9dee0b9bb28baa6a65aea0c0cee64af87015d4e42658b\""
+      ],
+      [
+        "Last-Modified",
+        "Fri, 29 Jan 2021 09:38:28 GMT"
+      ],
+      [
+        "X-GitHub-Media-Type",
+        "github.v3; format=json"
+      ],
+      [
+        "x-github-api-version-selected",
+        "2022-11-28"
+      ],
+      [
+        "Access-Control-Expose-Headers",
+        "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset, Warning"
+      ],
+      [
+        "Access-Control-Allow-Origin",
+        "*"
+      ],
+      [
+        "Strict-Transport-Security",
+        "max-age=31536000; includeSubdomains; preload"
+      ],
+      [
+        "X-Frame-Options",
+        "deny"
+      ],
+      [
+        "X-Content-Type-Options",
+        "nosniff"
+      ],
+      [
+        "X-XSS-Protection",
+        "0"
+      ],
+      [
+        "Referrer-Policy",
+        "origin-when-cross-origin, strict-origin-when-cross-origin"
+      ],
+      [
+        "Content-Security-Policy",
+        "default-src 'none'"
+      ],
+      [
+        "Server",
+        "github.com"
+      ],
+      [
+        "Accept-Ranges",
+        "bytes"
+      ],
+      [
+        "X-RateLimit-Limit",
+        "60"
+      ],
+      [
+        "X-RateLimit-Remaining",
+        "1"
+      ],
+      [
+        "X-RateLimit-Used",
+        "59"
+      ],
+      [
+        "X-RateLimit-Resource",
+        "core"
+      ],
+      [
+        "X-RateLimit-Reset",
+        "1792059626"
+      ],
+      [
+        "Content-Length",
+        "5461"
+      ],
+      [
+        "X-GitHub-Request-Id",
+        "A9F0:3E2D69:170E778:238EBB1:6AD09D6B"
+      ],
+      [
+        "x-github-edge-region",
+        "southeastasia"
+      ],
+      [
+        "connection",
+        "close"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/evaluator-head.body",
+    "body_bytes": 5461,
+    "body_sha256": "892b546fd96f1c7844c9dee0b9bb28baa6a65aea0c0cee64af87015d4e42658b",
+    "complete": true
+  },
+  {
+    "capture": "evaluator-html",
+    "receipt": "tests/fixtures/hg_stratqa/evaluator-html.receipt.json",
+    "url": "https://github.com/allenai/strategyqa-evaluator/tree/49b88ed2b2f1b57385c13e8a0699dee1d227f83e",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "status": null,
+    "error": "TimeoutError: The read operation timed out"
+  },
+  {
+    "capture": "evaluator-readme-cdn",
+    "receipt": "tests/fixtures/hg_stratqa/evaluator-readme-cdn.receipt.json",
+    "url": "https://cdn.jsdelivr.net/gh/allenai/strategyqa-evaluator@49b88ed2b2f1b57385c13e8a0699dee1d227f83e/README.md",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "status": null,
+    "error": "URLError: <urlopen error [Errno 104] Connection reset by peer>"
+  },
+  {
+    "capture": "evaluator-repository",
+    "receipt": "tests/fixtures/hg_stratqa/evaluator-repository.receipt.json",
+    "url": "https://api.github.com/repos/allenai/strategyqa-evaluator",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://api.github.com/repos/allenai/strategyqa-evaluator",
+    "status": 200,
+    "response_headers": [
+      [
+        "Date",
+        "Thu, 15 Oct 2026 09:30:50 GMT"
+      ],
+      [
+        "Content-Type",
+        "application/json; charset=utf-8"
+      ],
+      [
+        "Cache-Control",
+        "public, max-age=60, s-maxage=60"
+      ],
+      [
+        "Vary",
+        "Accept,Accept-Encoding, Accept, X-Requested-With"
+      ],
+      [
+        "ETag",
+        "W/\"63679ea662992fb261b311eef9364e8080d081e51e00871bea0f4be3674a9102\""
+      ],
+      [
+        "Last-Modified",
+        "Wed, 30 Oct 2024 14:15:38 GMT"
+      ],
+      [
+        "X-GitHub-Media-Type",
+        "github.v3; format=json"
+      ],
+      [
+        "x-github-api-version-selected",
+        "2022-11-28"
+      ],
+      [
+        "Access-Control-Expose-Headers",
+        "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset, Warning"
+      ],
+      [
+        "Access-Control-Allow-Origin",
+        "*"
+      ],
+      [
+        "Strict-Transport-Security",
+        "max-age=31536000; includeSubdomains; preload"
+      ],
+      [
+        "X-Frame-Options",
+        "deny"
+      ],
+      [
+        "X-Content-Type-Options",
+        "nosniff"
+      ],
+      [
+        "X-XSS-Protection",
+        "0"
+      ],
+      [
+        "Referrer-Policy",
+        "origin-when-cross-origin, strict-origin-when-cross-origin"
+      ],
+      [
+        "Content-Security-Policy",
+        "default-src 'none'"
+      ],
+      [
+        "Server",
+        "github.com"
+      ],
+      [
+        "Accept-Ranges",
+        "bytes"
+      ],
+      [
+        "X-RateLimit-Limit",
+        "60"
+      ],
+      [
+        "X-RateLimit-Remaining",
+        "3"
+      ],
+      [
+        "X-RateLimit-Used",
+        "57"
+      ],
+      [
+        "X-RateLimit-Resource",
+        "core"
+      ],
+      [
+        "X-RateLimit-Reset",
+        "1792059626"
+      ],
+      [
+        "Content-Length",
+        "6516"
+      ],
+      [
+        "X-GitHub-Request-Id",
+        "BEF8:36CB19:27D77:3ED67:6AD09D4A"
+      ],
+      [
+        "x-github-edge-region",
+        "southeastasia"
+      ],
+      [
+        "connection",
+        "close"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/evaluator-repository.body",
+    "body_bytes": 6516,
+    "body_sha256": "63679ea662992fb261b311eef9364e8080d081e51e00871bea0f4be3674a9102",
+    "complete": true
+  },
+  {
+    "capture": "evaluator-tree",
+    "receipt": "tests/fixtures/hg_stratqa/evaluator-tree.receipt.json",
+    "url": "https://api.github.com/repos/allenai/strategyqa-evaluator/git/trees/4f0051627e208629fffb1eacedd454f2cd89cf47?recursive=1",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://api.github.com/repos/allenai/strategyqa-evaluator/git/trees/4f0051627e208629fffb1eacedd454f2cd89cf47?recursive=1",
+    "status": 200,
+    "response_headers": [
+      [
+        "Date",
+        "Thu, 15 Oct 2026 09:32:55 GMT"
+      ],
+      [
+        "Content-Type",
+        "application/json; charset=utf-8"
+      ],
+      [
+        "Cache-Control",
+        "public, max-age=86400, s-maxage=86400"
+      ],
+      [
+        "Vary",
+        "Accept,Accept-Encoding, Accept, X-Requested-With"
+      ],
+      [
+        "ETag",
+        "W/\"0c8c9b22f3afecaee917310f44b3de108fd89c5307ea1d60267f428bc3bf8174\""
+      ],
+      [
+        "Last-Modified",
+        "Wed, 30 Oct 2024 14:15:38 GMT"
+      ],
+      [
+        "X-GitHub-Media-Type",
+        "github.v3; format=json"
+      ],
+      [
+        "x-github-api-version-selected",
+        "2022-11-28"
+      ],
+      [
+        "Access-Control-Expose-Headers",
+        "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset, Warning"
+      ],
+      [
+        "Access-Control-Allow-Origin",
+        "*"
+      ],
+      [
+        "Strict-Transport-Security",
+        "max-age=31536000; includeSubdomains; preload"
+      ],
+      [
+        "X-Frame-Options",
+        "deny"
+      ],
+      [
+        "X-Content-Type-Options",
+        "nosniff"
+      ],
+      [
+        "X-XSS-Protection",
+        "0"
+      ],
+      [
+        "Referrer-Policy",
+        "origin-when-cross-origin, strict-origin-when-cross-origin"
+      ],
+      [
+        "Content-Security-Policy",
+        "default-src 'none'"
+      ],
+      [
+        "Server",
+        "github.com"
+      ],
+      [
+        "Accept-Ranges",
+        "bytes"
+      ],
+      [
+        "X-RateLimit-Limit",
+        "60"
+      ],
+      [
+        "X-RateLimit-Remaining",
+        "0"
+      ],
+      [
+        "X-RateLimit-Used",
+        "60"
+      ],
+      [
+        "X-RateLimit-Resource",
+        "core"
+      ],
+      [
+        "X-RateLimit-Reset",
+        "1792059626"
+      ],
+      [
+        "Content-Length",
+        "3243"
+      ],
+      [
+        "X-GitHub-Request-Id",
+        "D9C0:2B2909:175B33B:23E8126:6AD09DC6"
+      ],
+      [
+        "x-github-edge-region",
+        "southeastasia"
+      ],
+      [
+        "connection",
+        "close"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/evaluator-tree.body",
+    "body_bytes": 3243,
+    "body_sha256": "0c8c9b22f3afecaee917310f44b3de108fd89c5307ea1d60267f428bc3bf8174",
+    "complete": true
+  },
+  {
+    "capture": "github-head",
+    "receipt": "tests/fixtures/hg_stratqa/github-head.receipt.json",
+    "url": "https://api.github.com/repos/eladsegal/strategyqa/commits/main",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://api.github.com/repos/eladsegal/strategyqa/commits/main",
+    "status": 200,
+    "response_headers": [
+      [
+        "Date",
+        "Thu, 15 Oct 2026 09:28:43 GMT"
+      ],
+      [
+        "Content-Type",
+        "application/json; charset=utf-8"
+      ],
+      [
+        "Cache-Control",
+        "public, max-age=60, s-maxage=60"
+      ],
+      [
+        "Vary",
+        "Accept,Accept-Encoding, Accept, X-Requested-With"
+      ],
+      [
+        "ETag",
+        "W/\"af0365d7c5a609118929baa31a3535f752c9d10ae08616bde1fcacd8be56bb54\""
+      ],
+      [
+        "Last-Modified",
+        "Thu, 04 Nov 2021 04:11:13 GMT"
+      ],
+      [
+        "X-GitHub-Media-Type",
+        "github.v3; format=json"
+      ],
+      [
+        "x-github-api-version-selected",
+        "2022-11-28"
+      ],
+      [
+        "Access-Control-Expose-Headers",
+        "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset, Warning"
+      ],
+      [
+        "Access-Control-Allow-Origin",
+        "*"
+      ],
+      [
+        "Strict-Transport-Security",
+        "max-age=31536000; includeSubdomains; preload"
+      ],
+      [
+        "X-Frame-Options",
+        "deny"
+      ],
+      [
+        "X-Content-Type-Options",
+        "nosniff"
+      ],
+      [
+        "X-XSS-Protection",
+        "0"
+      ],
+      [
+        "Referrer-Policy",
+        "origin-when-cross-origin, strict-origin-when-cross-origin"
+      ],
+      [
+        "Content-Security-Policy",
+        "default-src 'none'"
+      ],
+      [
+        "Server",
+        "github.com"
+      ],
+      [
+        "Accept-Ranges",
+        "bytes"
+      ],
+      [
+        "X-RateLimit-Limit",
+        "60"
+      ],
+      [
+        "X-RateLimit-Remaining",
+        "7"
+      ],
+      [
+        "X-RateLimit-Used",
+        "53"
+      ],
+      [
+        "X-RateLimit-Resource",
+        "core"
+      ],
+      [
+        "X-RateLimit-Reset",
+        "1792059626"
+      ],
+      [
+        "Content-Length",
+        "5659"
+      ],
+      [
+        "X-GitHub-Request-Id",
+        "C560:1A6B80:17058F0:237533A:6AD09CCB"
+      ],
+      [
+        "x-github-edge-region",
+        "southeastasia"
+      ],
+      [
+        "connection",
+        "close"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/github-head.body",
+    "body_bytes": 5659,
+    "body_sha256": "af0365d7c5a609118929baa31a3535f752c9d10ae08616bde1fcacd8be56bb54",
+    "complete": true
+  },
+  {
+    "capture": "github-releases",
+    "receipt": "tests/fixtures/hg_stratqa/github-releases.receipt.json",
+    "url": "https://api.github.com/repos/eladsegal/strategyqa/releases?per_page=100",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://api.github.com/repos/eladsegal/strategyqa/releases?per_page=100",
+    "status": 200,
+    "response_headers": [
+      [
+        "Date",
+        "Thu, 15 Oct 2026 09:28:44 GMT"
+      ],
+      [
+        "Content-Type",
+        "application/json; charset=utf-8"
+      ],
+      [
+        "Content-Length",
+        "2"
+      ],
+      [
+        "Cache-Control",
+        "public, max-age=60, s-maxage=60"
+      ],
+      [
+        "Vary",
+        "Accept,Accept-Encoding, Accept, X-Requested-With"
+      ],
+      [
+        "ETag",
+        "\"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\""
+      ],
+      [
+        "X-GitHub-Media-Type",
+        "github.v3; format=json"
+      ],
+      [
+        "x-github-api-version-selected",
+        "2022-11-28"
+      ],
+      [
+        "Access-Control-Expose-Headers",
+        "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset, Warning"
+      ],
+      [
+        "Access-Control-Allow-Origin",
+        "*"
+      ],
+      [
+        "Strict-Transport-Security",
+        "max-age=31536000; includeSubdomains; preload"
+      ],
+      [
+        "X-Frame-Options",
+        "deny"
+      ],
+      [
+        "X-Content-Type-Options",
+        "nosniff"
+      ],
+      [
+        "X-XSS-Protection",
+        "0"
+      ],
+      [
+        "Referrer-Policy",
+        "origin-when-cross-origin, strict-origin-when-cross-origin"
+      ],
+      [
+        "Content-Security-Policy",
+        "default-src 'none'"
+      ],
+      [
+        "Server",
+        "github.com"
+      ],
+      [
+        "Accept-Ranges",
+        "bytes"
+      ],
+      [
+        "X-RateLimit-Limit",
+        "60"
+      ],
+      [
+        "X-RateLimit-Remaining",
+        "6"
+      ],
+      [
+        "X-RateLimit-Used",
+        "54"
+      ],
+      [
+        "X-RateLimit-Resource",
+        "core"
+      ],
+      [
+        "X-RateLimit-Reset",
+        "1792059626"
+      ],
+      [
+        "X-GitHub-Request-Id",
+        "C56C:38B02:16FB5D5:236D0BE:6AD09CCC"
+      ],
+      [
+        "x-github-edge-region",
+        "southeastasia"
+      ],
+      [
+        "connection",
+        "close"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/github-releases.body",
+    "body_bytes": 2,
+    "body_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "complete": true
+  },
+  {
+    "capture": "github-repository",
+    "receipt": "tests/fixtures/hg_stratqa/github-repository.receipt.json",
+    "url": "https://api.github.com/repos/eladsegal/strategyqa",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://api.github.com/repos/eladsegal/strategyqa",
+    "status": 200,
+    "response_headers": [
+      [
+        "Date",
+        "Thu, 15 Oct 2026 09:28:07 GMT"
+      ],
+      [
+        "Content-Type",
+        "application/json; charset=utf-8"
+      ],
+      [
+        "Cache-Control",
+        "public, max-age=60, s-maxage=60"
+      ],
+      [
+        "Vary",
+        "Accept,Accept-Encoding, Accept, X-Requested-With"
+      ],
+      [
+        "ETag",
+        "W/\"94a2b37515343a41ec3f0856edf6034c4c64eb1d03df13ad1e21c7d1488c9339\""
+      ],
+      [
+        "Last-Modified",
+        "Tue, 22 Sep 2026 09:45:35 GMT"
+      ],
+      [
+        "X-GitHub-Media-Type",
+        "github.v3; format=json"
+      ],
+      [
+        "x-github-api-version-selected",
+        "2022-11-28"
+      ],
+      [
+        "Access-Control-Expose-Headers",
+        "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset, Warning"
+      ],
+      [
+        "Access-Control-Allow-Origin",
+        "*"
+      ],
+      [
+        "Strict-Transport-Security",
+        "max-age=31536000; includeSubdomains; preload"
+      ],
+      [
+        "X-Frame-Options",
+        "deny"
+      ],
+      [
+        "X-Content-Type-Options",
+        "nosniff"
+      ],
+      [
+        "X-XSS-Protection",
+        "0"
+      ],
+      [
+        "Referrer-Policy",
+        "origin-when-cross-origin, strict-origin-when-cross-origin"
+      ],
+      [
+        "Content-Security-Policy",
+        "default-src 'none'"
+      ],
+      [
+        "Server",
+        "github.com"
+      ],
+      [
+        "Accept-Ranges",
+        "bytes"
+      ],
+      [
+        "X-RateLimit-Limit",
+        "60"
+      ],
+      [
+        "X-RateLimit-Remaining",
+        "8"
+      ],
+      [
+        "X-RateLimit-Used",
+        "52"
+      ],
+      [
+        "X-RateLimit-Resource",
+        "core"
+      ],
+      [
+        "X-RateLimit-Reset",
+        "1792059626"
+      ],
+      [
+        "Content-Length",
+        "5469"
+      ],
+      [
+        "X-GitHub-Request-Id",
+        "DF90:156551:16CA153:23358EF:6AD09CA7"
+      ],
+      [
+        "x-github-edge-region",
+        "southeastasia"
+      ],
+      [
+        "connection",
+        "close"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/github-repository.body",
+    "body_bytes": 5469,
+    "body_sha256": "94a2b37515343a41ec3f0856edf6034c4c64eb1d03df13ad1e21c7d1488c9339",
+    "complete": true
+  },
+  {
+    "capture": "github-tree",
+    "receipt": "tests/fixtures/hg_stratqa/github-tree.receipt.json",
+    "url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/b31bdc2f04bb48d60672e606ad5974a83f70127f?recursive=1",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://api.github.com/repos/eladsegal/strategyqa/git/trees/b31bdc2f04bb48d60672e606ad5974a83f70127f?recursive=1",
+    "status": 200,
+    "response_headers": [
+      [
+        "Date",
+        "Thu, 15 Oct 2026 09:29:19 GMT"
+      ],
+      [
+        "Content-Type",
+        "application/json; charset=utf-8"
+      ],
+      [
+        "Cache-Control",
+        "public, max-age=86400, s-maxage=86400"
+      ],
+      [
+        "Vary",
+        "Accept,Accept-Encoding, Accept, X-Requested-With"
+      ],
+      [
+        "ETag",
+        "W/\"0351f169ea413b2114dcbbd3fe205f9e1054e7427437c98ba381f49e0aafbbee\""
+      ],
+      [
+        "Last-Modified",
+        "Tue, 22 Sep 2026 09:45:35 GMT"
+      ],
+      [
+        "X-GitHub-Media-Type",
+        "github.v3; format=json"
+      ],
+      [
+        "x-github-api-version-selected",
+        "2022-11-28"
+      ],
+      [
+        "Access-Control-Expose-Headers",
+        "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset, Warning"
+      ],
+      [
+        "Access-Control-Allow-Origin",
+        "*"
+      ],
+      [
+        "Strict-Transport-Security",
+        "max-age=31536000; includeSubdomains; preload"
+      ],
+      [
+        "X-Frame-Options",
+        "deny"
+      ],
+      [
+        "X-Content-Type-Options",
+        "nosniff"
+      ],
+      [
+        "X-XSS-Protection",
+        "0"
+      ],
+      [
+        "Referrer-Policy",
+        "origin-when-cross-origin, strict-origin-when-cross-origin"
+      ],
+      [
+        "Content-Security-Policy",
+        "default-src 'none'"
+      ],
+      [
+        "Server",
+        "github.com"
+      ],
+      [
+        "Accept-Ranges",
+        "bytes"
+      ],
+      [
+        "X-RateLimit-Limit",
+        "60"
+      ],
+      [
+        "X-RateLimit-Remaining",
+        "5"
+      ],
+      [
+        "X-RateLimit-Used",
+        "55"
+      ],
+      [
+        "X-RateLimit-Resource",
+        "core"
+      ],
+      [
+        "X-RateLimit-Reset",
+        "1792059626"
+      ],
+      [
+        "Transfer-Encoding",
+        "chunked"
+      ],
+      [
+        "X-GitHub-Request-Id",
+        "EDDA:2BAB63:171EEFB:2395ED2:6AD09CEE"
+      ],
+      [
+        "x-github-edge-region",
+        "southeastasia"
+      ],
+      [
+        "connection",
+        "close"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/github-tree.body",
+    "body_bytes": 25366,
+    "body_sha256": "0351f169ea413b2114dcbbd3fe205f9e1054e7427437c98ba381f49e0aafbbee",
+    "complete": true
+  },
+  {
+    "capture": "official-config-cdn",
+    "receipt": "tests/fixtures/hg_stratqa/official-config-cdn.receipt.json",
+    "url": "https://cdn.jsdelivr.net/gh/eladsegal/strategyqa@1ba1e97452e189569357876f2854b01357ffbe37/configs/strategy_qa/base.jsonnet",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "status": null,
+    "error": "URLError: <urlopen error [Errno 104] Connection reset by peer>"
+  },
+  {
+    "capture": "official-config",
+    "receipt": "tests/fixtures/hg_stratqa/official-config.receipt.json",
+    "url": "https://raw.githubusercontent.com/eladsegal/strategyqa/1ba1e97452e189569357876f2854b01357ffbe37/configs/strategy_qa/base.jsonnet",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "status": null,
+    "error": "URLError: <urlopen error [Errno 104] Connection reset by peer>"
+  },
+  {
+    "capture": "official-evaluate",
+    "receipt": "tests/fixtures/hg_stratqa/official-evaluate.receipt.json",
+    "url": "https://raw.githubusercontent.com/eladsegal/strategyqa/1ba1e97452e189569357876f2854b01357ffbe37/run_scripts/evaluate.py",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "status": null,
+    "error": "URLError: <urlopen error [Errno 104] Connection reset by peer>"
+  },
+  {
+    "capture": "official-readme",
+    "receipt": "tests/fixtures/hg_stratqa/official-readme.receipt.json",
+    "url": "https://raw.githubusercontent.com/eladsegal/strategyqa/1ba1e97452e189569357876f2854b01357ffbe37/README.md",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "status": null,
+    "error": "URLError: <urlopen error [Errno 104] Connection reset by peer>"
+  },
+  {
+    "capture": "original-project-ai2",
+    "receipt": "tests/fixtures/hg_stratqa/original-project-ai2.receipt.json",
+    "url": "https://ai2.org/data/strategyqa",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "status": null,
+    "error": "URLError: <urlopen error [Errno -5] No address associated with hostname>"
+  },
+  {
+    "capture": "original-project-slash",
+    "receipt": "tests/fixtures/hg_stratqa/original-project-slash.receipt.json",
+    "url": "https://allenai.org/data/strategyqa/",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://allenai.org/data/strategyqa/",
+    "status": 403,
+    "response_headers": [
+      [
+        "content-type",
+        "text/html; charset=UTF-8"
+      ],
+      [
+        "Content-Length",
+        "134"
+      ],
+      [
+        "via",
+        "1.1 google"
+      ],
+      [
+        "date",
+        "Thu, 15 Oct 2026 09:35:42 GMT"
+      ],
+      [
+        "Alt-Svc",
+        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+      ],
+      [
+        "Connection",
+        "close"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/original-project-slash.body",
+    "body_bytes": 134,
+    "body_sha256": "c996c0469ef05ff6fdd1f7cefbc3f7e109bb21969de42fcf591498a828a7ad5f",
+    "complete": true
+  },
+  {
+    "capture": "original-project",
+    "receipt": "tests/fixtures/hg_stratqa/original-project.receipt.json",
+    "url": "https://allenai.org/data/strategyqa",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://allenai.org/data/strategyqa",
+    "status": 403,
+    "response_headers": [
+      [
+        "content-type",
+        "text/html; charset=UTF-8"
+      ],
+      [
+        "Content-Length",
+        "134"
+      ],
+      [
+        "via",
+        "1.1 google"
+      ],
+      [
+        "date",
+        "Thu, 15 Oct 2026 09:28:08 GMT"
+      ],
+      [
+        "Alt-Svc",
+        "h3=\":443\"; ma=2592000"
+      ],
+      [
+        "Connection",
+        "close"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/original-project.body",
+    "body_bytes": 134,
+    "body_sha256": "c996c0469ef05ff6fdd1f7cefbc3f7e109bb21969de42fcf591498a828a7ad5f",
+    "complete": true
+  },
+  {
+    "capture": "readme-api",
+    "receipt": "tests/fixtures/hg_stratqa/readme-api.receipt.json",
+    "url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/feee1f309586a3cfb4151570af2763dc0726a3f6",
+    "method": "GET",
+    "tls": "ssl.create_default_context()",
+    "request_headers": {
+      "User-Agent": "HarnessGrad-source-audit/1.0",
+      "Accept-Encoding": "identity"
+    },
+    "max_response_bytes": 950000,
+    "redirects": [],
+    "final_url": "https://api.github.com/repos/eladsegal/strategyqa/git/blobs/feee1f309586a3cfb4151570af2763dc0726a3f6",
+    "status": 200,
+    "response_headers": [
+      [
+        "Date",
+        "Thu, 15 Oct 2026 09:29:58 GMT"
+      ],
+      [
+        "Content-Type",
+        "application/json; charset=utf-8"
+      ],
+      [
+        "Cache-Control",
+        "public, max-age=86400, s-maxage=86400"
+      ],
+      [
+        "Vary",
+        "Accept,Accept-Encoding, Accept, X-Requested-With"
+      ],
+      [
+        "ETag",
+        "W/\"5b2a93ec88615e11b89616e381660f2795b8d32dee37e5611549bfd45bb1c8fc\""
+      ],
+      [
+        "X-GitHub-Media-Type",
+        "github.v3; format=json"
+      ],
+      [
+        "x-github-api-version-selected",
+        "2022-11-28"
+      ],
+      [
+        "Access-Control-Expose-Headers",
+        "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset, Warning"
+      ],
+      [
+        "Access-Control-Allow-Origin",
+        "*"
+      ],
+      [
+        "Strict-Transport-Security",
+        "max-age=31536000; includeSubdomains; preload"
+      ],
+      [
+        "X-Frame-Options",
+        "deny"
+      ],
+      [
+        "X-Content-Type-Options",
+        "nosniff"
+      ],
+      [
+        "X-XSS-Protection",
+        "0"
+      ],
+      [
+        "Referrer-Policy",
+        "origin-when-cross-origin, strict-origin-when-cross-origin"
+      ],
+      [
+        "Content-Security-Policy",
+        "default-src 'none'"
+      ],
+      [
+        "Server",
+        "github.com"
+      ],
+      [
+        "Accept-Ranges",
+        "bytes"
+      ],
+      [
+        "X-RateLimit-Limit",
+        "60"
+      ],
+      [
+        "X-RateLimit-Remaining",
+        "4"
+      ],
+      [
+        "X-RateLimit-Used",
+        "56"
+      ],
+      [
+        "X-RateLimit-Resource",
+        "core"
+      ],
+      [
+        "X-RateLimit-Reset",
+        "1792059626"
+      ],
+      [
+        "Transfer-Encoding",
+        "chunked"
+      ],
+      [
+        "X-GitHub-Request-Id",
+        "DBEA:87125:16FAB2C:237357F:6AD09D15"
+      ],
+      [
+        "x-github-edge-region",
+        "southeastasia"
+      ],
+      [
+        "connection",
+        "close"
+      ]
+    ],
+    "body_path": "tests/fixtures/hg_stratqa/readme-api.body",
+    "body_bytes": 16014,
+    "body_sha256": "5b2a93ec88615e11b89616e381660f2795b8d32dee37e5611549bfd45bb1c8fc",
+    "complete": true
+  }
+]
