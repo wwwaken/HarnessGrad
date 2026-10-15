@@ -232,3 +232,28 @@ def test_trimming_with_nudges_never_orphans_command_results(agent, monkeypatch, 
         for command, result in zip(messages[2::2], messages[3::2]):
             assert json.loads(command["content"])["command"] == "printf value"
             assert result["content"].startswith("exit=0\nvalue")
+
+
+def test_non_utf8_command_output_is_decoded_not_fatal(agent, monkeypatch, tmp_path):
+    """A command emitting non-UTF-8 bytes must not kill the harness.
+
+    Regression, measured on AgentDojo: `subprocess.run(..., text=True)` decodes
+    strictly, so any command whose output contained a non-UTF-8 byte raised
+    UnicodeDecodeError inside the harness's own `run()`. Because the exception
+    escaped, the task recorded an ordinary `0.0` that was indistinguishable from
+    a measured failure. 134 of 601 AgentDojo train tasks (22.3%) died this way --
+    the model only had to run `cat` on any binary file. The capture now passes
+    errors="replace", so the bytes degrade to U+FFFD instead of aborting the run.
+    """
+    if not shutil.which("bash"):
+        pytest.skip("Bash is not installed")
+    # \300 and \377 are never valid UTF-8 start bytes.
+    result, seen, events = scripted(
+        agent, monkeypatch, tmp_path,
+        [action(r"printf '\300\377\376'"), '{"answer":"done"}'])
+    executed = next(e for e in events if "command" in e)
+    assert result == "done"
+    assert executed["exit"] == 0
+    assert executed["output"] == "\ufffd\ufffd\ufffd"
+    # The harness must still have produced a complete trace.
+    assert isinstance(events[-1], dict)

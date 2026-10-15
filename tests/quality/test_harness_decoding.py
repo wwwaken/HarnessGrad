@@ -38,13 +38,13 @@ EMBEDDED_SOURCES = {"tools/diagnose_appworld.py": ("ACTOR",)}
 
 #: Sites that ask for text without `errors=`, each with the reason it is left strict.
 #: An entry that no longer matches makes the test fail, so this cannot rot into a blanket exemption.
+#:
+#: The Node loader probe used to be the other entry. `w-utf8` (`2dcfc013`, the reporting session's own
+#: fix) made it `errors="replace"` too, which is the operator's call to make, so the exemption was
+#: removed rather than kept as a dead entry - the site now says how to decode and is covered by the
+#: property instead of excused from it. The residual difference is only which error surfaces if the
+#: probe ever emits a bad byte: a JSON parse error instead of `UnicodeDecodeError`.
 EXCEPTIONS = {
-    "base_harness/dsh_agent/agent.py:201": (
-        "the Node loader probe (`_LOADER_PROBE_JS`): its output is a single platform-authored JSON "
-        "line that this function immediately `json.loads`, so a strict decode gives a readable "
-        "platform error instead of a silently substituted byte inside JSON. It never carries task "
-        "or tool output."
-    ),
     "eval/containers/harness_runtime.py:173": (
         "the host interpreter version probe: stdout is the platform-authored ASCII X.Y expression, "
         "not task/tool output. Keep a malformed version out of the overlay cache; _cached_version "
