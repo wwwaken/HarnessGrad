@@ -56,20 +56,26 @@ audit accepts either convention; the numbers below are from the corrected run.
     manifest entries present: 15,330
     manifest entries missing:  1,626
 
-Split by whether the missing path is a class the recorded payload-strip removed
-(`.whl .conda .tar.gz .tgz .zip .deb .body .body.gz .strace.txt .readelf.stdout.txt .incomplete
-.tar.bz2 .so .gz .bin .pt`):
+**The decisive split is whether the packet is tracked at all**, because `tests/fixtures/hg_*/` is
+blanket-ignored and a packet whose files were never force-added looks identical in a fresh checkout to
+one whose files were removed afterwards:
 
-| class | count | reading |
-| --- | --- | --- |
-| stripped payload class | 525 | Consistent with the recorded payload-strip. Some are recoverable **with digest verification** - the 53,686-byte ujson wheel came back byte-exact from the pre-rewrite object store, and the PyPI provenance 404 body re-fetched to its recorded SHA-256 - and some are not (the 44 `hg_wujson` command-output captures, and the ELF providers whose host copies have drifted). |
-| **not** a payload class | 1,101 | **Not explained by the payload strip.** Dominated by three packets: `hg_wtbdep` (685 - `datasets/*.json`, `packages/torch.json`, `python/SHA256SUMS`), `hg_woffscorer` (207 + 18 - `bigbench/acquire_sports.py`, `commands.txt`), `hg_woffscorer2` (131 - `bird_ds/SHA256SUMS`, `bird-local.json`). Extensions are `.txt` 427, `.json` 231, none 97, `.sh` 95, `.toml` 90, `.py` 59. |
+| kind | packets | missing entries | reading |
+| --- | --- | --- | --- |
+| **entirely untracked** (`git ls-files` returns nothing for the packet) | 32 | 1,460 | Its `SHA256SUMS` is a **working-tree note, not repository evidence**. Git never held these files, and 0 tracked files in the pre-rewrite backup `5e8fcfd` confirms they were never committed in either history. The largest are `hg_wtbdep` (685), `hg_woffscorer` (208+19+11) and `hg_woffscorer2` (131). |
+| **partially tracked** (some files committed) | 6 | 166 | These are repository evidence with a real hole. By size: `external_provenance_b5` 87 missing / 147 present / 148 tracked, `e3_bfcl_source` 24/63/64, `hg_wprov` 22/92/1, `upstream_provenance_e2` 15/32/33, `hg_trivia` 13/40/1, `hg_bfcl` 5/16/2. |
 
-**Cause of the 1,101 is undetermined and is not attributed here.** What is measured is that a whole
-subtree is absent in each of the three packets while the packet's `SHA256SUMS` lists it, and that
-`tests/fixtures/hg_*/` is blanket-ignored, so a subtree whose files were never force-added would look
-exactly like this in a fresh checkout - as would one removed afterwards. Distinguishing those needs the
-packets' own provenance records, which is a separate task.
+**Cause of the 1,460 is undetermined and is not attributed.** Untracked material leaves no trace in
+git, so "never materialised here" and "removed later" are indistinguishable from the repository alone,
+exactly the shape the workers recorded for the Reasoning Gym and HotpotQA receipts. What *is* measured
+is that they were never committed in either history.
+
+**The one with test impact is `external_provenance_b5`, and it is mechanically restorable.** All 87 of
+its missing entries are `responses/*.body`; the packet is fully tracked; the 100 matching
+`responses/*.receipt.json` files are present and each records the request URL, method, headers, UTC
+times, status, response headers, byte count and SHA-256; and `SHA256SUMS` pins every body. One body is
+recorded with the SHA-256 of the empty string, which is what its `HEAD` request legitimately produces.
+Restoration is therefore a replay-and-verify operation, and `w-b5restore` is doing it.
 
 **Test impact.** Most of these packets are not read by the suite. The ones that are fail without a skip
 guard: `test_external_provenance_b5.py` (6 failures, all `FileNotFoundError` on
