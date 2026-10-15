@@ -3717,3 +3717,32 @@ Work was committed only in registered isolated worktrees, never main.
 - Complete modules are attempted through ordinary imports without AST-selected execution, stubs or patched upstream bytes. BFCL fails verbatim `ModuleNotFoundError: No module named 'tree_sitter'` on all 28 authored controls. ChessBench fails verbatim `ModuleNotFoundError: No module named 'absl'` on all 15 primary board controls and all 15 supplementary PGN-row attempts. Official scorer bodies are never entered. Coverage is 0/2 requested complete dataset routes, 0/43 primary official numeric returns; numeric agreement rate is undefined (0/0). Actual unchanged local scorers return 43 outcomes; failed official imports never become zeros. Nineteen fresh import probes yield six ancillary complete-module imports and thirteen failures; this is not full scorer execution.
 - Socket-denied no-index/no-cache dependency probes cannot resolve either required Tree-sitter or absl from the current retained wheelhouse. Raw tracebacks and actual distribution/cache inventories remain preserved. A standalone Stockfish-module annotation/import-order failure is preserved alongside a successful import after the real `chess.engine` import; no binary or engine constructor runs. Fresh scratch roots are removed and absence rechecked. These are bounded fixture observations, not production admission/resource/lifecycle guarantees.
 - `scorer-offline-closure` stays open; S1/S3/S4/S5/S6 remain PARTIAL. Only additive shared observed/evidence detail changes; all dataset blockers, statuses, next_actions, histories, gates and production authorization remain unchanged. No benchmark scoring run, model, GPU, endpoint, released payload, `runs/` or frozen receipt is touched. Work is committed only in registered `/tmp/hg-bfclroute`, branch `wg-bfclroute`, for parent review.
+## S6 admission and publication dependency determination — 2026-10-15 - w-s6
+
+- Determination **(b)**: S6's current cleared-dataset-control interpretation is structurally gated
+  on the admission it helps withhold. The all-applicable-gates prerequisite includes
+  `scorer-offline-closure`, containing S6 itself, plus applicable obligations of
+  `artifact-only-state-export`. Local ALFWorld/TB blockers are already absent, so this is not
+  explained solely by an unresolved dataset-local gate. S6 remains PARTIAL; no blocker closes.
+- Traced the exact field producer: `Authorization.record()` in
+  `eval/policy/unobserved_diagnostic.py` hard-codes `policy_enforcement_observed=false`.
+  Both Python validation and JSON schema reject true. The ordinary admitted path requires
+  absence of that enforcement record, passed context/cleanup/snapshot and a completed bound
+  lifecycle with `publication_ready=true`. The runtime refusal has no observed-success branch
+  for policy-bearing tasks, and the ordinary driver's receipt builder always supplies unknown
+  cleanup/snapshot and omits lifecycle. Neither CLI evidence nor unobserved authorization
+  connects these missing paths; repeating permitted unobserved controls cannot clear S6.
+- Directly inspected all four ALF/TB/Chess/AppWorld staged receipts: each retains score=null,
+  measured_trials=0, invalid_trials=0, unmeasured_trials=1 and unknown gates/lifecycle. The
+  original pristine audit remains invalid; the corrected authored measured control is not a
+  staged dataset diagnostic. No old score, receipt or PARTIAL verdict was promoted.
+- Appended only a standing structural explanation and a verbatim report evidence locator to
+  the scorer blocker's observed/evidence fields. All statuses, full next_actions, other shared
+  fields, dataset blockers/references and historical records remain unchanged. No gate or
+  refusal was weakened, and withdrawn enforcement-proof demands were not reinstated.
+- Report: `reports/w-s6-determination.md`; raw command/source/receipt/test output:
+  `reports/w-s6-validation.txt`. Existing pure registry/policy/lifecycle checks: 246 passed;
+  final registry and preservation checks are recorded in the validation file. Work is offline
+  source/receipt inspection and synthetic policy tests only: no benchmark scoring run, model,
+  GPU, endpoint, container, runs/ change or frozen-receipt edit. Commit stays in isolated
+  `/tmp/hg-s6` on `wg-s6`; no main commit or merge.
