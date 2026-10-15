@@ -1,0 +1,229 @@
+w-bfclguard validation: observed command transcripts
+All commands ran in the assigned worktree. Empty stdout/stderr are explicit below.
+No timestamps, execution receipts or upstream identities are inferred.
+
+$ python3 -I -S -B tests/fixtures/hg_bfclguard/reachability.py
+exit=0
+stdout:
+{"entry_points": 317, "import_nodes": 2115, "known_target_imports": 0, "mechanism_nodes": 134, "outside_scope_edges": [{"destinations": [], "kind": "from", "line": 9, "outside_scope": ["tests/quality/test_triviaqa_official_scorer.py"], "source": 286, "statement": "from tests.quality.test_triviaqa_official_scorer import read_upstream_fixture, FixtureContractError", "targets": ["tests.quality.test_triviaqa_official_scorer", "tests.quality.test_triviaqa_official_scorer.read_upstream_fixture", "tests.quality.test_triviaqa_official_scorer.FixtureContractError"]}], "sources": 317, "target_mechanisms": 0, "target_references": [{"kind": "Constant", "line": 103, "path": "data/datasets/bfcl_v3.py", "source": 25, "value": "gorilla-1.3/berkeley-function-call-leaderboard/bfcl_eval/data"}, {"kind": "Constant", "line": 539, "path": "data/datasets/bfcl_v3.py", "source": 25, "value": "ShishirPatil/gorilla@v1.3 berkeley-function-call-leaderboard/bfcl_eval/data"}], "unresolved_mechanisms": 127}
+stderr:
+<empty>
+
+$ python3 -I -S -B tests/fixtures/hg_bfclguard/controls.py
+exit=0
+stdout:
+{"guarded_decoder_calls": [], "id": "fabricated_direct_call", "text": "fabricated_echo(value=__probe__())", "verdict": {"measured": false, "production_authorized": false, "reason": "bfclguard_call_in_argument", "status": "unmeasured"}, "without_gate_spy_calls": [{"language": "Python", "text": "fabricated_echo(value=__probe__())"}]}
+{"guarded_decoder_calls": [{"language": "Python", "text": "fabricated_echo(value={'items': [1, -2, 'inert __probe__()'], 'ok': True})"}], "id": "fabricated_ordinary", "text": "fabricated_echo(value={'items': [1, -2, 'inert __probe__()'], 'ok': True})", "verdict": {"output": "inert-spy-return", "production_authorized": false, "status": "decoded"}, "without_gate_spy_calls": [{"language": "Python", "text": "fabricated_echo(value={'items': [1, -2, 'inert __probe__()'], 'ok': True})"}]}
+{"guarded_decoder_calls": [], "id": "fabricated_prior_finding", "text": "fabricated_echo(value=__bfclcontain_probe__()+0)", "verdict": {"measured": false, "production_authorized": false, "reason": "bfclguard_binop_contains_call", "status": "unmeasured"}, "without_gate_spy_calls": [{"language": "Python", "text": "fabricated_echo(value=__bfclcontain_probe__()+0)"}]}
+{"guarded_decoder_calls": [], "id": "fabricated_reversed_finding", "text": "fabricated_echo(value=1 + __probe__())", "verdict": {"measured": false, "production_authorized": false, "reason": "bfclguard_binop_contains_call", "status": "unmeasured"}, "without_gate_spy_calls": [{"language": "Python", "text": "fabricated_echo(value=1 + __probe__())"}]}
+{"guarded_decoder_calls": [], "id": "fabricated_nested_call", "text": "fabricated_echo(value={'items': [__probe__(x=1)]})", "verdict": {"measured": false, "production_authorized": false, "reason": "bfclguard_call_in_argument", "status": "unmeasured"}, "without_gate_spy_calls": [{"language": "Python", "text": "fabricated_echo(value={'items': [__probe__(x=1)]})"}]}
+{"guarded_decoder_calls": [], "id": "fabricated_literal_binop", "text": "fabricated_echo(value=1+2)", "verdict": {"measured": false, "production_authorized": false, "reason": "bfclguard_binop_eval", "status": "unmeasured"}, "without_gate_spy_calls": [{"language": "Python", "text": "fabricated_echo(value=1+2)"}]}
+{"guarded_decoder_calls": [], "id": "fabricated_lambda", "text": "fabricated_echo(value=lambda: 1)", "verdict": {"measured": false, "production_authorized": false, "reason": "bfclguard_nonliteral_argument", "status": "unmeasured"}, "without_gate_spy_calls": [{"language": "Python", "text": "fabricated_echo(value=lambda: 1)"}]}
+{"guarded_decoder_calls": [{"language": "Python", "text": "[fabricated_echo(value=1), fabricated_other(value='safe')]"}], "id": "fabricated_multiple_calls", "text": "[fabricated_echo(value=1), fabricated_other(value='safe')]", "verdict": {"output": "inert-spy-return", "production_authorized": false, "status": "decoded"}, "without_gate_spy_calls": [{"language": "Python", "text": "[fabricated_echo(value=1), fabricated_other(value='safe')]"}]}
+{"guarded_decoder_calls": [], "id": "fabricated_positional", "text": "fabricated_echo(__probe__())", "verdict": {"measured": false, "production_authorized": false, "reason": "bfclguard_argument_unpack_or_positional", "status": "unmeasured"}, "without_gate_spy_calls": [{"language": "Python", "text": "fabricated_echo(__probe__())"}]}
+{"guarded_decoder_calls": [], "id": "fabricated_star_keywords", "text": "fabricated_echo(**{'value': 1})", "verdict": {"measured": false, "production_authorized": false, "reason": "bfclguard_argument_unpack_or_positional", "status": "unmeasured"}, "without_gate_spy_calls": [{"language": "Python", "text": "fabricated_echo(**{'value': 1})"}]}
+{"guarded_decoder_calls": [], "id": "fabricated_subscript", "text": "fabricated_echo(value=items[0])", "verdict": {"measured": false, "production_authorized": false, "reason": "bfclguard_nonliteral_argument", "status": "unmeasured"}, "without_gate_spy_calls": [{"language": "Python", "text": "fabricated_echo(value=items[0])"}]}
+{"guarded_decoder_calls": [], "id": "fabricated_bad_syntax", "text": "fabricated_echo(value=", "verdict": {"measured": false, "production_authorized": false, "reason": "bfclguard_parse_refused", "status": "unmeasured"}, "without_gate_spy_calls": [{"language": "Python", "text": "fabricated_echo(value="}]}
+stderr:
+<empty>
+
+$ python3 -I -S -B tests/fixtures/hg_bfclguard/controls.py --dynamic --scratch /tmp/bfclguard-final-dynamic-ik7_pult
+exit=0
+stdout:
+{"cases": [{"check_exit": 0, "check_stdout": "reward 1: function-name set matches\n", "direct_correct": true, "id": "fabricated_name", "metric": "function-name set equality (not the official BFCL score)", "reward_text": "1\n", "scorer_input_verified": true, "scorer_module": "data.datasets.bfcl_v3", "text": "ns.fabricated_echo"}, {"check_exit": 1, "check_stdout": "reward 0: function-name set differs\n", "direct_correct": false, "id": "fabricated_expression", "metric": "function-name set equality (not the official BFCL score)", "reward_text": "0\n", "scorer_input_verified": true, "scorer_module": "data.datasets.bfcl_v3", "text": "fabricated_echo(value=1 + __probe__())"}, {"check_exit": 1, "check_stdout": "reward 0: function-name set differs\n", "direct_correct": false, "id": "fabricated_nested", "metric": "function-name set equality (not the official BFCL score)", "reward_text": "0\n", "scorer_input_verified": true, "scorer_module": "data.datasets.bfcl_v3", "text": "fabricated_echo(value=__probe__(x=1))"}, {"check_exit": 1, "check_stdout": "reward 0: function-name set differs\n", "direct_correct": false, "id": "fabricated_string", "metric": "function-name set equality (not the official BFCL score)", "reward_text": "0\n", "scorer_input_verified": true, "scorer_module": "data.datasets.bfcl_v3", "text": "fabricated_echo(value='__probe__()')"}], "loaded_repository_files": ["data/__init__.py", "data/datasets/__init__.py", "data/datasets/bfcl_v3.py", "data/scaffolds/__init__.py", "data/scaffolds/qa/__init__.py", "data/scaffolds/qa/base.py", "data/scaffolds/qa/read.py", "data/scaffolds/qa/verify/check.py", "tests/fixtures/hg_bfclguard/controls.py", "tests/fixtures/hg_bfclguard/gate.py"], "positive_tripwire_events": [{"kind": "import", "value": "bfcl_eval.model_handler.utils"}, {"kind": "exec", "value": "/synthetic/bfcl_eval/model_handler/utils.py"}, {"kind": "decoder_call", "value": "resolve_ast_by_type"}], "retained_sys_modules": [], "sink_events": []}
+stderr:
+<empty>
+
+Observed cleanup: dynamic scratch no longer exists: True
+
+$ PYTHONDONTWRITEBYTECODE=1 TMPDIR=/tmp python3 -m pytest -q -p no:cacheprovider tests/quality/test_bfclguard_reachability.py --basetemp=/tmp/bfclguard-final-pytest
+exit=0
+stdout:
+..............                                                           [100%]
+14 passed in 2.25s
+stderr:
+<empty>
+
+Observed cleanup: final pytest basetemp no longer exists: True
+
+$ python3 tools/check_dataset_blockers.py
+exit=0
+stdout:
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+stderr:
+<empty>
+
+$ sha256sum tests/fixtures/bfcl_ast_source/candidate-codex195/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py
+exit=0
+stdout:
+153bb33a9515ea2d6ee6a1387faaa464c7be4fe9c6a9f88cc17ad23a1cc306d2  tests/fixtures/bfcl_ast_source/candidate-codex195/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py
+stderr:
+<empty>
+
+$ git diff --name-only HEAD
+exit=0
+stdout:
+<empty>
+stderr:
+<empty>
+
+Earlier focused regression (captured verbatim from the terminal):
+$ PYTHONDONTWRITEBYTECODE=1 TMPDIR=/tmp python3 -m pytest -q -p no:cacheprovider tests/quality/test_bfcl_ast_source_contract.py tests/quality/test_bfclcontain_differential.py tests/quality/test_import_direction.py -k 'not publication_preserves_the_ordered_28_adapter_names' --basetemp=/tmp/bfclguard-regression
+exit=0
+stdout:
+........................................................................ [ 96%]
+...                                                                      [100%]
+=============================== warnings summary ===============================
+tests/quality/test_bfclcontain_differential.py::test_containment_controls_and_uncontained_binop_finding
+  tests/fixtures/bfcl_ast_source/candidate-codex195/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py:296: DeprecationWarning: ast.NameConstant is deprecated and will be removed in Python 3.14; use ast.Constant instead
+    value, ast.NameConstant
+
+tests/quality/test_bfclcontain_differential.py::test_containment_controls_and_uncontained_binop_finding
+tests/quality/test_bfclcontain_differential.py::test_containment_controls_and_uncontained_binop_finding
+tests/quality/test_bfclcontain_differential.py::test_containment_controls_and_uncontained_binop_finding
+  tests/fixtures/bfcl_ast_source/candidate-codex195/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py:295: DeprecationWarning: ast.NameConstant is deprecated and will be removed in Python 3.14; use ast.Constant instead
+    elif isinstance(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+75 passed, 1 deselected, 4 warnings in 1.72s
+stderr:
+<empty>
+
+The existing unsafe differential control ran as a regression, not a new finding or official scoring call.
+Publication enumeration was deselected to avoid importing refused adapters.
+
+Earlier iterations of the new test file:
+$ PYTHONDONTWRITEBYTECODE=1 TMPDIR=/tmp python3 -m pytest -q -p no:cacheprovider tests/quality/test_bfclguard_reachability.py --basetemp=/tmp/bfclguard-pytest
+exit=0
+stdout:
+.............                                                            [100%]
+13 passed in 2.24s
+stderr:
+<empty>
+
+$ PYTHONDONTWRITEBYTECODE=1 TMPDIR=/tmp python3 -m pytest -q -p no:cacheprovider tests/quality/test_bfclguard_reachability.py --basetemp=/tmp/bfclguard-pytest
+exit=0
+stdout:
+.............                                                            [100%]
+13 passed in 3.57s
+stderr:
+<empty>
+
+Both earlier pytest basetemps and the regression basetemp were removed immediately after each run.
+
+$ python3 -I -S -B -c 'import json; from pathlib import Path; r=[json.loads(s) for s in Path('"'"'tests/fixtures/hg_bfclguard/sources.jsonl'"'"').read_text().splitlines()]; print(json.dumps({'"'"'py_files'"'"':sum(s['"'"'path'"'"'].endswith('"'"'.py'"'"') for s in r),'"'"'extensionless_python'"'"':[s['"'"'path'"'"'] for s in r if not s['"'"'path'"'"'].endswith('"'"'.py'"'"')]},sort_keys=True))'
+exit=0
+stdout:
+{"extensionless_python": ["data/datasets/agentdojo/cli/dojo", "data/datasets/alfworld/cli/alf", "data/datasets/appworld/cli/aw", "data/datasets/bird_minidev/cli/bird", "data/datasets/gaia/cli/ask", "data/datasets/jericho/cli/jer", "data/datasets/livecodebench/cli/lcb", "data/datasets/scienceworld/cli/scw", "data/scaffolds/qa/cli/qa"], "py_files": 308}
+stderr:
+<empty>
+
+$ git check-ignore -v tests/fixtures/hg_bfclguard/gate.py tests/fixtures/hg_bfclguard/edges.jsonl
+exit=0
+stdout:
+.gitignore:380:tests/fixtures/hg_*/	tests/fixtures/hg_bfclguard/gate.py
+.gitignore:380:tests/fixtures/hg_*/	tests/fixtures/hg_bfclguard/edges.jsonl
+stderr:
+<empty>
+
+The explicit user deliverable requires tests/fixtures/hg_bfclguard files in the commit;
+.gitignore:380 normally ignores hg_* evidence directories. Only the eleven named
+new text/code fixture files were force-added; .gitignore was not modified.
+
+Earlier staged whitespace check detected one trailing blank line in this validation
+file (git diff --cached --check, exit 2):
+registry/w-bfclguard-validation.txt:128: new blank line at EOF.
+The final sections below remove that trailing blank-line condition.
+
+NOT VERIFIED / NOT PERFORMED:
+- No official BFCL scorer/runner execution or full-package retained decoder import.
+  Existing test_bfclcontain_differential regression replays its recorded fabricated
+  unsafe source-slice control; new gate bypass controls use an inert spy only.
+- No dataset trial/pilot, selected or held-out row/reference access, model/GPU/server
+  operation, paid API request, network fetch, or refused-adapter execution.
+  Whole-scope AST parsing inventories adapter source code, not dataset payloads.
+- No whole-program dataflow, arbitrary reflective aliases, computed import/path
+  evaluation, sys.path/meta-path custody, generated-code execution analysis,
+  subprocess argv/child dependency closure, native/third-party or out-of-scope
+  tests closure. There are 127 unresolved recognized mechanism call nodes.
+- No integration of the unwired gate into any production/official decode path,
+  source/index/runtime approval, handler binding, metric equivalence, argument
+  correctness, Java/JavaScript decode, or benchmark denominator/aggregation.
+- No production sandbox/resource/CPU/memory/quota/export/snapshot/cleanup proof;
+  AST node/depth limits are post-parse. Only these controls' temporary directories
+  were cleaned and checked. No exhaustive grammar/adversarial-object proof.
+- No full pytest suite. The publication-enumeration import test was deselected.
+- No edits to existing platform/retained sources, registry, journal, AGENTS.md,
+  other worker files or the operator checkout; no merge, push or branch rewrite.
+  No registry status proposal: the official scorer/containment obligations stay open.
+
+$ python3 -I -S -B -c 'from pathlib import Path; import json,re,subprocess; refs=re.findall(r'"'"'([\w./-]+\.(?:py|md|json|jsonl|txt)):(\d+)'"'"',Path('"'"'registry/w-bfclguard.md'"'"').read_text()); files=subprocess.check_output(['"'"'git'"'"','"'"'diff'"'"','"'"'--cached'"'"','"'"'--name-only'"'"','"'"'--diff-filter=A'"'"'],text=True).splitlines(); assert len(files)==14; assert all(Path(p).stat().st_size<1000000 for p in files); assert all(Path(p).is_file() and 0<int(n)<=len(Path(p).read_text().splitlines()) for p,n in refs); assert not subprocess.check_output(['"'"'git'"'"','"'"'diff'"'"','"'"'--cached'"'"','"'"'--name-only'"'"','"'"'--diff-filter=MDR'"'"'],text=True); assert all(not Path('"'"'/tmp'"'"',p).exists() for p in ['"'"'bfclguard-pytest'"'"','"'"'bfclguard-regression'"'"','"'"'bfclguard-final-pytest'"'"']); print(json.dumps({'"'"'existing_files_changed'"'"':False,'"'"'new_files'"'"':len(files),'"'"'all_files_under_1MB'"'"':True,'"'"'report_file_line_references_checked'"'"':len(refs),'"'"'explicit_pytest_basetemps_absent'"'"':True},sort_keys=True))'
+exit=0
+stdout:
+{"all_files_under_1MB": true, "existing_files_changed": false, "explicit_pytest_basetemps_absent": true, "new_files": 14, "report_file_line_references_checked": 102}
+stderr:
+<empty>
+
+$ git diff --cached --check
+exit=2
+stdout:
+registry/w-bfclguard-validation.txt:159: new blank line at EOF.
+stderr:
+<empty>
+
+Intermediate transcript construction also triggered the same EOF-only check:
+$ git diff --cached --check
+exit=2
+stdout:
+registry/w-bfclguard-validation.txt:173: new blank line at EOF.
+stderr:
+<empty>
+
+Completed-file whitespace validation:
+$ git diff --cached --check
+exit=0
+stdout:
+<empty>
+stderr:
+<empty>
+
+$ git diff --cached --name-status
+exit=0
+stdout:
+A	registry/w-bfclguard-validation.txt
+A	registry/w-bfclguard.md
+A	tests/fixtures/hg_bfclguard/closures.jsonl
+A	tests/fixtures/hg_bfclguard/controls.py
+A	tests/fixtures/hg_bfclguard/dynamic-observation.json
+A	tests/fixtures/hg_bfclguard/edges.jsonl
+A	tests/fixtures/hg_bfclguard/gate-observations.jsonl
+A	tests/fixtures/hg_bfclguard/gate.py
+A	tests/fixtures/hg_bfclguard/mechanisms.jsonl
+A	tests/fixtures/hg_bfclguard/reachability.py
+A	tests/fixtures/hg_bfclguard/references.jsonl
+A	tests/fixtures/hg_bfclguard/sources.jsonl
+A	tests/fixtures/hg_bfclguard/summary.json
+A	tests/quality/test_bfclguard_reachability.py
+stderr:
+<empty>
+
+Final byte sizes for every committed file (including this file):
+$ python3 -I -S -B -c 'from pathlib import Path; import subprocess; paths=subprocess.check_output(['"'"'git'"'"','"'"'diff'"'"','"'"'--cached'"'"','"'"'--name-only'"'"'],text=True).splitlines(); print('"'"''"'"'.join(str(Path(p).stat().st_size)+'"'"' '"'"'+p+'"'"'\n'"'"' for p in paths),end='"'"''"'"')'
+exit=0
+stdout:
+18121 registry/w-bfclguard-validation.txt
+17153 registry/w-bfclguard.md
+25673 tests/fixtures/hg_bfclguard/closures.jsonl
+10369 tests/fixtures/hg_bfclguard/controls.py
+1979 tests/fixtures/hg_bfclguard/dynamic-observation.json
+386882 tests/fixtures/hg_bfclguard/edges.jsonl
+4303 tests/fixtures/hg_bfclguard/gate-observations.jsonl
+4265 tests/fixtures/hg_bfclguard/gate.py
+41443 tests/fixtures/hg_bfclguard/mechanisms.jsonl
+11844 tests/fixtures/hg_bfclguard/reachability.py
+330 tests/fixtures/hg_bfclguard/references.jsonl
+61711 tests/fixtures/hg_bfclguard/sources.jsonl
+991 tests/fixtures/hg_bfclguard/summary.json
+7649 tests/quality/test_bfclguard_reachability.py
+stderr:
+<empty>
