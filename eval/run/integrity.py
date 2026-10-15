@@ -104,6 +104,19 @@ NOT_PLATFORM = {
                "and was moved here so the root stays navigable. It is written by humans and "
                "review sessions after a measurement, never read by a run; hashing it would "
                "fail a certification because someone added a report",
+    "registry": "the dataset-blocker register, its withdrawal record, the closure assessment and "
+                "the worker receipts that back them (`registry/dataset-blockers.json` and "
+                "friends). It is the bookkeeping a *review session* writes about which datasets "
+                "may run and what evidence they owe; no path a run executes reads it -- checked "
+                "with `grep -rn registry/dataset-blockers driver.py harnessgrad eval data "
+                "methods`, which returns only tests and tools -- and hashing it would fail a "
+                "certification every time somebody recorded a blocker or closed one. Same "
+                "category as `reports/`, and classified here on 2026-10-15 after "
+                "`test_every_top_level_entry_is_classified` caught the migration that created "
+                "this directory: `1825cd0e` moved the registry out of `docs/` and never said "
+                "which side the new top-level entry belonged to, so the guard failed in `main` "
+                "and the sweep did not report it because a collection error earlier in its batch "
+                "had already skipped the file.",
     "conftest.py": "root pytest configuration: it guards the test runner's temporary "
                    "directory placement before collection. It shapes how the tests are "
                    "run, never what a number means, and no run reads it",

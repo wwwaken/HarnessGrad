@@ -307,3 +307,37 @@ replay stopped) and is a plausible contributor to others.
 replay is left **paused** (`kill -STOP`) rather than killed, so its 71 remaining bodies can be resumed with
 `kill -CONT` when nothing else is executing; the residue and its per-body reasons are enumerated in
 `reports/w-b5restore-replay2-20261015.jsonl`.
+
+## The sweep did not cover every file, and `test_integrity.py` was red in `main` the whole time
+
+Found on 2026-10-15 while waiting on a concurrent run: `python3 -m pytest -q tests/quality/test_integrity.py`
+is **1 failed, 4 passed** in `main`, and had been since the registry migration.
+
+```
+tests/quality/test_integrity.py:46: AssertionError
+E       assert not ['registry']
+```
+
+`tests/quality/test_integrity.py::test_every_top_level_entry_is_classified` requires every top-level
+entry of the checkout to be either in `eval/run/integrity.py`'s `PLATFORM` (hashed as referee-side) or in
+its `NOT_PLATFORM` (explicitly not hashed, with a written reason). `1825cd0e` moved the registry out of
+`docs/` into a new top-level `registry/` and never said which side it belonged to, so the guard failed.
+`registry/` belongs in `NOT_PLATFORM`, on the same argument as `reports/`, and it is now there with that
+reason: no path a run executes reads it (`grep -rn registry/dataset-blockers driver.py harnessgrad eval
+data methods` returns only tests and tools), and hashing it would fail a certification every time a
+blocker was recorded or closed. `test_integrity.py`: **5 passed**.
+
+**Why the sweep missed it, and why that matters more than the one failure.** The sweep was
+`for batch in chunks of 12 files: pytest <batch>`. A pytest **collection error aborts the whole batch**
+(`Interrupted: 1 error during collection`), so every file *after* the bad one in that batch is silently
+never run - and the sweep's per-batch summary then reports the files it did reach, which reads exactly
+like a clean run. `test_w_e6fix_cleanup.py` (the deleted `reports/w-e6-evidence/preflight/bindings.json`)
+is a confirmed collection error in that sweep, so at least one batch is known to have been truncated.
+The per-file baseline pass that followed only re-ran the 25 files the sweep had *named* as failing, which
+by construction cannot find a file that was never executed.
+
+**Rule for this file.** A sweep is not evidence of coverage. Chunked sweeps must either run one file per
+pytest invocation or keep going past a collection error (`--continue-on-collection-errors`), and the
+covered-file list must be compared against `ls tests/quality/test_*.py` rather than inferred from the
+absence of failures. A per-file pass over all 194 files was launched on 2026-10-15 to check for other
+files the chunking skipped; its results are appended below when it settles.
