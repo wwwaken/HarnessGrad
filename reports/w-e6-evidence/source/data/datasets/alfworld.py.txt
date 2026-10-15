@@ -1,0 +1,544 @@
+    1 """ALFWorld as a dataset: a text-adventure benchmark whose reward is PDDL goal
+    2 satisfaction computed by the environment. INTERFACE.md §2.5.9.
+    3 
+    4     python3 tools/datasets.py --write        # regenerate DOWNLOADS.md from downloads()
+    5     python3 data/datasets/alfworld/control.py --oracle   # the oracle control (no Docker)
+    6     driver.py --dataset alfworld ...
+    7 
+    8 Where the tasks come from
+    9 -------------------------
+   10 `alfworld/alfworld`, the `valid_unseen` split of the `json_2.1.1` data. That is the
+   11 split ALFWorld's own paper evaluates out-of-distribution on, and it is what a score
+   12 here should be compared with. The task list is **not** this adapter's invention: it is
+   13 the same filter `alfworld/agents/environment/alfred_tw_env.py:collect_game_files`
+   14 applies -- a trial directory must have both `traj_data.json` and `game.tw-pddl`, must
+   15 not be a movable-receptacle or sliced-object trajectory, and its `game.tw-pddl` must
+   16 carry `solvable: true`. Measured over the extracted data: 134 trials pass, which is
+   17 ALFWorld's own `Evaluating with 134 games`.
+   18 
+   19 The three provisioning traps, each verified rather than repeated
+   20 ---------------------------------------------------------------
+   21 1. **The data is in GitHub release assets, not in the repository and not on Hugging
+   22    Face.** The filenames and the release tags come from ALFWorld's own
+   23    `scripts/alfworld-download`; `downloads()` below names them with the tags pinned.
+   24 2. **`solvable` lives only in `game.tw-pddl`, which ships in the `0.4.2` asset**
+   25    (`json_2.1.3_tw-pddl.zip`). Verified: `json_2.1.1_json.zip` contains only
+   26    `traj_data.json` (7302 of them) and `json_2.1.1_pddl.zip` only `initial_state.pddl`
+   27    (7080); neither contains a `game.tw-pddl`. Without that key
+   28    `collect_game_files` skips **every** trial and the dataset loads as empty.
+   29    Measured nuance: because the `0.4.2` game file embeds `pddl_problem` and `grammar`,
+   30    the `json_2.1.1_pddl.zip` archive is *not* read by the loading path -- it is read by
+   31    ALFWorld's generation path (`alfworld-generate`). `downloads()` still names all
+   32    three, because `alfworld-download` fetches all three and a regeneration needs it.
+   33 3. **The PDDL domain and the TextWorld grammar are in the repository's Python package,
+   34    not in any data pack.** Verified location:
+   35    `alfworld/data/alfred.pddl` and `alfworld/data/alfred.twl2` -- i.e.
+   36    `_src/repo/alfworld/data/` in the checkout this adapter was validated against, and
+   37    `site-packages/alfworld/data/` in an install. ALFWorld's own
+   38    `scripts/alfworld-download` copies them from the *installed package* into
+   39    `$ALFWORLD_DATA/logic/`, which is what `base_config.yaml` and `eval_config.yaml`
+   40    point `logic.domain`/`logic.grammar` at. The symptom of a missing one depends on
+   41    where you enter: pointing TextWorld at a `.pddl` (or extensionless) file gives
+   42    `ValueError: Unsupported game format`, while an empty grammar gives a bare
+   43    `StopIteration` and a missing `--domain` gives `FileNotFoundError` -- none of which
+   44    names the real cause. Our loading path does not need them (the game file is
+   45    self-contained), and the adapter does not depend on the `logic/` copy; it is
+   46    provisioned because ALFWorld's own tooling expects it.
+   47 
+   48 How ALFWorld fits the platform's one-shot contract
+   49 --------------------------------------------------
+   50 ALFWorld is interactive and multi-turn; the platform grades what a harness *left
+   51 behind*. The tau-bench pattern resolves that: the agent acts through a CLI
+   52 (`data/datasets/alfworld/cli/alf`), the CLI appends every action to `alf_actions.jsonl`, and
+   53 `data/datasets/alfworld/verify/check.py` replays that log in a freshly built environment and
+   54 reads TextWorld's own `won` flag. The CLI's observations, its summary and any `won` it
+   55 prints are never consulted -- the log holds actions and actions are re-executed.
+   56 
+   57 The environment is `kind: "files"`, not a container. That is forced by a hard constraint
+   58 of this exercise (`Do NOT use Docker`) and it is the reason this dataset works on a
+   59 host with nothing but `pip install alfworld textworld`: the CLI and the check both run
+   60 under the platform's Python. The consequence is stated loudly in
+   61 `docs/dataset-onboarding-skill.md`: a `files` environment cannot declare a longer
+   62 `agent_timeout_s`, and the platform's `reward_file`/`evidence_file` channels were
+   63 container-only before this dataset (`eval/verification/verifier.py::_verify` now honours them for a
+   64 host check as well -- the smallest change that let a no-Docker dataset keep the
+   65 contract's evidence channel).
+   66 
+   67 The metric, and what is deliberately not added
+   68 ----------------------------------------------
+   69 `reward = 1` iff the replayed episode reports `won` at some step inside `STEP_BUDGET`
+   70 actions. This is ALFWorld's own metric (`evaluate_dagger` takes the maximum of the
+   71 per-step `won`). `alf done` exists in the CLI -- the harness needs a way to stop -- but
+   72 the check does **not** require it: ALFWorld has no such requirement, and tau-bench's
+   73 `done` gate exists only because tau-bench computes a reward only for a finished
+   74 episode. Adding one here would be inventing a requirement the benchmark does not have.
+   75 
+   76 The split
+   77 ---------
+   78 The benchmark's own evaluation split is *all* of `valid_unseen` and it declares no
+   79 train/eval division. The platform needs one, so it is **imposed here**, derived from the
+   80 task id by hash so that adding or removing a task does not reshuffle the other side
+   81 (`_is_eval`, the same rule `data/datasets/terminal_bench.py` uses). A score on the eval side is
+   82 a score on about a third of `valid_unseen`, not on the benchmark; `HG_ALFWORLD_SPLIT=none`
+   83 runs every task as eval and accepts the driver's warning.
+   84 
+   85 Noise, before anyone compares two ALFWorld runs
+   86 -----------------------------------------------
+   87 Measured on this machine with `qwen3.5-9b-local`, the same arm, the same 20 tasks, the
+   88 same seed and temperature 0, over five batches: **10 / 8 / 11 / 11 / 11 tasks, SD 1.30
+   89 tasks = 6.5 percentage points, 4 of 20 tasks changed side at least once.** A move smaller
+   90 than roughly 6 points on 20 tasks is the noise. The full note is in
+   91 `docs/experiment_noise.md`; quote the task count with every ALFWorld number, because the
+   92 granularity is `1/n`.
+   93 """
+   94 
+   95 from __future__ import annotations
+   96 
+   97 #: See `data/scaffolds/registry.py:KIND_DATASET`. A fixture is platform test material and is
+   98 #: deliberately not offered as a choice in the Launch form.
+   99 KIND = "dataset"
+  100 
+  101 #: The oracle control submits the benchmark's own released reference; see
+  102 #: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
+  103 ORACLE_SOURCE = "released"
+  104 
+  105 
+  106 #: The benchmark's own evaluation set, within this adapter's pool: **every task here belongs
+  107 #: to it**. The pool is `valid_unseen`, which is exactly ALFWorld's own evaluation split (134 tasks). The benchmark's 3,553-task `train` set is not loaded, so this pool holds no study material.
+  108 #:
+  109 #: `None` is the accurate value only because nothing in the pool is study material -- it does
+  110 #: not claim the pool is the whole of the benchmark's evaluation set (see `ds1000`, which is a
+  111 #: measured subset). `--split official --side eval` is the comparable run: the whole pool, with
+  112 #: no study material in it. `--split declared` keeps this adapter's own division.
+  113 OFFICIAL_EVAL = None
+  114 
+  115 import hashlib
+  116 import json
+  117 import os
+  118 import re
+  119 from pathlib import Path
+  120 
+  121 #: Where the data lives. Outside the platform tree on purpose: dataset content is not
+  122 #: platform code, is never committed, and is what `tools/datasets.py` provisions.
+  123 #: `HG_ALFWORLD_DATA` overrides it so a reader can point at another copy.
+  124 DATASET_ROOT = Path(os.environ.get("HG_ALFWORLD_DATA",
+  125                                    "/mnt/20t/xubuqiang/datasets/alfworld"))
+  126 
+  127 #: The split this dataset is. `valid_seen` and `train` are on disk too; only the
+  128 #: out-of-distribution evaluation split is used, which is the one ALFWorld reports.
+  129 DATA_SUBDIR = ("json_2.1.1", "valid_unseen")
+  130 
+  131 #: This module's own directory: the adapter is `data/datasets/alfworld.py`, its content is
+  132 #: `data/datasets/alfworld/`.
+  133 ASSETS = Path(__file__).resolve().parent / "alfworld"
+  134 CLI_DIR = ASSETS / "cli"
+  135 LIB_DIR = ASSETS / "lib"
+  136 VERIFY_DIR = ASSETS / "verify"
+  137 
+  138 #: The step budget and the two filenames are **declared once**, in
+  139 #: `data/datasets/alfworld/lib/gym_env.py`, which the agent's CLI and the check both import.
+  140 #: Repeating `30` here would be a second declaration that can drift from the one the
+  141 #: environment is built with -- and a drift there means an action is legal for the agent
+  142 #: and truncated for the check. Loaded by file path rather than by `import gym_env`,
+  143 #: because `lib/` is not on `sys.path` and putting it there from inside a dataset module
+  144 #: would leak a generic module name into the driver's interpreter.
+  145 def _load_gym_env():
+  146     import importlib.util
+  147     spec = importlib.util.spec_from_file_location("alfworld_gym_env",
+  148                                                   LIB_DIR / "gym_env.py")
+  149     module = importlib.util.module_from_spec(spec)
+  150     spec.loader.exec_module(module)
+  151     return module
+  152 
+  153 
+  154 _GYM_ENV = _load_gym_env()
+  155 
+  156 #: The community/sibling-project protocol: at most 30 actions per episode.
+  157 STEP_BUDGET = _GYM_ENV.STEP_BUDGET
+  158 GAME_IN_WORKDIR = _GYM_ENV.GAME_FILENAME
+  159 LOG_IN_WORKDIR = _GYM_ENV.LOG_FILENAME
+  160 
+  161 #: Where the check is told to put its verdict. The absolute paths are the container
+  162 #: contract; on a `files` environment the platform resolves them against the workdir
+  163 #: (`eval/verification/verifier.py::_verify`), and the check's `argv` passes the same location in the
+  164 #: relative spelling its own working directory understands.
+  165 REWARD_FILE = "/verifier/reward.txt"
+  166 EVIDENCE_FILE = "/verifier/evidence.json"
+  167 REWARD_REL = "verifier/reward.txt"
+  168 EVIDENCE_REL = "verifier/evidence.json"
+  169 
+  170 #: ALFWorld's task-type vocabulary. A `traj_data.json` whose `task_type` is not in this
+  171 #: set is not a task ALFWorld evaluates, so it is not one this dataset returns.
+  172 TASK_TYPES = {
+  173     1: "pick_and_place_simple",
+  174     2: "look_at_obj_in_light",
+  175     3: "pick_clean_then_place_in_recep",
+  176     4: "pick_heat_then_place_in_recep",
+  177     5: "pick_cool_then_place_in_recep",
+  178     6: "pick_two_obj_and_place",
+  179 }
+  180 
+  181 #: The templated goal lives in the game's TextWorld grammar, as the `rhs` of the `task`
+  182 #: rule. The grammar is TWL2 (JSON with `#` comments), so it cannot be `json.loads`-ed;
+  183 #: the rule is pulled out with a regex and unescaped as a JSON string. Verified on all
+  184 #: 134 valid_unseen games.
+  185 _GOAL_RE = re.compile(r'"task"\s*:\s*\[\s*\{\s*"rhs"\s*:\s*"((?:[^"\\]|\\.)*)"')
+  186 
+  187 #: The one field of a game file that must never reach the agent. `walkthrough` is
+  188 #: ALFWorld's own reference solution for the game -- a list of the exact commands that
+  189 #: solve it. The game file is the task's initial state, so it is handed to the agent;
+  190 #: handing over the walkthrough would hand over the answer. `SETUP` and every verifier
+  191 #: input therefore carry `_stripped_game()` rather than the file on disk, and the
+  192 #: oracle control reads the original from the data root.
+  193 _LEAKED_FIELD = "walkthrough"
+  194 
+  195 
+  196 def _split_dir() -> Path:
+  197     return DATASET_ROOT.joinpath(*DATA_SUBDIR)
+  198 
+  199 
+  200 def _collect() -> list[dict]:
+  201     """Every runnable game in the split, filtered exactly as ALFWorld filters them.
+  202 
+  203     The filter is `AlfredTWEnv.collect_game_files`, reproduced rather than called:
+  204     calling it would drag in `textworld` and crawl the whole data tree at import time,
+  205     and the adapter must be importable on a machine that has not provisioned the data
+  206     (see `published()` in `data/scaffolds/registry.py`: a module that will not import is hidden
+  207     from the chooser). The rules, in the same order upstream applies them:
+  208 
+  209       * a trial directory must hold `traj_data.json` and `game.tw-pddl`;
+  210       * its path must not contain `movable` or `Sliced` (unsupported trajectories);
+  211       * `traj_data.json`'s `task_type` must be one ALFWorld evaluates;
+  212       * `game.tw-pddl` must carry `solvable` and it must be true.
+  213 
+  214     Each returned record is everything the adapter needs and nothing it does not.
+  215     """
+  216     root = _split_dir()
+  217     records: list[dict] = []
+  218     for game_path in sorted(root.glob("*/*/game.tw-pddl")):
+  219         trial_dir = game_path.parent
+  220         task_dir = trial_dir.parent
+  221         label = f"{task_dir.name}/{trial_dir.name}"
+  222         if "movable" in str(trial_dir) or "Sliced" in str(trial_dir):
+  223             continue
+  224         traj_path = trial_dir / "traj_data.json"
+  225         if not traj_path.is_file():
+  226             continue
+  227         try:
+  228             traj_data = json.loads(traj_path.read_text())
+  229             gamedata = json.loads(game_path.read_text())
+  230         except (OSError, ValueError) as exc:
+  231             raise ValueError(f"alfworld: {label} is unreadable: {exc}") from exc
+  232         if traj_data.get("task_type") not in TASK_TYPES.values():
+  233             continue
+  234         if "solvable" not in gamedata:
+  235             # The 0.4.2 asset is the only one with this key; an extraction that skipped
+  236             # it lands here for every trial. Say that rather than "0 tasks".
+  237             raise ValueError(
+  238                 f"alfworld: {label} has no `solvable` key -- the game files are not the "
+  239                 f"0.4.2 `json_2.1.3_tw-pddl.zip` ones. See downloads() and "
+  240                 f"tools/datasets.py --check")
+  241         if not gamedata["solvable"]:
+  242             continue
+  243         match = _GOAL_RE.search(str(gamedata.get("grammar") or ""))
+  244         if not match:
+  245             raise ValueError(
+  246                 f"alfworld: {label}: the game grammar has no `task` rule, so the "
+  247                 f"goal text cannot be read")
+  248         goal = json.loads('"' + match.group(1) + '"')
+  249         records.append({
+  250             # The official per-game label is the last two path components
+  251             # (`evaluate_dagger` prints `"/".join(game_names[i].split("/")[-3:-1])`).
+  252             # A slash is not safe in a platform task id (it becomes a container name
+  253             # and a path component), so it is spelled `__` here.
+  254             "task_id": f"{task_dir.name}__{trial_dir.name}",
+  255             "label": label,
+  256             "task_type": traj_data["task_type"],
+  257             "goal": goal,
+  258             "game_path": game_path,
+  259             "stripped_game": _stripped_game(gamedata),
+  260         })
+  261     return records
+  262 
+  263 
+  264 def _stripped_game(gamedata: dict) -> str:
+  265     """The game file without the reference solution, as JSON text.
+  266 
+  267     Kept as a string because that is the shape `SETUP`/`VERIFY.inputs` take for inline
+  268     content, and because it means the stripped copy is built once at import instead of
+  269     being written somewhere on disk that could drift from its source.
+  270     """
+  271     clean = {k: v for k, v in gamedata.items() if k != _LEAKED_FIELD}
+  272     return json.dumps(clean)
+  273 
+  274 
+  275 def _goal(record: dict) -> str:
+  276     """The instruction, with a preamble that names only the interface.
+  277 
+  278     Nothing here hints at the solution. It states the goal the environment will check,
+  279     how to act, and the budget -- the three things the agent cannot discover from the
+  280     interface alone.
+  281     """
+  282     return (
+  283         f"# Task\n"
+  284         f"\n"
+  285         f"You are in a text-based house, described one room at a time, and you act by\n"
+  286         f"typing commands. The game is `{GAME_IN_WORKDIR}` in your working directory.\n"
+  287         f"\n"
+  288         f"**{record['goal']}**\n"
+  289         f"\n"
+  290         f"## How to act\n"
+  291         f"\n"
+  292         f"- Look at where you are and what you may do:\n"
+  293         f"      python3 alf look\n"
+  294         f"- Take one action (it must be one of the admissible actions `alf look`\n"
+  295         f"  prints; quote it):\n"
+  296         f"      python3 alf do \"go to desk 2\"\n"
+  297         f"- When the task is finished, say so:\n"
+  298         f"      python3 alf done\n"
+  299         f"- Every action is appended to `{LOG_IN_WORKDIR}` and costs one of your\n"
+  300         f"  **{STEP_BUDGET}** steps. A step that TextWorld does not understand still\n"
+  301         f"  costs a step.\n"
+  302         f"\n"
+  303         f"## How it is scored\n"
+  304         f"\n"
+  305         f"- Your actions are replayed from the beginning in a fresh environment, and the\n"
+  306         f"  task counts as solved only if the environment's own goal check reports the\n"
+  307         f"  goal satisfied within the {STEP_BUDGET}-step budget. There is no judge and\n"
+  308         f"  no partial credit.\n"
+  309         f"- Nothing you print is read. Only the actions you take are.\n"
+  310     )
+  311 
+  312 
+  313 def _setup(record: dict) -> dict:
+  314     """What the agent receives before it starts.
+  315 
+  316     The CLI and its shared environment library travel as `from` references into this
+  317     repository; the game travels as inline content because it must be the *stripped*
+  318     copy (see `_LEAKED_FIELD`), which is not the bytes on disk.
+  319     """
+  320     return {"files": [
+  321         {"path": GAME_IN_WORKDIR, "content": record["stripped_game"]},
+  322         {"path": "gym_env.py", "from": str(LIB_DIR / "gym_env.py")},
+  323         {"path": "alf", "from": str(CLI_DIR / "alf")},
+  324     ]}
+  325 
+  326 
+  327 def _verifier(record: dict) -> dict:
+  328     """The grade: the check, its trusted game, and where the verdict goes.
+  329 
+  330     `inputs` use `path` (relative to the workdir), not `dst`: on a `files` environment
+  331     the platform materialises these into the workdir, and `dst` is a container path.
+  332     The check, the game and the environment library are re-materialised at verification
+  333     time, so nothing the agent wrote to any of them is what runs.
+  334 
+  335     `reward_file`/`evidence_file` are absolute in-environment paths -- the container
+  336     contract. On a `files` environment `eval/verification/verifier.py` resolves them against the
+  337     workdir, and the `argv` flags below write to that same resolved location. Note the
+  338     **top-level-in-the-container** rule from `data/datasets/tau_bench.py:_verifier` does not
+  339     apply here (there is no `docker cp`), but the paths are kept absolute anyway so the
+  340     adapter is a valid container dataset if one is ever built.
+  341     """
+  342     return {
+  343         "kind": "command",
+  344         "argv": [
+  345             "python3", "check.py",
+  346             "--workdir", ".",
+  347             "--game", GAME_IN_WORKDIR,
+  348             "--log", LOG_IN_WORKDIR,
+  349             "--reward-file", REWARD_REL,
+  350             "--evidence-file", EVIDENCE_REL,
+  351             "--budget", str(STEP_BUDGET),
+  352         ],
+  353         "inputs": [
+  354             {"path": "check.py", "from": str(VERIFY_DIR / "check.py")},
+  355             {"path": "gym_env.py", "from": str(LIB_DIR / "gym_env.py")},
+  356             {"path": GAME_IN_WORKDIR, "content": record["stripped_game"]},
+  357         ],
+  358         "reward_file": REWARD_FILE,
+  359         "evidence_file": EVIDENCE_FILE,
+  360         "timeout_s": 300,
+  361     }
+  362 
+  363 
+  364 def downloads() -> list[dict]:
+  365     """Everything this dataset needs, with the traps written down beside it.
+  366 
+  367     Read by `tools/datasets.py`; the generated `DOWNLOADS.md` is rendered from this
+  368     function, never from a hand-written table, so the two cannot disagree. Version
+  369     fields are pinned: a release tag, a commit sha or an exact package version, never a
+  370     branch name.
+  371 
+  372     The three `http` assets are the ones ALFWorld's own `scripts/alfworld-download`
+  373     fetches; the release tags and URLs below are copied from that script, not guessed.
+  374     The `sha256` of each is the copy this adapter was validated against, so
+  375     `tools/datasets.py --check` can tell a re-download that changed bytes.
+  376     """
+  377     return [
+  378         {
+  379             "kind": "http",
+  380             "name": "json_2.1.1_json.zip",
+  381             "version": "0.2.2",
+  382             "url": "https://github.com/alfworld/alfworld/releases/download/"
+  383                    "0.2.2/json_2.1.1_json.zip",
+  384             "size": "~72 MB",
+  385             "sha256": "25171f16e20ad7b048c47275c45b0babf3aa1cbab29cec97387922350a9844bc",
+  386             "dst": "_src/json_2.1.1_json.zip",
+  387             "extract_to": ".",
+  388             "note": "Trap 1: this is a GitHub *release asset*, not in the repository and "
+  389                     "not on Hugging Face. It holds only `traj_data.json` (7302 files); "
+  390                     "on its own it cannot make a task.",
+  391         },
+  392         {
+  393             "kind": "http",
+  394             "name": "json_2.1.1_pddl.zip",
+  395             "version": "0.2.2",
+  396             "url": "https://github.com/alfworld/alfworld/releases/download/"
+  397                    "0.2.2/json_2.1.1_pddl.zip",
+  398             "size": "~35 MB",
+  399             "sha256": "913942ebed06659ea0da2f8122512d98bc6add30d84961ca803132d8fbcad585",
+  400             "dst": "_src/json_2.1.1_pddl.zip",
+  401             "extract_to": ".",
+  402             "note": "Holds only `initial_state.pddl` (7080 files). Measured: the loading "
+  403                     "path does not read it (the 0.4.2 game file embeds `pddl_problem`), "
+  404                     "but ALFWorld's generation path does, and `alfworld-download` "
+  405                     "fetches it, so it is provisioned.",
+  406         },
+  407         {
+  408             "kind": "http",
+  409             "name": "json_2.1.3_tw-pddl.zip",
+  410             "version": "0.4.2",
+  411             "url": "https://github.com/alfworld/alfworld/releases/download/"
+  412                    "0.4.2/json_2.1.3_tw-pddl.zip",
+  413             "size": "~35 MB",
+  414             "sha256": "5df77ea759f2211a4106082839ddbbb790f1ba4e7d097ed732cf453f72aa36cf",
+  415             "dst": "_src/json_2.1.3_tw-pddl.zip",
+  416             "extract_to": ".",
+  417             "note": "Trap 2: the ONLY archive with `game.tw-pddl`, and therefore the "
+  418                     "only one with the `solvable` key (and the `walkthrough` we strip). "
+  419                     "A version other than 0.4.2 has no `solvable` and every task is "
+  420                     "filtered out.",
+  421         },
+  422         {
+  423             "kind": "http",
+  424             "name": "alfworld repo tarball",
+  425             "version": "aaba6870f86c5be6a08a491f32a50b906227bc3e",
+  426             "url": "https://github.com/alfworld/alfworld/archive/"
+  427                    "aaba6870f86c5be6a08a491f32a50b906227bc3e.tar.gz",
+  428             "size": "~3.8 MB",
+  429             "sha256": "5592fbb36124b08d24167c5f7612a55a2cc610e0c39170f638a69b628835ee3b",
+  430             "dst": "_src/repo.tar.gz",
+  431             "extract_to": "_src",
+  432             "note": "Trap 3: the PDDL domain and the TextWorld grammar live here, at "
+  433                     "`alfworld/data/alfred.pddl` and `alfworld/data/alfred.twl2` -- not "
+  434                     "in any data pack. `alfworld-download` copies them into "
+  435                     "`$ALFWORLD_DATA/logic/`. Pinned by commit sha, not by `main`.",
+  436         },
+  437         {
+  438             "kind": "pip",
+  439             "name": "alfworld",
+  440             "package": "alfworld",
+  441             "version": "0.4.2",
+  442             "size": "~2 MB",
+  443             "note": "The loader (`AlfredTWEnv`), the CLI's environment wrappers and the "
+  444                     "packaged copy of the logic files. `pip install alfworld==0.4.2`.",
+  445         },
+  446         {
+  447             "kind": "pip",
+  448             "name": "textworld",
+  449             "package": "textworld",
+  450             "version": "1.7.0",
+  451             "size": "~40 MB",
+  452             "note": "The TextWorld engine that owns the `won` flag this dataset's reward "
+  453                     "is. `pip install textworld==1.7.0`. 1.7.0 removed Glulx support; "
+  454                     "ALFWorld's `.tw-pddl` games do not use it.",
+  455         },
+  456     ]
+  457 
+  458 
+  459 def provision_status() -> dict:
+  460     """What is present locally, for `tools/datasets.py --check`.
+  461 
+  462     Deliberately does not import `textworld` or build an environment: this is the
+  463     answer to "did the provisioning run", which has to work on a machine where it did
+  464     not.
+  465     """
+  466     split = _split_dir()
+  467     games = sorted(split.glob("*/*/game.tw-pddl")) if split.is_dir() else []
+  468     solvable = 0
+  469     for game in games:
+  470         try:
+  471             if "solvable" in json.loads(game.read_text()):
+  472                 solvable += 1
+  473         except (OSError, ValueError):
+  474             continue
+  475     logic = DATASET_ROOT / "logic"
+  476     return {
+  477         "root": str(DATASET_ROOT),
+  478         "present": bool(games),
+  479         "split_dir": str(split),
+  480         "game_files": len(games),
+  481         "with_solvable": solvable,
+  482         "logic_files": sorted(p.name for p in logic.glob("*")) if logic.is_dir() else [],
+  483         "tasks": len(_RECORDS),
+  484     }
+  485 
+  486 
+  487 #: Read once at import. `load()` is called more than once per run and the content is
+  488 #: immutable. A missing data root is **not** an import failure: `published()` catches
+  489 #: exceptions and hides a module that will not import, and a dataset that cannot be
+  490 #: seen in the chooser before its data is provisioned is a dataset a reader cannot
+  491 #: find the instructions for. `_LOAD_ERROR` carries the reason into `load()`.
+  492 try:
+  493     _RECORDS: list[dict] = _collect()
+  494     _LOAD_ERROR: str | None = None
+  495 except Exception as _exc:  # noqa: BLE001 - reported by load(), which is where it bites
+  496     _RECORDS = []
+  497     _LOAD_ERROR = f"{type(_exc).__name__}: {_exc}"
+  498 
+  499 
+  500 def load() -> tuple[list[dict], dict[str, str]]:
+  501     """`(tasks, scorable)`. Every task is graded by its `VERIFY` entry, so the
+  502     `scorable` map is present only because the interface asks for it."""
+  503     if _LOAD_ERROR is not None:
+  504         raise ValueError(f"alfworld: cannot read {_split_dir()} ({_LOAD_ERROR}). "
+  505                          f"Provision it with `python3 tools/datasets.py --list`.")
+  506     if not _RECORDS:
+  507         raise ValueError(
+  508             f"alfworld: no runnable game under {_split_dir()}. The usual cause is the "
+  509             f"0.4.2 `json_2.1.3_tw-pddl.zip` not being extracted, which leaves every "
+  510             f"trial without `game.tw-pddl`. See downloads() and "
+  511             f"`python3 tools/datasets.py --check`.")
+  512     tasks = [{"task_id": r["task_id"], "goal": _goal(r), "inputs": []}
+  513              for r in _RECORDS]
+  514     return tasks, {r["task_id"]: "" for r in _RECORDS}
+  515 
+  516 
+  517 def _is_eval(task_id: str) -> bool:
+  518     """A deterministic third, by hash of the task id.
+  519 
+  520     Hashed rather than sliced off the sorted list so that adding or removing a task
+  521     does not reshuffle which side every other task is on -- a split that moves under
+  522     the benchmark is a split whose past scores cannot be compared with its future ones.
+  523     """
+  524     return hashlib.sha256(task_id.encode()).digest()[0] % 3 == 0
+  525 
+  526 
+  527 #: One environment for every task: the host, because the hard constraint of this
+  528 #: exercise is that nothing here needs Docker. `files` cannot carry resource or timeout
+  529 #: fields (`data/scaffolds/registry.py::_check_env` refuses them), so the platform's defaults
+  530 #: apply: 2 cpus, 4 GB, 300 s for the harness and 300 s for the check. The CLI's
+  531 #: replay-from-scratch design keeps a 30-step episode inside that.
+  532 DEFAULT_ENV: dict = {"kind": "files"}
+  533 
+  534 ENV: dict[str, dict] = {r["task_id"]: {"kind": "files"} for r in _RECORDS}
+  535 SETUP: dict[str, dict] = {r["task_id"]: _setup(r) for r in _RECORDS}
+  536 VERIFY: dict[str, dict] = {r["task_id"]: _verifier(r) for r in _RECORDS}
+  537 
+  538 _split_mode = (os.environ.get("HG_ALFWORLD_SPLIT") or "hash").lower()
+  539 if _split_mode == "none":
+  540     SPLIT = None
+  541 else:
+  542     _ids = [r["task_id"] for r in _RECORDS]
+  543     SPLIT = {"train": [t for t in _ids if not _is_eval(t)],
+  544              "eval": [t for t in _ids if _is_eval(t)]}

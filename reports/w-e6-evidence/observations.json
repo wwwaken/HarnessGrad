@@ -1,0 +1,492 @@
+{
+  "source_files_verified": 43,
+  "shared_dataset_count": 23,
+  "docker": [
+    {
+      "packet": "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0",
+      "roles": [
+        {
+          "id": "a383023e45e1624ab3a4544cbc216c23484a9ab381d7f8cd7e33d31dca76b2e3",
+          "name": "/hg-w-e6-20261015T032920Z-72d6bfb0-cf6abd2_2-appworld",
+          "image": "sha256:db09e34ec90347e7d5271d95445f360222ba1aef3ca0eaa5614ce768bf23aca4",
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/tmp/w-e6-20261015T032920Z-72d6bfb0-wia1848y/recordings/cf6abd2_2/appworld",
+              "Destination": "/recordings/appworld",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            }
+          ],
+          "observed_limits": {
+            "NanoCpus": 2000000000,
+            "Memory": 4294967296,
+            "MemorySwap": 8589934592,
+            "PidsLimit": 1024,
+            "ReadonlyRootfs": false,
+            "Tmpfs": null,
+            "StorageOpt": null,
+            "Ulimits": []
+          },
+          "absence_command": "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/commands/0112-final-after-rescue-inspect.json"
+        },
+        {
+          "id": "75d7695604d0c68a8d8be3a6b7c4754e20d0131707cfe355c2f71265ac08cd46",
+          "name": "/kind_hertz",
+          "image": "sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca",
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/tmp/w-e6-20261015T032920Z-72d6bfb0-wia1848y/appworld-normal",
+              "Destination": "/app",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/tmp/w-e6-20261015T032920Z-72d6bfb0-wia1848y/recordings/cf6abd2_2/appworld",
+              "Destination": "/recordings/appworld",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/tmp/w-e6-20261015T032920Z-72d6bfb0-wia1848y/hg-verdict-9b5l2gf7",
+              "Destination": "/verifier",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            }
+          ],
+          "observed_limits": {
+            "NanoCpus": 2000000000,
+            "Memory": 4294967296,
+            "MemorySwap": 8589934592,
+            "PidsLimit": 1024,
+            "ReadonlyRootfs": true,
+            "Tmpfs": {
+              "/tmp": "rw,exec,nosuid,size=512m,mode=1777"
+            },
+            "StorageOpt": null,
+            "Ulimits": []
+          },
+          "absence_command": "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/commands/0114-final-after-rescue-inspect.json"
+        },
+        {
+          "id": "23342de0174b6917b196ffd51d958c7a73fa8dc5f9bb093ff64fc2dbee1ac7c8",
+          "name": "/magical_germain",
+          "image": "sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca",
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/tmp/w-e6-20261015T032920Z-72d6bfb0-wia1848y/appworld-timeout",
+              "Destination": "/app",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/tmp/w-e6-20261015T032920Z-72d6bfb0-wia1848y/recordings/cf6abd2_2/appworld",
+              "Destination": "/recordings/appworld",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/tmp/w-e6-20261015T032920Z-72d6bfb0-wia1848y/hg-verdict-791472ly",
+              "Destination": "/verifier",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            }
+          ],
+          "observed_limits": {
+            "NanoCpus": 2000000000,
+            "Memory": 4294967296,
+            "MemorySwap": 8589934592,
+            "PidsLimit": 1024,
+            "ReadonlyRootfs": true,
+            "Tmpfs": {
+              "/tmp": "rw,exec,nosuid,size=512m,mode=1777"
+            },
+            "StorageOpt": null,
+            "Ulimits": []
+          },
+          "absence_command": "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/commands/0119-final-after-rescue-inspect.json"
+        },
+        {
+          "id": "f97d1c92c92a6238b0febbe49ea046c10aade7d024fb92e9400318ca0091c179",
+          "name": "/hg-w-e6-20261015T032920Z-72d6bfb0-gaia-seed",
+          "image": "sha256:9cc27f813e596542d3f3447de10fc1166b27d66e282f271b2e057ee8ca0e0e13",
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/tmp/hg-snapshot-idle-0bpa4qvk",
+              "Destination": "/hg-snapshot-idle-0bpa4qvk",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ],
+          "observed_limits": {
+            "NanoCpus": 2000000000,
+            "Memory": 4294967296,
+            "MemorySwap": 8589934592,
+            "PidsLimit": 1024,
+            "ReadonlyRootfs": false,
+            "Tmpfs": null,
+            "StorageOpt": null,
+            "Ulimits": []
+          },
+          "absence_command": "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/commands/0121-final-after-rescue-inspect.json"
+        },
+        {
+          "id": "49eedc46883ce4c067c3bf10321b7e33b8bfdb845c3b0bf76eed9018047333ab",
+          "name": "/hg-verify-w-e6-20261015T032920Z-72d6bfb0-gaia-normal",
+          "image": "sha256:f40f34bc4b6dfa02efeff2f464ac58bba42ffdc458fd495bdc1fec66d23bb1b1",
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/tmp/w-e6-20261015T032920Z-72d6bfb0-wia1848y/gaia-normal/verdict",
+              "Destination": "/verifier",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/tmp/hg-snapshot-idle-13tbif7l",
+              "Destination": "/hg-snapshot-idle-13tbif7l",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ],
+          "observed_limits": {
+            "NanoCpus": 2000000000,
+            "Memory": 4294967296,
+            "MemorySwap": 8589934592,
+            "PidsLimit": 1024,
+            "ReadonlyRootfs": false,
+            "Tmpfs": null,
+            "StorageOpt": null,
+            "Ulimits": []
+          },
+          "absence_command": "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/commands/0123-final-after-rescue-inspect.json"
+        },
+        {
+          "id": "e5e75b02f363bd0de15d8e558633261193e682f9885fb0144e0e5d85226d675b",
+          "name": "/hg-verify-w-e6-20261015T032920Z-72d6bfb0-gaia-timeout",
+          "image": "sha256:f40f34bc4b6dfa02efeff2f464ac58bba42ffdc458fd495bdc1fec66d23bb1b1",
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/tmp/w-e6-20261015T032920Z-72d6bfb0-wia1848y/gaia-timeout/verdict",
+              "Destination": "/verifier",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/tmp/hg-snapshot-idle-81cdnuvw",
+              "Destination": "/hg-snapshot-idle-81cdnuvw",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ],
+          "observed_limits": {
+            "NanoCpus": 2000000000,
+            "Memory": 4294967296,
+            "MemorySwap": 8589934592,
+            "PidsLimit": 1024,
+            "ReadonlyRootfs": false,
+            "Tmpfs": null,
+            "StorageOpt": null,
+            "Ulimits": []
+          },
+          "absence_command": "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/commands/0125-final-after-rescue-inspect.json"
+        },
+        {
+          "id": "73113eeb7f1de52f515167bfa1a2f2721023f9524fa98cfd5965e18a2029eb53",
+          "name": "/hg-w-e6-20261015T032920Z-72d6bfb0-tau_bench-seed",
+          "image": "sha256:beda1b01f43ca4912555b44ccdfe25b1fe384b42e77d87a5316302ccf493fb23",
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/tmp/hg-snapshot-idle-ldynk9ih",
+              "Destination": "/hg-snapshot-idle-ldynk9ih",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ],
+          "observed_limits": {
+            "NanoCpus": 2000000000,
+            "Memory": 4294967296,
+            "MemorySwap": 8589934592,
+            "PidsLimit": 1024,
+            "ReadonlyRootfs": false,
+            "Tmpfs": null,
+            "StorageOpt": null,
+            "Ulimits": []
+          },
+          "absence_command": "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/commands/0127-final-after-rescue-inspect.json"
+        },
+        {
+          "id": "a14b2b1f2910bb40353f3a550d06da3015dc23bc4fd7091f1dc2e46c08618173",
+          "name": "/hg-verify-w-e6-20261015T032920Z-72d6bfb0-tau_bench-normal",
+          "image": "sha256:e5e570a422177d5cd0e7557cbb77a8261ea95984736031f353864e7b317de4ab",
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/tmp/w-e6-20261015T032920Z-72d6bfb0-wia1848y/tau_bench-normal/verdict",
+              "Destination": "/verifier",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/tmp/hg-snapshot-idle-0epvq82e",
+              "Destination": "/hg-snapshot-idle-0epvq82e",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ],
+          "observed_limits": {
+            "NanoCpus": 2000000000,
+            "Memory": 4294967296,
+            "MemorySwap": 8589934592,
+            "PidsLimit": 1024,
+            "ReadonlyRootfs": false,
+            "Tmpfs": null,
+            "StorageOpt": null,
+            "Ulimits": []
+          },
+          "absence_command": "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/commands/0129-final-after-rescue-inspect.json"
+        },
+        {
+          "id": "e8a11a458e05f5eacc5980d770ebd791a0b0de6555b104ba2e0ec5e762e686d6",
+          "name": "/hg-verify-w-e6-20261015T032920Z-72d6bfb0-tau_bench-timeout",
+          "image": "sha256:e5e570a422177d5cd0e7557cbb77a8261ea95984736031f353864e7b317de4ab",
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/tmp/w-e6-20261015T032920Z-72d6bfb0-wia1848y/tau_bench-timeout/verdict",
+              "Destination": "/verifier",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/tmp/hg-snapshot-idle-hpvafm0h",
+              "Destination": "/hg-snapshot-idle-hpvafm0h",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ],
+          "observed_limits": {
+            "NanoCpus": 2000000000,
+            "Memory": 4294967296,
+            "MemorySwap": 8589934592,
+            "PidsLimit": 1024,
+            "ReadonlyRootfs": false,
+            "Tmpfs": null,
+            "StorageOpt": null,
+            "Ulimits": []
+          },
+          "absence_command": "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/commands/0131-final-after-rescue-inspect.json"
+        }
+      ],
+      "cgroup_limit_samples": [
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/836706-655792267.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/835336-655791876.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/836790-655792290.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/827974-655790041.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/828271-655790108.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/841723-655793521.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/841349-655793499.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/827011-655789767.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/836827-655792300.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/828213-655790086.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/841843-655793548.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/838546-655792788.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/827090-655789773.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/834952-655791853.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/831713-655791045.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/829762-655790518.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/843458-655793977.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/826734-655789750.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/843061-655793931.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/843331-655793951.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/829830-655790539.json",
+        "reports/w-e6-evidence/w-e6-20261015T032920Z-72d6bfb0/proc/835379-655791888.json"
+      ],
+      "known_container_count": 9,
+      "native_service_cleanup_problems": [
+        "network 'hg-w-e6-20261015T032920Z-72d6bfb0-cf6abd2_2': Error response from daemon: error while removing network: network hg-w-e6-20261015T032920Z-72d6bfb0-cf6abd2_2 has active endpoints (name:\"magical_germain\" id:\"9f0fbc116305\")\nexit status 1"
+      ]
+    },
+    {
+      "packet": "reports/w-e6-evidence/w-e6-20261015T033109Z-e7153160",
+      "roles": [
+        {
+          "id": "d2ceeab3af5b4c9b21051af0541aa981e12c7bee92e9e2f943100c6b55aab998",
+          "name": "/hg-w-e6-20261015T033109Z-e7153160-cf6abd2_2-appworld",
+          "image": "sha256:db09e34ec90347e7d5271d95445f360222ba1aef3ca0eaa5614ce768bf23aca4",
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/tmp/w-e6-20261015T033109Z-e7153160-klc89fp0/recordings/cf6abd2_2/appworld",
+              "Destination": "/recordings/appworld",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            }
+          ],
+          "observed_limits": {
+            "NanoCpus": 2000000000,
+            "Memory": 4294967296,
+            "MemorySwap": 8589934592,
+            "PidsLimit": 1024,
+            "ReadonlyRootfs": false,
+            "Tmpfs": null,
+            "StorageOpt": null,
+            "Ulimits": []
+          },
+          "absence_command": "reports/w-e6-evidence/w-e6-20261015T033109Z-e7153160/commands/0034-final-after-rescue-inspect.json"
+        },
+        {
+          "id": "d159f7d0076ee5a86ce2885c421da670e585b8a6bdf4a5946cb7b1b03a5d8570",
+          "name": "/optimistic_kepler",
+          "image": "sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca",
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/tmp/w-e6-20261015T033109Z-e7153160-klc89fp0/appworld-normal",
+              "Destination": "/app",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/tmp/w-e6-20261015T033109Z-e7153160-klc89fp0/recordings/cf6abd2_2/appworld",
+              "Destination": "/recordings/appworld",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/tmp/w-e6-20261015T033109Z-e7153160-klc89fp0/hg-verdict-vpq0pb37",
+              "Destination": "/verifier",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            }
+          ],
+          "observed_limits": {
+            "NanoCpus": 2000000000,
+            "Memory": 4294967296,
+            "MemorySwap": 8589934592,
+            "PidsLimit": 1024,
+            "ReadonlyRootfs": true,
+            "Tmpfs": {
+              "/tmp": "rw,exec,nosuid,size=512m,mode=1777"
+            },
+            "StorageOpt": null,
+            "Ulimits": []
+          },
+          "absence_command": "reports/w-e6-evidence/w-e6-20261015T033109Z-e7153160/commands/0036-final-after-rescue-inspect.json"
+        },
+        {
+          "id": "0cdd62dbb64355054903efd319672b74ff6842d11fe1f5f973b2b6b889dca986",
+          "name": "/hopeful_elbakyan",
+          "image": "sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca",
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/tmp/w-e6-20261015T033109Z-e7153160-klc89fp0/appworld-timeout",
+              "Destination": "/app",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/tmp/w-e6-20261015T033109Z-e7153160-klc89fp0/recordings/cf6abd2_2/appworld",
+              "Destination": "/recordings/appworld",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/tmp/w-e6-20261015T033109Z-e7153160-klc89fp0/hg-verdict-8wbileoa",
+              "Destination": "/verifier",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            }
+          ],
+          "observed_limits": {
+            "NanoCpus": 2000000000,
+            "Memory": 4294967296,
+            "MemorySwap": 8589934592,
+            "PidsLimit": 1024,
+            "ReadonlyRootfs": true,
+            "Tmpfs": {
+              "/tmp": "rw,exec,nosuid,size=512m,mode=1777"
+            },
+            "StorageOpt": null,
+            "Ulimits": []
+          },
+          "absence_command": "reports/w-e6-evidence/w-e6-20261015T033109Z-e7153160/commands/0041-final-after-rescue-inspect.json"
+        }
+      ],
+      "cgroup_limit_samples": [
+        "reports/w-e6-evidence/w-e6-20261015T033109Z-e7153160/proc/848157-655800904.json",
+        "reports/w-e6-evidence/w-e6-20261015T033109Z-e7153160/proc/847174-655800681.json",
+        "reports/w-e6-evidence/w-e6-20261015T033109Z-e7153160/proc/847470-655800703.json",
+        "reports/w-e6-evidence/w-e6-20261015T033109Z-e7153160/proc/848824-655801053.json",
+        "reports/w-e6-evidence/w-e6-20261015T033109Z-e7153160/proc/850307-655801478.json",
+        "reports/w-e6-evidence/w-e6-20261015T033109Z-e7153160/proc/848713-655801032.json",
+        "reports/w-e6-evidence/w-e6-20261015T033109Z-e7153160/proc/850217-655801457.json",
+        "reports/w-e6-evidence/w-e6-20261015T033109Z-e7153160/proc/847408-655800698.json"
+      ],
+      "known_container_count": 3,
+      "native_service_cleanup_problems": [
+        "network 'hg-w-e6-20261015T033109Z-e7153160-cf6abd2_2': Error response from daemon: error while removing network: network hg-w-e6-20261015T033109Z-e7153160-cf6abd2_2 has active endpoints (name:\"hopeful_elbakyan\" id:\"dde4cee73a64\")\nexit status 1"
+      ]
+    }
+  ],
+  "native": [
+    {
+      "packet": "reports/w-e6-evidence/w-e6-native-20261015T033334Z-971d5371",
+      "status": "scratch-prerequisite-failed-before-child-launch; not measured failures",
+      "captured_process_count": {
+        "normal": 5,
+        "timeout": 5
+      }
+    },
+    {
+      "packet": "reports/w-e6-evidence/w-e6-native-20261015T033413Z-53081026",
+      "status": "normal-and-timeout-observed",
+      "captured_process_count": {
+        "normal": 6,
+        "timeout": 6
+      }
+    }
+  ]
+}

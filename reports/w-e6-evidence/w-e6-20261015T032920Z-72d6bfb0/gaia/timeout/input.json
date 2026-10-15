@@ -1,0 +1,29 @@
+{
+  "spec": {
+    "kind": "command",
+    "scorer_bundle": {
+      "isolation_class": "snapshot-service"
+    },
+    "argv": [
+      "python3",
+      "/we6-probe.py",
+      "--mode",
+      "timeout",
+      "--state",
+      "/we6-state.txt"
+    ],
+    "inputs": [
+      {
+        "dst": "/we6-probe.py",
+        "from": "/tmp/hg-e6/tests/fixtures/hg_we6/probe.py"
+      }
+    ],
+    "reward_file": "/verifier/reward.txt",
+    "evidence_file": "/verifier/evidence.json"
+  },
+  "staging": "/tmp/w-e6-20261015T032920Z-72d6bfb0-wia1848y/gaia-timeout",
+  "network": "hg-w-e6-20261015T032920Z-72d6bfb0-gaia",
+  "declared_network": "none",
+  "timeout_s": 4,
+  "dataset_network_not_reproduced": true
+}

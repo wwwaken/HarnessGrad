@@ -1,0 +1,208 @@
+    1 r"""Reasoning Gym as a dataset: procedurally generated reasoning tasks, scored by the library.
+    2 
+    3     python3 data/datasets/reasoning_gym/prepare.py          # materialize the pool (once)
+    4     python3 data/scaffolds/qa/control.py --dataset reasoning_gym --oracle
+    5     python3 data/scaffolds/qa/control.py --dataset reasoning_gym --oracle --platform
+    6     driver.py --dataset reasoning_gym ...
+    7 
+    8 Where the tasks come from
+    9 -------------------------
+   10 `open-thought/reasoning-gym`, PyPI **0.1.25**. The tasks are generated, not downloaded, so
+   11 the pin is three numbers rather than a file digest: the package version, one seed, and an
+   12 item count per family. `data/datasets/reasoning_gym/prepare.py` holds all three and materializes the
+   13 pool once into `DATASET_ROOT/pool.jsonl`; this adapter only reads that file.
+   14 
+   15 **Why the pool is materialized rather than generated here.** Measured: rendering all 89
+   16 usable families at 20 items each (1,780 tasks) costs **15.6 s**, and at 5 items each (445
+   17 tasks) still **5.1 s**. A dataset whose cost is per task hurts the control loop, the lint and
+   18 every importing subprocess -- never the run itself -- which is the lesson this repository has
+   19 already paid for twice (skill doc §15.9, §21). The file is 3.4 MB and reads in milliseconds.
+   20 
+   21 **Which families.** 89 of the 106 registered ones, selected by a measured rule rather than
+   22 taste: the reference answer scores 1.0, the empty answer scores 0.0, and the entry carries a
+   23 non-empty answer. The rule matters because a family that accepted an empty answer would give
+   24 the do-nothing control reward 1 -- gate 2 red for a reason that is the dataset's, not the
+   25 harness's. The probe and the 16 excluded families are recorded in `prepare.py`.
+   26 
+   27 The metric, and why it is transcribed rather than reimplemented
+   28 --------------------------------------------------------------
+   29 Reasoning Gym **is** its scorer: every family's dataset object carries
+   30 `score_answer(answer, entry) -> float`, and that method is the official metric. This adapter
+   31 does not copy it. `score()` below rebuilds the family's dataset with the same `size` and
+   32 `seed` as the pin and calls the library's own method, so a copy of the arithmetic cannot
+   33 drift from the source -- the same reason `data/datasets/chessbench_puzzles.py` replays the official
+   34 loop instead of restating it.
+   35 
+   36 Two consequences worth knowing:
+   37 
+   38 * the reward is **not always 0 or 1**. Several families return partial credit for a partly
+   39   correct answer, which is exactly the property `docs/experiment_noise.md` found missing in
+   40   the binary-reward benchmarks: a task can move without crossing all-or-nothing.
+   41 * the check runs inside the verification namespace, which binds the interpreter prefix, so
+   42   `reasoning_gym` is importable there because it is installed for the platform interpreter.
+   43   The pool file travels in `VERIFY.inputs` as gold; nothing else is needed.
+   44 
+   45 The split
+   46 ---------
+   47 The library publishes no train/test division, so the platform imposes one
+   48 (`data/scaffolds/registry.py::default_split`, INTERFACE.md §2.3): a deterministic hash third of the
+   49 1,780 tasks is the exam. `--split official` is the whole pool, because nothing here is study
+   50 material from the benchmark's point of view.
+   51 """
+   52 from __future__ import annotations
+   53 
+   54 from data.scaffolds.qa import base
+   55 
+   56 KIND = "dataset"
+   57 
+   58 #: The oracle control submits the benchmark's own released reference; see
+   59 #: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
+   60 ORACLE_SOURCE = "released"
+   61 
+   62 DATASET_ROOT = base.Path("/mnt/20t/xubuqiang/datasets/reasoning_gym")
+   63 
+   64 #: The pin. `prepare.py` writes the pool from exactly these numbers, and the test in
+   65 #: `tests/quality/test_reasoning_gym_dataset.py` regenerates and compares.
+   66 PACKAGE = "reasoning-gym"
+   67 VERSION = "0.1.25"
+   68 POOL = "pool.jsonl"
+   69 
+   70 #: The seed and the per-family count. Repeated here because the scorer needs them to rebuild
+   71 #: the family's dataset, and a scorer that guessed them would score a different task.
+   72 SEED = 20261008
+   73 PER_FAMILY = 20
+   74 
+   75 #: The digest of the materialized pool, measured when it was written. A regeneration that
+   76 #: changes one byte fails the test rather than silently redefining the task set.
+   77 POOL_SHA256 = "c0ff4eaef318cd59afcc61472ebe206362fc0211c4b589ed0d53946a569bd177"
+   78 
+   79 
+   80 def _rows() -> dict[str, list[dict]]:
+   81     """The pool, read lazily and read once. `split=` below names the key returned here."""
+   82     path = DATASET_ROOT / POOL
+   83     if not path.is_file():
+   84         raise ValueError(
+   85             f"reasoning_gym: no pool at {path}. Write it with "
+   86             f"`python3 data/datasets/reasoning_gym/prepare.py`")
+   87     return {"eval": base.jsonl_rows(path)}
+   88 
+   89 
+   90 def _question(row: dict) -> str:
+   91     return str(row["question"]).strip()
+   92 
+   93 
+   94 def _gold(row: dict) -> dict:
+   95     """The reference answer **and the entry object the official scorer needs**.
+   96 
+   97     `Dataset.score_answer(answer, entry)` reads `entry["answer"]` and, for some families,
+   98     `entry["metadata"]` -- so a gold that carried only the answer string could not call the
+   99     official scorer at all. The entry travels in `VERIFY.inputs`, never to the agent.
+  100     """
+  101     entry = dict(row["entry"])
+  102     return {"answer": str(entry.get("answer", "")), "family": row["family"],
+  103             "index": row["index"], "entry": entry}
+  104 
+  105 
+  106 def score(prediction: str, gold: dict) -> dict:
+  107     """The dataset's own scorer, called rather than copied (`prepare.py` holds the pin)."""
+  108     from reasoning_gym import create_dataset
+  109 
+  110     family = str(gold.get("family") or "")
+  111     if not family:
+  112         return {"reward": 0.0, "correct": False,
+  113                 "why": "no family on the gold: the gold did not come from this pool"}
+  114     dataset = create_dataset(family, size=PER_FAMILY, seed=SEED)
+  115     got = float(dataset.score_answer(answer=prediction or "", entry=gold.get("entry") or {}))
+  116     return {
+  117         "reward": got,
+  118         # `correct` is the all-or-nothing reading, kept beside the partial one: a reward of
+  119         # 0.5 is a partly right answer, and calling that "correct" would hide it.
+  120         "correct": got >= 1.0,
+  121         "official": {"family": family, "score_answer": got,
+  122                      "package": f"{PACKAGE}=={VERSION}"},
+  123         "why": f"reasoning-gym {family}: score_answer({prediction!r}) -> {got:g}",
+  124     }
+  125 
+  126 
+  127 def _goal(question: str, gold: dict) -> str:
+  128     family = gold.get("family") or "reasoning"
+  129     return (
+  130         f"{question}\n\n"
+  131         f"This is a `{family}` task from Reasoning Gym. Answer with the value the question "
+  132         "asks for and nothing else -- the official scorer compares your answer with the "
+  133         "reference one, and an explanation turns a correct answer into a wrong one.\n\n"
+  134         "## How to answer\n\n"
+  135         "`python3 qa/bin/qa submit <answer>` writes it; `python3 qa/bin/qa show` prints "
+  136         "what you wrote. Writing `answer.txt` in your working directory works too.\n"
+  137     )
+  138 
+  139 
+  140 def _downloads() -> list[dict]:
+  141     return [
+  142         {
+  143             "kind": "pip",
+  144             "name": f"{PACKAGE} ({VERSION})",
+  145             "package": PACKAGE,
+  146             "version": VERSION,
+  147             "size": "~1 MB, with its own dependency tree",
+  148             "note": "The tasks are **generated**, so there is no dataset file to fetch: the pin is this package version plus the seed and the item count in `data/datasets/reasoning_gym/prepare.py`. Install it into the platform interpreter -- the check imports it inside the verification namespace. The pool itself is not a download either: `prepare.py` writes it from this version plus the seed, and `POOL_SHA256` in `data/datasets/reasoning_gym.py` pins the result, so the only declared dependency is this package. Trap 1: the extras (`reasoning-gym[scoring]`) pull an LLM-judge cascade; the 89 families used here are exactly the ones whose scorer is deterministic and offline in this version, measured rather than assumed (see `prepare.py`). Trap 2: installing it pins `click>=8.3`, while a `ray 2.52.1` in this interpreter wants `click!=8.3.*` -- a warning only, and nothing this platform imports uses either.",
+  149         },
+  150     ]
+  151 
+  152 
+  153 _SPEC = base.QASpec(
+  154     name="reasoning_gym",
+  155     root=DATASET_ROOT,
+  156     rows=_rows,
+  157     question=_question,
+  158     gold=_gold,
+  159     goal=_goal,
+  160     score=score,
+  161     downloads=_downloads,
+  162     split="eval",
+  163     source=f"{PACKAGE}=={VERSION} (seed {SEED}, {PER_FAMILY} items per family, 89 families; "
+  164            f"pool sha256 {POOL_SHA256[:12]})",
+  165 )
+  166 
+  167 _BUILT = _SPEC.build()
+  168 
+  169 DEFAULT_ENV = _BUILT["DEFAULT_ENV"]
+  170 ENV = _BUILT["ENV"]
+  171 SPLIT = _BUILT["SPLIT"]
+  172 OFFICIAL_EVAL = _BUILT["OFFICIAL_EVAL"]
+  173 SPLIT_SOURCE = _BUILT["SPLIT_SOURCE"]
+  174 
+  175 
+  176 def __getattr__(name: str):
+  177     """`SETUP`, `VERIFY`, `_RECORDS`, `_LOAD_ERROR`: built on first use, not at import."""
+  178     return base.module_getattr(_SPEC, name)
+  179 
+  180 
+  181 def load() -> tuple[list[dict], dict[str, str]]:
+  182     return _SPEC.load()
+  183 
+  184 
+  185 def downloads() -> list[dict]:
+  186     return _SPEC._downloads()
+  187 
+  188 
+  189 def provision_status() -> dict:
+  190     """This dataset's provisioning is a **generated pool**, not a download.
+  191 
+  192     `QASpec.provision_status()` answers "did `--fetch` write the declared artifact", and there
+  193     is no artifact to fetch here: the pin is a package version plus a seed, and the bytes are
+  194     derived from them. So the question is whether `prepare.py` has been run, and that is one
+  195     file's existence. Measured: returning the scaffold's "in memory, so present" answer made
+  196     `tools/dataset_lint.py` report `SKIP reasoning_gym: not provisioned` and **exit 1** -- a
+  197     published dataset that is skipped is not a pass, which is the gate working as intended.
+  198     """
+  199     pool = DATASET_ROOT / POOL
+  200     return {"root": str(DATASET_ROOT), "present": pool.is_file(),
+  201             "split_dir": str(pool), "files": [str(pool)],
+  202             "present_files": [str(pool)] if pool.is_file() else [],
+  203             "tasks": len(_SPEC.ensure())}
+  204 
+  205 
+  206 __all__ = ["KIND", "DATASET_ROOT", "PACKAGE", "VERSION", "POOL", "POOL_SHA256", "SEED",
+  207            "PER_FAMILY", "load", "downloads", "score", "SPLIT", "OFFICIAL_EVAL",
+  208            "SPLIT_SOURCE", "ENV"]

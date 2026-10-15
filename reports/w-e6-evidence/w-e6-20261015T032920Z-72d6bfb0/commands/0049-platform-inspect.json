@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "docker",
+    "inspect",
+    "--format",
+    "{{.Image}}",
+    "hg-verify-w-e6-20261015T032920Z-72d6bfb0-gaia-normal"
+  ],
+  "cwd": "/tmp/hg-e6",
+  "timeout_s": 60,
+  "utc": "2026-10-15T03:29:41.242037+00:00",
+  "returncode": 0
+}

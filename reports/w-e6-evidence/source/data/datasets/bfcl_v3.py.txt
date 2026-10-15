@@ -1,0 +1,643 @@
+    1 r"""BFCL-v3 as a dataset: tool selection, graded on the **function name**.
+    2 
+    3     python3 tools/datasets.py --fetch --dataset bfcl-v3
+    4     python3 data/scaffolds/qa/control.py --dataset bfcl_v3 --oracle
+    5     driver.py --dataset bfcl_v3 ...
+    6 
+    7 Where the tasks come from
+    8 -------------------------
+    9 The Berkeley Function Calling Leaderboard, **v3**, from the official repository
+   10 `ShishirPatil/gorilla` at tag **`v1.3`** -- not from the HuggingFace dataset, and that is a
+   11 measured decision rather than a preference:
+   12 
+   13     the HF dataset's `BFCL_v3_simple.json` at its current revision is **answer-only**
+   14     (`{"id", "ground_truth"}`), and `possible_answer/BFCL_v3_simple.json` is the same
+   15     60,809 bytes. The question files with `question` + `function` exist only under
+   16     `/resolve/main/`, which is a moving ref. The tag `v1.3` has both, 400 questions with
+   17     their schemas and a separate answer file -- verified by parsing them.
+   18 
+   19 Two subsets, 640 tasks:
+   20 
+   21 | subset | n | what it tests | gold |
+   22 | --- | --- | --- | --- |
+   23 | `simple` | 400 | call the right function for a one-shot request | `possible_answer/` |
+   24 | `irrelevance` | 240 | **do not call anything** -- the request needs no tool | the empty set |
+   25 
+   26 `irrelevance` needs no answer file at all: its gold is "nothing", which makes it the cheapest
+   27 per-item label in the dataset and the one that tests the decision rather than the arguments.
+   28 
+   29 The metric, and what it is **not**
+   30 ----------------------------------
+   31 `reward = 1` iff the set of function names the agent names equals the gold set. For
+   32 `irrelevance` the gold set is empty, so a harness that calls anything scores 0.
+   33 
+   34 **This is not the official BFCL score, and the adapter says so in every record.** The official
+   35 metric compares the *full call*, arguments included, and BFCL's answer file expresses an
+   36 argument as a list of acceptable values:
+   37 
+   38     {"calculate_triangle_area": {"base": [10], "height": [5], "unit": ["units", ""]}}
+   39 
+   40 That shape is free-form -- `unit` accepts two different strings, `z` accepts `""` or `0` -- so
+   41 there is no enumerable candidate set to pick from. Scoring names only is the part that **is**
+   42 decidable from the data, and it is also the part the leaderboard's own `simple`/`irrelevance`
+   43 subsets are named for. The evidence carries `metric: "function-name set equality (not the
+   44 official BFCL score)"` so no reader can mistake one for the other.
+   45 
+   46 The trap JevLoop recorded and this adapter inherits
+   47 ---------------------------------------------------
+   48 `parameters.type` is BFCL's own vocabulary, not JSON Schema: measured across the first 200
+   49 questions, the values include **`dict`**, **`float`** and **`tuple`**. The schemas are rendered
+   50 for the agent with those normalised (`dict`->`object`, `float`->`number`), because a JSON
+   51 Schema a model is asked to read should be a JSON Schema.
+   52 
+   53 How the agent answers
+   54 ---------------------
+   55 One function name per line in `answer.txt`, or `NONE` when no tool is needed. The shared QA
+   56 check (`data/scaffolds/qa/verify/check.py`) reads the file and calls this module's `score()`.
+   57 """
+   58 from __future__ import annotations
+   59 
+   60 import hashlib
+   61 import json
+   62 import os
+   63 import re
+   64 import stat
+   65 import sys
+   66 from contextlib import ExitStack
+   67 from pathlib import Path
+   68 
+   69 from data.scaffolds.qa import base
+   70 
+   71 KIND = "dataset"
+   72 
+   73 #: The oracle control submits the benchmark's own released reference; see
+   74 #: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
+   75 ORACLE_SOURCE = "released"
+   76 # The shared verifier uses this marker to avoid echoing trusted BFCL gold in evidence.
+   77 REDACT_EVIDENCE = True
+   78 
+   79 
+   80 def NOOP_EXPECTED(record: dict) -> float:
+   81     """Submitting nothing is correct exactly when no function is expected."""
+   82     return 1.0 if not record["gold"].get("functions") else 0.0
+   83 
+   84 
+   85 #: The benchmark's own evaluation set, within this adapter's pool: **every task here belongs
+   86 #: to it**. The pool is the `simple` and `irrelevance` categories, both official BFCL evaluation categories. The categories this platform does not host are absent from the pool as well.
+   87 #:
+   88 #: `None` is the accurate value only because nothing in the pool is study material -- it does
+   89 #: not claim the pool is the whole of the benchmark's evaluation set (see `ds1000`, which is a
+   90 #: measured subset). `--split official --side eval` is the comparable run: the whole pool, with
+   91 #: no study material in it. `--split declared` keeps this adapter's own division.
+   92 OFFICIAL_EVAL = None
+   93 
+   94 DATASET_ROOT = base.Path("/mnt/20t/xubuqiang/datasets/bfcl-v3")
+   95 
+   96 #: The official repository tarball at a **tag**, with the digest of the download.
+   97 REPO_TAG = "v1.3"
+   98 TARBALL_URL = "https://codeload.github.com/ShishirPatil/gorilla/tar.gz/refs/tags/v1.3"
+   99 TARBALL_SHA256 = "57854157e82aed5723a1458d2a4ac426e3256959ded4a20ddc4d627c22edb7fe"
+  100 TARBALL_NAME = "gorilla-v1.3.tar.gz"
+  101 
+  102 #: Where the tag puts the data, inside the extracted tarball.
+  103 DATA_PREFIX = "gorilla-1.3/berkeley-function-call-leaderboard/bfcl_eval/data"
+  104 SIMPLE = f"{DATA_PREFIX}/BFCL_v3_simple.json"
+  105 IRRELEVANCE = f"{DATA_PREFIX}/BFCL_v3_irrelevance.json"
+  106 SIMPLE_ANSWERS = f"{DATA_PREFIX}/possible_answer/BFCL_v3_simple.json"
+  107 
+  108 SUBSETS = {"simple": SIMPLE, "irrelevance": IRRELEVANCE}
+  109 N_SIMPLE = 400
+  110 N_IRRELEVANCE = 240
+  111 SELECTED_INDEX = "selected-index.v1.json"
+  112 # Local read limits, not measured release maxima or custody evidence.
+  113 MAX_SELECTED_ROW_BYTES = 1 << 20
+  114 _MAX_SELECTED_POSITION = min(sys.maxsize, (1 << 63) - 1)
+  115 DEFAULT_ENV = {"kind": "files"}
+  116 _TASK_ID_RE = re.compile(r"(simple|irrelevance)/(0|[1-9][0-9]*)")
+  117 
+  118 #: BFCL's type vocabulary -> JSON Schema's. Only the entries that are actually wrong are here;
+  119 #: everything else is passed through unchanged.
+  120 _TYPE_FIXES = {"dict": "object", "float": "number", "tuple": "array", "any": "object"}
+  121 
+  122 
+  123 def _read_jsonl(path: Path) -> list[dict]:
+  124     """BFCL ships **JSONL**, not a JSON array -- the HF README says so explicitly."""
+  125     if not path.is_file():
+  126         raise FileNotFoundError(f"no BFCL file at {path}")
+  127     rows = []
+  128     for line in path.read_text(encoding="utf-8").splitlines():
+  129         if line.strip():
+  130             rows.append(json.loads(line))
+  131     return rows
+  132 
+  133 
+  134 def _rows(subsets: set[str] | None = None) -> dict[str, list[dict]]:
+  135     """Read only the requested BFCL categories and their needed answer rows."""
+  136     wanted = set(SUBSETS) if subsets is None else set(subsets)
+  137     unknown = wanted - set(SUBSETS)
+  138     if unknown:
+  139         raise ValueError(f"bfcl-v3: unknown subset(s): {sorted(unknown)}")
+  140     tables: dict[str, list[dict]] = {}
+  141     if "simple" in wanted:
+  142         tables["simple"] = _read_jsonl(DATASET_ROOT / SIMPLE)
+  143         tables["_answers"] = {
+  144             r["id"]: r["ground_truth"]
+  145             for r in _read_jsonl(DATASET_ROOT / SIMPLE_ANSWERS)
+  146         }
+  147     if "irrelevance" in wanted:
+  148         tables["irrelevance"] = _read_jsonl(DATASET_ROOT / IRRELEVANCE)
+  149     return tables
+  150 
+  151 
+  152 def normalize_schema(parameters: dict) -> dict:
+  153     """BFCL's `parameters` as a JSON Schema, with its type vocabulary corrected.
+  154 
+  155     Measured: `dict`, `float`, `tuple` and `any` appear as `type` values in the v3 data. They
+  156     are BFCL's own words; a model asked to read a JSON Schema should get one. The mapping is
+  157     total (`any` -> `object`) rather than partial, so no value is left unrecognised.
+  158     """
+  159     out = dict(parameters or {})
+  160     if "type" in out:
+  161         out["type"] = _TYPE_FIXES.get(str(out["type"]), out["type"])
+  162     properties = {}
+  163     for name, spec in (out.get("properties") or {}).items():
+  164         spec = dict(spec or {})
+  165         if "type" in spec:
+  166             spec["type"] = _TYPE_FIXES.get(str(spec["type"]), spec["type"])
+  167         properties[name] = spec
+  168     if properties:
+  169         out["properties"] = properties
+  170     return out
+  171 
+  172 
+  173 def bare_name(name: str) -> str:
+  174     """A function name without BFCL's namespace prefix.
+  175 
+  176     Measured: one row in 400 (`simple_363`) has gold `find_closest` while its schema is
+  177     `restaurant_search.find_closest` -- the answer file drops the namespace the question file
+  178     carries. The comparison takes the last dotted segment on **both** sides, so that row grades
+  179     the function the agent can actually see, and a nested name still compares exactly.
+  180     """
+  181     return str(name).rsplit(".", 1)[-1]
+  182 
+  183 
+  184 def gold_names(ground_truth) -> list[str]:
+  185     """The function names in a gold call list, in order.
+  186 
+  187     The answer file expresses each gold call as `{"<function>": {<arg>: [...]}}`, so the names
+  188     are the keys. Duplicates matter for `parallel` subsets, which this dataset does not use --
+  189     but they are kept rather than deduplicated so the comparison is over the call list.
+  190     """
+  191     names = []
+  192     if isinstance(ground_truth, list):
+  193         for call in ground_truth:
+  194             if isinstance(call, dict):
+  195                 names.extend(str(k) for k in call)
+  196     return names
+  197 
+  198 
+  199 def parse_prediction(text: str) -> list[str]:
+  200     """The function names the agent named. `NONE` (any case) means the empty set.
+  201 
+  202     One name per line, which is the contract the goal states. Blank lines are ignored; a line
+  203     that is not a bare identifier is kept as-is so that a wrong answer is a *wrong answer*
+  204     rather than a parse failure the scorer hides.
+  205     """
+  206     names = []
+  207     for line in str(text or "").splitlines():
+  208         line = line.strip().strip(",;")
+  209         if not line:
+  210             continue
+  211         if re.fullmatch(r"(?i)none|no[ _-]?tool|no[ _-]?function", line):
+  212             continue
+  213         names.append(line)
+  214     return names
+  215 
+  216 
+  217 def score(prediction: str, gold: dict) -> dict:
+  218     """The dataset's grade: set equality over function names.
+  219 
+  220     `simple` gold has one or more names; `irrelevance` gold is empty, so *any* named function
+  221     is a miss and the only way to score is to name none.
+  222     """
+  223     want = [bare_name(n) for n in (gold.get("functions") or [])]
+  224     got = [bare_name(n) for n in parse_prediction(prediction)]
+  225     hit = sorted(got) == sorted(want)
+  226     return {
+  227         "reward": 1.0 if hit else 0.0,
+  228         "correct": hit,
+  229         "official": {
+  230             "metric": "function-name set equality (not the official BFCL score)",
+  231             "official_metric": ("BFCL compares the full call including arguments; the answer "
+  232                                 "file expresses each argument as a free-form list of "
+  233                                 "acceptable values, which no scorer can enumerate. Only the "
+  234                                 "names are decidable from the data."),
+  235             "subset": gold.get("subset"),
+  236             "category": gold.get("subset"),
+  237             "expected_functions": "<redacted>",
+  238             "predicted_functions": got,
+  239             "no_tool_needed": not want,
+  240             "evidence_redacted": True,
+  241         },
+  242         "why": "function-name set matches" if hit else "function-name set differs",
+  243     }
+  244 
+  245 
+  246 def _render_functions(functions: list[dict]) -> str:
+  247     """The available functions, as JSON Schemas the agent can read."""
+  248     rendered = []
+  249     for fn in functions[:64]:
+  250         rendered.append({
+  251             "name": fn.get("name"),
+  252             "description": fn.get("description"),
+  253             "parameters": normalize_schema(fn.get("parameters") or {}),
+  254         })
+  255     return json.dumps(rendered, indent=1, ensure_ascii=False)
+  256 
+  257 
+  258 def _goal(record: dict) -> str:
+  259     """The instruction: the user request, the available functions, and the answer format.
+  260 
+  261     Both subsets get the same shape. For `irrelevance` the request is answerable without any
+  262     function, and the goal says the answer format allows that (`NONE`) -- but it does not say
+  263     whether any particular request needs a tool.
+  264     """
+  265     return (
+  266         "# Task\n"
+  267         "\n"
+  268         "A user has sent a request. Decide which of the available functions answers it,\n"
+  269         "and name them.\n"
+  270         "\n"
+  271         "## The request\n"
+  272         "\n"
+  273         f"{record['user_request']}\n"
+  274         "\n"
+  275         "## Available functions\n"
+  276         "\n"
+  277         "```json\n"
+  278         f"{record['functions_json']}\n"
+  279         "```\n"
+  280         "\n"
+  281         "## How to answer\n"
+  282         "\n"
+  283         f"Write the name of each function that answers the request -- one per line -- to\n"
+  284         f"`{base.ANSWER_FILE}` in your working directory, or submit them with\n"
+  285         "\n"
+  286         f"    python3 {base.CLI_FILE} submit \"<function_name>\"\n"
+  287         "\n"
+  288         "If **no** function is needed, submit `NONE` (or write `NONE` in the file).\n"
+  289         "\n"
+  290         "## How it is scored\n"
+  291         "\n"
+  292         "- The set of function names you name must equal the set the request needs. Only the\n"
+  293         "  **names** are graded -- not the arguments, and not the call syntax.\n"
+  294         "- Naming a function for a request that needs none scores 0, and so does naming none\n"
+  295         "  when one is needed.\n"
+  296         "- Nothing else you print is read.\n"
+  297     )
+  298 
+  299 
+  300 def _downloads() -> list[dict]:
+  301     return [
+  302         {
+  303             "kind": "http",
+  304             "name": "gorilla BFCL-v3 data (tag v1.3)",
+  305             "version": REPO_TAG,
+  306             "url": TARBALL_URL,
+  307             "size": "~45 MB tarball; the three BFCL files read here are ~500 KB",
+  308             "sha256": TARBALL_SHA256,
+  309             "dst": "_src/" + TARBALL_NAME,
+  310             "extract_to": ".",
+  311             "note": "Trap 1: the **HuggingFace** dataset's `BFCL_v3_simple.json` is "
+  312                     "answer-only at the current revision (`{id, ground_truth}`), and its "
+  313                     "`possible_answer/` copy is byte-identical to it -- the question files "
+  314                     "with `question`/`function` survive only under the moving `main` ref. The "
+  315                     "tag `v1.3` is authoritative and immutable, so the pin is the tag plus the "
+  316                     "download's sha256. Trap 2: BFCL files are **JSONL**, not JSON arrays (the "
+  317                     "dataset's own README says not to use `load_datasets`). Trap 3: "
+  318                     "`parameters.type` uses BFCL's vocabulary (`dict`, `float`, `tuple`, "
+  319                     "`any`), not JSON Schema's; `normalize_schema()` corrects it.",
+  320         },
+  321         {
+  322             "kind": "pip",
+  323             "name": "pyarrow",
+  324             "package": "pyarrow",
+  325             "version": "23.0.0",
+  326             "size": "~40 MB",
+  327             "note": "Declared for consistency with the other QA datasets; BFCL is JSONL, so "
+  328                     "the reader is `json`, not pyarrow.",
+  329         },
+  330     ]
+  331 
+  332 
+  333 # ---------------------------------------------------------------- records ---
+  334 
+  335 
+  336 def _selected_records(task_ids: list[str] | set[str]) -> list[dict]:
+  337     """Validate selection and metadata before reading any question or answer bytes.
+  338 
+  339     The release index requires schema_version=1, repo_tag, tarball_sha256, and
+  340     tasks keyed by canonical task ID. Each task has question_id and a question
+  341     byte span (offset, length, sha256); simple tasks
+  342     also have an answer span. Paths are fixed here, never supplied by the index.
+  343     No scan/build fallback is permitted. This JSON is NOT authenticated: its
+  344     release fields and row hashes are caller-authorable assertions, not approval.
+  345     External index custody, release provisioning, and immutable source storage
+  346     remain separate production gates. Digest checks do not secure confidentiality.
+  347     """
+  348     if task_ids is None:
+  349         raise ValueError("bfcl-v3: selection must not be empty")
+  350     ids = list(dict.fromkeys(task_ids))
+  351     if not ids:
+  352         raise ValueError("bfcl-v3: selection must not be empty")
+  353     selections = {}
+  354     for task_id in ids:
+  355         match = _TASK_ID_RE.fullmatch(task_id) if isinstance(task_id, str) else None
+  356         if match is None:
+  357             raise ValueError(f"bfcl-v3: invalid task id {task_id!r}")
+  358         subset, raw_index = match.groups()
+  359         index = int(raw_index)
+  360         if index >= (N_SIMPLE if subset == "simple" else N_IRRELEVANCE):
+  361             raise ValueError(f"bfcl-v3: invalid task id {task_id!r}")
+  362         selections[task_id] = (subset, index)
+  363 
+  364     index_path = DATASET_ROOT / SELECTED_INDEX
+  365     try:
+  366         manifest = json.loads(index_path.read_text(encoding="utf-8"))
+  367     except (OSError, ValueError) as exc:
+  368         raise ValueError("bfcl-v3: selected index is unavailable or unreadable") from exc
+  369     if (not isinstance(manifest, dict) or type(manifest.get("schema_version")) is not int
+  370             or manifest["schema_version"] != 1
+  371             or manifest.get("repo_tag") != REPO_TAG
+  372             or manifest.get("tarball_sha256") != TARBALL_SHA256
+  373             or not isinstance(manifest.get("tasks"), dict)):
+  374         raise ValueError("bfcl-v3: selected index has invalid release binding")
+  375 
+  376     entries = {}
+  377     for task_id, (subset, _) in selections.items():
+  378         entry = manifest["tasks"].get(task_id)
+  379         if (not isinstance(entry, dict) or not isinstance(entry.get("question_id"), str)
+  380                 or not entry["question_id"]):
+  381             raise ValueError(f"bfcl-v3: selected index is missing identity for {task_id}")
+  382         for kind in ("question", "answer") if subset == "simple" else ("question",):
+  383             span = entry.get(kind)
+  384             if (not isinstance(span, dict)
+  385                     or type(span.get("offset")) is not int or span["offset"] < 0
+  386                     or type(span.get("length")) is not int or span["length"] <= 0
+  387                     or span["length"] > MAX_SELECTED_ROW_BYTES
+  388                     or span["offset"] > _MAX_SELECTED_POSITION - span["length"]
+  389                     or not isinstance(span.get("sha256"), str)
+  390                     or re.fullmatch(r"[0-9a-f]{64}", span["sha256"]) is None):
+  391                 raise ValueError(f"bfcl-v3: invalid selected {kind} span for {task_id}")
+  392         entries[task_id] = entry
+  393 
+  394     def fingerprint(info):
+  395         return (info.st_dev, info.st_ino, info.st_mode, info.st_size,
+  396                 info.st_mtime_ns, info.st_ctime_ns)
+  397 
+  398     def read_span(handle, span: dict, question_id: str) -> dict:
+  399         handle.seek(span["offset"])
+  400         payload = handle.read(span["length"])
+  401         if (len(payload) != span["length"]
+  402                 or hashlib.sha256(payload).hexdigest() != span["sha256"]):
+  403             raise ValueError("bfcl-v3: selected row digest mismatch")
+  404         row = json.loads(payload)
+  405         if not isinstance(row, dict) or row.get("id") != question_id:
+  406             raise ValueError("bfcl-v3: selected row identity mismatch")
+  407         return row
+  408 
+  409     # Open each required source once. Bounds and reads use the same descriptor;
+  410     # checking Path.stat() then reopening would race with path replacement.
+  411     with ExitStack() as stack:
+  412         sources = {}
+  413         for task_id, (subset, _) in selections.items():
+  414             paths = {"question": SUBSETS[subset]}
+  415             if subset == "simple":
+  416                 paths["answer"] = SIMPLE_ANSWERS
+  417             for kind, relative in paths.items():
+  418                 if relative not in sources:
+  419                     handle = stack.enter_context((DATASET_ROOT / relative).open("rb", buffering=0))
+  420                     info = os.fstat(handle.fileno())
+  421                     if not stat.S_ISREG(info.st_mode):
+  422                         raise ValueError("bfcl-v3: selected source must be a regular file")
+  423                     sources[relative] = (handle, info)
+  424                 _, info = sources[relative]
+  425                 span = entries[task_id][kind]
+  426                 # Subtraction keeps both the file-position and EOF checks bounded.
+  427                 if span["length"] > info.st_size or span["offset"] > info.st_size - span["length"]:
+  428                     raise ValueError("bfcl-v3: selected span exceeds source bounds")
+  429 
+  430         # Preflight every selected span before reading any question or answer byte.
+  431         records = []
+  432         for task_id, (subset, index) in selections.items():
+  433             entry = entries[task_id]
+  434             row = read_span(sources[SUBSETS[subset]][0], entry["question"], entry["question_id"])
+  435             truth = None
+  436             if subset == "simple":
+  437                 answer = read_span(sources[SIMPLE_ANSWERS][0], entry["answer"], entry["question_id"])
+  438                 truth = answer.get("ground_truth")
+  439             records.append(_record_from_row(subset, index, row, truth))
+  440         for handle, before in sources.values():
+  441             if fingerprint(os.fstat(handle.fileno())) != fingerprint(before):
+  442                 raise ValueError("bfcl-v3: selected source changed during loading")
+  443         # Stat comparisons detect ordinary writes, not an authenticated snapshot.
+  444         return records
+  445 
+  446 
+  447 def _records(task_ids: list[str] | set[str] | None = None) -> list[dict]:
+  448     """Build records for exactly the selected task identities.
+  449 
+  450     A selected control must not read the other category: task IDs encode the category and file
+  451     index, so the loader can select rows without first materializing the mixed pool.
+  452     """
+  453     if task_ids is not None:
+  454         return _selected_records(task_ids)
+  455     tables = _rows()
+  456     answers = tables.get("_answers", {})
+  457     records = []
+  458     for subset, key in (("simple", "simple"), ("irrelevance", "irrelevance")):
+  459         rows = tables[key]
+  460         expected = N_SIMPLE if subset == "simple" else N_IRRELEVANCE
+  461         if len(rows) != expected:
+  462             raise ValueError(f"bfcl-v3: {subset} has {len(rows)} rows, expected {expected}")
+  463         for index, row in enumerate(rows):
+  464             records.append(_record_from_row(subset, index, row, answers.get(str(row["id"]))))
+  465     return records
+  466 
+  467 
+  468 def _record_from_row(subset: str, index: int, row: dict, ground_truth) -> dict:
+  469     # `question` is a list of **turn groups**, and each group is a list of messages:
+  470     # measured, `question[0][0] == {"role": "user", "content": ...}`. A single-turn
+  471     # subset has one group; the flattening below is what makes a future multi-turn
+  472     # subset load without a second code path.
+  473     request = ""
+  474     for group in (row.get("question") or []):
+  475         turns = group if isinstance(group, list) else [group]
+  476         for turn in turns:
+  477             if isinstance(turn, dict) and str(turn.get("role")) == "user":
+  478                 content = str(turn.get("content") or "").strip()
+  479                 if content:
+  480                     request = content
+  481                     break
+  482         if request:
+  483             break
+  484     if not request:
+  485         raise ValueError(
+  486             f"bfcl-v3: {row.get('id')} has no user message (shape: "
+  487             f"{type(row.get('question')).__name__} of "
+  488             f"{type((row.get('question') or [None])[0]).__name__})")
+  489     functions = list(row.get("function") or [])
+  490     names = [str(f.get("name")) for f in functions]
+  491     gold = gold_names(ground_truth) if subset == "simple" else []
+  492     if subset == "simple" and not gold:
+  493         raise ValueError(f"bfcl-v3: no gold for {row.get('id')}")
+  494     # The gold is bare-named while the schema may be namespaced (measured on
+  495     # `simple_363`); the check compares bare names, so both sides are normalised here.
+  496     gold = [bare_name(n) for n in gold]
+  497     return {
+  498         "task_id": f"{subset}/{index}",
+  499         "subset": subset,
+  500         "question_id": str(row["id"]),
+  501         "user_request": request,
+  502         "functions_json": _render_functions(functions),
+  503         "function_names": names,
+  504         "gold": {"answer": "\n".join(gold) if gold else "NONE",
+  505                  "functions": gold, "subset": subset},
+  506     }
+  507 
+  508 
+  509 class _BFCLSpec(base.QASpec):
+  510     """`QASpec` with its own `records()`, because this dataset has two subsets.
+  511 
+  512     The scaffold's `records()` reads one split with one question/gold pair per row; BFCL has
+  513     two subsets, a tool set per question, and a gold that lives in a different file. Overriding
+  514     the one method is smaller than teaching the scaffold about multi-file joins, and the rest
+  515     of the scaffold (the split, the goal rendering, `SETUP`, `VERIFY`, the check) is unchanged.
+  516     """
+  517 
+  518     def __init__(self, **kwargs) -> None:
+  519         super().__init__(**kwargs)
+  520         self._rows = lambda: {"all": []}
+  521 
+  522     def records(self) -> list[dict]:
+  523         records = _records()
+  524         if not records:
+  525             raise ValueError("bfcl-v3: no records")
+  526         return records
+  527 
+  528 
+  529 _SPEC = _BFCLSpec(
+  530     name="bfcl_v3",
+  531     root=DATASET_ROOT,
+  532     rows=lambda: {"all": []},
+  533     question=lambda row: "",
+  534     gold=lambda row: {},
+  535     goal=lambda question, gold: "",
+  536     score=score,
+  537     downloads=_downloads,
+  538     split="all",
+  539     source="ShishirPatil/gorilla@v1.3 berkeley-function-call-leaderboard/bfcl_eval/data",
+  540 )
+  541 
+  542 # Records are deliberately populated only by an explicit full-pool request. Importing the scorer
+  543 # must remain cheap and must not read mixed train/eval data.
+  544 _RECORDS: list[dict] = []
+  545 _LOAD_ERROR: str | None = None
+  546 
+  547 
+  548 def _ensure(task_ids: list[str] | set[str] | None = None) -> list[dict]:
+  549     global _RECORDS, _LOAD_ERROR
+  550     if task_ids is not None:
+  551         return _records(task_ids)
+  552     if _RECORDS:
+  553         return _RECORDS
+  554     try:
+  555         _RECORDS = _SPEC.records()
+  556     except Exception as exc:  # noqa: BLE001
+  557         _LOAD_ERROR = f"{type(exc).__name__}: {exc}"
+  558         raise
+  559     return _RECORDS
+  560 
+  561 
+  562 def load_selected(task_ids: list[str] | set[str]) -> tuple[list[dict], dict[str, str]]:
+  563     """Load only the explicitly selected BFCL task identities."""
+  564     records = _selected_records(task_ids)
+  565     return ([task_for(r) for r in records],
+  566             {r["task_id"]: r["gold"]["answer"] for r in records})
+  567 
+  568 
+  569 def control_task(task_id: str | None) -> dict:
+  570     return _selected_records(["simple/0" if task_id is None else task_id])[0]
+  571 
+  572 
+  573 def task_for(record: dict) -> dict:
+  574     """Render an already loaded selected record without a second payload read."""
+  575     return {"task_id": record["task_id"], "goal": _goal(record), "inputs": []}
+  576 
+  577 
+  578 def setup_for(record: dict) -> dict:
+  579     return _SPEC.setup(record)
+  580 
+  581 
+  582 def verify_for(record: dict) -> dict:
+  583     verifier = _SPEC.verifier(record)
+  584     verifier["argv"].append("--redact-gold")
+  585     return verifier
+  586 
+  587 
+  588 def load() -> tuple[list[dict], dict[str, str]]:
+  589     if _LOAD_ERROR is not None:
+  590         raise ValueError(
+  591             f"bfcl-v3: cannot read the data ({_LOAD_ERROR}). Provision it with "
+  592             f"`python3 tools/datasets.py --fetch --dataset bfcl-v3`.")
+  593     records = _ensure()
+  594     tasks = [{"task_id": r["task_id"], "goal": _goal(r), "inputs": []} for r in records]
+  595     return tasks, {r["task_id"]: r["gold"]["answer"] for r in records}
+  596 
+  597 
+  598 def _is_eval(task_id: str) -> bool:
+  599     import hashlib
+  600     return hashlib.sha256(task_id.encode()).digest()[0] % 3 == 0
+  601 
+  602 
+  603 def __getattr__(name: str):
+  604     if name == "SETUP":
+  605         return {r["task_id"]: _SPEC.setup(r) for r in _ensure()}
+  606     if name == "VERIFY":
+  607         return {r["task_id"]: verify_for(r) for r in _ensure()}
+  608     if name == "ENV":
+  609         return {r["task_id"]: {"kind": "files"} for r in _ensure()}
+  610     if name == "SPLIT":
+  611         import os
+  612         ids = [r["task_id"] for r in _ensure()]
+  613         if (os.environ.get("HG_BFCL_V3_SPLIT") or "hash").lower() == "none":
+  614             return {"train": [], "eval": ids}
+  615         return {"train": [t for t in ids if not _is_eval(t)],
+  616                 "eval": [t for t in ids if _is_eval(t)]}
+  617     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+  618 
+  619 
+  620 def downloads() -> list[dict]:
+  621     return _downloads()
+  622 
+  623 
+  624 def provision_status() -> dict:
+  625     tarball = DATASET_ROOT / "_src" / TARBALL_NAME
+  626     # `SELECTED_INDEX` is part of "am I provisioned", not an optional extra: the
+  627     # selected-only route and the control refuse without it, and a status that said
+  628     # present while its own control raises "selected index is unavailable" is the
+  629     # wrong answer to the question the lint asks.
+  630     present = all((DATASET_ROOT / p).is_file()
+  631                   for p in (SIMPLE, IRRELEVANCE, SIMPLE_ANSWERS, SELECTED_INDEX))
+  632     return {
+  633         "root": str(DATASET_ROOT),
+  634         "present": present and tarball.is_file(),
+  635         "split_dir": str(DATASET_ROOT / DATA_PREFIX),
+  636         "tarball": str(tarball) if tarball.is_file() else None,
+  637         "tasks": len(_RECORDS),
+  638     }
+  639 
+  640 
+  641 __all__ = ["KIND", "DATASET_ROOT", "NOOP_EXPECTED", "load", "downloads", "provision_status", "score",
+  642            "normalize_schema", "gold_names", "parse_prediction", "bare_name",
+  643            "load_selected", "control_task", "task_for", "setup_for", "verify_for", "DEFAULT_ENV"]

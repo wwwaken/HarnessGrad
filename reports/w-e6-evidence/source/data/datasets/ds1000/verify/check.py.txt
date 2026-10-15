@@ -1,0 +1,73 @@
+    1 #!/usr/bin/env python3
+    2 """DS-1000 official command check.
+    3 
+    4 This is the released `test_ds1000.py` construction copied into the verification namespace:
+    5 `code_context + code=<candidate> + test_execution(code)`, plus `test_string(code)` only
+    6 when the context declares that helper. `execution.py` is re-materialized as VERIFY.input
+    7 and runs the candidate in its own child process with the upstream 120-second timeout.
+    8 """
+    9 from __future__ import annotations
+   10 
+   11 import argparse
+   12 import json
+   13 import pathlib
+   14 import re
+   15 import subprocess
+   16 import sys
+   17 import tempfile
+   18 
+   19 
+   20 def main() -> int:
+   21     ap = argparse.ArgumentParser()
+   22     ap.add_argument("--reward-file", default="verifier/reward.txt")
+   23     ap.add_argument("--evidence-file", default="verifier/evidence.json")
+   24     args = ap.parse_args()
+   25     work = pathlib.Path.cwd()
+   26     task = json.loads((work / "context.json").read_text(encoding="utf-8"))
+   27     solution = work / "solution.py"
+   28     candidate = solution.read_text(encoding="utf-8") if solution.is_file() else ""
+   29     program = (task["code_context"] + "\n" + f"code = {candidate!r}\n"
+   30                + "test_execution(code)\n"
+   31                + ("test_string(code)\n" if "test_string(" in task["code_context"] else ""))
+   32     # Keep this checker dependency-free: execution.py is a VERIFY input, and the candidate
+   33     # program is passed via a temporary JSON file so the child can import the official runner.
+   34     # Own the wrapper files even for direct host checks and runner/setup failures.
+   35     with tempfile.TemporaryDirectory(prefix="ds1000-check-") as scratch_dir:
+   36         scratch = pathlib.Path(scratch_dir)
+   37         runner = scratch / "run_ds1000.py"
+   38         (scratch / "execution.py").write_text((work / "execution.py").read_text(encoding="utf-8"), encoding="utf-8")
+   39         runner.write_text(
+   40             "import json, sys\n"
+   41             "from execution import check_correctness\n"
+   42             "program=json.loads(open(sys.argv[1]).read())\n"
+   43             "print(json.dumps(check_correctness(program, timeout=120)))\n",
+   44             encoding="utf-8")
+   45         payload = scratch / "program.json"
+   46         payload.write_text(json.dumps(program), encoding="utf-8")
+   47         # 14 official Matplotlib rows call `sns.load_dataset(...)`. seaborn resolves that from
+   48         # `$SEABORN_DATA/<name>.csv`; the four CSVs are a VERIFY input, so the official code
+   49         # path runs offline instead of fetching from GitHub mid-check.
+   50         import os
+   51         env = dict(os.environ)
+   52         env["SEABORN_DATA"] = str(work / "seaborn-data")
+   53         for noisy in ("MPLBACKEND",):
+   54             env.setdefault(noisy, "Agg")
+   55         proc = subprocess.run([sys.executable, str(runner), str(payload)], cwd=scratch,
+   56                               capture_output=True, text=True, timeout=130, env=env)
+   57     result = json.loads(proc.stdout.strip().splitlines()[-1]) if proc.returncode == 0 and proc.stdout.strip() else {"passed": False, "result": proc.stderr[-500:]}
+   58     reward = 1.0 if result.get("passed") else 0.0
+   59     out = work / args.reward_file
+   60     out.parent.mkdir(parents=True, exist_ok=True)
+   61     out.write_text(f"{reward:g}\n")
+   62     ev = work / args.evidence_file
+   63     ev.parent.mkdir(parents=True, exist_ok=True)
+   64     ev.write_text(json.dumps({"measured": True, "reward": reward,
+   65                               "official": {"metric": "DS-1000 test_execution plus conditional test_string",
+   66                                             "result": result.get("result")},
+   67                               "why": result.get("result", "")}, sort_keys=True) + "\n")
+   68     print(f"reward {reward:g}: {result.get('result', '')}")
+   69     return 0
+   70 
+   71 
+   72 if __name__ == "__main__":
+   73     raise SystemExit(main())

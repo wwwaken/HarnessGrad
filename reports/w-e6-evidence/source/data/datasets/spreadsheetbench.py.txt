@@ -1,0 +1,377 @@
+    1 r"""SpreadsheetBench as a dataset: edit a real workbook, graded against the golden one.
+    2 
+    3     python3 tools/datasets.py --fetch --dataset spreadsheetbench
+    4     python3 data/datasets/spreadsheetbench/control.py --oracle
+    5     driver.py --dataset spreadsheetbench ...
+    6 
+    7 Where the tasks come from
+    8 -------------------------
+    9 `RUCKBReasoning/SpreadsheetBench` (NeurIPS 2024 D&B), the **`verified_400`** release, fetched
+   10 from the HuggingFace mirror `KAKA22/SpreadsheetBench`
+   11 (`spreadsheetbench_verified_400.tar.gz`, 15 MB, revision `ab0b742b…`). It is a flat tarball,
+   12 not a git repository, so the pin is the Hub **revision sha** plus the file digest.
+   13 
+   14 Each of the 400 tasks is three files:
+   15 
+   16     <id>_init.xlsx      the workbook the agent starts from
+   17     <id>_golden.xlsx    the workbook the official scorer compares against
+   18     prompt.txt          the instruction (and `dataset.json` carries it too)
+   19 
+   20 The metric, verbatim
+   21 --------------------
+   22 `evaluation/evaluation.py::compare_workbooks` in the official repository, transcribed in
+   23 `data/datasets/spreadsheetbench/verify/check.py`. It loads both workbooks with
+   24 `openpyxl.load_workbook(..., data_only=True)` and compares **the values in the cells named by
+   25 `dataset.json`'s `answer_position`** -- a comma-separated list of `Sheet!A1:B2` ranges -- after
+   26 running `transform_value` on each side:
+   27 
+   28     numbers rounded to 2 decimals; `datetime` -> Excel's serial day count (rounded);
+   29     `datetime.time` -> `HH:MM`; a string that parses as a float -> that float;
+   30     `""` and `None` are the same value
+   31 
+   32 `data_only=True` means the scorer reads **cached values**, not formulas. A workbook written by
+   33 a program that computes its own values has them; one whose cells hold formulas that were never
+   34 evaluated has `None` everywhere. So the check **recalculates the agent's workbook with
+   35 LibreOffice** before comparing, which is what the repository's own
+   36 `evaluation/open_spreadsheet.py` exists to do. Measured on this host: `soffice` is installed
+   37 (`/usr/bin/soffice`) and `--headless --calc --convert-to xlsx` does cache the computed values.
+   38 
+   39 What is deliberately not added, and what is not checked
+   40 -------------------------------------------------------
+   41 * **Cell fill and font colour are not compared.** The official file has those comparisons
+   42   commented out in `cell_level_compare`; this adapter matches the code that runs.
+   43 * **Which of the three test cases an agent solved is not reported.** The official `evaluation`
+   44   runs three variants per task id (`1_<id>_answer.xlsx` etc.) and aggregates them into
+   45   `soft_restriction` / `hard_restriction`. The `verified_400` tarball ships **one** pair per
+   46   task (`1_<id>_init.xlsx` / `1_<id>_golden.xlsx`), so this dataset is 400 tasks on the
+   47   variant that ships, and a score here is not the paper's `soft`/`hard` aggregate. Stated
+   48   because otherwise the two numbers would look comparable.
+   49 * **No `done` gate and no step budget**: the artifact is a file.
+   50 """
+   51 from __future__ import annotations
+   52 
+   53 import json
+   54 import os
+   55 from pathlib import Path
+   56 
+   57 KIND = "dataset"
+   58 
+   59 #: The oracle control submits the benchmark's own released reference; see
+   60 #: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
+   61 ORACLE_SOURCE = "released"
+   62 
+   63 
+   64 #: The benchmark's own evaluation set, within this adapter's pool: **every task here belongs
+   65 #: to it**. The pool is the released `verified_400` set, which is the official evaluation set.
+   66 #:
+   67 #: `None` is the accurate value only because nothing in the pool is study material -- it does
+   68 #: not claim the pool is the whole of the benchmark's evaluation set (see `ds1000`, which is a
+   69 #: measured subset). `--split official --side eval` is the comparable run: the whole pool, with
+   70 #: no study material in it. `--split declared` keeps this adapter's own division.
+   71 OFFICIAL_EVAL = None
+   72 
+   73 #: Where the extracted release lives. Outside the platform tree on purpose.
+   74 DATASET_ROOT = Path(os.environ.get("HG_SPREADSHEETBENCH_DATA",
+   75                                    "/mnt/20t/xubuqiang/datasets/spreadsheetbench"))
+   76 
+   77 #: The Hub release and its digests.
+   78 REVISION = "ab0b742b0fc95b946f212d80ac7771b5531272e4"
+   79 TARBALL = "spreadsheetbench_verified_400.tar.gz"
+   80 TARBALL_URL = (f"https://hf-mirror.com/datasets/KAKA22/SpreadsheetBench/resolve/"
+   81                f"{REVISION}/{TARBALL}")
+   82 TARBALL_SHA256 = "10ef893dd29cb13ab97143ea787e68cdc9574a13873ab9a54e50b31dc03fc949"
+   83 
+   84 #: Inside the tarball.
+   85 RELEASE_DIR = "spreadsheetbench_verified_400"
+   86 TASKS_JSON = f"{RELEASE_DIR}/dataset.json"
+   87 N_TASKS = 400
+   88 
+   89 #: The workbook the agent starts from, the file it must leave behind, and the oracle's copy.
+   90 INIT_WORKBOOK = "workbook.xlsx"
+   91 RESULT_WORKBOOK = "result.xlsx"
+   92 
+   93 REWARD_FILE = "/verifier/reward.txt"
+   94 EVIDENCE_FILE = "/verifier/evidence.json"
+   95 REWARD_REL = "verifier/reward.txt"
+   96 EVIDENCE_REL = "verifier/evidence.json"
+   97 
+   98 #: `evaluation.py::compare_workbooks` reads the answer's cell names from this field.
+   99 ANSWER_POSITION_KEY = "answer_position"
+  100 
+  101 
+  102 # ------------------------------------------------------------------- the tasks ---
+  103 
+  104 
+  105 def _tasks() -> list[dict]:
+  106     path = DATASET_ROOT / TASKS_JSON
+  107     if not path.is_file():
+  108         raise FileNotFoundError(f"no {TASKS_JSON} at {path}")
+  109     rows = json.loads(path.read_text())
+  110     if len(rows) != N_TASKS:
+  111         raise ValueError(f"spreadsheetbench: {len(rows)} tasks, expected {N_TASKS}")
+  112     records = []
+  113     for row in rows:
+  114         task_id = str(row["id"])
+  115         # `dataset.json`'s `spreadsheet_path` is relative to the **release directory**, not to
+  116         # the dataset root: the tarball extracts to `spreadsheetbench_verified_400/`. Measured
+  117         # -- joining it to the root found `[]` for every task.
+  118         folder = DATASET_ROOT / RELEASE_DIR / str(row["spreadsheet_path"])
+  119         init = _find_workbook(folder, task_id, "init")
+  120         golden = _find_workbook(folder, task_id, "golden")
+  121         if init is None or golden is None:
+  122             raise FileNotFoundError(
+  123                 f"spreadsheetbench: {task_id} is missing its workbook pair under {folder} "
+  124                 f"(found {sorted(p.name for p in folder.glob('*.xlsx')) if folder.is_dir() else []})")
+  125         position = str(row.get(ANSWER_POSITION_KEY) or "").strip()
+  126         if not position:
+  127             raise ValueError(f"spreadsheetbench: {task_id} has no {ANSWER_POSITION_KEY}")
+  128         records.append({
+  129             "task_id": task_id,
+  130             "init_name": init.name,
+  131             "golden_name": golden.name,
+  132             "instruction": str(row["instruction"]).strip(),
+  133             "instruction_type": str(row.get("instruction_type") or ""),
+  134             "answer_position": position,
+  135             "answer_sheet": str(row.get("answer_sheet") or ""),
+  136             "init_path": init,
+  137             "golden_path": golden,
+  138         })
+  139     return records
+  140 
+  141 
+  142 #: The naming the release uses for most tasks, and the variants it uses for a few.
+  143 _WORKBOOK_PATTERNS = {
+  144     "init": ("1_{id}_init.xlsx", "initial.xlsx", "*_init.xlsx", "initial*.xlsx"),
+  145     "golden": ("1_{id}_golden.xlsx", "golden.xlsx", "*_golden.xlsx", "golden*.xlsx"),
+  146 }
+  147 
+  148 
+  149 def _find_workbook(folder: Path, task_id: str, kind: str) -> Path | None:
+  150     """The task's workbook, under whichever name this release gave it.
+  151 
+  152     Measured over the 400 tasks: 394 use `1_<id>_init.xlsx` / `1_<id>_golden.xlsx`, **4** use
+  153     `initial.xlsx` / `golden.xlsx`, and **2** have a typo in one half (`1_42930_init.xlsx` with
+  154     `1_43930_golden.xlsx`). The last pattern is a glob, which is how a typo is tolerated without
+  155     hard-coding the typo -- and the fallback order is deterministic so the same file is chosen
+  156     on every machine.
+  157     """
+  158     if not folder.is_dir():
+  159         return None
+  160     for pattern in _WORKBOOK_PATTERNS[kind]:
+  161         candidate = folder / pattern.format(id=task_id)
+  162         if candidate.is_file():
+  163             return candidate
+  164     for pattern in _WORKBOOK_PATTERNS[kind][2:]:
+  165         matches = sorted(folder.glob(pattern))
+  166         if matches:
+  167             return matches[0]
+  168     return None
+  169 
+  170 
+  171 def _goal(record: dict) -> str:
+  172     """The instruction, plus the two things the interface cannot tell the agent.
+  173 
+  174     The prompt is the dataset's own text. The goal adds where the workbook is, what to leave
+  175     behind, and that the comparison is over computed **values** in named cells -- because a
+  176     harness that leaves formulas unevaluated would otherwise be graded on an empty workbook
+  177     for a reason nothing records.
+  178     """
+  179     return (
+  180         "# Task\n"
+  181         "\n"
+  182         f"{record['instruction']}\n"
+  183         "\n"
+  184         "## The workbook\n"
+  185         "\n"
+  186         f"`{INIT_WORKBOOK}` in your working directory is an Excel workbook. Edit it with any\n"
+  187         "tool available to you (for example `python3` with `openpyxl`, which is installed).\n"
+  188         "\n"
+  189         "## What to leave behind\n"
+  190         "\n"
+  191         f"Save the edited workbook as **`{RESULT_WORKBOOK}`** in your working directory, and\n"
+  192         f"put that filename (nothing else) in `answer.txt`:\n"
+  193         "\n"
+  194         "    python3 -c \"open('answer.txt','w').write('result.xlsx')\"\n"
+  195         "\n"
+  196         "## How it is scored\n"
+  197         "\n"
+  198         "- Your workbook is opened with its **computed values**, and the values in the cells\n"
+  199         "  the task names are compared with the reference workbook's. Formulas are fine: the\n"
+  200         "  values are recalculated before the comparison.\n"
+  201         "- Numbers are compared rounded to 2 decimals, dates as Excel's day count, times to\n"
+  202         "  the minute, and an empty cell equals a missing one.\n"
+  203         "- Everything outside the named cells is ignored, and so are colours and formatting.\n"
+  204     )
+  205 
+  206 
+  207 def _setup(record: dict) -> dict:
+  208     """The agent receives the starting workbook and the CLI.
+  209 
+  210     The workbook travels as a `from` reference into the dataset root. It is the *input*; the
+  211     golden workbook is not in the workdir at all, and the check reads its own copy.
+  212     """
+  213     return {"files": [
+  214         {"path": INIT_WORKBOOK, "from": str(record["init_path"])},
+  215         {"path": "qa/bin/qa", "from": str(Path(__file__).resolve().parent.parent
+  216                                             / "scaffolds" / "qa" / "cli" / "qa")},
+  217         {"path": "qa/prediction.py", "from": str(Path(__file__).resolve().parent.parent
+  218                                                    / "scaffolds" / "qa" / "prediction.py")},
+  219     ]}
+  220 
+  221 
+  222 def _verifier(record: dict) -> dict:
+  223     """The check, with its own trusted copies of the scorer, the golden workbook and the task.
+  224 
+  225     The golden workbook and `answer_position` are inline/path inputs so the platform
+  226     re-materializes them immediately before grading -- the same rule ALFWorld's game file
+  227     follows, and the reason a dataset with an artifact can be graded honestly.
+  228     """
+  229     return {
+  230         "kind": "command",
+  231         "argv": [
+  232             "python3", "check.py",
+  233             "--workdir", ".",
+  234             "--answer", "answer.txt",
+  235             "--result", RESULT_WORKBOOK,
+  236             "--golden", "golden.xlsx",
+  237             "--task", "task.json",
+  238             "--reward-file", REWARD_REL,
+  239             "--evidence-file", EVIDENCE_REL,
+  240         ],
+  241         "inputs": [
+  242             {"path": "check.py",
+  243              "from": str(Path(__file__).resolve().parent / "spreadsheetbench"
+  244                          / "verify" / "check.py")},
+  245             {"path": "golden.xlsx", "from": str(record["golden_path"])},
+  246             {"path": "task.json",
+  247              "content": json.dumps({"task_id": record["task_id"],
+  248                                     "answer_position": record["answer_position"],
+  249                                     "instruction_type": record["instruction_type"]})},
+  250         ],
+  251         "reward_file": REWARD_FILE,
+  252         "evidence_file": EVIDENCE_FILE,
+  253         "timeout_s": 300,
+  254     }
+  255 
+  256 
+  257 def downloads() -> list[dict]:
+  258     return [
+  259         {
+  260             "kind": "http",
+  261             "name": "SpreadsheetBench verified_400",
+  262             "version": REVISION,
+  263             "url": TARBALL_URL,
+  264             "size": "~15 MB (400 tasks x 2 workbooks + dataset.json)",
+  265             "sha256": TARBALL_SHA256,
+  266             "dst": "_src/" + TARBALL,
+  267             "extract_to": ".",
+  268             "note": "Trap 1: this is a **tarball on the Hub**, not a git repository, so the pin "
+  269                     "is the revision sha plus this digest. Trap 2: the official evaluator reads "
+  270                     "**cached** formula values (`data_only=True`), so a workbook whose formulas "
+  271                     "were never evaluated has no values at all -- the check recalculates with "
+  272                     "LibreOffice, which is what the repository's own `open_spreadsheet.py` "
+  273                     "exists to do, and `soffice` must be installed for any formula-using task. "
+  274                     "Trap 3: the `verified_400` release ships **one** variant per task, while "
+  275                     "the paper's `soft`/`hard` numbers aggregate three; a score here is not "
+  276                     "that aggregate.",
+  277         },
+  278         {
+  279             "kind": "pip",
+  280             "name": "openpyxl",
+  281             "package": "openpyxl",
+  282             "version": "3.1.2",
+  283             "size": "~250 KB",
+  284             "note": "The library the official scorer uses to read both workbooks, and the one "
+  285                     "the agent is expected to edit with. Both sides use the same version so a "
+  286                     "round-trip difference is not a scoring difference.",
+  287         },
+  288     ]
+  289 
+  290 
+  291 # ------------------------------------------------------------------ the platform ---
+  292 
+  293 
+  294 def _records_cache() -> list[dict]:
+  295     return _ensure()
+  296 
+  297 
+  298 _RECORDS: list[dict] = []
+  299 _LOAD_ERROR: str | None = None
+  300 try:
+  301     _RECORDS = _tasks()
+  302 except Exception as _exc:  # noqa: BLE001 - reported by load(), which is where it bites
+  303     _RECORDS = []
+  304     _LOAD_ERROR = f"{type(_exc).__name__}: {_exc}"
+  305 
+  306 
+  307 def _ensure() -> list[dict]:
+  308     global _RECORDS, _LOAD_ERROR
+  309     if _RECORDS:
+  310         return _RECORDS
+  311     try:
+  312         _RECORDS = _tasks()
+  313     except Exception as exc:  # noqa: BLE001
+  314         _LOAD_ERROR = f"{type(exc).__name__}: {exc}"
+  315         raise
+  316     return _RECORDS
+  317 
+  318 
+  319 def provision_status() -> dict:
+  320     tarball = DATASET_ROOT / "_src" / TARBALL
+  321     return {
+  322         "root": str(DATASET_ROOT),
+  323         "present": (DATASET_ROOT / TASKS_JSON).is_file() and tarball.is_file(),
+  324         "split_dir": str(DATASET_ROOT / RELEASE_DIR),
+  325         "tarball": str(tarball) if tarball.is_file() else None,
+  326         "libreoffice": _soffice(),
+  327         "tasks": len(_RECORDS),
+  328     }
+  329 
+  330 
+  331 def _soffice() -> str | None:
+  332     """The LibreOffice binary, or None. Reported by `provision_status` because every
+  333     formula-using task is unmeasurable without it and that must not look like a 0."""
+  334     import shutil
+  335     for candidate in ("soffice", "libreoffice"):
+  336         found = shutil.which(candidate)
+  337         if found:
+  338             return found
+  339     return None
+  340 
+  341 
+  342 def load() -> tuple[list[dict], dict[str, str]]:
+  343     if _LOAD_ERROR is not None:
+  344         raise ValueError(
+  345             f"spreadsheetbench: cannot read the tasks ({_LOAD_ERROR}). Provision it with "
+  346             f"`python3 tools/datasets.py --fetch --dataset spreadsheetbench`.")
+  347     records = _ensure()
+  348     tasks = [{"task_id": r["task_id"], "goal": _goal(r), "inputs": []} for r in records]
+  349     return tasks, {r["task_id"]: RESULT_WORKBOOK for r in records}
+  350 
+  351 
+  352 def _is_eval(task_id: str) -> bool:
+  353     import hashlib
+  354     return hashlib.sha256(task_id.encode()).digest()[0] % 3 == 0
+  355 
+  356 
+  357 DEFAULT_ENV: dict = {"kind": "files"}
+  358 
+  359 
+  360 def __getattr__(name: str):
+  361     if name == "ENV":
+  362         return {r["task_id"]: {"kind": "files"} for r in _ensure()}
+  363     if name == "SETUP":
+  364         return {r["task_id"]: _setup(r) for r in _ensure()}
+  365     if name == "VERIFY":
+  366         return {r["task_id"]: _verifier(r) for r in _ensure()}
+  367     if name == "SPLIT":
+  368         ids = [r["task_id"] for r in _ensure()]
+  369         if (os.environ.get("HG_SPREADSHEETBENCH_SPLIT") or "hash").lower() == "none":
+  370             return {"train": [], "eval": ids}
+  371         return {"train": [t for t in ids if not _is_eval(t)],
+  372                 "eval": [t for t in ids if _is_eval(t)]}
+  373     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+  374 
+  375 
+  376 __all__ = ["KIND", "DATASET_ROOT", "REVISION", "load", "downloads", "provision_status",
+  377            "DEFAULT_ENV", "INIT_WORKBOOK", "RESULT_WORKBOOK"]

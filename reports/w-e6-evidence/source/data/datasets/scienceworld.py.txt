@@ -1,0 +1,513 @@
+    1 r"""ScienceWorld as a dataset: an interactive science-lab environment whose reward is the
+    2 JVM's own goal score. INTERFACE.md §2.5.9.
+    3 
+    4     python3 tools/datasets.py --fetch --dataset scienceworld
+    5     python3 data/datasets/scienceworld/control.py --oracle
+    6     python3 data/datasets/scienceworld/control.py --oracle --platform
+    7     driver.py --dataset scienceworld ...
+    8 
+    9 Where the tasks come from
+   10 -------------------------
+   11 `allenai/ScienceWorld`, the `scienceworld` package pinned at **1.2.3**. The wheel is the
+   12 whole environment: `setup.py` declares `package_data={'scienceworld': [JAR_FILE, ...]}`
+   13 and ships `scienceworld.jar` (7.5 MB), `tasks.json` and `object_type_ids.tsv`, so there is
+   14 **no separate data download** -- the pip pin carries everything, and the run needs a JVM
+   15 (see `lib/scw_env.py` and the JRE entry in `downloads()`).
+   16 
+   17 The task set is the benchmark's own test fold
+   18 ---------------------------------------------
+   19 Measured by enumeration through the package's API (`get_task_names()` and
+   20 `get_max_variations()`): **30 task types, 7,207 variations in total**, from
+   21 `inclined-plane-friction-named-surfaces` (1386) down to `identify-life-stages-2` (10) and
+   22 `boil` (30). That number is a **generation limit, not an evaluation protocol**: it is how
+   23 many worlds the environment can build, not the set anybody scores on.
+   24 
+   25 The evaluation protocol is in the repository's own `goldpaths/goldpaths-all.zip`, which
+   26 marks every reference solution with a `train` / `dev` / `test` fold:
+   27 
+   28     measured over the archive: 6,907 paths
+   29       train 3,442   dev 1,721   test 1,744
+   30       test paths span all 29 task types that have gold paths
+   31 
+   32 This adapter returns **the `test` fold**, one task per variation. That is a choice, and it is
+   33 named here rather than implied: the archive does not ship with the package, so "the official
+   34 test split" is a decision to read it and follow it. The alternative -- every variation the
+   35 environment can generate -- mixes the folds the benchmark separated and inflates the task
+   36 count with worlds the evaluation never uses.
+   37 
+   38 **The fold's identity is transcribed into git, not fetched.** `raw.githubusercontent.com` is
+   39 blocked on this host and a branch URL is not a pin, so the archive itself cannot be
+   40 provisioned reproducibly; `data/datasets/scienceworld/test_fold.json` carries the 1,744
+   41 `(task_name, variation)` pairs and each path's length, with the archive's sha256 recorded
+   42 beside them, and a test rebuilds the file from the archive and fails if the two disagree.
+   43 Only the *identity* of the tasks is needed at run time: the gold action sequences are
+   44 regenerated from the environment's own API, which is what makes the oracle control test the
+   45 **environment** rather than a stored answer.
+   46 
+   47 The adapter keeps the complete `test` fold because the shared move budget is now 1,000 and the longest recorded path is 796. `test_fold.json` still carries every path length, and `test_fold()` re-applies the budget filter on every load. The current budget therefore excludes no recorded test path.
+   48 
+   49 One discrepancy remains visible in the numbers: the package enumerates **30** task names and the archive has gold paths for **29**. The task without a gold path (`identify-life-stages-2`, 10 variations) is not in the test fold and this adapter does not return it.
+   50 
+   51 The variation indices in the archive are the package's own (verified: the API's
+   52 `load(task, variationIdx, ...)` on a test-fold index reproduces that fold's path
+   53 character for character -- `tests/quality/test_scienceworld_dataset.py` pins the comparison
+   54 on real entries), so the fold and the environment agree about what a task *is*.
+   55 
+   56 The metric, and what is deliberately not added
+   57 ----------------------------------------------
+   58 `reward = max(0, score) / 100.0`, where `score` is the **last** `info['score']` the
+   59 environment reported, an integer 0-100. That is what the environment's own evaluation loop
+   60 records (`examples/random_agent.py`: `score = info['score']`, appended per episode; its
+   61 summary clips negatives before averaging, which is where `max(0, ...)` comes from). The
+   62 integer score is carried in the evidence beside the fraction, and the goal-met predicate is
+   63 `score == 100`.
+   64 
+   65 `scw done` exists because a harness needs a way to stop; it is recorded and it is **not** a
+   66 gate, because ScienceWorld has no such requirement (`docs/dataset-onboarding-skill.md` §2).
+   67 
+   68 Two decisions a reader should know about
+   69 ----------------------------------------
+   70 * **No simplifications.** `simplificationStr` is empty, so the worlds are the full ones.
+   71   The paper also reports an "easy" preset (`teleportAction`, `openDoors`,
+   72   `selfWateringFlowerPots`, `noElectricalAction`), which is a *different* task set with a
+   73   different score; mixing the two in one curve is the error this note exists to prevent.
+   74 * **A 1,000-move budget.** The environment's constructor default is 100, but the adapter
+   75   uses 1,000 so every recorded test reference path fits without a false zero or truncation.
+   76   The episode stops when the goal is met or the budget is spent. `STEP_BUDGET` is declared
+   77   once in `lib/scw_env.py` and imported by the CLI, check and control, so the three cannot
+   78   drift apart.
+   79 
+   80 The leak boundary
+   81 -----------------
+   82 `load(..., generateGoldPath=True)` and `get_gold_action_sequence()` make the reference
+   83 solution reachable **through the environment object**. The agent's CLI never sets the flag
+   84 and never calls the accessor: it exposes `look`, `do`, `inventory`, `task` and `done`, and
+   85 each command builds its world with `generate_gold=False` (the default in `load_task`). So
+   86 the gold path is reachable only through an API the agent's process does not call, which is
+   87 the proof §12 asks for -- and it is a *stronger* position than ALFWorld's, where the answer
+   88 had to be stripped out of a file the agent receives.
+   89 """
+   90 from __future__ import annotations
+   91 
+   92 import os
+   93 from pathlib import Path
+   94 
+   95 #: See `data/scaffolds/registry.py:KIND_DATASET`.
+   96 KIND = "dataset"
+   97 
+   98 #: The oracle control submits the benchmark's own released reference; see
+   99 #: `data/dataset.schema.json` (`module.oracle_about`) for what the other value means.
+  100 ORACLE_SOURCE = "released"
+  101 
+  102 
+  103 #: The benchmark's own evaluation set, within this adapter's pool: **every task here belongs
+  104 #: to it**. The pool is the benchmark's own test fold: all 1,744 recorded paths fit the
+  105 #: adapter-owned 1,000-move budget. The train and dev folds exist upstream and are not loaded here.
+  106 #:
+  107 #: `None` is the accurate value only because nothing in the pool is study material -- it does
+  108 #: not claim the pool is the whole of the benchmark's evaluation set (see `ds1000`, which is a
+  109 #: measured subset). `--split official --side eval` is the comparable run: the whole pool, with
+  110 #: no study material in it. `--split declared` keeps this adapter's own division.
+  111 OFFICIAL_EVAL = None
+  112 
+  113 import importlib.util
+  114 import json
+  115 
+  116 #: Where the JRE is staged. Outside the platform tree on purpose: it is runtime, not code,
+  117 #: it is 136 MB unpacked, and `tools/datasets.py` provisions it. `HG_SCIENCEWORLD_DATA`
+  118 #: overrides it so a reader can point at another copy.
+  119 DATASET_ROOT = Path(os.environ.get("HG_SCIENCEWORLD_DATA",
+  120                                    "/mnt/20t/xubuqiang/datasets/scienceworld"))
+  121 
+  122 ASSETS = Path(__file__).resolve().parent / "scienceworld"
+  123 CLI_DIR = ASSETS / "cli"
+  124 LIB_DIR = ASSETS / "lib"
+  125 VERIFY_DIR = ASSETS / "verify"
+  126 
+  127 
+  128 def _load_lib():
+  129     """`lib/scw_env.py`, by file path.
+  130 
+  131     Not `from data.datasets.scienceworld.lib import scw_env`: the check imports this module inside
+  132     the verification namespace, where `lib/` travels as plain files beside the CLI, and the
+  133     module is deliberately importable without a package around it.
+  134     """
+  135     spec = importlib.util.spec_from_file_location("scienceworld_scw_env",
+  136                                                   LIB_DIR / "scw_env.py")
+  137     module = importlib.util.module_from_spec(spec)
+  138     spec.loader.exec_module(module)
+  139     return module
+  140 
+  141 
+  142 _LIB = _load_lib()
+  143 
+  144 #: Declared once, in the shared library, and imported by the CLI, the check and the control.
+  145 STEP_BUDGET = _LIB.STEP_BUDGET
+  146 LOG_IN_WORKDIR = _LIB.LOG_FILENAME
+  147 TASK_IN_WORKDIR = _LIB.TASK_FILENAME
+  148 
+  149 #: The container contract's locations. On a `files` environment `eval/verification/verifier.py` resolves
+  150 #: the absolute spelling against the workdir; the check's `argv` carries the relative
+  151 #: spelling its own working directory understands.
+  152 REWARD_FILE = "/verifier/reward.txt"
+  153 EVIDENCE_FILE = "/verifier/evidence.json"
+  154 REWARD_REL = "verifier/reward.txt"
+  155 EVIDENCE_REL = "verifier/evidence.json"
+  156 
+  157 #: The JRE inside the dataset root. The **unpacked** tree is what travels into a task: the
+  158 #: platform's `_materialize` copies a directory (`shutil.copytree`) and a tarball would have
+  159 #: to be extracted by something, which during verification means the check writing into a
+  160 #: read-only task tree -- measured, `[Errno 30] Read-only file system`. Copying the tree is
+  161 #: also cheap (0.1 s measured) and every JVM you can copy starts, symlinks and all.
+  162 JRE_STAGED = DATASET_ROOT / "jre" / _LIB.JRE_DIRNAME
+  163 
+  164 #: The official evaluation split, transcribed into git. **Not a download**: the archive
+  165 #: it comes from is unreachable reproducibly here (see the module docstring), and only the
+  166 #: tasks' *identity* is needed -- the gold sequences are regenerated from the environment.
+  167 FOLD_FILE = ASSETS / "test_fold.json"
+  168 
+  169 #: The fold this dataset is: the benchmark's own held-out evaluation set.
+  170 EVAL_FOLD = "test"
+  171 
+  172 
+  173 def test_fold() -> list[dict]:
+  174     """The official `test` fold, after the budget filter. Read once per process.
+  175 
+  176     The file is a transcription of the repository's `goldpaths-all.zip` (see the module
+  177     docstring for why it is in git rather than fetched), and it carries **every** test path
+  178     with its length, including the 22 that are too long. The filter lives here so the
+  179     exclusion is recomputed from the data on every load, and the raise below is the guard
+  180     that keeps it honest: if the budget is ever lowered without updating the filter, the
+  181     load fails loudly instead of silently scoring a correct oracle 0.
+  182     """
+  183     global _FOLD_CACHE
+  184     if _FOLD_CACHE is not None:
+  185         return _FOLD_CACHE
+  186     if not FOLD_FILE.is_file():
+  187         raise FileNotFoundError(f"no test-fold file at {FOLD_FILE}")
+  188     payload = json.loads(FOLD_FILE.read_text())
+  189     if payload.get("eval_fold") != EVAL_FOLD:
+  190         raise ValueError(f"{FOLD_FILE} describes fold {payload.get('eval_fold')!r}, not "
+  191                          f"{EVAL_FOLD!r}")
+  192     records = []
+  193     too_long = []
+  194     for entry in payload["tasks"]:
+  195         record = {"task_id": f"{entry['task_name']}/{entry['variation']}",
+  196                   "task_name": str(entry["task_name"]),
+  197                   "variation": int(entry["variation"]),
+  198                   "gold_moves": int(entry["gold_moves"])}
+  199         (too_long if record["gold_moves"] > STEP_BUDGET else records).append(record)
+  200     if not records:
+  201         raise ValueError(f"{FOLD_FILE} leaves no tasks inside the {STEP_BUDGET}-move "
+  202                          f"budget")
+  203     if len(records) + len(too_long) == 0:
+  204         raise ValueError(f"{FOLD_FILE} has no tasks")
+  205     _FOLD_CACHE = records
+  206     return records
+  207 
+  208 
+  209 def fold_excluded() -> list[dict]:
+  210     """The test-fold paths left out for exceeding the budget, with their lengths.
+  211 
+  212     Exposed so the control and the tests can *report* the exclusion rather than only
+  213     document it, and so `provision_status` can show it.
+  214     """
+  215     payload = json.loads(FOLD_FILE.read_text())
+  216     return [e for e in payload["tasks"] if int(e["gold_moves"]) > STEP_BUDGET]
+  217 
+  218 
+  219 _FOLD_CACHE: list[dict] | None = None
+  220 
+  221 
+  222 def _probe_dir() -> Path:
+  223     """A temporary workdir for the enumeration, with the staged JRE already unpacked.
+  224 
+  225     `make_env` looks for the JVM in the workdir first and at the staged copy last, so the
+  226     by-hand path needs no unpacking at all; this only exists because the signature wants a
+  227     workdir.
+  228     """
+  229     return Path(os.environ.get("HG_SCIENCEWORLD_WORKDIR", "/tmp"))
+  230 
+  231 
+  232 def _goal(record: dict) -> str:
+  233     """The instruction: the task's own description, plus the interface, and nothing else.
+  234 
+  235     The description is read from the environment (`get_task_description()`), which is the
+  236     benchmark's own wording. Fetching it needs a JVM, so the *records* carry only the task
+  237     identity and the goal is rendered when the task is listed. The preamble states the
+  238     budget and how to act -- the two things the interface cannot tell the agent -- and it
+  239     says nothing about how to solve the task.
+  240     """
+  241     return (
+  242         f"# Task\n"
+  243         f"\n"
+  244         f"You are an agent in a science lab, described one location at a time, acting by\n"
+  245         f"typing commands. This is ScienceWorld task `{record['task_name']}`, variation\n"
+  246         f"`{record['variation']}`. Your task description is in `{TASK_IN_WORKDIR}` and can\n"
+  247         f"also be printed with `python3 scw task`.\n"
+  248         f"\n"
+  249         f"## How to act\n"
+  250         f"\n"
+  251         f"- See where you are, what is there, and your current score:\n"
+  252         f"      python3 scw look\n"
+  253         f"- Take one action (any text command; the environment decides whether it is\n"
+  254         f"  understood, and an action it does not understand still costs a move):\n"
+  255         f"      python3 scw do \"pick up thermometer\"\n"
+  256         f"- Look at the task description again:\n"
+  257         f"      python3 scw task\n"
+  258         f"- See what you are carrying:\n"
+  259         f"      python3 scw inventory\n"
+  260         f"- When the task is finished, say so:\n"
+  261         f"      python3 scw done\n"
+  262         f"- Every action is appended to `{LOG_IN_WORKDIR}` and costs one of your\n"
+  263         f"  **{STEP_BUDGET}** moves.\n"
+  264         f"\n"
+  265         f"## How it is scored\n"
+  266         f"\n"
+  267         f"- Your actions are replayed from the beginning in a fresh environment running the\n"
+  268         f"  same pinned JVM, and the environment's own goal score is read at the end: an\n"
+  269         f"  integer 0-100. Reaching 100 means the task was solved.\n"
+  270         f"- Partial credit is the score's own fraction; there is no judge.\n"
+  271         f"- Nothing you print is read. Only the actions you take are.\n"
+  272     )
+  273 
+  274 
+  275 def _setup(record: dict) -> dict:
+  276     """What the agent receives before it starts.
+  277 
+  278     The CLI, its library and the JRE travel as `from` references into this repository; the
+  279     task identity travels as **inline content**, so the world the agent builds is the one
+  280     the dataset declared and not something it could have edited into a file. The JRE is the
+  281     136 MB directory under `jre/`: it is copied in because the verification namespace cannot
+  282     see the dataset root, and both the agent's CLI and the check need the same JVM.
+  283     """
+  284     return {"files": [
+  285         {"path": TASK_IN_WORKDIR,
+  286          "content": json.dumps({"task_name": record["task_name"],
+  287                                 "variation": record["variation"],
+  288                                 "simplifications": ""})},
+  289         {"path": "scw_env.py", "from": str(LIB_DIR / "scw_env.py")},
+  290         {"path": "scw", "from": str(CLI_DIR / "scw")},
+  291         # The runtime, as a prepared tree. `lib/scw_env.py::java_home` finds it at
+  292         # `<workdir>/jre/<dirname>` and sets JAVA_HOME/PATH from it; py4j then launches it
+  293         # by absolute path (a relative one breaks, because py4j passes its own cwd).
+  294         {"path": f"{_LIB.JRE_RELDIR}/{_LIB.JRE_DIRNAME}", "from": str(JRE_STAGED)},
+  295     ]}
+  296 
+  297 
+  298 def _verifier(record: dict) -> dict:
+  299     """The grade: the check, its trusted inputs, and where the verdict goes.
+  300 
+  301     `inputs` use `path` (relative to the workdir), not `dst`: on a `files` environment the
+  302     platform materialises these into the workdir, and `dst` is a container path. The task
+  303     file, the check, the shared library and the JRE are all re-materialised at verification
+  304     time, so nothing the agent wrote to any of them is what runs.
+  305     """
+  306     return {
+  307         "kind": "command",
+  308         "argv": [
+  309             "python3", "check.py",
+  310             "--workdir", ".",
+  311             "--task", TASK_IN_WORKDIR,
+  312             "--log", LOG_IN_WORKDIR,
+  313             "--reward-file", REWARD_REL,
+  314             "--evidence-file", EVIDENCE_REL,
+  315             "--budget", str(STEP_BUDGET),
+  316         ],
+  317         "inputs": [
+  318             {"path": "check.py", "from": str(VERIFY_DIR / "check.py")},
+  319             {"path": "scw_env.py", "from": str(LIB_DIR / "scw_env.py")},
+  320             {"path": TASK_IN_WORKDIR,
+  321              "content": json.dumps({"task_name": record["task_name"],
+  322                                     "variation": record["variation"],
+  323                                     "simplifications": ""})},
+  324             {"path": f"{_LIB.JRE_RELDIR}/{_LIB.JRE_DIRNAME}", "from": str(JRE_STAGED)},
+  325         ],
+  326         "reward_file": REWARD_FILE,
+  327         "evidence_file": EVIDENCE_FILE,
+  328         "timeout_s": 900,
+  329     }
+  330 
+  331 
+  332 def downloads() -> list[dict]:
+  333     """Everything this dataset needs, with the traps written down beside it.
+  334 
+  335     Read by `tools/datasets.py`; the generated `DOWNLOADS.md` is rendered from this
+  336     function, never from a hand-written table, so the two cannot disagree.
+  337     """
+  338     return [
+  339         {
+  340             "kind": "pip",
+  341             "name": "scienceworld",
+  342             "package": "scienceworld",
+  343             "version": "1.2.3",
+  344             "size": "~8 MB",
+  345             "note": "The environment **is** the package: `setup.py` declares "
+  346                     "`package_data={'scienceworld': [JAR_FILE, ...]}` and the wheel ships "
+  347                     "`scienceworld.jar` (7.5 MB), `tasks.json` (4.8 KB) and "
+  348                     "`object_type_ids.tsv`. There is therefore no separate data download. "
+  349                     "Trap: the package is Python *around a JVM*; it does not run without "
+  350                     "Java, which is why the JRE below is part of this dataset. Version "
+  351                     "1.3.0 changes physics trajectories and gold paths (its README), so "
+  352                     "the pin is 1.2.3 and scores are not comparable across it.",
+  353         },
+  354         {
+  355             "kind": "http",
+  356             "name": "Temurin JRE 17 (Adoptium)",
+  357             "version": _LIB.JRE_VERSION,
+  358             "url": _LIB.JRE_URL,
+  359             "size": _LIB.JRE_SIZE,
+  360             "sha256": _LIB.JRE_SHA256,
+  361             "dst": "_src/" + _LIB.JRE_TARBALL,
+  362             "extract_to": "jre",
+  363             "note": "Trap: this machine has **no system `java` and no root**, so a runtime "
+  364                     "is a provisioning step, and the release URL *is* the version. **JDK "
+  365                     "17, not the newest**: the JAR is built in 2025 and a newer JDK may "
+  366                     "refuse an older target in a way that does not name Java. Both sides "
+  367                     "need it -- the check replays in a fresh environment, so the agent's CLI "
+  368                     "and the check must resolve the same JVM; a JVM only one of them can "
+  369                     "find is a check that fails for a reason nothing records.",
+  370         },
+  371     ]
+  372 
+  373 
+  374 def provision_status() -> dict:
+  375     """What is present locally, for `tools/datasets.py --check`.
+  376 
+  377     Deliberately does not import `scienceworld` or start a JVM: this is the answer to "did
+  378     the provisioning run", which has to work on a machine where it did not.
+  379     """
+  380     java = DATASET_ROOT / "jre" / _LIB.JRE_DIRNAME / "bin" / "java"
+  381     tarball = DATASET_ROOT / "_src" / _LIB.JRE_TARBALL
+  382     return {
+  383         "root": str(DATASET_ROOT),
+  384         "present": java.is_file() and tarball.is_file() and FOLD_FILE.is_file(),
+  385         "split_dir": str(DATASET_ROOT),
+  386         "java": str(java) if java.is_file() else None,
+  387         "jre_unpacked": str(JRE_STAGED) if JRE_STAGED.is_dir() else None,
+  388         "jre_tarball": str(tarball) if tarball.is_file() else None,
+  389         "fold_file": str(FOLD_FILE) if FOLD_FILE.is_file() else None,
+  390         "fold_excluded_over_budget": len(fold_excluded()) if FOLD_FILE.is_file() else None,
+  391         "tasks": len(_RECORDS) if _RECORDS else None,
+  392     }
+  393 
+  394 
+  395 #: Enumerated on first use, never at import: `data/scaffolds/registry.py::published` imports every
+  396 #: adapter, and the enumeration needs a JVM. `_LOAD_ERROR` carries the reason into `load()`,
+  397 #: so a machine without the runtime can still see the dataset in the chooser and read why
+  398 #: it will not run.
+  399 try:
+  400     _RECORDS: list[dict] = []
+  401     _LOAD_ERROR: str | None = None
+  402 except Exception as _exc:  # noqa: BLE001 - reported by load(), which is where it bites
+  403     _RECORDS = []
+  404     _LOAD_ERROR = f"{type(_exc).__name__}: {_exc}"
+  405 
+  406 
+  407 def _ensure() -> list[dict]:
+  408     global _RECORDS, _LOAD_ERROR
+  409     if _RECORDS:
+  410         return _RECORDS
+  411     if _LOAD_ERROR is not None:
+  412         raise ValueError(f"scienceworld: cannot read the task set ({_LOAD_ERROR})")
+  413     try:
+  414         _RECORDS = test_fold()
+  415     except Exception as exc:  # noqa: BLE001 - carried into load()
+  416         _LOAD_ERROR = f"{type(exc).__name__}: {exc}"
+  417         raise
+  418     return _RECORDS
+  419 
+  420 
+  421 def load() -> tuple[list[dict], dict[str, str]]:
+  422     """`(tasks, scorable)`. Every task is graded by its `VERIFY` entry, so the `scorable`
+  423     map is present only because the interface asks for it."""
+  424     try:
+  425         records = _ensure()
+  426     except Exception as exc:  # noqa: BLE001 - the reason is the point
+  427         raise ValueError(
+  428             f"scienceworld: cannot build the task list ({exc}). Provision the runtime "
+  429             f"with `python3 tools/datasets.py --fetch --dataset scienceworld` and check "
+  430             f"that `pip show scienceworld` reports 1.2.3.") from exc
+  431     if not records:
+  432         raise ValueError("scienceworld: the enumeration returned no tasks")
+  433     tasks = [{"task_id": r["task_id"], "goal": _goal(r), "inputs": []} for r in records]
+  434     return tasks, {r["task_id"]: "" for r in records}
+  435 
+  436 
+  437 def _is_eval(task_id: str) -> bool:
+  438     """A deterministic third, by hash of the task id.
+  439 
+  440     Hashed rather than sliced off the sorted list so that adding or removing a task does
+  441     not reshuffle which side every other task is on -- the same rule `data/datasets/alfworld.py` and
+  442     `data/datasets/terminal_bench.py` use. The official `train`/`dev`/`test` folds exist in the
+  443     repository's `goldpaths-all.zip` but are not in the package; see the module docstring.
+  444     """
+  445     import hashlib
+  446     return hashlib.sha256(task_id.encode()).digest()[0] % 3 == 0
+  447 
+  448 
+  449 #: One environment for every task: the host, because the hard constraint of this exercise
+  450 #: is that nothing here needs Docker. `files` cannot carry resource or timeout fields
+  451 #: (`data/scaffolds/registry.py::_check_env` refuses them), so the platform's defaults apply.
+  452 DEFAULT_ENV: dict = {"kind": "files"}
+  453 
+  454 
+  455 def _split() -> dict:
+  456     """The imposed train/eval split, computed without materialising the per-task dicts.
+  457 
+  458     Deriving it from the records would mean building 21,621 goal/verifier structures just
+  459     to answer "which side is this task on", and `tools/dataset_lint.py` and the driver both
+  460     read `SPLIT` before anything else. The identity is the same generator the records use,
+  461     so the two cannot disagree.
+  462     """
+  463     train, eval_ = [], []
+  464     for record in _ensure():
+  465         (eval_ if _is_eval(record["task_id"]) else train).append(record["task_id"])
+  466     return {"train": train, "eval": eval_}
+  467 
+  468 
+  469 class _Lazy:
+  470     """`ENV`, `SETUP` and `VERIFY`, built on first use.
+  471 
+  472     Three dicts with one entry per task, and there are 7,207 tasks. Building them at import
+  473     would make importing this adapter cost a JVM start plus 21,621 dict constructions -- the
+  474     lesson the QA batch recorded in `docs/dataset-onboarding-skill.md` §15.7. The platform
+  475     asks for them through module `__getattr__` below.
+  476     """
+  477 
+  478     def __init__(self) -> None:
+  479         self._cache: dict = {}
+  480 
+  481     def get(self, name: str):
+  482         if name not in self._cache:
+  483             records = _ensure()
+  484             ids = [r["task_id"] for r in records]
+  485             self._cache = {
+  486                 "ENV": {tid: {"kind": "files"} for tid in ids},
+  487                 "SETUP": {r["task_id"]: _setup(r) for r in records},
+  488                 "VERIFY": {r["task_id"]: _verifier(r) for r in records},
+  489             }
+  490         return self._cache[name]
+  491 
+  492 
+  493 _LAZY = _Lazy()
+  494 
+  495 _split_mode = (os.environ.get("HG_SCIENCEWORLD_SPLIT") or "hash").lower()
+  496 
+  497 
+  498 def __getattr__(name: str):
+  499     if name in ("ENV", "SETUP", "VERIFY"):
+  500         return _LAZY.get(name)
+  501     if name == "SPLIT":
+  502         if _split_mode == "none":
+  503             # Every task as eval, accepting the driver's warning -- ALFWorld's escape hatch,
+  504             # for the same reason: the benchmark declares no division and the one here is
+  505             # imposed, so wanting the whole set scored must be sayable without editing code.
+  506             ids = [r["task_id"] for r in _ensure()]
+  507             return {"train": [], "eval": ids}
+  508         return _split()
+  509     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+  510 
+  511 
+  512 __all__ = ["KIND", "DATASET_ROOT", "STEP_BUDGET", "load", "downloads",
+  513            "provision_status", "DEFAULT_ENV"]

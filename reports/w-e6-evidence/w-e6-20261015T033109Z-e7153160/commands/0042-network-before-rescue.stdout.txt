@@ -1,0 +1,44 @@
+[
+    {
+        "Name": "hg-w-e6-20261015T033109Z-e7153160-cf6abd2_2",
+        "Id": "1d3a54266558acd03617d39f60cf598ef96f4ce9abd51e785379db03a4b63e19",
+        "Created": "2026-10-15T11:31:09.427727258+08:00",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv4": true,
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "172.19.0.0/16",
+                    "Gateway": "172.19.0.1"
+                }
+            ]
+        },
+        "Internal": true,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Options": {},
+        "Labels": {
+            "harnessgrad.run": "w-e6-20261015T033109Z-e7153160",
+            "harnessgrad.task": "cf6abd2_2"
+        },
+        "Containers": {},
+        "Status": {
+            "IPAM": {
+                "Subnets": {
+                    "172.19.0.0/16": {
+                        "IPsInUse": 3,
+                        "DynamicIPsAvailable": 65533
+                    }
+                }
+            }
+        }
+    }
+]

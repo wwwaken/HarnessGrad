@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "docker",
+    "network",
+    "create",
+    "--internal",
+    "hg-w-e6-20261015T032920Z-72d6bfb0-gaia",
+    "--label",
+    "harnessgrad.run=w-e6-20261015T032920Z-72d6bfb0",
+    "--label",
+    "harnessgrad.task=gaia"
+  ],
+  "cwd": "/tmp/hg-e6",
+  "timeout_s": 120,
+  "utc": "2026-10-15T03:29:33.031797+00:00",
+  "returncode": 0
+}

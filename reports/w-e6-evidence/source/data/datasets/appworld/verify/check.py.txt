@@ -1,0 +1,80 @@
+    1 #!/usr/bin/env python3
+    2 """Replay an AppWorld API log and run the official task evaluator."""
+    3 from __future__ import annotations
+    4 import argparse
+    5 import json
+    6 import os
+    7 from pathlib import Path
+    8 import tempfile
+    9 import sys
+   10 
+   11 
+   12 def unmeasured(message: str, evidence_file: str, metadata: dict) -> "NoReturn":
+   13     print(message, file=sys.stderr)
+   14     print(message)
+   15     target = Path(evidence_file)
+   16     target.parent.mkdir(parents=True, exist_ok=True)
+   17     target.write_text(json.dumps({**metadata, "measured": False, "error": message}), encoding="utf-8")
+   18     raise SystemExit(3)
+   19 
+   20 
+   21 def main() -> int:
+   22     parser = argparse.ArgumentParser()
+   23     parser.add_argument("--task-id", required=True)
+   24     parser.add_argument("--source-split", choices=("train", "dev", "test_normal", "test_challenge"))
+   25     parser.add_argument("--log", required=True)
+   26     parser.add_argument("--reward-file", default="verifier/reward.txt")
+   27     parser.add_argument("--evidence-file", default="verifier/evidence.json")
+   28     args = parser.parse_args()
+   29     metadata = {"task_id": args.task_id, "source_split": args.source_split,
+   30                 "metric": "appworld.task_goal_completion", "metric_name": "TGC"}
+   31     log = Path(args.log)
+   32     if not log.is_file():
+   33         unmeasured(f"no API-call log: {log}", args.evidence_file, metadata)
+   34     try:
+   35         calls = [json.loads(line) for line in log.read_text(encoding="utf-8").splitlines() if line.strip()]
+   36     except (OSError, json.JSONDecodeError) as exc:
+   37         unmeasured(f"unreadable API-call log: {exc}", args.evidence_file, metadata)
+   38     try:
+   39         if Path("/appworld/data").is_dir():
+   40             runtime_root = Path(tempfile.mkdtemp(prefix="appworld-verify-"))
+   41             (runtime_root / "data").symlink_to("/appworld/data")
+   42             (runtime_root / "experiments").mkdir()
+   43             os.environ["APPWORLD_ROOT"] = str(runtime_root)
+   44         from appworld import AppWorld
+   45         with AppWorld(task_id=args.task_id, experiment_name="verify", raise_on_failure=False,
+   46                       ground_truth_mode="minimal") as world:
+   47             for call in calls:
+   48                 url = str(call["url"]).split("?", 1)[0]
+   49                 method = str(call.get("method", "get")).lower()
+   50                 if method not in {"get", "post", "put", "patch", "delete"}:
+   51                     unmeasured(f"unknown API method: {method}", args.evidence_file, metadata)
+   52                 world.execute(
+   53                     f"requester.{method}({url!r}, data={call.get('data') or {}!r}, "
+   54                     "client=requester.client)"
+   55                 )
+   56             tracker = world.evaluate()
+   57     except SystemExit:
+   58         raise
+   59     except Exception as exc:  # an environment/import/data failure is not a task failure
+   60         unmeasured(f"environment failure: {type(exc).__name__}: {exc}", args.evidence_file, metadata)
+   61     evidence = {
+   62         **metadata,
+   63         "measured": True,
+   64         "success": bool(tracker.success),
+   65         "num_tests": tracker.num_tests,
+   66         "passes": tracker.passes,
+   67         "failures": tracker.failures,
+   68     }
+   69     reward = Path(args.reward_file)
+   70     reward.parent.mkdir(parents=True, exist_ok=True)
+   71     reward.write_text("1.0\n" if tracker.success else "0.0\n", encoding="utf-8")
+   72     report = Path(args.evidence_file)
+   73     report.parent.mkdir(parents=True, exist_ok=True)
+   74     report.write_text(json.dumps(evidence, default=str), encoding="utf-8")
+   75     print("1.0" if tracker.success else "0.0")
+   76     return 0
+   77 
+   78 
+   79 if __name__ == "__main__":
+   80     raise SystemExit(main())

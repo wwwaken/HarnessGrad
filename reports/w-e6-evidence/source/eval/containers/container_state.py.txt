@@ -1,0 +1,250 @@
+    1 """Measure one task whose state *is* the container's filesystem.
+    2 
+    3 Split out of `eval/run/runner.py` (stage 4). INTERFACE.md §2.5.9: the harness runs inside the
+    4 task's own image, the platform snapshots the container afterwards, and the check runs
+    5 against that snapshot. It is the longest single path in the platform and the one with the
+    6 most moving parts -- a model gateway, a published network, a snapshot image, a teardown that
+    7 has to run even when the path above raised -- so it is the single function this split most
+    8 needed to isolate.
+    9 
+   10 The seam: it takes a task and its environment and returns a result dict. It reads traces
+   11 through `eval.observe.tracing` and takes verdicts through `eval.verification.verifier`.
+   12 """
+   13 from __future__ import annotations
+   14 
+   15 import json
+   16 import os
+   17 import subprocess
+   18 import sys
+   19 import tempfile
+   20 from pathlib import Path
+   21 
+   22 import eval.containers.container as container_mod
+   23 import eval.containers.harness_runtime as harness_runtime
+   24 import eval.service.modelgate as modelgate_mod
+   25 import eval.observe.progress as progress_mod
+   26 import eval.service.services as services_mod
+   27 import tools.web_gateway as web_gateway_mod
+   28 from eval.service.services import label
+   29 from ckpt.git_state import STATE_DIRNAME
+   30 from eval.run.integrity import PLATFORM_ROOT
+   31 from eval.run.task_contract import runtime_task
+   32 from eval.observe.tracing import _last_identity, _materialize
+   33 from eval.verification.verifier import _verify_container_state
+   34 
+   35 def _run_one_container_state(repo: Path, task: dict, *, env_spec: dict, setup,
+   36                              verifier, timeout_s: int, verify_timeout_s: int,
+   37                              run_id: str, run_seed: str,
+   38                              recordings_root: Path | None,
+   39                              runtime_paths: tuple[Path, ...] = ()) -> dict:
+   40     """Run a task whose state is the container's own filesystem. INTERFACE.md §2.5.9.
+   41 
+   42     The order is the design, so it is spelled out here in the same steps the contract
+   43     uses. What makes it worth its extra moving parts is step 6-7: the check's inputs and
+   44     its reward directory are created **after** the harness has stopped, so the harness
+   45     never had access to either -- which is what keeps §2.2's invariants true even though
+   46     the task state travels by snapshot rather than by re-materialization.
+   47     """
+   48     repo = Path(repo).resolve()
+   49     task_mount = env_spec.get("workdir") or container_mod.DEFAULT_WORKDIR
+   50     tid = task["task_id"]
+   51     name = label(f"hg-{run_id or 'run'}-{tid}")
+   52     snapshot_tag = f"hg-snapshot:{label(f'{run_id or "run"}-{tid}')}"
+   53     snapshot = None
+   54     created = False
+   55     network_name = None
+   56     gateway = None
+   57     web_gateway = None
+   58     answer = trace = ""
+   59     #: The task this work belongs to, and the phases it reports. `None` outside a run
+   60     #: (a unit test, a direct call), in which case every phase below is a no-op.
+   61     held = progress_mod.task_of()
+   62     phases = progress_mod.phases_for(held)
+   63 
+   64     # A throwaway host directory for what has to be copied in or read back out. Not a
+   65     # bind mount: that is the whole point of this state kind.
+   66     with tempfile.TemporaryDirectory(prefix="hg-cstate-") as tmp:
+   67         staging = Path(tmp)
+   68         try:
+   69             # Step 1. The harness tree read-only at its own host path, and its scratch
+   70             # space as a **tmpfs** -- so nothing the containerised harness writes as root
+   71             # lands on the host, and the scratch is not committed into the graded
+   72             # snapshot either.
+   73             state_dir = repo / STATE_DIRNAME
+   74             state_dir.mkdir(exist_ok=True)
+   75 
+   76             with phases("create"):
+   77                 # The internal network is created unconditionally: it is where the model
+   78                 # gateway is published, and a harness with no model is not being measured.
+   79                 network_name = services_mod.create_network(run_id or "run", tid)
+   80                 # The harness's own dependencies, resolved for this image's Python
+   81                 # version and mounted read-only from outside the image. It is a **bind
+   82                 # mount**, which is what keeps it out of the graded snapshot: measured,
+   83                 # `docker commit` records the mount target as an empty directory and
+   84                 # nothing under it, so the check's fresh container never sees these
+   85                 # packages. See `eval/containers/harness_runtime.py`.
+   86                 image_python_here = container_mod.image_python(env_spec["image"])
+   87                 overlay = harness_runtime.lookup(
+   88                     repo, image_python_here or sys.executable,
+   89                     image=env_spec["image"],
+   90                     image_digest=env_spec.get("image_digest"))
+   91 
+   92                 container_mod.create(
+   93                     name, image=env_spec["image"],
+   94                     limits=container_mod.limits_from(env_spec), network=network_name,
+   95                     run_id=run_id, task_id=task["task_id"],
+   96                     extra_mounts=tuple(
+   97                         ["--mount", f"type=bind,src={repo},dst={repo},readonly"]
+   98                         + [a for pth in (tuple(runtime_paths)
+   99                                          + harness_runtime.extra_paths(overlay)
+  100                                          + (() if image_python_here
+  101                                             else container_mod.interpreter_paths()))
+  102                            for a in ("--mount",
+  103                                      f"type=bind,src={pth},dst={pth},readonly")]),
+  104                     # The harness's scratch and its HOME/XDG/TMPDIR are tmpfs, so nothing
+  105                     # the platform created for its own bookkeeping ends up inside the
+  106                     # snapshot the check grades. The snapshot should be the harness's work,
+  107                     # not the platform's plumbing.
+  108                     tmpfs=(str(state_dir),
+  109                            container_mod.env_home(task_mount)))
+  110             created = True
+  111             if env_spec.get("network") == "bridge":
+  112                 container_mod.network_connect(name, "bridge")
+  113 
+  114             with phases("prepare"):
+  115                 # Step 2. SETUP, copied in rather than mounted.
+  116                 if setup and setup.get("files"):
+  117                     _materialize(staging / "setup", setup.get("files"), PLATFORM_ROOT)
+  118                     container_mod.cp_in(name, staging / "setup", task_mount,
+  119                                         contents=True)
+  120 
+  121                 manifest = json.loads((repo / "harness.json").read_text())
+  122                 entry = manifest["entrypoint"]
+  123                 task_file = staging / "task.json"
+  124                 task_file.write_text(json.dumps(runtime_task(task, setup)))
+  125                 container_mod.cp_in(name, task_file, f"{task_mount}/task.json")
+  126                 # No `mkdir` for the scratch or the home directory: they are `--tmpfs`
+  127                 # mounts, and docker creates their mount points at **create** time. The
+  128                 # first version called `mkdir_in` here, which uses `docker exec` -- and a
+  129                 # container that has not been started cannot be exec'd. Measured:
+  130                 # `container ... is not running`.
+  131 
+  132                 image_python = container_mod.image_python(env_spec["image"])
+  133                 argv = [image_python or sys.executable, str(repo / entry), "--task",
+  134                         f"{task_mount}/task.json", "--workdir", task_mount]
+  135 
+  136                 child_env = container_mod.container_env(task_mount, deadline_s=timeout_s)
+  137                 child_env["HARNESSGRAD_STATE"] = str(state_dir)
+  138                 # Prepended, not replacing: a harness that sets its own `PYTHONPATH` is not
+  139                 # the platform's to overwrite.
+  140                 child_env.update(harness_runtime.env_for(overlay))
+  141 
+  142                 if env_spec.get("web"):
+  143                     web_gateway = web_gateway_mod.WebGateway(
+  144                         bind_host=services_mod.gateway_ip(network_name),
+  145                         record_path=((recordings_root or staging) / tid / "web" /
+  146                                      "requests.jsonl"),
+  147                         enable_search=bool(env_spec["web"].get("search")),
+  148                         enable_fetch=bool(env_spec["web"].get("fetch"))).start()
+  149                     child_env["HG_SVC_WEB_URL"] = web_gateway.url
+  150 
+  151                 # Step 3's precondition: the model has to be reachable from inside, and the
+  152                 # wrong fix is giving the task the internet it did not ask for.
+  153                 base = child_env.get("HG_AGENT_BASE_URL")
+  154                 if base and os.environ.get("HG_AGENT_BACKEND", "mock") != "mock" \
+  155                         and modelgate_mod.is_host_local(base):
+  156                     target, path = modelgate_mod.split(base)
+  157                     bind = services_mod.gateway_ip(network_name)
+  158                     gateway = modelgate_mod.ModelGateway(
+  159                         bind_host=bind, target=target, path=path).start()
+  160                     child_env["HG_AGENT_BASE_URL"] = gateway.base_url
+  161 
+  162                 container_mod.start(name)
+  163                 # The environment names five scratch directories and `docker create`
+  164                 # makes one of them: a `--tmpfs` brings its own mount point and no child
+  165                 # of it, so `HOME` exists and `TMPDIR=<home>/tmp` does not. A harness that
+  166                 # believes the environment it was given then starts against a path the
+  167                 # platform invented -- see `container_mod.writable_env_dirs`. Created here
+  168                 # rather than at create time because `mkdir_in` is a `docker exec`, and a
+  169                 # container that has not been started cannot be exec'd (the first version
+  170                 # of this file did it earlier and was told `is not running`).
+  171                 for scratch in container_mod.writable_env_dirs(task_mount):
+  172                     container_mod.mkdir_in(name, scratch, "0755")
+  173 
+  174             # Step 3.
+  175             exit_code, stderr = None, ""
+  176             with phases("agent"):
+  177                 try:
+  178                     proc = container_mod.exec_in(name, argv, cwd=task_mount,
+  179                                                  env=child_env, timeout_s=timeout_s)
+  180                     exit_code, stderr = proc.returncode, proc.stderr[-2000:]
+  181                 except subprocess.TimeoutExpired:
+  182                     exit_code, stderr = -1, f"timeout after {timeout_s}s"
+  183 
+  184             with phases("snapshot"):
+  185                 # Step 4. Stopping the whole container is what makes "nothing the harness
+  186                 # started is still running" structural rather than best-effort, and a
+  187                 # stopped container is still committable. Admission and commit failures are
+  188                 # platform failures, never harness scores.
+  189                 try:
+  190                     container_mod.stop(name)
+  191                     snapshot = container_mod.commit(name, snapshot_tag)
+  192                 except container_mod.SnapshotUnavailable as exc:
+  193                     return {"task_id": tid,
+  194                             "invalid": {"stage": "snapshot", "service": "docker",
+  195                                         "detail": str(exc)},
+  196                             "answer": "", "trace": trace, "exit_code": exit_code,
+  197                             "stderr": stderr, "env_usage": {}, "identity": _last_identity(trace),
+  198                             "harness_runtime": harness_runtime.record(
+  199                                 overlay, platform_interpreter=(image_python_here is None)),
+  200                             "model_gateway": None, "web_gateway": None}
+  201 
+  202                 # What the harness produced, read back out of the snapshot. `cp_out` is a
+  203                 # best-effort read: a harness that wrote no trace is a fact to record.
+  204                 if container_mod.cp_out(name, f"{task_mount}/trace.jsonl",
+  205                                         staging / "trace.jsonl"):
+  206                     trace = (staging / "trace.jsonl").read_text()
+  207                 if container_mod.cp_out(name, f"{task_mount}/answer.txt",
+  208                                         staging / "answer.txt"):
+  209                     answer = (staging / "answer.txt").read_text()
+  210 
+  211             # Steps 5-9.
+  212             with phases("verify"):
+  213                 verdict = _verify_container_state(
+  214                     snapshot, verifier, expected_snapshot=snapshot,
+  215                     task_mount=task_mount, staging=staging,
+  216                     timeout_s=verify_timeout_s, run_id=run_id or "run", task_id=tid,
+  217                     network=(network_name if network_name is not None
+  218                              else env_spec.get("network", "none")),
+  219                     declared_network=env_spec.get("network", "none"),
+  220                     limits=container_mod.limits_from(env_spec))
+  221 
+  222             return {"task_id": tid, "answer": answer, "trace": trace,
+  223                     "exit_code": exit_code, "stderr": stderr, "verdict": verdict,
+  224                     "env_usage": {}, "identity": _last_identity(trace),
+  225                     "harness_runtime": harness_runtime.record(
+  226                         overlay, platform_interpreter=(image_python_here is None)),
+  227                     "model_gateway": ({"published": True,
+  228                                        "target": f"{gateway.target[0]}:{gateway.target[1]}",
+  229                                        **gateway.account()}
+  230                                       if gateway is not None else None),
+  231                     "web_gateway": ({"published": True, "url": web_gateway.url,
+  232                                      "search": web_gateway.search,
+  233                                      "fetch": web_gateway.fetch}
+  234                                     if web_gateway is not None else None)}
+  235         finally:
+  236             # Teardown is a phase like any other, and it is the one that used to be
+  237             # invisible while it took minutes: removing one image per task plus the
+  238             # network, with nothing printed. It runs inside the task's context, so it
+  239             # reports even when the path above raised.
+  240             with phases("teardown"):
+  241                 if gateway is not None:
+  242                     gateway.stop()
+  243                 if web_gateway is not None:
+  244                     web_gateway.stop()
+  245                 if snapshot is not None:
+  246                     container_mod.remove_image(snapshot)
+  247                 if created:
+  248                     container_mod.remove_container(name)
+  249                 if network_name is not None:
+  250                     services_mod.remove_network(network_name)

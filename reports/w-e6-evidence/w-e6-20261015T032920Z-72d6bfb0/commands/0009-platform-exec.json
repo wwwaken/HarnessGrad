@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "a383023e45e1624ab3a4544cbc216c23484a9ab381d7f8cd7e33d31dca76b2e3",
+    "python",
+    "-c",
+    "import urllib.request as u; u.urlopen('http://localhost:8000/').read()"
+  ],
+  "cwd": "/tmp/hg-e6",
+  "timeout_s": 60,
+  "utc": "2026-10-15T03:29:22.599485+00:00",
+  "returncode": 1
+}

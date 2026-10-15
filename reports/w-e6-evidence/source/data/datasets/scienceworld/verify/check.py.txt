@@ -1,0 +1,237 @@
+    1 #!/usr/bin/env python3
+    2 r"""The ScienceWorld check: replay the agent's actions in a **fresh** world and read the JVM's score.
+    3 
+    4 This is the dataset's whole grade. It does not read a summary the agent wrote, what the
+    5 agent's CLI printed, or any score the CLI recorded -- all of those are the agent's own
+    6 bytes. It reads one thing from the agent: the ordered list of actions in
+    7 `scw_actions.jsonl`. It then rebuilds the world from a trusted copy of the task file (the
+    8 platform re-materializes `VERIFY.inputs` immediately before this runs), applies the
+    9 actions one at a time, and takes **the last score the JVM reported**.
+   10 
+   11 The rule, precisely
+   12 -------------------
+   13 ScienceWorld's own evaluation loop (`examples/random_agent.py`) is:
+   14 
+   15     observation, reward, isCompleted, info = env.step(userInputStr)
+   16     score = info['score']
+   17     ...
+   18     finalScores.append(score)
+   19     avg = sum([x for x in finalScores if x >= 0]) / len(finalScores)
+   20 
+   21 So the number is the **final** `info['score']`, an integer 0-100, and success is that score
+   22 reaching 100. The check reports `reward = score / 100.0` -- a fraction, because the
+   23 platform's reward file parses as a float and a 40/100 episode is genuinely a partial
+   24 result; the evidence carries the integer beside it. The success predicate is
+   25 `score == 100`, which is what the environment stops at when the goal is met.
+   26 
+   27 **A `done` gate is not added.** The environment reports `done` when the goal is met *or*
+   28 when the step limit is spent, so `done` alone does not mean solved; and the benchmark does
+   29 not require the agent to declare anything. `scw done` exists because a harness needs a way
+   30 to stop, it is recorded in the evidence, and it is not a gate -- the same reasoning as
+   31 ALFWorld's (`docs/dataset-onboarding-skill.md` §2).
+   32 
+   33 What makes this check trustworthy
+   34 ---------------------------------
+   35 * The task file is re-materialized by the platform before this runs, so editing the
+   36   workdir's copy changes nothing.
+   37 * The JRE is re-materialized too (`VERIFY.inputs`), so the check and the agent's CLI use
+   38   the same pinned runtime.
+   39 * A check that cannot measure -- no task file, no JVM, a world that will not build --
+   40   writes **no reward file**, writes evidence saying `measured: false`, and exits 3. The
+   41   platform turns that into an invalid task rather than a zero the agent earned.
+   42 
+   43 Outputs
+   44 -------
+   45     reward file    0.0-1.0   (`/verifier/reward.txt` by default)
+   46     evidence file  JSON      why: every step, its score, how many moves were spent
+   47     stdout         why, in one line, so the platform's verdict detail carries it too
+   48 """
+   49 from __future__ import annotations
+   50 
+   51 import argparse
+   52 import json
+   53 import os
+   54 import sys
+   55 import traceback
+   56 from pathlib import Path
+   57 
+   58 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+   59 import scw_env  # noqa: E402
+   60 
+   61 DEFAULT_REWARD_FILE = "/verifier/reward.txt"
+   62 DEFAULT_EVIDENCE_FILE = "/verifier/evidence.json"
+   63 
+   64 
+   65 def parse_args(argv):
+   66     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+   67     parser.add_argument("--workdir", default=".")
+   68     parser.add_argument("--task", default=None, help="the trusted task file")
+   69     parser.add_argument("--log", default=None, help="the agent's action log")
+   70     parser.add_argument("--reward-file", default=DEFAULT_REWARD_FILE)
+   71     parser.add_argument("--evidence-file", default=DEFAULT_EVIDENCE_FILE)
+   72     parser.add_argument("--budget", type=int, default=scw_env.STEP_BUDGET)
+   73     args = parser.parse_args(argv)
+   74     workdir = Path(args.workdir)
+   75     args.task = Path(args.task) if args.task else workdir / scw_env.TASK_FILENAME
+   76     args.log = Path(args.log) if args.log else workdir / scw_env.LOG_FILENAME
+   77     args.reward_file = Path(args.reward_file)
+   78     args.evidence_file = Path(args.evidence_file)
+   79     return args
+   80 
+   81 
+   82 def _point_at_the_jvm(workdir: Path) -> Path | None:
+   83     """Set `JAVA_HOME`/`PATH` **before anything imports py4j**.
+   84 
+   85     Measured, and it cost a control run: `py4j.java_gateway.launch_gateway` resolves the
+   86     interpreter as `os.path.join(os.environ["JAVA_HOME"], "bin", "java")` and falls back to
+   87     the bare name `java`. The platform hands a check a **minimal environment**
+   88     (`eval/verification/verifier.py::_verifier_env`: PATH, HOME, LANG only), so without this the check
+   89     dies with `FileNotFoundError: [Errno 2] No such file or directory: 'java'` -- and the
+   90     CLI, which ran with the login shell's PATH, had worked. A JVM only one of the two sides
+   91     can find is exactly the failure `docs/dataset-onboarding-skill.md` §12 warns about.
+   92 
+   93     Returns the home it found, or None when there is none -- the caller reports that as
+   94     `measured: false` rather than crashing.
+   95     """
+   96     # The JRE arrives as a **prepared tree** in `VERIFY.inputs` (the platform copies a
+   97     # directory with `copytree`), so there is nothing to unpack here. A tarball was the first
+   98     # design and it failed on the read-only task tree during verification -- measured,
+   99     # `[Errno 30] Read-only file system` -- which is the same lesson as ALFWorld's
+  100     # materialize-everything rule, one layer down.
+  101     try:
+  102         home = scw_env.java_home(workdir)
+  103     except RuntimeError:
+  104         return None
+  105     os.environ["JAVA_HOME"] = str(home)
+  106     os.environ["PATH"] = str(home / "bin") + os.pathsep + os.environ.get("PATH", "")
+  107     return home
+  108 
+  109 
+  110 def write_reward(path: Path, score: float) -> None:
+  111     path.parent.mkdir(parents=True, exist_ok=True)
+  112     path.write_text(f"{score:g}\n")
+  113 
+  114 
+  115 def write_evidence(path: Path, evidence: dict) -> None:
+  116     """Evidence is for a reader, never for the score: failing to write it is not fatal."""
+  117     try:
+  118         path.parent.mkdir(parents=True, exist_ok=True)
+  119         path.write_text(json.dumps(evidence, indent=1, sort_keys=True,
+  120                                    ensure_ascii=False) + "\n")
+  121     except OSError as exc:
+  122         print(f"could not write evidence: {exc}", file=sys.stderr)
+  123 
+  124 
+  125 def main(argv) -> int:
+  126     args = parse_args(argv)
+  127     workdir = Path(args.workdir)
+  128     evidence: dict = {
+  129         "task_file": str(args.task),
+  130         "action_log": str(args.log),
+  131         "budget": args.budget,
+  132     }
+  133 
+  134     if not args.task.is_file():
+  135         evidence.update(measured=False, error=f"no task file at {args.task}")
+  136         write_evidence(args.evidence_file, evidence)
+  137         print(f"check cannot measure: {evidence['error']}", file=sys.stderr)
+  138         return 3
+  139 
+  140     records = scw_env.action_log_records(args.log)
+  141     actions = scw_env.actions_in(records)
+  142     declared_done = any(r.get("kind") == "done" for r in records)
+  143     evidence.update(actions_in_log=len(actions), log_records=len(records),
+  144                     agent_declared_done=declared_done,
+  145                     unparseable_lines=None)
+  146 
+  147     java_home = _point_at_the_jvm(workdir)
+  148     evidence["java_home"] = str(java_home) if java_home else None
+  149     if java_home is None:
+  150         evidence.update(measured=False,
+  151                         error="no Java runtime in the workdir or under the dataset root")
+  152         write_evidence(args.evidence_file, evidence)
+  153         print(f"check cannot measure: {evidence['error']}", file=sys.stderr)
+  154         return 3
+  155 
+  156     try:
+  157         env = scw_env.load_task(workdir, step_budget=args.budget)
+  158     except Exception as exc:  # noqa: BLE001 - a check that cannot run is not a zero
+  159         evidence.update(measured=False,
+  160                         error=f"could not build the world: {exc}",
+  161                         traceback=traceback.format_exc()[-2000:])
+  162         write_evidence(args.evidence_file, evidence)
+  163         print(f"check cannot measure: {evidence['error']}", file=sys.stderr)
+  164         return 3
+  165 
+  166     steps = []
+  167     score = 0
+  168     try:
+  169         for index, action in enumerate(actions[:args.budget]):
+  170             observation, _reward, done, info = env.step(action)
+  171             score = int(info.get("score", 0))
+  172             steps.append({"step": index, "action": action, "score": score,
+  173                           "done": bool(done),
+  174                           "observation": str(observation)[:200]})
+  175             if done:
+  176                 break
+  177     except Exception as exc:  # noqa: BLE001
+  178         evidence.update(measured=False, error=f"the world died mid-episode: {exc}",
+  179                         traceback=traceback.format_exc()[-2000:], steps=steps)
+  180         write_evidence(args.evidence_file, evidence)
+  181         print(f"check cannot measure: {evidence['error']}", file=sys.stderr)
+  182         return 3
+  183 
+  184     # Read the goal report **before** closing: `get_goal_progress()` is a JVM call, and
+  185     # after `close()` the gateway is gone -- measured, it raised `Gateway is not
+  186     # connected.` and turned a graded episode into a crash.
+  187     try:
+  188         goal_progress = str(env.get_goal_progress())[:2000]
+  189     except Exception as exc:  # noqa: BLE001 - a missing report is not a missing grade
+  190         goal_progress = f"<could not read the goal report: {exc}>"
+  191     env.close()
+  192     moves = len(steps)
+  193     solved = score >= 100
+  194     reward = max(0, min(score, 100)) / 100.0
+  195     evidence.update(
+  196         measured=True,
+  197         reward=reward,
+  198         score=score,
+  199         solved=solved,
+  200         moves=moves,
+  201         budget_exhausted=bool(moves >= args.budget and not solved),
+  202         steps=steps,
+  203         # The environment's own goal report, kept because it is the material a reader
+  204         # needs to see *why* a partial score is partial.
+  205         goal_progress=goal_progress,
+  206     )
+  207     if solved:
+  208         why = f"the goal was met: score {score}/100 after {moves} move(s)"
+  209     elif moves == 0:
+  210         why = "the log holds no actions, so the goal cannot have been met"
+  211     elif moves >= args.budget:
+  212         why = (f"the {args.budget}-move budget was spent with score {score}/100; the "
+  213                f"goal was not met")
+  214     else:
+  215         why = (f"the episode ended after {moves} move(s) with score {score}/100; the "
+  216                f"goal was not met")
+  217     evidence["why"] = why
+  218     write_evidence(args.evidence_file, evidence)
+  219 
+  220     if solved:
+  221         write_reward(args.reward_file, 1.0)
+  222         print(f"reward 1: {why} (agent declared done={declared_done})")
+  223         return 0
+  224 
+  225     write_reward(args.reward_file, reward)
+  226     print(f"reward {reward:g}: {why}")
+  227     return 1
+  228 
+  229 
+  230 if __name__ == "__main__":
+  231     try:
+  232         raise SystemExit(main(sys.argv[1:]))
+  233     except SystemExit:
+  234         raise
+  235     except Exception:  # noqa: BLE001 - a crash must not look like a measured zero
+  236         traceback.print_exc()
+  237         raise SystemExit(4)

@@ -1,0 +1,32 @@
+{
+  "appworld-image": {
+    "image": "harnessgrad/appworld-agent@sha256:d3a04ec8e295710347e978d8e58c663161d829e7dfa544da4d82d0d67abbd8eb",
+    "source": "data/datasets/appworld.py",
+    "line": 53,
+    "environment_override": false
+  },
+  "appworld-service_image": {
+    "image": "harnessgrad/appworld-service@sha256:db09e34ec90347e7d5271d95445f360222ba1aef3ca0eaa5614ce768bf23aca4",
+    "source": "data/datasets/appworld.py",
+    "line": 57,
+    "environment_override": false
+  },
+  "appworld-verifier_image": {
+    "image": "harnessgrad/appworld-service@sha256:f3cb916b9bdc297d4c73dd9646e9550befb7c6e23827d937b90a0640373e97ca",
+    "source": "data/datasets/appworld.py",
+    "line": 61,
+    "environment_override": false
+  },
+  "gaia-image": {
+    "image": "harnessgrad/gaia@sha256:9cc27f813e596542d3f3447de10fc1166b27d66e282f271b2e057ee8ca0e0e13",
+    "source": "data/datasets/gaia.py",
+    "line": 94,
+    "environment_override": false
+  },
+  "tau_bench-image": {
+    "image": "harnessgrad/tau-bench@sha256:beda1b01f43ca4912555b44ccdfe25b1fe384b42e77d87a5316302ccf493fb23",
+    "source": "data/datasets/tau_bench.py",
+    "line": 125,
+    "environment_override": false
+  }
+}
