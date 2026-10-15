@@ -1,0 +1,31 @@
+{
+  "collector_waitpid": [],
+  "elapsed_seconds": 0.4319182336330414,
+  "observed_pids": {
+    "601111": {
+      "first_ns": 1792023419200402077,
+      "last_ns": 1792023419501283142,
+      "last_ppid": 601038,
+      "last_state": "S",
+      "start_ticks": "654635624"
+    },
+    "601114": {
+      "first_ns": 1792023419268429477,
+      "last_ns": 1792023419501719540,
+      "last_ppid": 601111,
+      "last_state": "S",
+      "start_ticks": "654635625"
+    },
+    "601115": {
+      "first_ns": 1792023419269029714,
+      "last_ns": 1792023419501916561,
+      "last_ppid": 601114,
+      "last_state": "R",
+      "start_ticks": "654635625"
+    }
+  },
+  "remaining_before_collector_path_cleanup": {},
+  "returncode": 1,
+  "root_pid": 601111,
+  "timed_out": false
+}

@@ -1,0 +1,170 @@
+{
+  "before": [
+    {
+      "bytes": 444,
+      "is_symlink": false,
+      "kind": "file",
+      "path": "config.json",
+      "sha256": "dc8ee1bd5284cc194b8ac182faf5910cef99fde06aaab5b93c0b614398f155bb"
+    },
+    {
+      "bytes": 1420,
+      "is_symlink": false,
+      "kind": "file",
+      "path": "entry.py",
+      "sha256": "b46ce0728ceb860e0d21169e4016ed5612151e1a5c6edcc91c2ee47e99c57895"
+    },
+    {
+      "is_symlink": false,
+      "kind": "directory",
+      "path": "output"
+    },
+    {
+      "is_symlink": false,
+      "kind": "directory",
+      "path": "scratch"
+    },
+    {
+      "is_symlink": false,
+      "kind": "directory",
+      "path": "scratch/home"
+    },
+    {
+      "is_symlink": false,
+      "kind": "directory",
+      "path": "work"
+    },
+    {
+      "bytes": 55296,
+      "is_symlink": false,
+      "kind": "file",
+      "path": "work/acorncourt.z5",
+      "sha256": "7b13c904bf7608fa0de902ce7ecd5fcd0e026f293fc67baa87b99a35a3190c9e"
+    },
+    {
+      "bytes": 7085,
+      "is_symlink": false,
+      "kind": "file",
+      "path": "work/check.py",
+      "sha256": "da09db93dd0b3159311114d77f90bd2c79f2c83dcb3e7bf87685540c2924227f"
+    },
+    {
+      "bytes": 48,
+      "is_symlink": false,
+      "kind": "file",
+      "path": "work/jer_actions.jsonl",
+      "sha256": "3cc1b737a29e6f65cd3c5794c7c8088da0de90922b63e552f12b2c2934696af0"
+    },
+    {
+      "bytes": 5563,
+      "is_symlink": false,
+      "kind": "file",
+      "path": "work/jer_env.py",
+      "sha256": "dff31034630ba18ce0cbf57fa7a5b026c342b22d71b8957a2ef899eb1c06277f"
+    },
+    {
+      "bytes": 69,
+      "is_symlink": false,
+      "kind": "file",
+      "path": "work/jer_game.json",
+      "sha256": "a1a0d0c04b5a7419321335b2c0da3737ab2f45fb099ccb84b7b7ed69481809cb"
+    },
+    {
+      "is_symlink": false,
+      "kind": "directory",
+      "path": "work/verify"
+    }
+  ],
+  "benchmark": false,
+  "command_argv": [
+    "strace",
+    "-f",
+    "-ttt",
+    "-s",
+    "240",
+    "-o",
+    "/tmp/hg-jvm/reports/w-jvm-evidence/live/jericho/syscalls.txt",
+    "-e",
+    "trace=%process,mkdir,mkdirat,rmdir,unlink,unlinkat,rename,renameat,renameat2,prlimit64,sched_setaffinity,socket,bind,listen,connect,shutdown",
+    "bwrap",
+    "--die-with-parent",
+    "--unshare-net",
+    "--ro-bind",
+    "/",
+    "/",
+    "--bind",
+    "/tmp/w-jvm-20261015T001656Z-63da9530/jericho/scratch",
+    "/tmp",
+    "--bind",
+    "/tmp/w-jvm-20261015T001656Z-63da9530/jericho",
+    "/tmp/control",
+    "--proc",
+    "/proc",
+    "--dev",
+    "/dev",
+    "--chdir",
+    "/tmp/control/work",
+    "--setenv",
+    "HOME",
+    "/tmp/home",
+    "--setenv",
+    "TMPDIR",
+    "/tmp",
+    "--setenv",
+    "XDG_CACHE_HOME",
+    "/tmp/home/.cache",
+    "--setenv",
+    "XDG_CONFIG_HOME",
+    "/tmp/home/.config",
+    "--setenv",
+    "PYTHONDONTWRITEBYTECODE",
+    "1",
+    "--setenv",
+    "CUDA_VISIBLE_DEVICES",
+    "",
+    "--setenv",
+    "OMP_NUM_THREADS",
+    "1",
+    "--setenv",
+    "OPENBLAS_NUM_THREADS",
+    "1",
+    "--setenv",
+    "MKL_NUM_THREADS",
+    "1",
+    "--setenv",
+    "JAVA_TOOL_OPTIONS",
+    "-Xmx512m -XX:ActiveProcessorCount=2",
+    "--setenv",
+    "PYTHONPATH",
+    "/tmp/control/work",
+    "--setenv",
+    "HF_HUB_OFFLINE",
+    "1",
+    "--setenv",
+    "HF_DATASETS_OFFLINE",
+    "1",
+    "--",
+    "/mnt/8t/xubuqiang/anaconda3/bin/python3",
+    "/tmp/control/entry.py"
+  ],
+  "control_env": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "HF_DATASETS_OFFLINE": "1",
+    "HF_HUB_OFFLINE": "1",
+    "HOME": "/tmp/home",
+    "JAVA_TOOL_OPTIONS": "-Xmx512m -XX:ActiveProcessorCount=2",
+    "MKL_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/tmp/control/work",
+    "TMPDIR": "/tmp",
+    "XDG_CACHE_HOME": "/tmp/home/.cache",
+    "XDG_CONFIG_HOME": "/tmp/home/.config"
+  },
+  "endpoint": null,
+  "model": null,
+  "production_runtime_observation": false,
+  "root": "/tmp/w-jvm-20261015T001656Z-63da9530/jericho",
+  "wall_bound_seconds": 50
+}

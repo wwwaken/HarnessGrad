@@ -1,0 +1,8 @@
+{
+  "initial_launch_and_live_commands": [
+    "python3 tests/fixtures/hg_wjvm/collect.py",
+    "python3 tests/fixtures/hg_wjvm/collect.py"
+  ],
+  "followup_command": "python3 tests/fixtures/hg_wjvm/collect.py --output reports/w-jvm-evidence/followup --runtimes spreadsheetbench ds1000 livecodebench bird_minidev",
+  "qualification": "Execution metadata records script path only because the captured collector version omitted CLI arguments; these commands are transcribed from the actual terminal invocations. Every per-case launch.json contains the full exact strace/bwrap argument vector. Initial and live collectors are preserved under initial-collector.py and live/collector-source.py; followup/collector-source.py is the source used for followup, before the metadata-only correction."
+}

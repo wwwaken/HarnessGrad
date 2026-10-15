@@ -3160,3 +3160,45 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
   checker/test outputs: `reports/w-quiesce-validation.txt`: registry valid,
   **162 passed**, independent copy audit and all evidence seals match. Worktree-only commit;
   parent review/merge remains separate.
+
+## 2026-10-15 Live JVM, LibreOffice and scoring-process controls at 5732fdf - w-jvm
+
+- Executed byte-identical materialized platform verify checks on bounded local
+  controls for ScienceWorld JVM, Jericho native libfrotz, SpreadsheetBench
+  LibreOffice, DS-1000 runner/manager/candidate, LiveCodeBench candidate child
+  and BIRD SQLite in the check process. Report:
+  `reports/w-jvm-runtime-observations.md`. Raw external proc/cgroup/syscall,
+  native verdict, before/after scratch and cleanup artifacts plus SHA-256
+  manifest: `reports/w-jvm-evidence/`. Reproducible collector/auditor sources:
+  `tests/fixtures/hg_wjvm/`.
+- Actual scoring processes expose 30-second CPU, 8589934592-byte address-space,
+  256-FD and 67108864-byte file-size rlimits, CPU affinity [0, 1], shared UID
+  process limit 1028970 and shared ancestor pids.max 679120. These are observed
+  **local control** bounds; cgroup memory.max=max and cpu.max=max 100000 do not
+  establish private production limits. Full raw values/paths are retained.
+- World traces complete with native measured reward 0; authored arithmetic
+  workbook/DS/LCB/SQL controls complete with native measured reward 1. Neither
+  is a benchmark score or gated dataset diagnostic. ScienceWorld's exited JVM
+  and LibreOffice's orphan helpers require the external subreaper for final
+  reaping. DS-1000 reaps worker/manager/runner but leaves its ds1000-check-*
+  directory; its unpaired mkdtemp at verify/check.py:34 is reported, not patched.
+  Candidate/manager scratch and LibreOffice profile/IPC removal are observed;
+  caches/remaining owned paths are archived before separate collector removal.
+- Preserved initial bubblewrap mount-launch failures, subsequent LibreOffice
+  abort/socket leftover, collector socket-copy exception and recovery. A fresh
+  followup completes LibreOffice plus DS/LCB/BIRD with no missing prerequisite.
+  All captured PID identities and owned run roots are absent at artifact audit;
+  this is a bounded check, not exhaustive namespace or infallible cleanup proof.
+- Appended exact six-runtime scope/evidence to the shared blocker's observed
+  text. S5 stays PARTIAL; S1/S3/S4/S6 and both shared blockers remain open. All
+  dataset blockers, statuses, next_actions, gates and historical records are
+  unchanged. Production verifier enforcement, other runtime/task branches,
+  independent cleanup and timeout paths remain unexercised.
+- Validation: checker valid (28 datasets, two shared blockers, 11 historical
+  records, production_authorized=false); 54 source-only registry tests passed
+  with external basetemp. Artifact audit checks source/limit/verdict identities
+  and PID/path absence; manifest is rehashed. Exact output is retained in
+  `reports/w-jvm-validation.txt`.
+- No production scoring logic, benchmark run, model/GPU/endpoint call, runs/
+  write, frozen receipt change or main commit. Work is committed only on the
+  registered `/tmp/hg-jvm` worktree branch for parent review.

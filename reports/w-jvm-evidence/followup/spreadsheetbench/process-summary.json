@@ -1,0 +1,138 @@
+{
+  "collector_waitpid": [
+    {
+      "pid": 603154,
+      "raw_status": 256,
+      "reaped_by": "external collector subreaper, after check/strace returned",
+      "returncode": 1
+    },
+    {
+      "pid": 603640,
+      "raw_status": 0,
+      "reaped_by": "external collector subreaper, after check/strace returned",
+      "returncode": 0
+    },
+    {
+      "pid": 603644,
+      "raw_status": 0,
+      "reaped_by": "external collector subreaper, after check/strace returned",
+      "returncode": 0
+    },
+    {
+      "pid": 603646,
+      "raw_status": 0,
+      "reaped_by": "external collector subreaper, after check/strace returned",
+      "returncode": 0
+    },
+    {
+      "pid": 603655,
+      "raw_status": 0,
+      "reaped_by": "external collector subreaper, after check/strace returned",
+      "returncode": 0
+    },
+    {
+      "pid": 603657,
+      "raw_status": 0,
+      "reaped_by": "external collector subreaper, after check/strace returned",
+      "returncode": 0
+    }
+  ],
+  "elapsed_seconds": 3.2956653963774443,
+  "observed_pids": {
+    "602981": {
+      "first_ns": 1792023491424629257,
+      "last_ns": 1792023494552645347,
+      "last_ppid": 602972,
+      "last_state": "S",
+      "start_ticks": "654642844"
+    },
+    "602984": {
+      "first_ns": 1792023491529641459,
+      "last_ns": 1792023494553165216,
+      "last_ppid": 602981,
+      "last_state": "S",
+      "start_ticks": "654642845"
+    },
+    "602985": {
+      "first_ns": 1792023491530457778,
+      "last_ns": 1792023494553398605,
+      "last_ppid": 602984,
+      "last_state": "R",
+      "start_ticks": "654642845"
+    },
+    "603101": {
+      "first_ns": 1792023492053144860,
+      "last_ns": 1792023494460537240,
+      "last_ppid": 602985,
+      "last_state": "S",
+      "start_ticks": "654642901"
+    },
+    "603144": {
+      "first_ns": 1792023492053905518,
+      "last_ns": 1792023492489046525,
+      "last_ppid": 603101,
+      "last_state": "t",
+      "start_ticks": "654642904"
+    },
+    "603154": {
+      "first_ns": 1792023492158729544,
+      "last_ns": 1792023494553609554,
+      "last_ppid": 602972,
+      "last_state": "Z",
+      "start_ticks": "654642911"
+    },
+    "603251": {
+      "first_ns": 1792023492707861621,
+      "last_ns": 1792023494460931902,
+      "last_ppid": 603101,
+      "last_state": "R",
+      "start_ticks": "654642966"
+    },
+    "603279": {
+      "first_ns": 1792023492835250901,
+      "last_ns": 1792023494018830230,
+      "last_ppid": 603251,
+      "last_state": "Z",
+      "start_ticks": "654642974"
+    },
+    "603640": {
+      "first_ns": 1792023494275443193,
+      "last_ns": 1792023494553728422,
+      "last_ppid": 602972,
+      "last_state": "Z",
+      "start_ticks": "654643129"
+    },
+    "603644": {
+      "first_ns": 1792023494275900805,
+      "last_ns": 1792023494553857441,
+      "last_ppid": 602972,
+      "last_state": "Z",
+      "start_ticks": "654643130"
+    },
+    "603646": {
+      "first_ns": 1792023494276365882,
+      "last_ns": 1792023494553965366,
+      "last_ppid": 602972,
+      "last_state": "Z",
+      "start_ticks": "654643131"
+    },
+    "603655": {
+      "first_ns": 1792023494369184269,
+      "last_ns": 1792023494554071863,
+      "last_ppid": 602972,
+      "last_state": "Z",
+      "start_ticks": "654643133"
+    },
+    "603657": {
+      "first_ns": 1792023494369669421,
+      "last_ns": 1792023494554185934,
+      "last_ppid": 602972,
+      "last_state": "Z",
+      "start_ticks": "654643135"
+    }
+  },
+  "remaining_before_collector_path_cleanup": {},
+  "returncode": 0,
+  "root_pid": 602981,
+  "timed_out": false
+}
