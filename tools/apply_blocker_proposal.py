@@ -92,6 +92,15 @@ def coverage(old_sentence: str, new_sentences: list[str]) -> float:
 
 def collapse(proposal: dict, dataset: str, blocker: str) -> dict:
     """Reduce either proposal shape to {observed_append, next_action, quoted_clauses}."""
+    if isinstance(proposal, list):
+        # A bare list of per-dataset records, as w-metriccmp emits: normalise it to the
+        # `changes` shape, accepting either `replacement` or `next_action_replacement`.
+        proposal = {"changes": [
+            {"dataset": item.get("dataset"), "blocker": item.get("blocker"),
+             "quoted_clause": item.get("quoted_clause"),
+             "replacement": item.get("replacement") or item.get("next_action_replacement"),
+             "observed_append": item.get("observed_append")}
+            for item in proposal]}
     if "changes" in proposal:
         entries = [item for item in proposal["changes"]
                    if item.get("dataset") == dataset and item.get("blocker") == blocker]
@@ -102,8 +111,12 @@ def collapse(proposal: dict, dataset: str, blocker: str) -> dict:
             raise Refusal(
                 f"{len(replacements)} distinct replacement strings for {dataset}/{blocker}: "
                 "refusing so one entry cannot overwrite another")
+        observed = {item.get("observed_append") or "" for item in entries}
+        if len(observed) != 1:
+            raise Refusal(
+                f"{len(observed)} distinct observed_append strings for {dataset}/{blocker}")
         return {
-            "observed_append": "", "next_action": replacements.pop(),
+            "observed_append": observed.pop(), "next_action": replacements.pop(),
             "quoted_clauses": [item["quoted_clause"] for item in entries if item.get("quoted_clause")],
         }
     next_action = proposal.get("next_action_replacement") or proposal.get("next_action")
