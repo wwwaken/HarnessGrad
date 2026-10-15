@@ -3067,3 +3067,27 @@ commands, checker output and retained formatting observations are in the validat
   Validation: checker valid (28 datasets/two shared/11 historical,
   production_authorized=false), **54 source-only registry tests passed** with an
   external pytest basetemp. Exact outputs: `reports/w-reassess-validation.txt`.
+## Parent review and merge — w-reassess — 2026-10-15
+
+- Merged `1e43edc` (w-reassess). Result `e8ee7bb`. Registry **unchanged**; checker valid: 28
+  datasets, 2 shared blockers, 11 historical records, `production_authorized=false`. 54 focused
+  tests passed.
+- **Both shared blockers stay open, and the deciding clauses are named.** `scorer-offline-closure`
+  is held by **S1, S3, S4, S5, S6** (all PARTIAL); `artifact-only-state-export` by **E1, E2, E3,
+  E4, E5, E6** (all PARTIAL). The previous assessment's S7/S8 and E7/E8 remain SATISFIED.
+- **Two verdicts were revised upward, which is the point of re-running the assessment.** S2 moved
+  **PARTIAL -> SATISFIED**, scoped explicitly to "class exercise only" - that is the gap this phase
+  actually closed in rounds 42-44, where `pristine-offline` (w-pristine/w-prifix) and the AppWorld
+  mounted-service route (w-appworld) went from having no live control at all to each having one.
+  E1/E2 moved **UNSATISFIED -> PARTIAL** because the authored pristine control now supplies
+  contract instances, though not authoritative per-task dataset contracts.
+- The scoping discipline is what makes those revisions trustworthy rather than inflationary: the
+  worker kept S2 at "class exercise only" rather than letting one control per class stand for
+  coverage across the datasets in that class, and it did not let the pinning of GAIA/Tau, the
+  fifteen-dataset official-execution coverage, or the three fixed pristine defects inflate clauses
+  they were never about. It also revised nothing downward to create room for a closure.
+- Still in flight at the end of this round and NOT merged: `w-wheelhouse`, which provisions and
+  pins the offline installation payloads S1 names as missing. Nothing about its result is claimed.
+- Resource state: assessment only - no benchmark task, model, GPU, endpoint or container
+  execution. Both GPUs stayed idle and no utilisation is claimed. Historical runs, frozen receipts
+  and archives were untouched.
