@@ -3410,3 +3410,30 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
 - Still uncovered at complete-route scope: AppWorld released task predicates, BFCL full parser/checker/handler imports, ChessBench full module/engine graph and Terminal-Bench remaining task scorers. Terminal-Bench retains its prior real single-task `bash /tests/test.sh` execution in `reports/w-net-receipts.md`; this packet does not replay or broaden it. Other task/family/provenance/transitive runtime gaps remain. S1, S3, S4 and S6 stay PARTIAL; no shared or dataset blocker closes and no gate is weakened. Only shared `scorer-offline-closure.observed` and additive evidence are updated; all statuses, next_actions, dataset/history records and original references remain unchanged.
 - Parent validation passes all 267 manifest members, 91 unchanged production source pins, all component validators and 54 focused registry tests; the registry remains valid with production authorization false. `reports/w-offscorer3-validation.txt` retains exact commands and checker output. No production adapters/shared scorers, benchmark scoring run, model/GPU/endpoint call, production verifier/H0 trial, `runs/` path or frozen receipt is changed or used. Work and commits stay in registered isolated worktrees; main is untouched.
 >>>>>>> 43a0720 (evidence: narrow official scorer execution coverage with bounded offline controls)
+## Parent review and merge — w-offscorer3 — 2026-10-15
+
+- Merged the six non-merge commits of `wg-offscorer3` (from its merge base `9f78bcd`). Result
+  `184ffe9`. Registry valid: 28 datasets, 2 shared blockers, 11 historical records,
+  `production_authorized=false`; sequencer clean; both named deliverables present.
+- **Official-execution coverage (S4) now reaches essentially every surveyed dataset, with the
+  partial cases named.** w-offscorer3 added bounded official execution for ALFWorld, GAIA,
+  LiveCodeBench and Tau-Bench, plus BFCL/ChessBench scoring functions and AppWorld's generic
+  evaluator with an authored predicate. It measured **BFCL 5, ChessBench 4 and Tau-Bench 1**
+  divergences, and preserved import failures, scorer exceptions and refusal boundaries rather than
+  smoothing them. What it explicitly does **not** claim: AppWorld's released predicates,
+  BFCL/ChessBench complete-module routes, and broader Terminal-Bench execution. 267 manifest files,
+  91 production source pins and 54 focused tests pass.
+- **The merge itself repeated the round-40 failure mode, and the guard caught it.** Cherry-picking
+  the commit *range* again skipped the worker's internal merge commits, landing only 3 of the 6
+  substantive commits and leaving `reports/w-offscorer3-coverage.md` behind with the sequencer
+  still armed. The parent detected it by checking that the deliverable the worker's summary linked
+  to existed on `main` - not by trusting the checker, which was green throughout. Driven to
+  completion, all six commits are now on `main` and the report is present. The lesson from round
+  40 stands and is now twice-confirmed: **a range cherry-pick over a branch containing merge
+  commits is not safe here; verify commit count and named deliverables afterwards.**
+- Neither shared blocker closed and no dataset blocker closed: S1/S3/S4/S6 remain PARTIAL, and
+  narrowing S4 does not change that. The registry conflict was resolved by the helper aborting and
+  the parent parsing both sides.
+- Resource state: offline scorer execution on bounded controlled inputs and local source
+  inspection only - no benchmark scoring run, model, GPU or endpoint call. Both GPUs stayed idle
+  and no utilisation is claimed. Historical runs, frozen receipts and archives were untouched.
