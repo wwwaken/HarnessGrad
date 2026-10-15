@@ -1,0 +1,72 @@
+Proposal-applier validation - tools/apply_blocker_proposal.py
+
+Why this tool exists
+--------------------
+Worker proposals arrive as `registry/proposals/<worker>.json` and the parent integrates them by
+editing `registry/dataset-blockers.json`. During this phase that manual step failed three times:
+a proposal was applied while the focused tests were failing, and a worker's `next_action`
+replacement silently dropped the enumerated evidence list the blocker existed to name (caught by
+hand for both `w-fevconv` and `w-hotpotrec`). This tool makes the check mechanical.
+
+What it does
+------------
+* Accepts both proposal shapes: a single record (`observed_append` + `next_action_replacement`)
+  and a clause-level `changes` list. A `changes` list is collapsed per (dataset, blocker) and
+  **refused if the entries disagree**, so one entry cannot silently overwrite another.
+* Refuses when a `quoted_clause` is not present verbatim in the current `next_action`, when the
+  replacement is identical to the current value, when the dataset/blocker does not exist, and
+  when the replacement does not carry an old sentence that was not acknowledged.
+* `--acknowledge TEXT` (repeatable) names a clause you intend to drop; every uncovered sentence
+  must be matched by one, or the run is refused. `--force` bypasses that, but prints a WARNING
+  listing every unacknowledged drop.
+* Default is a dry run; `--apply` writes, then runs
+  `tools/check_dataset_blockers.py --registry <the file just written>` and **restores the
+  original bytes** if it does not report `"valid": true`.
+* It only ever writes `observed` and `next_action`. Status, family, evidence, history and
+  `shared_blockers` are not reachable from it.
+
+Tests
+-----
+$ python3 -m pytest tests/quality/test_apply_blocker_proposal.py -q
+11 passed in 0.71s
+
+Cases covered: valid apply; dry run writes nothing; unknown blocker refused; non-verbatim quote
+refused; identical replacement refused; divergent `changes` replacements refused; obligation-drop
+refused; a non-matching acknowledgement does not unlock the drop; a matching acknowledgement does;
+`--force` warns; a registry that fails the checker is restored byte-for-byte; the `observed`
+append is idempotent.
+
+Replays against the real proposals (this is the point of the tool)
+-----------------------------------------------------------------
+Each replay uses the registry as it stood *before* the corresponding change, so the check is not
+vacuous.
+
+1. `w-fevconv` (commit d9d6cbc2) against registry `26b52f44`:
+   REFUSED - 10 sentences of the current `next_action` are not carried by its 618-character
+   replacement, printed with per-sentence coverage (0.15-0.53). This is the exact loss the parent
+   caught by hand and repaired with a 2,333-character value.
+2. `w-hotpotrec` (commit ac7e5675) against registry `0bf43fca`:
+   REFUSED - 8 uncovered sentences, including "Historical comparison requires original
+   selected-ID/trial/error/timeout and source/split/manifest/model/harness provenance receipts,
+   with measured/invalid/unmeasured counts and lifecycle/cleanup reconciliation" (coverage 0.12).
+3. `w-stalepoint` (commit 219c1108) against registry `7d9dbaa2`: REFUSED by default for all eight
+   datasets, because each rewrite deliberately drops the clauses that demanded the withdrawn
+   shared gates. With those sentences named via `--acknowledge`, `fever` is accepted and reports
+   `next_action 627 -> 1317 chars`, `observed 4576 -> 4576`, matching the values the parent
+   applied by hand.
+
+Replay 3 is the important one: the tool is deliberately a **review prompt, not a verdict**. The
+sentence-coverage metric flags semantically-retained rewrites too, so a refusal means "read these
+sentences", and an acknowledgement is the reviewer's recorded decision to drop each one. Replays
+1 and 2 are the cases where reading them changed the outcome.
+
+Scope limits
+------------
+- Sentence coverage is a token-containment heuristic, not semantic equivalence. It cannot prove
+  an obligation is preserved, and it does flag legitimate rewrites; a human must read the flagged
+  sentences. It is designed to be over-sensitive on purpose.
+- The tool does not validate the *content* of an `observed_append`; it only prevents accidental
+  duplication. Fabrication and overstatement remain the reviewer's responsibility.
+- It does not read or write `registry/withdrawn-requirements.md`, so a proposal's
+  `withdrawal_entry` is never applied automatically - that stays a separate, explicit decision.
+- It does not run the focused test suite; `--apply` re-runs the registry checker only.
