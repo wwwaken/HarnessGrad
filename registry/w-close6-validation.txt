@@ -1,0 +1,76 @@
+Parent closure of `fever / dataset-journal-gap` under reading (A), on an operator decision to record the
+producing-execution receipt as a **scoped** standing limit.
+
+Decision
+--------
+The operator chose: record the producing-execution receipt as a scope-limited standing limit and close the
+blocker, rather than leave it open. The distinction the operator was shown is preserved in the entry: the
+absence is **bounded over every source this platform can reach**, not categorical - private, unindexed,
+producer-held or later-deleted records remain UNKNOWN, and the producer is a public third party, so a
+maintainer-published binding would supersede the limit at its actual scope.
+
+Closed
+------
+* `fever / dataset-journal-gap`, removed from `registry/dataset-blockers.json`.
+
+Clause-by-clause basis at closure
+---------------------------------
+* recover the two historical objects the earlier search left unread -> SATISFIED. Both are FOUND and read:
+  the loader at `1776db7e9abab525eae8e59c5015e3589dfe371b` (7,897 bytes, `git hash-object`
+  `ab71339be067bc98bcad7df12a12c0e05fc6b521`, reproducing the recorded tree entry) and the generated tree
+  at `ad8321607bcad0e534c243ec8c108a5787cea6c8` (4,596-byte HTTP 200 JSON, nine entries), with raw bodies,
+  exact requests, response digests and the redirect preserved in `tests/fixtures/hg_fevobj/` and enumerated
+  in `registry/w-fevobj-receipts.md`. The parent re-ran `git hash-object` over the preserved loader body and
+  reproduced the recorded blob id independently.
+* choose and name the metric explicitly -> SATISFIED, as a **definition only**:
+  `fever_exported_row_conjunctive_strict_at_5`, option (a) - one complete exported group per row, the pinned
+  scorer's five-pair bound, equal measured exported-row weights after within-task trial averaging, and no
+  original-claim weighting. The current local flat branch still promotes singletons, so a
+  conjunction-preserving projection must be implemented and reviewed before any measurement.
+* bind the producing conversion revision/execution, ID assignment, split/filter/omission and NEI inputs ->
+  WITHDRAWN, recorded in `registry/withdrawn-requirements.md` under
+  `fever / producing-conversion-execution-receipt` with its `**Asked for:**`, `**Searched:**` and
+  `**Result:**` sections and the bounded-not-categorical wording.
+* retain the 1400/9525 exposed non-NEI rows (1369 at 2-5 pairs, 31 at 6-25), the 51 omitted alternative
+  groups across 42 represented non-NEI IDs, and the unauthenticated NEI/omission decisions -> SATISFIED
+  (recorded in the withdrawal entry and in `registry/w-fevconv-receipts.md`).
+* retain authenticated Hub/export/installed/original-group custody and the bounded first-five selected-only
+  packet -> SATISFIED (`registry/w-journalcov-review.md`, `registry/w-jc2-review.md`,
+  `tests/fixtures/hg_wsel/fever.json`).
+* every split/side/run binding, projection implementation, selected scorer/runtime execution and coverage
+  clause -> PRE-DIAGNOSTIC. No diagnostic is authorized by this closure and none of it is waived.
+* preserve the shared-requirement withdrawals and the `official-scorer-identity` decision -> WITHDRAWN.
+
+Guard repair forced by the closure
+----------------------------------
+`tests/quality/test_apply_blocker_proposal.py` had pinned `fever/dataset-journal-gap` as the blocker its
+tests act on, including as the default of its `a_blocker` helper. Fever was the fourth blocker to close
+under reading (A) the same day, so the file now derives its `(dataset, blocker)` pair from the live
+registry (`an_open_blocker`, used by both the `registry` fixture and `a_blocker`'s default) and the
+no-matching-change-entry control picks a *second, distinct* open blocker rather than a closed one. Every
+assertion is unchanged; only the name of the blocker is dynamic. **13 passed.**
+
+What this does NOT do
+---------------------
+It closes no measurement and asserts no score. `fever` has never had a measured run here, no coverage count
+is promoted, no local conversion is treated as authenticating the historical run, the named metric is not
+implemented, and F1-like or original-FEVER aggregate claims remain excluded. The pre-closure text remains
+readable in the git history of `registry/dataset-blockers.json`.
+
+Verification, in the parent worktree `/mnt/20t/xubuqiang/hg-wt/w-parent2`
+-----------------------------------------------------------------------
+```
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+
+$ python3 -m pytest -q tests/quality/test_dataset_blockers.py tests/quality/test_dataset_journal_coverage.py \
+      tests/quality/test_b6_blocker_evidence.py tests/quality/test_measurement_coverage_hg_b3.py \
+      tests/quality/test_site_evidence_carriers.py tests/quality/test_apply_blocker_proposal.py \
+      tests/quality/test_closure_assessment.py tests/quality/test_withdrawn_requirements_not_reimposed.py \
+      tests/quality/test_integrity.py tests/quality/test_appworld_trusted_trial_writer_codex183.py \
+      tests/quality/test_onboarding_doc.py tests/quality/test_parallel_tasks.py \
+      tests/quality/test_registry_discovery_order.py tests/quality/test_reasoning_gym_official_scorer.py
+274 passed, 12 skipped
+```
+
+Open blockers: 9 -> 8. `production_authorized` stays `false`.

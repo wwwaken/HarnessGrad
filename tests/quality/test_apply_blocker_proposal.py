@@ -31,10 +31,22 @@ def registry(tmp_path):
         path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
         return path
 
-    return target, write
+    # The pair these tests act on is read from the registry rather than pinned: fixing it broke four
+    # times on 2026-10-15 as blockers closed under reading (A) - hotpotqa, strategyqa and fever among
+    # them. The assertions are unchanged; only the name of the blocker is dynamic.
+    dataset, blocker_id, _ = an_open_blocker(document)
+    return target, write, (dataset, blocker_id)
 
 
-def a_blocker(document, dataset="fever", blocker_id="dataset-journal-gap"):
+def a_blocker(document, dataset=None, blocker_id=None):
+    """One open blocker. Called with no names it returns the live pair's blocker.
+
+    Pinning a default here (`fever/dataset-journal-gap`) went stale the moment that blocker closed
+    under reading (A), so the default is now whatever `an_open_blocker` selects - the same function
+    the `registry` fixture uses, so the returned blocker and the CLI arguments always agree.
+    """
+    if dataset is None or blocker_id is None:
+        return an_open_blocker(document)[2]
     for row in document["datasets"]:
         if row["dataset"] == dataset:
             for item in row["blockers"]:
@@ -59,16 +71,15 @@ def an_open_blocker(document):
 
 
 def test_valid_single_record_proposal_is_applied(registry, capsys):
-    target, write = registry
+    target, write, (DS, BL) = registry
     document = json.loads(target.read_text(encoding="utf-8"))
     old = a_blocker(document)["next_action"]
     proposal = write("ok.json", {
-        "dataset": "fever", "blocker": "dataset-journal-gap",
+        "dataset": DS, "blocker": BL,
         "observed_append": "TEST-APPEND-MARKER.",
         "next_action_replacement": old + " TEST-REPLACEMENT-MARKER.",
     })
-    assert applier.main([str(proposal), "--dataset", "fever",
-                         "--blocker", "dataset-journal-gap", "--registry", str(target),
+    assert applier.main([str(proposal), "--dataset", DS, "--blocker", BL, "--registry", str(target),
                          "--apply"]) == 0
     updated = a_blocker(json.loads(target.read_text(encoding="utf-8")))
     assert "TEST-REPLACEMENT-MARKER." in updated["next_action"]
@@ -77,114 +88,105 @@ def test_valid_single_record_proposal_is_applied(registry, capsys):
 
 
 def test_dry_run_writes_nothing(registry):
-    target, write = registry
+    target, write, (DS, BL) = registry
     before = target.read_text(encoding="utf-8")
     document = json.loads(before)
     proposal = write("dry.json", {
-        "dataset": "fever", "blocker": "dataset-journal-gap",
+        "dataset": DS, "blocker": BL,
         "next_action_replacement": a_blocker(document)["next_action"] + " EXTRA.",
     })
-    assert applier.main([str(proposal), "--dataset", "fever",
-                         "--blocker", "dataset-journal-gap", "--registry", str(target)]) == 0
+    assert applier.main([str(proposal), "--dataset", DS, "--blocker", BL, "--registry", str(target)]) == 0
     assert target.read_text(encoding="utf-8") == before
 
 
 def test_refuses_a_quoted_clause_that_is_not_present(registry, capsys):
-    target, write = registry
+    target, write, (DS, BL) = registry
     document = json.loads(target.read_text(encoding="utf-8"))
     old = a_blocker(document)["next_action"]
     proposal = write("badquote.json", {
-        "changes": [{"dataset": "fever", "blocker": "dataset-journal-gap",
+        "changes": [{"dataset": DS, "blocker": BL,
                      "quoted_clause": "this sentence is not in the registry at all",
                      "replacement": old + " X."}],
     })
-    assert applier.main([str(proposal), "--dataset", "fever",
-                         "--blocker", "dataset-journal-gap", "--registry", str(target)]) == 1
+    assert applier.main([str(proposal), "--dataset", DS, "--blocker", BL, "--registry", str(target)]) == 1
     assert "REFUSED" in capsys.readouterr().err
 
 
 def test_refuses_a_replacement_that_drops_an_obligation(registry, capsys):
-    target, write = registry
+    target, write, (DS, BL) = registry
     proposal = write("short.json", {
-        "dataset": "fever", "blocker": "dataset-journal-gap",
-        "next_action_replacement": "Keep working on fever.",
+        "dataset": DS, "blocker": BL,
+        "next_action_replacement": f"Keep working on {DS}.",
     })
     captured = capsys.readouterr()
-    assert applier.main([str(proposal), "--dataset", "fever",
-                         "--blocker", "dataset-journal-gap", "--registry", str(target)]) == 1
+    assert applier.main([str(proposal), "--dataset", DS, "--blocker", BL, "--registry", str(target)]) == 1
     err = capsys.readouterr().err
     assert "not carried by the replacement" in err
     assert "next_action" in err
     assert captured.out == ""
     # The override exists, but only after the dropped sentences have been printed for review.
-    assert applier.main([str(proposal), "--dataset", "fever", "--blocker", "dataset-journal-gap",
-                         "--registry", str(target), "--force"]) == 0
+    assert applier.main([str(proposal), "--dataset", DS, "--blocker", BL, "--registry", str(target), "--force"]) == 0
 
 
 def test_refuses_divergent_replacements_in_a_changes_list(registry, capsys):
-    target, write = registry
+    target, write, (DS, BL) = registry
     document = json.loads(target.read_text(encoding="utf-8"))
     old = a_blocker(document)["next_action"]
     proposal = write("divergent.json", {
         "changes": [
-            {"dataset": "fever", "blocker": "dataset-journal-gap",
+            {"dataset": DS, "blocker": BL,
              "quoted_clause": "Retain", "replacement": old + " A."},
-            {"dataset": "fever", "blocker": "dataset-journal-gap",
+            {"dataset": DS, "blocker": BL,
              "quoted_clause": "Retain", "replacement": old + " B."},
         ],
     })
-    assert applier.main([str(proposal), "--dataset", "fever",
-                         "--blocker", "dataset-journal-gap", "--registry", str(target)]) == 1
+    assert applier.main([str(proposal), "--dataset", DS, "--blocker", BL, "--registry", str(target)]) == 1
     assert "distinct replacement strings" in capsys.readouterr().err
 
 
 def test_refuses_an_unknown_blocker(registry, capsys):
-    target, write = registry
+    target, write, (DS, BL) = registry
     proposal = write("unknown.json", {
-        "dataset": "fever", "blocker": "no-such-blocker",
+        "dataset": DS, "blocker": "no-such-blocker",
         "next_action_replacement": "x",
     })
-    assert applier.main([str(proposal), "--dataset", "fever",
-                         "--blocker", "no-such-blocker", "--registry", str(target)]) == 1
+    assert applier.main([str(proposal), "--dataset", DS, "--blocker", "no-such-blocker", "--registry", str(target)]) == 1
     assert "no open blocker" in capsys.readouterr().err
 
 
 def test_identical_replacement_is_refused(registry, capsys):
-    target, write = registry
+    target, write, (DS, BL) = registry
     document = json.loads(target.read_text(encoding="utf-8"))
     proposal = write("same.json", {
-        "dataset": "fever", "blocker": "dataset-journal-gap",
+        "dataset": DS, "blocker": BL,
         "next_action_replacement": a_blocker(document)["next_action"],
     })
-    assert applier.main([str(proposal), "--dataset", "fever",
-                         "--blocker", "dataset-journal-gap", "--registry", str(target)]) == 1
+    assert applier.main([str(proposal), "--dataset", DS, "--blocker", BL, "--registry", str(target)]) == 1
     assert "identical to the current value" in capsys.readouterr().err
 
 
 def test_observed_append_is_idempotent(registry, capsys):
-    target, write = registry
+    target, write, (DS, BL) = registry
     document = json.loads(target.read_text(encoding="utf-8"))
     old_action = a_blocker(document)["next_action"]
     marker = "IDEMPOTENT-MARKER."
-    first = write("first.json", {"dataset": "fever", "blocker": "dataset-journal-gap",
+    first = write("first.json", {"dataset": DS, "blocker": BL,
                                  "observed_append": marker,
                                  "next_action_replacement": old_action + " A."})
-    assert applier.main([str(first), "--dataset", "fever", "--blocker", "dataset-journal-gap",
-                         "--registry", str(target), "--apply"]) == 0
+    assert applier.main([str(first), "--dataset", DS, "--blocker", BL, "--registry", str(target), "--apply"]) == 0
     after_first = a_blocker(json.loads(target.read_text(encoding="utf-8")))
     assert after_first["observed"].count(marker) == 1
-    second = write("second.json", {"dataset": "fever", "blocker": "dataset-journal-gap",
+    second = write("second.json", {"dataset": DS, "blocker": BL,
                                    "observed_append": marker,
                                    "next_action_replacement": after_first["next_action"] + " B."})
-    assert applier.main([str(second), "--dataset", "fever", "--blocker", "dataset-journal-gap",
-                         "--registry", str(target), "--apply"]) == 0
+    assert applier.main([str(second), "--dataset", DS, "--blocker", BL, "--registry", str(target), "--apply"]) == 0
     assert "no-op" in capsys.readouterr().out
     assert a_blocker(json.loads(target.read_text(encoding="utf-8")))["observed"].count(marker) == 1
 
 
 def test_a_broken_registry_is_restored(registry, capsys, tmp_path):
     """If the write would leave the registry invalid, the original bytes come back."""
-    target, write = registry
+    target, write, (DS, BL) = registry
     document = json.loads(target.read_text(encoding="utf-8"))
     before = target.read_text(encoding="utf-8")
     # A proposal that is clean by the applier's own checks but corrupts the registry on write is
@@ -194,25 +196,24 @@ def test_a_broken_registry_is_restored(registry, capsys, tmp_path):
     a_blocker(mutated)["status"] = "not-a-real-status"
     broken.write_text(json.dumps(mutated, indent=2), encoding="utf-8")
     original = broken.read_text(encoding="utf-8")
-    proposal = write("ok2.json", {"dataset": "fever", "blocker": "dataset-journal-gap",
+    proposal = write("ok2.json", {"dataset": DS, "blocker": BL,
                                   "next_action_replacement": a_blocker(mutated)["next_action"] + " A."})
-    assert applier.main([str(proposal), "--dataset", "fever", "--blocker", "dataset-journal-gap",
-                         "--registry", str(broken), "--force", "--apply"]) == 1
+    assert applier.main([str(proposal), "--dataset", DS, "--blocker", BL, "--registry", str(broken), "--force", "--apply"]) == 1
     assert broken.read_text(encoding="utf-8") == original
     assert "restored" in capsys.readouterr().err
 
 
 def test_acknowledge_phrases_allow_named_drops_but_only_named_ones(registry, capsys):
-    target, write = registry
+    target, write, (DS, BL) = registry
     document = json.loads(target.read_text(encoding="utf-8"))
     old = a_blocker(document)["next_action"]
     # Drop exactly one sentence, and name it.
     first = applier.sentences(old)[0]
     proposal = write("named.json", {
-        "dataset": "fever", "blocker": "dataset-journal-gap",
+        "dataset": DS, "blocker": BL,
         "next_action_replacement": old.replace(first + " ", ""),
     })
-    base = [str(proposal), "--dataset", "fever", "--blocker", "dataset-journal-gap",
+    base = [str(proposal), "--dataset", DS, "--blocker", BL,
             "--registry", str(target), "--min-coverage", "0.99"]
     # A phrase that does not name the dropped sentence must not unlock it.
     assert applier.main(base + ["--acknowledge", "something else entirely"]) == 1
@@ -223,13 +224,12 @@ def test_acknowledge_phrases_allow_named_drops_but_only_named_ones(registry, cap
 
 
 def test_forced_apply_warns_about_unacknowledged_drops(registry, capsys):
-    target, write = registry
+    target, write, (DS, BL) = registry
     proposal = write("forced.json", {
-        "dataset": "fever", "blocker": "dataset-journal-gap",
-        "next_action_replacement": "Keep working on fever.",
+        "dataset": DS, "blocker": BL,
+        "next_action_replacement": f"Keep working on {DS}.",
     })
-    assert applier.main([str(proposal), "--dataset", "fever", "--blocker", "dataset-journal-gap",
-                         "--registry", str(target), "--force"]) == 0
+    assert applier.main([str(proposal), "--dataset", DS, "--blocker", BL, "--registry", str(target), "--force"]) == 0
     captured = capsys.readouterr()
     assert "WARNING" in captured.err
     assert "uncovered sentence(s) applied without acknowledgement" in captured.err
@@ -237,7 +237,7 @@ def test_forced_apply_warns_about_unacknowledged_drops(registry, capsys):
 
 def test_accepts_a_bare_list_of_per_dataset_records(registry, capsys):
     """w-metriccmp emits a bare JSON list with next_action_replacement per dataset."""
-    target, write = registry
+    target, write, (DS, BL) = registry
     document = json.loads(target.read_text(encoding="utf-8"))
     dataset, blocker_id, blocker = an_open_blocker(document)
     old = blocker["next_action"]
@@ -257,13 +257,19 @@ def test_accepts_a_bare_list_of_per_dataset_records(registry, capsys):
 
 
 def test_refuses_a_list_record_with_no_matching_dataset(registry, capsys):
-    target, write = registry
+    """A list record for one open blocker, applied with `--dataset/--blocker` naming a *different*
+    open one, must be refused for having no change entry - not for naming an unknown blocker."""
+    target, write, (DS, BL) = registry
     document = json.loads(target.read_text(encoding="utf-8"))
-    dataset, blocker_id, blocker = an_open_blocker(document)
+    other = [(row["dataset"], item["id"], item) for row in sorted(
+        document["datasets"], key=lambda r: r["dataset"])
+        for item in row["blockers"]
+        if item["id"] != "retain-contract-refusal" and (row["dataset"], item["id"]) != (DS, BL)]
+    assert other, "this control needs two distinct open non-refusal blockers"
+    dataset, blocker_id, blocker = other[0]
     proposal = write("list2.json", [
         {"dataset": dataset, "blocker": blocker_id,
          "next_action_replacement": blocker["next_action"] + " X."},
     ])
-    assert applier.main([str(proposal), "--dataset", "fever", "--blocker", "dataset-journal-gap",
-                         "--registry", str(target)]) == 1
+    assert applier.main([str(proposal), "--dataset", DS, "--blocker", BL, "--registry", str(target)]) == 1
     assert "no change entry" in capsys.readouterr().err

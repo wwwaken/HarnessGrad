@@ -265,6 +265,41 @@ require new unique IDs and separately applicable admission; withdrawal is no rer
 authorization. Best-effort cleanup retains uncertainty without requiring proof of exact
 owned absence or atomic lease closure.
 
+### `fever / producing-conversion-execution-receipt`
+**Former status:** `external` within the active `fever / dataset-journal-gap` blocker; this
+sub-requirement is withdrawn as a **scoped** standing limit.
+**Asked for:** an immutable producer-attested receipt binding the FEVER gold-evidence export's producing
+conversion to its revision and execution, its Windows-ID-to-original-ID assignment, its split, filter and
+omission decisions, and its NEI retrieval and aggregation inputs.
+**Searched:** the enumerated public scope in `registry/w-fevhub-receipts.md` - 33/33 Hub main-history trees
+and commit messages, 7/7 distinct card and 4/5 historical loader bodies, refs `main`/`parquet` with no
+tags, both parquet commit pages (59 commits, 26 generated-only), 25/26 generated-only trees, one public Hub
+discussion and diff, the datasets-server `info`/`parquet`/`splits` routes with an exact
+`dataset_infos.json` 404, the producer repository's 50 commit messages, four branch-tip trees, four
+converter, three aggregation, one merge and ten README versions, eight issue or PR bodies and six comments,
+releases/tags/actions, the pinned Papelo tree and README, the ACL paper page and BibTeX and the arXiv
+abstract and HTML, and five exact zero-hit Zenodo queries - **plus** the two historical objects that search
+had left unread, both now read by `w-fevobj` and preserved in `tests/fixtures/hg_fevobj/`: the historical
+Hub loader at `1776db7e9abab525eae8e59c5015e3589dfe371b` (7,897 bytes, `git hash-object`
+`ab71339be067bc98bcad7df12a12c0e05fc6b521`, matching the recorded tree entry) and the generated tree at
+`ad8321607bcad0e534c243ec8c108a5787cea6c8` (4,596-byte HTTP 200 JSON, nine entries).
+**Result:** neither recovered object contains, implies or references a producing-execution receipt, and the
+enumerated search found none. The absence is **bounded, not categorical**: private, unindexed,
+producer-held or later-deleted records remain UNKNOWN, and the producer is a public third party, so a
+maintainer-published execution/input/output binding remains conceivable and would supersede this entry at
+its actual scope if it appeared. The export's **output** identity is independently corroborated (installed
+bytes, original-ID and complete-group correspondence), so this withdrawal removes only the requirement to
+obtain the *producing execution* record from the sources this platform can reach.
+**Why it cannot be advanced here:** every reachable source has been enumerated and read, the two objects
+that could have carried the binding do not carry it, and the remaining holders are private, unindexed or
+producer-side. No further local search can decide it.
+**Retained:** authenticated export/installed/original-group custody, the explicitly chosen and named metric
+`fever_exported_row_conjunctive_strict_at_5` with its definition-only status, the 1400-of-9525 exposed-row
+analysis (1369 at 2-5 pairs, 31 at 6-25), the 51 omitted alternative groups across 42 represented non-NEI
+IDs, the unauthenticated NEI and omission decisions, and every diagnostic-time obligation. No execution,
+score, original-benchmark comparability claim or diagnostic authorization is inferred, and no local
+conversion is treated as authenticating the historical run.
+
 ## What this decision does not do
 
 - It does not claim any withdrawn requirement was solved. Each is recorded with its

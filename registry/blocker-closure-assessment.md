@@ -4,7 +4,7 @@ Parent assessment, 2026-10-15, opened at registry commit `21d6ebbf` and updated 
 registry. Its purpose is to answer one question for every open blocker: **which of its own
 `next_action` obligations are already discharged, which are not, and what class the rest belong to** —
 so that "14 open" becomes a set of concrete dispositions instead of a number. It currently describes
-**9** open blockers; the count and every supersession are recorded in the closure sections below.
+**8** open blockers; the count and every supersession are recorded in the closure sections below.
 
 The controlling rule is the objective's: a blocker closes only on the kind of evidence its own
 `next_action` names. Nothing here is a claim that an obligation is met unless the record already holds
@@ -35,7 +35,6 @@ the artefact.
 | `appworld / successful-task-evidence` | measurement | open | `PENDING-RUN`; one authorized diagnostic ran and did **not** confirm the guidance hypothesis; completion-aware control now implemented |
 | `spreadsheetbench / dataset-journal-gap` | measurement | open | scorer+engine custody FOUND; synthetic stale-cache control FAILED; measured coverage `PENDING-RUN` |
 | `bfcl_v3 / simple-ast-contract` | external | open | `PENDING-WORK`, then `PENDING-RUN` |
-| `fever / dataset-journal-gap` | measurement | open | metric DETERMINED; upstream producing-execution search done and **bounded** ABSENT (two historical objects still unread); metric choice outstanding |
 | `triviaqa / hub-export-scorer-linkage` | external | open | membership/scorer/denominator review DONE; execution receipt `PENDING-UPSTREAM` |
 
 ## The four permanent refusals
@@ -101,13 +100,11 @@ pins for the code-only projection, containment of expression evaluation, the fab
 full-call contract, and finally actual official scorer execution. `w-bfclrt` is working the custody
 half.
 
-**`fever / dataset-journal-gap`** — `PENDING-UPSTREAM` plus one naming decision. The flat-versus-
-singleton question is now **determined** at source level, and the 51 omitted alternative groups / 42 IDs
-and the unauthenticated NEI-input decisions are recorded limits. Two things remain: the producing
-conversion's execution provenance, which the local search found ABSENT but which requires the upstream
-search now running as `w-fevhub` before any standing-limit decision; and an explicit choice between a
-conjunctive per-exported-row metric and complete original-group scoring with declared
-original-claim weighting.
+**`fever / dataset-journal-gap`** — **CLOSED** on 2026-10-15 under reading (A), on an operator decision to
+record the producing-execution receipt as a **scoped** standing limit; see the closure section below. The
+two historical objects the search had left unread are now `SATISFIED` (both read, neither carrying a
+producing-execution receipt), the metric choice is `SATISFIED` by naming option (a), and the
+producing-execution provenance is `WITHDRAWN` with its bounded scope named.
 
 **`strategyqa / dataset-journal-gap`** — **CLOSED** on 2026-10-15 under reading (A); see the closure
 section below. Custody, the local EM statement and the EM-identity limit were already `SATISFIED`; the
@@ -144,22 +141,22 @@ The candidate ID, the filenames and the enumerated absence stay recorded; the bl
 ## What is not in doubt
 
 Two blockers were closed under reading (A) on 2026-10-15 and both are recorded above with their
-clause-by-clause basis; that closure waived no verification step. Three more - `reasoning_gym`,
-`hotpotqa` and `strategyqa` - were closed under the same reading the same day, each with its own
+clause-by-clause basis; that closure waived no verification step. Four more - `reasoning_gym`,
+`hotpotqa`, `strategyqa` and `fever` - were closed under the same reading the same day, each with its own
 clause-by-clause section below, and that closure waived no verification step either. For every blocker that remains open,
 nothing here is discharged by a review that has not been done: every `SATISFIED` entry names an artefact
 that exists, every `PRE-DIAGNOSTIC` entry is labelled as such rather than counted as closure, and no measured score is asserted anywhere. The four permanent refusals are untouched.
 
 ## Reverse audit — is every cleared dataset cleared for a recorded reason?
 
-A forward assessment of the 9 open blockers says nothing about the 19 datasets that currently carry
+A forward assessment of the 8 open blockers says nothing about the 20 datasets that currently carry
 none. If a blocker had ever been dropped without a disposition, the registry would show a dataset as
 clear for no recorded reason, which is a worse defect than an open blocker. The reverse audit compared
 the blocker set per dataset at `db32421c` (before the withdrawal wave) and at `1825cd0e^` (before the
 bulk `reports/`/`docs/` deletion) against the commit the audit was taken at:
 
 * `1825cd0e^` and `db32421c`: 28 datasets, **22** blockers. At the reverse audit's own commit: 28
-  datasets, **14** blockers (9 now; the five reading-(A) closures below are documented steps, not
+  datasets, **14** blockers (8 now; the six reading-(A) closures below are documented steps, not
   unrecorded drops).
   Eight blockers were removed and eight withdrawal entries exist in
   `registry/withdrawn-requirements.md`, one per removal: `livecodebench/row-attestation`,
@@ -174,9 +171,9 @@ bulk `reports/`/`docs/` deletion) against the commit the audit was taken at:
   this phase's registry and is not a result of anything removed here.
 
 Conclusion: no dataset is currently clear because a blocker was silently dropped. `22 - 8 = 14`
-accounts for every one of those removals, and the five closures under reading (A) on 2026-10-15
-(`physicsquestions`, `sportsunderstanding`, `reasoning_gym`, `hotpotqa` and `strategyqa`) take the active
-set from **14** to **9**. Each is recorded above and in the registry's `review.notes`, so the count is
+accounts for every one of those removals, and the six closures under reading (A) on 2026-10-15
+(`physicsquestions`, `sportsunderstanding`, `reasoning_gym`, `hotpotqa`, `strategyqa` and `fever`) take
+the active set from **14** to **8**. Each is recorded above and in the registry's `review.notes`, so the count is
 accounted for in documented steps rather than one unexplained drop.
 
 ## Closed under reading A, 2026-10-15 - `reasoning_gym`
@@ -324,3 +321,29 @@ coverage count is promoted, F1 and judge accuracy stay excluded, and local norma
 stays reported separately rather than as original Accuracy. Every diagnostic-time clause above remains a
 requirement of any future diagnostic, which still needs its own authorization, a fresh run ID, a
 split/side binding and the staged pilot policy.
+
+## Closed under reading A, 2026-10-15 - `fever`
+
+This is the first closure where the deciding clause is a **standing limit** rather than a satisfied
+artefact, and the operator made the call explicitly after being shown that the limit is *bounded*, not
+categorical. The distinction is the whole point of the entry, so it is restated here: the producing
+execution is not proven unobtainable; it is absent over every source this platform can reach, and the
+producer is a public third party, so a later maintainer-published binding would supersede the limit at its
+actual scope.
+
+| clause from the pre-closure `next_action` | class | where it stands |
+| --- | --- | --- |
+| Recover the two historical objects the search left unread (loader `1776db7e...`, generated tree `ad832160...`) | `SATISFIED` | both FOUND, raw bodies and digests in `tests/fixtures/hg_fevobj/`, enumerated in `registry/w-fevobj-receipts.md`; the loader is 7,897 bytes and `git hash-object` reproduces the recorded tree entry |
+| Choose and name the metric explicitly | `SATISFIED` | `fever_exported_row_conjunctive_strict_at_5` - option (a), one complete exported group per row, the pinned five-pair bound, equal measured exported-row weights, no original-claim weighting; **definition only** |
+| Bind the producing conversion revision/execution, ID assignment, split/filter/omission and NEI inputs | `WITHDRAWN` | `registry/withdrawn-requirements.md` -> `fever / producing-conversion-execution-receipt`, with the enumerated reachable scope, the two recovered objects, and the explicit statement that the absence is bounded rather than categorical |
+| Retain the 1400/9525 exposed non-NEI rows (1369 at 2-5 pairs, 31 at 6-25), the 51 omitted alternative groups across 42 IDs, and the unauthenticated NEI/omission decisions | `SATISFIED` | recorded in the withdrawal entry and in `registry/w-fevconv-receipts.md` |
+| Retain the authenticated Hub/export/installed/original-group and bounded first-five custody | `SATISFIED` | `registry/w-journalcov-review.md`, `registry/w-jc2-review.md`, `tests/fixtures/hg_wsel/fever.json` |
+| Report the metric without any original-FEVER aggregate claim; do not invent a release | constraint | in the closure note and the named metric definition |
+| For any separately authorized diagnostic: resolve split/side and run binding, implement a conjunction-preserving projection, obtain actual selected scorer/runtime execution evidence, and record coverage | `PRE-DIAGNOSTIC` | statement only; **no diagnostic is authorized** and none of it is waived |
+| Preserve the shared-requirement withdrawals and the `official-scorer-identity` decision | `WITHDRAWN` | `registry/withdrawn-requirements.md` |
+
+**This closes no measurement and claims no score.** `fever` has never had a measured run here, no coverage
+count is promoted, no local conversion is treated as authenticating the historical run, and the
+metric is a definition that is **not implemented** in the current local flat branch. Every diagnostic-time
+clause above remains a requirement of any future diagnostic, which still needs its own authorization, a
+fresh run ID, a split/side binding and the staged pilot policy.
