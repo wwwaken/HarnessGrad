@@ -1,0 +1,24 @@
+{
+  "name": "generated-tree-proxy",
+  "url": "https://huggingface.co/api/datasets/copenlu/fever_gold_evidence/tree/ad8321607bcad0e534c243ec8c108a5787cea6c8?recursive=true",
+  "method": "GET",
+  "proxy": "http://172.17.0.1:17890",
+  "command": "python3 tests/fixtures/hg_fevobj/fetch.py tests/fixtures/hg_fevobj/plan-01.json",
+  "timeout_seconds": 25,
+  "response_cap_bytes": 900000,
+  "request_headers": {
+    "User-Agent": "HarnessGrad-fevobj-provenance/1",
+    "Accept-Encoding": "identity",
+    "Host": "huggingface.co",
+    "Connection": "close"
+  },
+  "tls_verification": "ssl.create_default_context(): CA and hostname verification",
+  "started_utc": "2026-10-15T11:30:16.201398+00:00",
+  "redirects": [],
+  "status": null,
+  "bytes": null,
+  "sha256": null,
+  "body": null,
+  "error": "URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1000)>",
+  "finished_utc": "2026-10-15T11:30:31.303538+00:00"
+}

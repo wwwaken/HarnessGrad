@@ -1,0 +1,237 @@
+{
+  "name": "loader-resolve-download-proxy",
+  "url": "https://huggingface.co/datasets/copenlu/fever_gold_evidence/resolve/1776db7e9abab525eae8e59c5015e3589dfe371b/fever_gold_evidence.py?download=true",
+  "method": "GET",
+  "proxy": "http://172.17.0.1:17890",
+  "command": "python3 tests/fixtures/hg_fevobj/fetch.py tests/fixtures/hg_fevobj/plan-03.json",
+  "timeout_seconds": 25,
+  "response_cap_bytes": 900000,
+  "request_headers": {
+    "User-Agent": "HarnessGrad-fevobj-provenance/1",
+    "Accept-Encoding": "identity",
+    "Host": "huggingface.co",
+    "Connection": "close"
+  },
+  "tls_verification": "ssl.create_default_context(): CA and hostname verification",
+  "started_utc": "2026-10-15T11:31:04.912063+00:00",
+  "redirects": [
+    {
+      "url": "https://huggingface.co/datasets/copenlu/fever_gold_evidence/resolve/1776db7e9abab525eae8e59c5015e3589dfe371b/fever_gold_evidence.py?download=true",
+      "status": 307,
+      "location": "https://huggingface.co/api/resolve-cache/datasets/copenlu/fever_gold_evidence/1776db7e9abab525eae8e59c5015e3589dfe371b/fever_gold_evidence.py?download=true&etag=%22ab71339be067bc98bcad7df12a12c0e05fc6b521%22",
+      "headers": [
+        [
+          "Content-Type",
+          "text/plain; charset=utf-8"
+        ],
+        [
+          "Content-Length",
+          "220"
+        ],
+        [
+          "Connection",
+          "close"
+        ],
+        [
+          "Date",
+          "Thu, 15 Oct 2026 11:31:05 GMT"
+        ],
+        [
+          "Location",
+          "/api/resolve-cache/datasets/copenlu/fever_gold_evidence/1776db7e9abab525eae8e59c5015e3589dfe371b/fever_gold_evidence.py?download=true&etag=%22ab71339be067bc98bcad7df12a12c0e05fc6b521%22"
+        ],
+        [
+          "X-Powered-By",
+          "huggingface-moon"
+        ],
+        [
+          "X-Request-Id",
+          "Root=1-6ad0b979-20a0d13b7711b82b7159d546"
+        ],
+        [
+          "RateLimit",
+          "\"resolvers\";r=2999;t=243"
+        ],
+        [
+          "RateLimit-Policy",
+          "\"fixed window\";\"resolvers\";q=3000;w=300"
+        ],
+        [
+          "cross-origin-opener-policy",
+          "same-origin"
+        ],
+        [
+          "Referrer-Policy",
+          "strict-origin-when-cross-origin"
+        ],
+        [
+          "Access-Control-Max-Age",
+          "86400"
+        ],
+        [
+          "Access-Control-Allow-Origin",
+          "https://huggingface.co"
+        ],
+        [
+          "Vary",
+          "Origin, Accept"
+        ],
+        [
+          "Access-Control-Expose-Headers",
+          "X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash"
+        ],
+        [
+          "X-Repo-Commit",
+          "1776db7e9abab525eae8e59c5015e3589dfe371b"
+        ],
+        [
+          "Accept-Ranges",
+          "bytes"
+        ],
+        [
+          "X-HF-Warning",
+          "unauthenticated; Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads."
+        ],
+        [
+          "X-Linked-ETag",
+          "\"ab71339be067bc98bcad7df12a12c0e05fc6b521\""
+        ],
+        [
+          "X-Cache",
+          "Miss from cloudfront"
+        ],
+        [
+          "Via",
+          "1.1 eb8215a251a93ff43013c00c3a39ac52.cloudfront.net (CloudFront)"
+        ],
+        [
+          "X-Amz-Cf-Pop",
+          "SIN3-P1"
+        ],
+        [
+          "Alt-Svc",
+          "h3=\":443\"; ma=86400"
+        ],
+        [
+          "X-Amz-Cf-Id",
+          "rG1wQFEW_MoG2mPYp1Ub9Lbs1FLCi84ibTZoOSUSMmeA1cn2wG1Wng=="
+        ],
+        [
+          "Strict-Transport-Security",
+          "max-age=31536000"
+        ]
+      ],
+      "body_hex": "54656d706f726172792052656469726563742e205265646972656374696e6720746f202f6170692f7265736f6c76652d63616368652f64617461736574732f636f70656e6c752f66657665725f676f6c645f65766964656e63652f313737366462376539616261623532356561653865353963353031356533353839646665333731622f66657665725f676f6c645f65766964656e63652e70793f646f776e6c6f61643d7472756526657461673d25323261623731333339626530363762633938626361643764663132613132633065303566633662353231253232",
+      "bytes": 220,
+      "sha256": "2a8daf43b1178039fad7f477790b82d1c85b2f5e7deebf9580c44cfb6e933110"
+    }
+  ],
+  "status": 200,
+  "bytes": 7897,
+  "sha256": "ad33cbaed338e94670d8d661c74fa9b8ababb3e4679f89d63bea661c0df9e35f",
+  "body": "loader-resolve-download-proxy.body",
+  "final_url": "https://huggingface.co/api/resolve-cache/datasets/copenlu/fever_gold_evidence/1776db7e9abab525eae8e59c5015e3589dfe371b/fever_gold_evidence.py?download=true&etag=%22ab71339be067bc98bcad7df12a12c0e05fc6b521%22",
+  "response_headers": [
+    [
+      "Content-Type",
+      "text/plain; charset=utf-8"
+    ],
+    [
+      "Content-Length",
+      "7897"
+    ],
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 11:31:14 GMT"
+    ],
+    [
+      "ETag",
+      "\"ab71339be067bc98bcad7df12a12c0e05fc6b521\""
+    ],
+    [
+      "X-Powered-By",
+      "huggingface-moon"
+    ],
+    [
+      "X-Request-Id",
+      "Root=1-6ad0b982-0e6bf19802319ed12f15e56c"
+    ],
+    [
+      "RateLimit",
+      "\"resolvers\";r=2998;t=234"
+    ],
+    [
+      "RateLimit-Policy",
+      "\"fixed window\";\"resolvers\";q=3000;w=300"
+    ],
+    [
+      "cross-origin-opener-policy",
+      "same-origin"
+    ],
+    [
+      "Referrer-Policy",
+      "strict-origin-when-cross-origin"
+    ],
+    [
+      "Access-Control-Max-Age",
+      "86400"
+    ],
+    [
+      "Access-Control-Allow-Origin",
+      "https://huggingface.co"
+    ],
+    [
+      "Access-Control-Expose-Headers",
+      "X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash"
+    ],
+    [
+      "X-Repo-Commit",
+      "1776db7e9abab525eae8e59c5015e3589dfe371b"
+    ],
+    [
+      "Accept-Ranges",
+      "bytes"
+    ],
+    [
+      "Content-Disposition",
+      "inline; filename*=UTF-8''fever_gold_evidence.py; filename=\"fever_gold_evidence.py\";"
+    ],
+    [
+      "Content-Security-Policy",
+      "default-src 'none'; sandbox"
+    ],
+    [
+      "Vary",
+      "Origin"
+    ],
+    [
+      "X-Cache",
+      "Miss from cloudfront"
+    ],
+    [
+      "Via",
+      "1.1 b2995239ce97c5feabe06aa4055871dc.cloudfront.net (CloudFront)"
+    ],
+    [
+      "X-Amz-Cf-Pop",
+      "SIN3-P1"
+    ],
+    [
+      "Alt-Svc",
+      "h3=\":443\"; ma=86400"
+    ],
+    [
+      "X-Amz-Cf-Id",
+      "3ikqG_eGM-pTMdmFXn3yELx9khe-bYyuUId7kkGDlNmB1xDPgaXh0Q=="
+    ],
+    [
+      "Strict-Transport-Security",
+      "max-age=31536000"
+    ]
+  ],
+  "finished_utc": "2026-10-15T11:31:14.667052+00:00"
+}

@@ -1,0 +1,110 @@
+{
+  "name": "generated-tree-expand-proxy",
+  "url": "https://huggingface.co/api/datasets/copenlu/fever_gold_evidence/tree/ad8321607bcad0e534c243ec8c108a5787cea6c8?recursive=true&expand=true&limit=100",
+  "method": "GET",
+  "proxy": "http://172.17.0.1:17890",
+  "command": "python3 tests/fixtures/hg_fevobj/fetch.py tests/fixtures/hg_fevobj/plan-03.json",
+  "timeout_seconds": 25,
+  "response_cap_bytes": 900000,
+  "request_headers": {
+    "User-Agent": "HarnessGrad-fevobj-provenance/1",
+    "Accept-Encoding": "identity",
+    "Host": "huggingface.co",
+    "Connection": "close"
+  },
+  "tls_verification": "ssl.create_default_context(): CA and hostname verification",
+  "started_utc": "2026-10-15T11:31:04.912997+00:00",
+  "redirects": [],
+  "status": 200,
+  "bytes": 4596,
+  "sha256": "04f6cc689ac503f4d83fa5e97249b935efafe3b77cfa66a9388da7123fc91a4b",
+  "body": "generated-tree-expand-proxy.body",
+  "final_url": "https://huggingface.co/api/datasets/copenlu/fever_gold_evidence/tree/ad8321607bcad0e534c243ec8c108a5787cea6c8?recursive=true&expand=true&limit=100",
+  "response_headers": [
+    [
+      "Content-Type",
+      "application/json; charset=utf-8"
+    ],
+    [
+      "Content-Length",
+      "4596"
+    ],
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "Date",
+      "Thu, 15 Oct 2026 11:31:05 GMT"
+    ],
+    [
+      "ETag",
+      "W/\"11f4-Ep/GKxkQxRKVuNG+UWnaoO4p1MY\""
+    ],
+    [
+      "X-Powered-By",
+      "huggingface-moon"
+    ],
+    [
+      "X-Request-Id",
+      "Root=1-6ad0b979-7da2ef5e4883f3cf5c7984e1"
+    ],
+    [
+      "RateLimit",
+      "\"api\";r=499;t=243"
+    ],
+    [
+      "RateLimit-Policy",
+      "\"fixed window\";\"api\";q=500;w=300"
+    ],
+    [
+      "cross-origin-opener-policy",
+      "same-origin"
+    ],
+    [
+      "Referrer-Policy",
+      "strict-origin-when-cross-origin"
+    ],
+    [
+      "Access-Control-Max-Age",
+      "86400"
+    ],
+    [
+      "Access-Control-Allow-Origin",
+      "https://huggingface.co"
+    ],
+    [
+      "Vary",
+      "Origin"
+    ],
+    [
+      "Access-Control-Expose-Headers",
+      "X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash"
+    ],
+    [
+      "X-Cache",
+      "Miss from cloudfront"
+    ],
+    [
+      "Via",
+      "1.1 1fb2a13ee7e6acddb0cebf8bb69abe4e.cloudfront.net (CloudFront)"
+    ],
+    [
+      "X-Amz-Cf-Pop",
+      "SIN3-P1"
+    ],
+    [
+      "Alt-Svc",
+      "h3=\":443\"; ma=86400"
+    ],
+    [
+      "X-Amz-Cf-Id",
+      "-t4gXfH0drpweMhD1HUKsqYOF2ak14hsGhorKn8rl9T8j7NBYVxVhg=="
+    ],
+    [
+      "Strict-Transport-Security",
+      "max-age=31536000"
+    ]
+  ],
+  "finished_utc": "2026-10-15T11:31:05.903821+00:00"
+}

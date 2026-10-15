@@ -1,0 +1,24 @@
+{
+  "name": "loader-raw-direct",
+  "url": "https://huggingface.co/datasets/copenlu/fever_gold_evidence/raw/1776db7e9abab525eae8e59c5015e3589dfe371b/fever_gold_evidence.py",
+  "method": "GET",
+  "proxy": null,
+  "command": "python3 tests/fixtures/hg_fevobj/fetch.py tests/fixtures/hg_fevobj/plan-02.json",
+  "timeout_seconds": 25,
+  "response_cap_bytes": 900000,
+  "request_headers": {
+    "User-Agent": "HarnessGrad-fevobj-provenance/1",
+    "Accept-Encoding": "identity",
+    "Host": "huggingface.co",
+    "Connection": "close"
+  },
+  "tls_verification": "ssl.create_default_context(): CA and hostname verification",
+  "started_utc": "2026-10-15T11:31:04.956342+00:00",
+  "redirects": [],
+  "status": null,
+  "bytes": null,
+  "sha256": null,
+  "body": null,
+  "error": "URLError: <urlopen error [Errno 101] Network is unreachable>",
+  "finished_utc": "2026-10-15T11:31:30.054291+00:00"
+}
