@@ -228,7 +228,7 @@ def test_explicit_pool_loading_keeps_qa_metadata_and_tasks_compatible(monkeypatc
 def test_materialized_verifier_preserves_both_metrics_and_redacts_reference(tmp_path):
     gold = {"fen": chess.STARTING_FEN, "moves": ["e2e4", "e7e4"],
             "puzzle_id": "synthetic-illegal-reference"}
-    spec = dataset._SPEC.verifier({"gold": gold})
+    spec = dataset._SPEC.verifier({"task_id": gold["puzzle_id"], "gold": gold})
     for entry in spec["inputs"]:
         path = tmp_path / entry["path"]
         path.parent.mkdir(parents=True, exist_ok=True)

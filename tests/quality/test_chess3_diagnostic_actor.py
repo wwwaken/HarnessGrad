@@ -30,7 +30,8 @@ def test_control_sends_at_zero_retains_connection_and_reads_terminal(
     task = {"task_id": "chessbench_puzzles/test/0", "goal": "synthetic",
             "inputs": [], "interaction": dataset.STEPWISE_CONTRACT}
     result = run_one(repo, task, sandbox=True,
-                     verifier=dataset.verify_for({"gold": gold}), timeout_s=5)
+                     verifier=dataset.verify_for({"task_id": task["task_id"], "gold": gold}),
+                     timeout_s=5)
     assert result["exit_code"] == 0, result["stderr"]
     receipt = result["verdict"]["evidence"]
     assert receipt["status"] == "complete" and receipt["measured"] is True

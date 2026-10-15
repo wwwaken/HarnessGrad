@@ -82,7 +82,7 @@ def case(tmp_path, monkeypatch):
             "answer": "e7e5 b8c6", "puzzle_id": "private-fabricated-id"}
     task = {"task_id": TASK_ID, "goal": "offline goal", "inputs": [],
             "interaction": dataset.STEPWISE_CONTRACT}
-    return repo, task, gold, dataset.verify_for({"gold": gold})
+    return repo, task, gold, dataset.verify_for({"task_id": task["task_id"], "gold": gold})
 
 
 def execute(case, script, **kwargs):
@@ -240,7 +240,7 @@ def test_no_connection_and_launch_failure_cleanup(case, monkeypatch):
 def test_invalid_trusted_reference_is_unmeasured(case):
     repo, task, gold, _ = case
     gold = {**gold, "moves": ["e2e5", "e7e5"]}
-    result = execute((repo, task, gold, dataset.verify_for({"gold": gold})), '''
+    result = execute((repo, task, gold, dataset.verify_for({"task_id": task["task_id"], "gold": gold})), '''
 s, f = connect()
 assert json.loads(f.readline())['verdict'] == 'invalid_reference'
 ''')

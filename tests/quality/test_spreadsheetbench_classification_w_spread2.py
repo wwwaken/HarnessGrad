@@ -173,11 +173,11 @@ def scenario(request, monkeypatch, tmp_path):
         raise OSError("synthetic conversion copy failure")
 
     monkeypatch.setattr(verifier.subprocess, "run", synthetic_process)
-    return check, work, spec, score, reason, invoke
+    return check, work, spec, score, reason, invoke, record["task_id"]
 
 
 def test_checker_classifies_failures_and_completed_comparisons(scenario):
-    check, work, spec, score, reason, invoke = scenario
+    check, work, spec, score, reason, invoke, task_id = scenario
     proc = invoke(["--workdir", str(work), "--reward-file", str(work / "reward.txt"),
                    "--evidence-file", str(work / "evidence.json")])
     evidence = json.loads((work / "evidence.json").read_text())
@@ -198,27 +198,27 @@ def test_checker_classifies_failures_and_completed_comparisons(scenario):
 
 def test_classification_survives_verifier_persistence_and_aggregation(
         scenario, monkeypatch, tmp_path):
-    check, work, spec, score, reason, invoke = scenario
+    check, work, spec, score, reason, invoke, task_id = scenario
     verdict = verifier._verify(work, spec, "", sandbox=False, timeout_s=300,
-                               env={"kind": "files"})
+                               env={"kind": "files"}, task_id=task_id)
     monkeypatch.setattr(runner, "run_one", lambda *a, **k: {
         "verdict": verdict, "trace": "synthetic trace\n", "exit_code": 0, "stderr": ""})
     cache = {}
     result = runner._evaluate(
-        tmp_path, [{"task_id": "synthetic-spread"}], {}, cache=cache,
+        tmp_path, [{"task_id": task_id}], {}, cache=cache,
         trials=1, jobs=1, progress_dir=tmp_path, round_no=0)
-    persisted = json.loads((tmp_path / "progress/round-0/synthetic-spread.json").read_text())
+    persisted = json.loads((tmp_path / f"progress/round-0/{task_id}.json").read_text())
     if score is None:
         assert reason in verdict["unmeasured"]
         assert result["per_task"] == result["per_task_trials"] == {}
         assert result["trial_verdicts"] == result["verdicts"] == {}
-        assert result["invalid"]["synthetic-spread"]["stage"] == "check"
+        assert result["invalid"][task_id]["stage"] == "check"
         assert reason in persisted["invalid"]["detail"]
         assert not {"score", "trial_scores", "complete"}.intersection(persisted)
         assert cache == {}
     else:
         assert "unmeasured" not in verdict
-        assert result["per_task"] == {"synthetic-spread": score}
+        assert result["per_task"] == {task_id: score}
         assert result["invalid"] == {}
         assert persisted["complete"] is True and persisted["score"] == score
         assert len(cache) == 1

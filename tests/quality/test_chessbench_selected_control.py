@@ -175,7 +175,7 @@ def staged_verifier(tmp_path):
     gold = {"fen": chess.STARTING_FEN,
             "moves": ["e2e4", "e7e5", "g1f3", "b8c6", "f1b5"],
             "answer": "e7e5 b8c6", "puzzle_id": "fabricated-private-identifier"}
-    spec = dataset.verify_for({"gold": gold})
+    spec = dataset.verify_for({"task_id": "synthetic-chessbench-selected-control", "gold": gold})
     for entry in spec["inputs"]:
         target = tmp_path / entry["path"]
         target.parent.mkdir(parents=True, exist_ok=True)
