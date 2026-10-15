@@ -317,8 +317,14 @@ def test_the_curve_is_on_disk_before_the_run_ends(tmp_path):
         env={**os.environ, "HG_AGENT_BACKEND": "mock"})
 
     curve = runs / "durable" / "curve.jsonl"
-    deadline = time.time() + 6
-    while time.time() < deadline and not curve.exists():
+    # The method sleeps, so the run *cannot* finish before the curve is written; the deadline only has
+    # to outlast a slow start. Measured 2026-10-15: a 6 s deadline flaked once this box was carrying a
+    # 40-job dataset pass, while the durability property itself still held. The loop now also stops if
+    # the process exits, so a real failure still reports through the assertion below rather than a
+    # timeout, and the property asserted is unchanged: the curve must be on disk **while the run is
+    # still going**.
+    deadline = time.time() + 120
+    while time.time() < deadline and not curve.exists() and proc.poll() is None:
         time.sleep(0.1)
 
     assert proc.poll() is None, "方法还在睡,运行不该已经结束"

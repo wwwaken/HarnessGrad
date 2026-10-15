@@ -410,9 +410,14 @@ lost to make a failure disappear. The condition is now a helper called by exactl
 so `2 passed, 8 skipped` is the honest state and the two still run.
 
 Also confirmed benign or environmental: `test_claims_doc.py` exits `rc=5` (no tests ran, one module-level
-skip), `test_appworld_official_scorer.py` needs more than the pass's 300 s per-file budget, and
-`test_console.py`'s `test_the_curve_is_on_disk_before_the_run_ends` has a **6-second** deadline that a
-loaded machine can miss - it passed on re-run and is re-checked below.
+skip), and `test_appworld_official_scorer.py` needs more than the pass's 300 s per-file budget.
+
+`test_console.py`'s `test_the_curve_is_on_disk_before_the_run_ends` was **flaky by construction** and is
+fixed here: it gave the driver a **6-second** window to write its first curve point while the box was
+carrying a 40-job dataset pass, so a slow start failed a test whose property - *the curve is on disk
+while the run is still going* - still held. The deadline is now 120 s and the wait loop also stops when
+the process exits, so a real durability failure still reports through the same two assertions without
+being confused with a slow start. 13 passed, in 19.8 s.
 
 ## A seventh sweep-missed red, and it is production: jericho's own control was broken
 
