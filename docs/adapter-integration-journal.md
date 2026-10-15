@@ -3624,3 +3624,25 @@ S1 still requires complete execution-selected runtime custody and task-bound sco
 - Credited the newer evidence at its actual scope: 22 datasets with bounded official components plus TB's separate one-task script; AppWorld released predicates exactly 3/732, nine paired numeric/tracker agreements, 729 unexecuted; one of 89 TB tooling bootstraps demonstrated offline; 130 retained import payloads rehashed. Six local native/JVM/LibreOffice/child-process observations and the fixed DS wrapper leak add bounded lifecycle facts, not production envelope coverage. Snapshot identity/startup defects are fixed at checker entry, adding no dataset coverage. Native task/run/trial binding is enforced; source probes still miss transient directory substitution, so E4 remains partial. Paired original/exported authored-control equivalence exists, while real-dataset transformation/metric equivalence remains partial.
 - Inspected staged ALF/TB/Chess/AppWorld receipts: all retain measured=0/unmeasured=1/invalid=0, score=null and policy_enforcement_not_observed. Raw measured scorer results and new passive observations do not clear S6. The corrected AppWorld service caps still lack a post-change live observation; JVM/LibreOffice cleanup includes collector assistance.
 - Registry and pinned tests remain byte-identical: the existing w-scope annotation already records the only satisfied-clause revisions; both full shared blockers, all 46 dataset references and all historical records remain. Report: `reports/w-reassess2-shared-closures.md`. Validation: `reports/w-reassess2-validation.txt`, checker valid (28 datasets, two shared blockers, 11 historical records, production_authorized=false), 56 focused source-only registry tests passed with basetemp outside the platform tree. Commit confined to registered `/tmp/hg-reassess2` on `wg-reassess2`; no merge to main.
+## 2026-10-15 Task-bound QA scorer inputs - w-tbi
+
+- Scope: S1's task-bound scorer-input half only. All 12 shared QA-command routes
+  now pin serialized gold under the selected task, recompute its digest on the
+  buffer passed to scoring, record consumed identity and check it at native
+  dispatch/verdict consumption. Wrong-task specs and missing/foreign/unverified
+  input receipts are unmeasured; numeric scores are suppressed.
+- Offline controls use actual local task records with scorer spies, not benchmark
+  scorers or models. All 12 foreign-task gold substitutions refuse before scoring.
+  Final identical test file: 132 failed / 24 passed at baseline, 156 passed after;
+  113 verifier/trial/pristine-binding/registry regressions pass. Initial receipts
+  and raw per-task hashes/outcomes remain preserved in reports/w-tbi-evidence/.
+- Coverage: 12/19 actor-workdir datasets (12/12 QA); alfworld, bird_minidev,
+  ds1000, jericho, livecodebench, scienceworld and spreadsheetbench remain unbound
+  at their distinct native payload contracts. Source audit rehashed 17 source
+  artifacts / 214400530 bytes, all matching the historical closure records.
+- reports/w-tbi-receipts.md has per-dataset file+line evidence and limitations;
+  reports/w-tbi-validation.txt preserves checker and focused output. S1 remains
+  PARTIAL pending complete execution-selected runtime custody and remaining input
+  bindings; S3/S4/S6 remain PARTIAL. No shared or dataset blocker closes, no gate
+  is weakened and no production authorization is added. No model/GPU/endpoint,
+  benchmark scorer, Docker, runs/ modification or frozen-receipt edit occurred.

@@ -37,6 +37,7 @@ not answer. That is a real result and it is reported as one.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -78,6 +79,8 @@ def parse_args(argv):
     parser.add_argument("--answer", default="answer.txt")
     parser.add_argument("--prediction", default="prediction.json")
     parser.add_argument("--gold", default="gold.json")
+    parser.add_argument("--task-id", help="trusted selected task identity")
+    parser.add_argument("--gold-sha256", help="trusted SHA-256 of serialized gold bytes")
     parser.add_argument("--score-mode", help="trusted adapter scoring policy")
     parser.add_argument("--redact-gold", action="store_true",
                         help="omit trusted gold from all verifier evidence paths")
@@ -163,7 +166,22 @@ def main(argv) -> int:
                           f"re-materialization did not happen")
 
     try:
-        gold = json.loads(gold_path.read_text(encoding="utf-8"))
+        # Hash and parse one buffer: a later path substitution cannot change the
+        # object supplied to the scorer while leaving a receipt for earlier bytes.
+        gold_bytes = gold_path.read_bytes()
+        digest = hashlib.sha256(gold_bytes).hexdigest()
+        bound = (bool(args.task_id) and bool(args.gold_sha256)
+                 and re.fullmatch(r"[0-9a-f]{64}", args.gold_sha256) is not None
+                 and digest == args.gold_sha256)
+        evidence["scorer_input"] = {
+            "task_id": args.task_id, "path": str(gold_path), "sha256": digest,
+            "expected_sha256": args.gold_sha256, "verified": bound,
+        }
+        if (args.task_id is not None or args.gold_sha256 is not None) and not bound:
+            return unmeasured(args, evidence, "scorer input task/digest binding mismatch")
+        # Legacy by-hand calls without either argument remain explicitly unbound.
+        # Native bound dispatch refuses such a receipt, even if it has a reward.
+        gold = json.loads(gold_bytes.decode("utf-8"))
     except (OSError, ValueError) as exc:
         return unmeasured(args, evidence,
                           f"gold file {gold_path} is unreadable: {error_detail(args, exc)}")

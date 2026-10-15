@@ -53,7 +53,8 @@
   "verify": {
     "kinds": ["answer", "command"],
     "command_required": ["argv", "reward_file"],
-    "command_optional": ["cwd", "inputs", "pass_when", "stdout", "timeout_s", "evidence_file", "image"],
+    "command_optional": ["cwd", "inputs", "pass_when", "stdout", "timeout_s", "evidence_file", "image", "scorer_input"],
+    "scorer_input": "Optional trusted task_id/path/sha256 binding. Native dispatch compares task_id to the selected task and requires matching verified scorer-input evidence before accepting a reward.",
     "absolute_paths": ["reward_file", "evidence_file"],
     "image": "optional pinned verifier image for an exec command; defaults to the task image",
     "input_target_keys": ["path", "dst"],

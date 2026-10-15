@@ -488,6 +488,12 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
         return record_class({"kind": spec.get("kind"), "passed": False, "score": None,
                              "unmeasured": "scorer declaration incompatible with runtime route"},
                             spec, "unknown")
+    binding = spec.get("scorer_input")
+    if binding is not None and (not isinstance(binding, dict) or not task_id
+                                or binding.get("task_id") != task_id):
+        return record_class({"kind": spec.get("kind"), "passed": False, "score": None,
+                             "unmeasured": "scorer input does not belong to selected task"},
+                            spec, actual)
     if spec.get("kind") == "command" and spec.get("reward_file") \
             and env_spec.get("kind") == "exec":
         with tempfile.TemporaryDirectory(prefix="hg-verdict-",
@@ -496,11 +502,29 @@ def _verify(workdir: Path, verifier: dict | None, answer: str,
                                  timeout_s=timeout_s, env=env,
                                  service_specs=service_specs, running=running,
                                  verdict_dir=Path(verdict_dir))
-            return record_class(verdict, spec, actual)
+            return record_class(_enforce_scorer_input(verdict, binding), spec, actual)
     verdict = _verify_inner(workdir, verifier, answer, sandbox=sandbox,
                          timeout_s=timeout_s, env=env,
                          service_specs=service_specs, running=running)
-    return record_class(verdict, spec, actual)
+    return record_class(_enforce_scorer_input(verdict, binding), spec, actual)
+
+
+def _enforce_scorer_input(verdict: dict, binding: dict | None) -> dict:
+    """Consume a check's input receipt only against the independently selected spec.
+
+    These are consistency checks under trusted spec/check custody, not authentication
+    of arbitrary scorer JSON. Other verifier routes retain their existing contracts.
+    """
+    if binding is None:
+        return verdict
+    evidence = verdict.get("evidence")
+    receipt = evidence.get("scorer_input") if isinstance(evidence, dict) else None
+    if (isinstance(receipt, dict) and receipt.get("verified") is True
+            and all(receipt.get(k) == binding.get(k) for k in ("task_id", "path", "sha256"))
+            and receipt.get("expected_sha256") == binding.get("sha256")):
+        return verdict
+    return {**verdict, "passed": False, "score": None,
+            "unmeasured": verdict.get("unmeasured") or "scorer input receipt mismatch or missing"}
 
 
 def _verify_inner(workdir: Path, verifier: dict | None, answer: str,

@@ -336,20 +336,26 @@ class QASpec:
         scorer itself must import nothing but the standard library for this to work,
         which the adapters satisfy by keeping their scoring half self-contained.
         """
+        gold_content = json.dumps(record["gold"], ensure_ascii=False, sort_keys=True)
+        scorer_input = {"task_id": record["task_id"], "path": GOLD_FILE,
+                        "sha256": hashlib.sha256(gold_content.encode("utf-8")).hexdigest()}
         return {
             "kind": self.VERIFIER_KIND,
+            "scorer_input": scorer_input,
             "argv": [
                 "python3", f"{CHECK_DIR}/{CHECK_NAME}",
                 "--dataset", self.name,
                 "--answer", ANSWER_FILE,
                 "--prediction", PREDICTION_FILE,
                 "--gold", GOLD_FILE,
+                "--task-id", record["task_id"],
+                "--gold-sha256", scorer_input["sha256"],
                 "--reward-file", REWARD_REL,
                 "--evidence-file", EVIDENCE_REL,
             ],
             "inputs": [
                 {"path": GOLD_FILE,
-                 "content": json.dumps(record["gold"], ensure_ascii=False, sort_keys=True)},
+                 "content": gold_content},
                 {"path": f"{CHECK_DIR}/{CHECK_NAME}",
                  "from": str(VERIFY_DIR / CHECK_NAME)},
                 # The scaffold, materialized under the same package names the platform
