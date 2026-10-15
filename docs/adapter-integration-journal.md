@@ -5116,3 +5116,51 @@ describes, after the B5 packet and the eight disclosure rows.
 evidence packets' residue by class), `w-knownred` (re-derive every standing number in the red-test
 ledger, or mark it proxy-only), `w-decisionpack` (the three open blockers as answerable choices for the
 operator). `w-evidence` itself is merged as `27d2efaa`.
+
+## 2026-10-16 (round 8) — An eleventh stale entry, and a third *kind* of staleness to look for
+
+While citation-checking the one large document the round-6 pass had not covered
+(`registry/w-evidence-external-sources.md`, 1495 lines), one citation failed the mechanical check:
+`data/datasets/tau_bench/verify/check.py:309`, in a file that now has **297** lines. Chasing it found a
+third kind of staleness, distinct from the two already recorded:
+
+* the first kind is a **row describing pre-fix behaviour** (the eight from round 5);
+* the second is a **stale present-tense sentence** in a document whose subject moved (the SpreadsheetBench
+  digest, round 7);
+* the third is **a defect item that has been fixed but is still listed as open**, with a line range that
+  no longer resolves because the fix made the file shorter.
+
+`data/datasets/tau_bench/verify/check.py` went **347 -> 297 lines** in `14866a0c` ("w-taubench: grade
+service-owned database and episode recordings"). The file's own header now reads "The service owns
+`/recordings/tau/episode.json`; the platform mounts it read-only" (`:2-6`), the database is taken from the
+recording (`:254` `agent_db = recording["database"]`), the recording's termination state must agree with
+its events or the run is unmeasured (`:134`), and the evidence carries
+`"evidence_source": "service-recording"` (`:172-173`). The reward line is still
+`reward = int(matched and done and r_outputs == 1.0)` (`:259`).
+
+That is precisely the fix the intern item wanted: the item said the `done` gate and `r_outputs` were read
+from a file the agent can write ("forgeable with two JSONL lines"), and recommended running the DB+log as a
+recording service and reading the recording. **It has been done.** Yet three documents still describe the
+old state:
+
+* `registry/w-evidence-qualification.md:180` — cites `:284-309` (the file ends at 297) and calls the
+  number a "final database hash match" without saying the database and termination now come from a
+  service-owned recording;
+* `registry/w-evidence-disclosure.md:33` — cites `:307-309` and lists "trust/termination boundary" as a
+  live reason for non-comparability;
+* `registry/w-evidence-external-sources.md:1295` — a **verbatim quotation of the external intern review**
+  with its original line numbers, which is legitimate as a retained snapshot but now reads as a current
+  finding.
+
+So the stale set is **eleven**, and `tau_bench`'s effect classification ("`NUMBER/CONDITION` for trusted
+recording, stop-at-done, or terminate-tool changes") has **landed** rather than being hypothetical: any
+tau_bench figure produced before `14866a0c` was measured under the forgeable log and must not be reused as
+service-recording τ-bench. All three documents are left **unpatched for now**, deliberately: `w-evidence2`
+is producing one coherent correction across all 28 rows keyed by dataset, and patching eleven entries by
+hand in the meantime would leave the disclosure table in a mixed state where a reader cannot tell which
+rows were checked. The correction lands as one commit.
+
+**The generalisable rule, now with three instances to support it:** a citation check that only asks "does
+this file exist" catches none of these. All three kinds are caught by asking **"does the cited line still
+say what the row claims"** — which is a mechanical question, and it is the question `w-evidence2` was told
+to ask of every row.
