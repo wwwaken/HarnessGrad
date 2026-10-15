@@ -1,0 +1,44 @@
+Parent integration of w-spreadrt: SpreadsheetBench offline scorer and runtime evidence.
+
+Cherry-picked from ac272ad5 onto main. Packet: 30 text files, 0.96 MB, largest under 1 MB, all tracked.
+
+Worker findings and the parent's disposition
+--------------------------------------------
+1. **Scorer custody FOUND.** Adapted checker SHA-256
+   `e7131a2649a89d818a73b6b83e1b66892e41b93c53a7fee8330749146ad3ee46` and retained upstream evaluator
+   SHA-256 `7cbddc1a31ade2a1bb87047a1dcaa293911fdeefc046c1fe796f5436af11a0a6`. Applied as recorded; the
+   parent did not re-run the acquisition.
+2. **Engine FOUND but the synthetic control FAILED.** Real LibreOffice 7.3.7.2 ran under
+   `bwrap --unshare-net` and **retained authored stale caches `[999,888]` instead of `[5,10]`**, while
+   the local checker still published `recalculated=true, measured=true, score=0.0`. The underlying
+   cache-policy cause is unknown. Recorded as open work, **not** fixed and **not** explained away.
+3. **A reward-transport defect that published an infrastructure failure as a zero.** Reported as
+   `infrastructure_failure_as_zero: yes`. The parent reproduced it independently and fixed it in
+   commit `1ac69e91`; the proposal's `next_action` was updated to say so and the fix is pinned by
+   `registry/w-vfix-validation.txt` plus a regression test, so this is no longer open work.
+4. **21 pre-existing failures in `test_spreadsheetbench_classification_w_spread2.py`.** The worker said
+   the integration fixtures omit the newly required selected `task_id` and asked for owner review. The
+   parent confirmed the cause mechanically: the admission
+   `"scorer input does not belong to selected task"` landed in **`63606f42` (11:13)**, which is *after*
+   the test file's last commit **`5d15f54a` (05:27)**, and both are ancestors of `1825cd0e`, the start
+   of this phase. So the test has been red since `63606f42`, before any work in this phase, and the fix
+   needs a decision - the fixture carrying the selected identity, or the test supplying it - rather
+   than a blind edit of 21 assertions. Recorded in `registry/known-red-tests.md`.
+5. Engine package archives absent over the enumerated readable scopes; recorded as a bounded limit.
+
+Applied change
+--------------
+`spreadsheetbench / dataset-journal-gap`: `next_action` 1696 -> 2315 chars, `observed` 6804 -> 8758.
+Three clauses the applier flagged were read and acknowledged as carried: the scorer/engine custody
+sentence (carried and made more specific), the "no diagnostic is authorized" sentence and the
+first-five fixture path (both carried in the replacement), and the withdrawn-shared-gate sentence
+(carried, and extended to all four withdrawn requirements). The replacement keeps the measured-zero
+denominator for released parser-rejected ranges, the one-released-variant metric distinction, the
+prohibition on publishing infrastructure failures as scores, and the "do not promote synthetic/local
+controls" rule.
+
+Validation
+----------
+$ python3 tools/check_dataset_blockers.py
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+Focused registry/assessment/applier tests pass. No blocker closes; open stays at 12.

@@ -32,7 +32,7 @@ the artefact.
 | `sotuqa / retain-contract-refusal` | external | permanent refusal | `REFUSED` |
 | `tau2_bench / retain-contract-refusal` | external | permanent refusal | `REFUSED` |
 | `appworld / successful-task-evidence` | measurement | open | `PENDING-RUN`; one authorized diagnostic ran and did **not** confirm the guidance hypothesis; completion-aware control now implemented |
-| `spreadsheetbench / dataset-journal-gap` | measurement | open | `PENDING-RUN`, `PENDING-WORK` |
+| `spreadsheetbench / dataset-journal-gap` | measurement | open | scorer+engine custody FOUND; synthetic stale-cache control FAILED; measured coverage `PENDING-RUN` |
 | `bfcl_v3 / simple-ast-contract` | external | open | `PENDING-WORK`, then `PENDING-RUN` |
 | `fever / dataset-journal-gap` | measurement | open | metric DETERMINED; upstream producing-execution search done and **bounded** ABSENT (two historical objects still unread); metric choice outstanding |
 | `strategyqa / dataset-journal-gap` | measurement | open | original scorer FOUND and DIFFERENT; split membership `PENDING-UPSTREAM` |

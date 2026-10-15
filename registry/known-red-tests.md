@@ -138,3 +138,14 @@ and re-run that test.
   produced `test_ordinary_run_receipt_codex237: 1 failed, 78 errors` where the sweep saw a single
   failure, because gitignored fixtures do not exist there. Triage in the main checkout, or copy the
   packets in first.
+
+## `test_spreadsheetbench_classification_w_spread2.py` - 21 failures, pre-existing
+
+`21 failed / 21 passed`. The exact cause is `scorer input does not belong to selected task` at
+`eval/verification/verifier.py:524-528`: the spec carries a `scorer_input` binding with a `task_id`,
+while the test calls `_verify(work, spec, "", ...)` with an empty one. **Not caused by this phase:**
+the admission landed in `63606f42` (2026-10-15 11:13), which is *after* the test file's last commit
+`5d15f54a` (05:27), and both are ancestors of `1825cd0e`. The repair needs a decision - the fixture
+carrying the selected identity or the test supplying it - so it is recorded rather than patched with 21
+blind assertion edits.
+
