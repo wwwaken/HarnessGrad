@@ -63,7 +63,7 @@ one whose files were removed afterwards:
 | kind | packets | missing entries | reading |
 | --- | --- | --- | --- |
 | **entirely untracked** (`git ls-files` returns nothing for the packet) | 32 | 1,460 | Its `SHA256SUMS` is a **working-tree note, not repository evidence**. Git never held these files, and 0 tracked files in the pre-rewrite backup `5e8fcfd` confirms they were never committed in either history. The largest are `hg_wtbdep` (685), `hg_woffscorer` (208+19+11) and `hg_woffscorer2` (131). |
-| **partially tracked** (some files committed) | 6 | 166 | These are repository evidence with a real hole. By size: `external_provenance_b5` 87 missing / 147 present / 148 tracked, `e3_bfcl_source` 24/63/64, `hg_wprov` 22/92/1, `upstream_provenance_e2` 15/32/33, `hg_trivia` 13/40/1, `hg_bfcl` 5/16/2. |
+| **partially tracked** (some files committed) | 6 | 166 (historical inventory; B5 replay excluded here) | `external_provenance_b5`: see the measured B5 section below. Other five, 79 unique absences: `e3_bfcl_source` 24 restorable; `hg_wprov` 15 restorable + 2 legitimate empty failure sentinels + 2 recorded 404 + 3 local artifacts without replay URLs; `upstream_provenance_e2` 5 restorable + 9 legitimate empty bodies + 1 unknown (307); `hg_trivia` 13 restorable; `hg_bfcl` 5 restorable. Present pin mismatches: `hg_wprov` 2, `upstream_provenance_e2` 1, `hg_bfcl` 1. Nested `hg_wprov` manifests repeat root paths. Five-packet measurements and dispositions: `registry/w-provresidue.md`. |
 
 **Cause of the 1,460 is undetermined and is not attributed.** Untracked material leaves no trace in
 git, so "never materialised here" and "removed later" are indistinguishable from the repository alone,
@@ -689,14 +689,27 @@ Measured 2026-10-16T02:0xZ against the packet at `179aa62e`, after `w-b5restore`
 **The 23 `bfcl-handler-local_inference-*.body` entries do not pin upstream blobs.** Every one of their
 receipts records `status: 403` with a **279-byte** `response_body`, and every one pins the *same* digest
 `fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b` - identically in `SHA256SUMS` and in
-the receipt. That is GitHub's unauthenticated rate-limit JSON. Twenty-three distinct upstream blobs
-cannot share a digest, so the pin is provably not a pin of the artifact; the packet is self-consistent
-and records an error page. Note the shape of the trap: the receipt records `status`, so this is
-*auditable*, but `SHA256SUMS` records only the digest, so a verifier that checks digests alone sees
-nothing wrong. Replay now returns 200 with the real blob for these URLs (e.g.
+the receipt. That is GitHub's unauthenticated rate-limit JSON, and the pin is provably not a pin of the
+artifact: the packet is self-consistent and records an error page. Note the shape of the trap: the receipt
+records `status`, so this is *auditable*, but `SHA256SUMS` records only the digest, so a verifier that
+checks digests alone sees nothing wrong. Replay now returns 200 with the real blob for these URLs (e.g.
 `local_inference-minicpm` 1,463 bytes) and the replay correctly **refuses to overwrite** `recorded_sha256`
 rather than laundering a new body into an old pin. They can only be restored by *re-pinning*, which
 changes the evidence rather than restoring it - a decision, not a retry.
+
+**Two caveats on the reasoning, added 2026-10-16 after `w-provresidue` falsified the general rule.** The
+conclusion above rests on the *combination* - one 279-byte body, `status: 403`, shared by 23 unrelated
+blob paths - and **not** on the sharing alone. "Two distinct paths share a digest, therefore it is an error
+payload" is **false in general**, and this repository contains a counterexample: in
+`tests/fixtures/hg_trivia`, `responses/hub-added-selected-tree.body` and
+`responses/hub-selected-tree.body` both pin `40b807247f15bb2f5522bc69d0c4c4a031f30eb23f2632a8526bfb53f8df1ce2`
+at 973 bytes with `status: 200`, because they are the **same three file-metadata objects at two revisions**
+- `w-provresidue` reconstructed exactly 973 bytes and that digest from retained views for both. So the
+signature to test for is *a small error body under a non-200 status, multiplied across paths*, not a
+repeated digest. Second, and this is the negative result that matters more: `w-provresidue` classified all
+**79** absences in the other five partially-tracked packets and found **zero** `pinned_error_payload`
+instances. This pathology is B5's, not a property of our evidence packets in general, and the corrected
+inventory row above now says so per packet.
 
 **Three more are live dynamic resources and can never be digest-restored.** The replay fetched all three
 at 200 and got different bytes: `triviaqa-dns-alidns.body` (191 -> 192 bytes) and
@@ -721,3 +734,35 @@ absent - consistent with the `202 present / 234 pinned` count in the inventory. 
   retry, 27 with a reason that is not a rate limit.
 * **`test_external_provenance_b5.py`'s 5 failures will not clear on their own.** They are `FileNotFoundError`
   on absent bodies, and for at least the 23 they name an artifact that the packet never captured.
+
+## Four present files do not match their own packet's pins - and no fetch can fix that
+
+Every count in this file, up to now, was about *absent* files. `w-provresidue` (2026-10-16) checked the
+other direction and found a silent class: four **present** files whose recomputed SHA-256 differs from the
+digest their packet's own `SHA256SUMS` records for them. An absent body is loud; a pinned file that no
+longer matches is silent, and it is the more dangerous of the two, because a verifier that trusts the
+manifest will report the packet as intact.
+
+| file | pinned at | pinned | recomputed |
+| --- | --- | --- | --- |
+| `tests/fixtures/hg_wprov/check_registry_scope.py` | `hg_wprov/SHA256SUMS:3` | `0ae2aa5f327f77ea82150e8b0f0a0ac6c49a906860ace6d764cb09e140e2c569` | `49116ca38d26c6c3102cdd78e173afb62c94104589645f93511b5cb1440bd9a9` |
+| `tests/fixtures/hg_wprov/verify.py` | `hg_wprov/SHA256SUMS:114` | `96601c8edfc34f67e65b0a7fb2e0cd2ebcf4430279d9a58ec09e844598fec7aa` | `dd0b5be4e38c40b016b9ec33e89300478157035833cb6e179ea5cc7a3cea237d` |
+| `tests/fixtures/upstream_provenance_e2/verify.py` | `upstream_provenance_e2/SHA256SUMS:47` | `eda7f157198816f72ffc4326a3ca7ea8e3c8a606de83ce03e003171ff3473e73` | `3d52940b038ddea45b5882952d9e4573b44e9b34b911dc4f13b675a73372d18e` |
+| `tests/fixtures/hg_bfcl/acquire.py` | `hg_bfcl/SHA256SUMS:3` | `ec4b6599ffa0f9f6d9136b0113c3c70d64e85bf73e73a6b7cb898fc313f0721c` | `0e17ca9780309a44e8166f4429caa1b5e360a1744d6cf98ee78c415c5ca44d04` |
+
+All four pairs were recomputed by the parent, not taken from the worker's report. For
+`upstream_provenance_e2/verify.py` the worker also **explained** the divergence rather than proposing a
+re-pin: `eda7f157...` is the SHA-256 of that helper as it stood at Git object `21a7d7f3`, i.e. the file was
+edited after its pin was recorded, and the pin was never updated. **Fetching cannot correct any of these
+four** - they are local bytes - so they are a re-pin-or-restore decision, not a retry, exactly like B5's 23
+error pins but with the opposite cause (a correct artifact pinned at the wrong revision, rather than an
+error page pinned as an artifact).
+
+None of the four is read by a discovered suite test: `w-provresidue` searched all Python under `tests/`
+except `tests/fixtures/**`, then all `test*.py` and `conftest.py`, and found no suite reader of any of
+these five packets' bodies - the only suite path is registry-mediated metadata
+(`tests/quality/test_dataset_blockers.py:19`, `:57-58`). So this is not a red test; it is a **broken pin
+in retained evidence**, which is a different and quieter thing. The standalone packet helpers
+(`hg_wprov/verify.py:14-19`, `upstream_provenance_e2/verify.py:54-67`, `hg_bfcl/verify.py:39-43`,
+`hg_trivia/verify.py:51-56`, `e3_bfcl_source/verify.py:26`) would raise on the mismatches or the absences
+if run, and were not run.
