@@ -18,16 +18,17 @@ verbatim in `data/datasets/livecodebench.py`) then counts a generation as correc
 0.0 -- which is the reward here, and why the metric is named `pass@1` in the evidence rather
 than "accuracy".
 
-Two deviations, both recorded
------------------------------
-1. **The global timeout is capped.** Upstream kills the child after
-   `(timeout + 1) * n_tests + 5` seconds; measured over this pool that is at most 726 s (103
-   tests), and it scales with the problem. This check caps it at `CAP_S`, marks the run failed
-   when the cap is hit -- the same verdict upstream reaches when it kills the child -- and says
-   so in `why`.
-2. **One generation, one problem.** The platform grades one task per check, so pass@k for
-   k > 1 has no second sample to average over; k = 1 is the only well-defined value and the
-   evidence says so.
+Timeout budget and the per-task metric
+--------------------------------------
+Upstream kills the child after `(timeout + 1) * n_tests + 5` seconds. The former 600 s
+cap bounded the check's child wait, but could reject a correct program before upstream's
+budget expired. Use the upstream budget: for 103 tests at timeout=6 it is 726 s, within
+the adapter's existing 900 s verifier bound (`livecodebench.py::_verify`), which still
+bounds the entire check. Removing the inner cap therefore preserves that outer bound.
+
+**One generation, one problem.** The platform grades one task per check, so pass@k for
+k > 1 has no second sample to average over; k = 1 is the only well-defined value and the
+evidence says so.
 
 Why a short verdict list is safe
 --------------------------------
@@ -59,8 +60,6 @@ from data.scaffolds.scorer_input import add_arguments, run_bound
 
 #: Upstream's per-test budget (`testing_util.run_test(..., timeout=6)`).
 PER_TEST_TIMEOUT = 6
-#: This check's cap on upstream's `(timeout + 1) * n_tests + 5`.
-CAP_S = 600
 
 
 def _workdir_on_path() -> None:
@@ -175,7 +174,7 @@ def _score(args, inputs, receipt) -> int:
         return _measure(args, 0.0, "no answer (measured zero): solution.py is missing or empty",
                         total, 0, [])
 
-    cap = min(CAP_S, (PER_TEST_TIMEOUT + 1) * total + 5)
+    cap = (PER_TEST_TIMEOUT + 1) * total + 5
     queue: multiprocessing.Queue = multiprocessing.Queue()
     process = multiprocessing.Process(target=_child, args=(tests_text, solution, queue))
     process.start()

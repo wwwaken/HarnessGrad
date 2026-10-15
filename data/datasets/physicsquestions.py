@@ -23,7 +23,7 @@ The metric, verbatim
 BIG-bench's `physics_questions/task.json` declares `metrics: ["exact_str_match", "bleu"]`
 and its examples carry a **list** target. `exact_str_match` is BIG-bench's standard
 metric: the prediction, stripped of surrounding whitespace, must equal one of the targets
-exactly, after the reference strips the trailing period. So `7 km` and `7187 m` both score
+exactly, after both sides strip trailing periods. So `7 km` and `7187 m` both score
 for the row above, and they are **not equal numbers** (7187 m is 7.187 km) -- they are two
 roundings of the same quantity, which is why the target is a list rather than a value.
 
@@ -93,11 +93,11 @@ def accepted_answers(target: str) -> list[str]:
 def exact_str_match(prediction: str, ground_truth: str) -> bool:
     """BIG-bench's `exact_str_match`, as its examples define it.
 
-    The prediction is stripped; the reference has a trailing period stripped (the task's
-    own examples end in one and the answers do not). Nothing else is normalised: case and
-    units are part of the answer, which is why the dataset lists several spellings.
+    Both sides strip surrounding whitespace and trailing periods, as the answer contract
+    promises. Nothing else is normalised: case and units are part of the answer, which
+    is why the dataset lists several spellings.
     """
-    return str(prediction).strip() == str(ground_truth).strip().rstrip(".")
+    return str(prediction).strip().rstrip(".") == str(ground_truth).strip().rstrip(".")
 
 
 def score(prediction: str, gold: dict) -> dict:

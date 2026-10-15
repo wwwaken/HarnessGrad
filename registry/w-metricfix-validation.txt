@@ -1,0 +1,324 @@
+w-metricfix validation transcript
+Working directory: /mnt/20t/xubuqiang/hg-wt/w-metricfix
+This transcript records validation commands, exact captured output, and exit codes.
+Source-reading and patch-application tool calls are separate from this transcript.
+No wall-clock timestamp, upstream digest, real run receipt, or pool count is inferred.
+
+FOUND: The before-demo and before-tests entries ran before any scorer edit. The four
+new regression tests failed against the original scorer code. Their first failing
+assertions check reward/budget behavior, not the existence of a patch. The final test
+file adds an AST guard for the existing 900 s adapter declaration and an import, so
+the original traceback line numbers differ by one from the final file.
+FOUND: Both demos use cases.json under /tmp/metricfix-synthetic. The authored inputs
+are defined in tests/quality/test_w_metricfix.py:35. The synthetic-input entry
+records the actual file contents before cleanup.
+FOUND: LCB uses a virtual child completing at 650 s and a stub pass@1 aggregator
+(tests/quality/test_w_metricfix.py:54). The wrapper's printed phrase "released tests"
+is inherited output text; these inputs are authored, not released tests, and no
+real child or upstream executor was run.
+FOUND: The final focused suite includes four new tests and existing synthetic GSM8K
+tests; see final-tests. The metric index checker result is in blocker-check.
+
+ABSENT: Changes to the exact protected-file scope enumerated by
+protected-scope-and-cleanup; that command and its complete output are below.
+ABSENT: Remaining /tmp/metricfix-* paths at the protected-scope-and-cleanup check.
+This scope is specific to this worker, not a claim about any other temporary paths.
+
+UNKNOWN / NOT VERIFIED:
+- No released dataset row, held-out payload, dataset run, model, GPU, model server,
+  network service, paid endpoint, or frozen receipt was accessed for validation.
+- Real upstream LiveCodeBench execution, real multiprocessing timing, the 900 s
+  runner timeout at runtime, and cleanup in a real verifier sandbox were not tested.
+- The pool histogram and the claim that exactly three problems exceed 600 s were
+  not searched or verified. The synthetic arithmetic is 7*102+5=719 and 7*103+5=726
+  (tests/quality/test_w_metricfix.py:152); no pool count is derived from it.
+- Broad upstream equivalence for GSM8K or BIG-bench was not verified; only local
+  scorer behavior under the requested contracts was tested.
+- Sports double negation, intervening words, negation after a label, synonyms,
+  punctuation between negator and label, and sarcasm are outside this rule's
+  coverage (data/datasets/sportsunderstanding.py:81).
+- Full repository pytest, real-dataset controls, registry integration, journal
+  integration, a merge, and production authorization were not performed.
+- No registry/proposals fragment is supplied: this patch supplies scorer code and
+  review evidence; the parent's registry disposition remains unobserved.
+
+=== before-demo ===
+$ TMPDIR=/tmp/metricfix-tmp PYTHONDONTWRITEBYTECODE=1 python3 tests/quality/test_w_metricfix.py --workdir /tmp/metricfix-synthetic
+exit_code: 0
+output:
+{"case": "physics", "reward": 0.0}
+{"affirmative_gold_reward": 1.0, "case": "sports", "reward": 0.0}
+{"case": "gsm8k", "filter": "decimal-aware-extract", "flexible_extract": "20", "reward": 0.0, "strict_match": "18"}
+reward 0: global timeout after 600s: the solution did not finish on 103 tests
+{"case": "livecodebench", "join_budget_s": 600, "killed": true, "passed": 0, "reward": 0.0}
+
+=== before-tests ===
+$ TMPDIR=/tmp/metricfix-tmp PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q --tb=short -p no:cacheprovider tests/quality/test_w_metricfix.py --basetemp=/tmp/metricfix-pytest-before
+exit_code: 1
+output:
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+__________________ test_physics_trailing_period_on_prediction __________________
+tests/quality/test_w_metricfix.py:107: in test_physics_trailing_period_on_prediction
+    assert result["reward"] == 1.0
+E   assert 0.0 == 1.0
+___________________ test_sports_negation_selects_complement ____________________
+tests/quality/test_w_metricfix.py:117: in test_sports_negation_selects_complement
+    assert result["reward"] == 1.0
+E   assert 0.0 == 1.0
+________________ test_gsm8k_first_marker_overrides_later_number ________________
+tests/quality/test_w_metricfix.py:136: in test_gsm8k_first_marker_overrides_later_number
+    assert result["reward"] == 1.0
+E   assert 0.0 == 1.0
+________ test_livecodebench_correct_child_can_finish_after_600_seconds _________
+tests/quality/test_w_metricfix.py:154: in test_livecodebench_correct_child_can_finish_after_600_seconds
+    assert result == {"reward": 1.0, "join_budget_s": 726, "killed": False, "passed": 103}
+E   AssertionError: assert {'join_budget...'reward': 0.0} == {'join_budget...'reward': 1.0}
+E     Differing items:
+E     {'passed': 0} != {'passed': 103}
+E     {'join_budget_s': 600} != {'join_budget_s': 726}
+E     {'reward': 0.0} != {'reward': 1.0}
+E     {'killed': True} != {'killed': False}
+E     Use -v to get more diff
+----------------------------- Captured stdout call -----------------------------
+reward 0: global timeout after 600s: the solution did not finish on 103 tests
+=========================== short test summary info ============================
+FAILED tests/quality/test_w_metricfix.py::test_physics_trailing_period_on_prediction
+FAILED tests/quality/test_w_metricfix.py::test_sports_negation_selects_complement
+FAILED tests/quality/test_w_metricfix.py::test_gsm8k_first_marker_overrides_later_number
+FAILED tests/quality/test_w_metricfix.py::test_livecodebench_correct_child_can_finish_after_600_seconds
+4 failed in 0.09s
+
+=== before-pytest-cleanup ===
+$ python3 - <<'PY'
+import shutil
+from pathlib import Path
+path = Path('/tmp/metricfix-pytest-before')
+if path.exists():
+    shutil.rmtree(path)
+print('removed /tmp/metricfix-pytest-before')
+PY
+exit_code: 0
+output:
+removed /tmp/metricfix-pytest-before
+
+=== after-demo ===
+$ TMPDIR=/tmp/metricfix-tmp PYTHONDONTWRITEBYTECODE=1 python3 tests/quality/test_w_metricfix.py --workdir /tmp/metricfix-synthetic
+exit_code: 0
+output:
+{"case": "physics", "reward": 1.0}
+{"affirmative_gold_reward": 0.0, "case": "sports", "reward": 1.0}
+{"case": "gsm8k", "filter": "decimal-aware-extract", "flexible_extract": "20", "reward": 1.0, "scored_extraction": "strict_match", "scored_value": "18", "strict_match": "18"}
+reward 1: all 103 released tests passed
+{"case": "livecodebench", "join_budget_s": 726, "killed": false, "passed": 103, "reward": 1.0}
+
+=== after-tests ===
+$ TMPDIR=/tmp/metricfix-tmp PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q --tb=short -p no:cacheprovider tests/quality/test_w_metricfix.py tests/quality/test_gsm8k_official_scorer.py --basetemp=/tmp/metricfix-pytest-after
+exit_code: 0
+output:
+..............................................                           [100%]
+46 passed in 0.08s
+
+=== pytest-cleanup ===
+$ python3 - <<'PY'
+import shutil
+from pathlib import Path
+for name in ('metricfix-pytest-after',):
+    path = Path('/tmp') / name
+    if path.exists():
+        shutil.rmtree(path)
+    print(f'removed {path}')
+PY
+exit_code: 0
+output:
+removed /tmp/metricfix-pytest-after
+
+=== synthetic-input ===
+$ cat /tmp/metricfix-synthetic/cases.json
+exit_code: 0
+output:
+{"gsm8k": {"gold": {"answer": "18"}, "prediction": "#### 18 then the total is 20"}, "livecodebench": {"n_tests": 103, "simulated_completion_s": 650}, "physics": {"gold": {"accepted": ["7 km"]}, "prediction": "7 km."}, "sports": {"gold": {"answer": "implausible"}, "prediction": "not plausible"}}
+
+=== blocker-check ===
+$ python3 tools/check_dataset_blockers.py
+exit_code: 0
+output:
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+
+=== diff-check ===
+$ git diff --check
+exit_code: 0
+output:
+<empty output>
+
+=== diff-review ===
+$ git diff -- data/datasets/physicsquestions.py data/datasets/sportsunderstanding.py data/datasets/gsm8k.py data/datasets/livecodebench/verify/check.py data/datasets/livecodebench.py tests/quality/test_gsm8k_official_scorer.py
+exit_code: 0
+output_json (decode to recover exact output bytes):
+"diff --git a/data/datasets/gsm8k.py b/data/datasets/gsm8k.py\nindex b11e7da4..37c4f351 100644\n--- a/data/datasets/gsm8k.py\n+++ b/data/datasets/gsm8k.py\n@@ -15,8 +15,8 @@ it instead of imposing one -- see \"The split\" below.\n \n Scorer identity and provenance\n -----------------------------\n-This adapter uses **decimal-aware-extract**: the last signed integer or decimal,\n-with commas and currency signs removed, compared using an absolute tolerance of\n+This adapter uses **decimal-aware-extract**: the number at the first `####` marker,\n+or the last signed integer or decimal when no marker is present, compared using an absolute tolerance of\n `1e-6` (exclusive). This is an adapter metric, distinct from upstream exact match.\n The inherited integer-only reference is pinned to its actual repository commit in\n `tests/fixtures/gsm8k_original/`. Its historical upstream attribution is unverified;\n@@ -24,12 +24,13 @@ the fixture preserves the original contract, not a claim of upstream equivalence\n \n | filter | rule | regex (verbatim) |\n | --- | --- | --- |\n-| adapter strict-marker extraction | the last `#### <number>` | `#### (\\-?[0-9\\.\\,]+)` |\n+| adapter strict-marker extraction | the first `####` must start `#### <number>` | `#### (\\-?[0-9\\.\\,]+)` |\n | original integer-only reference | the last integer anywhere in the answer | `(-?[$]?\\d[\\d,]*)` |\n \n The integer-only flexible extractor reads `18.0` as `0` and `3.5` as `5`; this\n-adapter preserves each decimal as one number. It retains strict-match extraction\n-alongside the scored extraction in evidence. The legacy evidence key `official`\n+adapter preserves each decimal as one number. Commas are removed in both extractors;\n+currency signs are removed by the flexible extractor. Evidence records both extractions\n+and which one supplied the scored number. The legacy evidence key `official`\n and function name `official_flexible` remain for compatibility; neither certifies\n equivalence to an upstream scorer. Upstream exact match compares normalized strings,\n whereas this adapter accepts `18.0` for a gold answer of `18`.\n@@ -43,7 +44,8 @@ Which bytes are graded\n `answer.txt`, written by the harness (or by `python3 qa submit`). The reasoning is not\n graded separately or required: a harness that emits only `18` scores the same as one\n that emits a full derivation ending in `18`. Extraction scans the entire answer and\n-uses its last number.\n+uses the first `####` marker if present, otherwise its last number. A malformed first\n+marker receives zero rather than falling back to another number.\n \n The split\n ---------\n@@ -84,7 +86,7 @@ ANSWER_MARK = \"####\"\n #: This differs from the immutable original integer-only flexible-extract fixture.\n FLEXIBLE_RE = re.compile(r\"(-?[$]?(?:\\d[\\d,]*\\.\\d+|\\d[\\d,]*))\")\n \n-#: Adapter strict-marker extraction uses the last match. The pattern also appears\n+#: Adapter strict-marker extraction uses the first marker. The pattern also appears\n #: upstream; matching the pattern alone does not establish full scorer equivalence.\n STRICT_RE = re.compile(r\"#### (\\-?[0-9\\.\\,]+)\")\n \n@@ -127,11 +129,15 @@ def official_flexible(text: str) -> str:\n \n \n def official_strict(text: str) -> str:\n-    r\"\"\"Adapter's last `#### (\\-?[0-9\\.\\,]+)` match; legacy function name.\"\"\"\n-    found = STRICT_RE.findall(text)\n-    if not found:\n+    r\"\"\"Extract `#### (\\-?[0-9\\.\\,]+)` at the first marker; legacy function name.\n+\n+    A malformed first marker returns an empty value, even if a later marker is valid.\n+    \"\"\"\n+    _, marker, suffix = text.partition(ANSWER_MARK)\n+    found = STRICT_RE.match(marker + suffix) if marker else None\n+    if found is None:\n         return \"\"\n-    return found[-1].replace(\",\", \"\")\n+    return found.group(1).replace(\",\", \"\")\n \n \n def numeric_equal(got: str, want: str) -> bool:\n@@ -151,14 +157,17 @@ def score(prediction: str, gold: dict) -> dict:\n     want = str(gold.get(\"answer\", \"\")).strip()\n     flexible = official_flexible(prediction or \"\")\n     strict = official_strict(prediction or \"\")\n-    ok = numeric_equal(flexible, want)\n+    extraction = \"strict_match\" if ANSWER_MARK in (prediction or \"\") else \"flexible_extract\"\n+    extracted = strict if extraction == \"strict_match\" else flexible\n+    ok = numeric_equal(extracted, want)\n     return {\n         \"reward\": 1.0 if ok else 0.0,\n         \"correct\": ok,\n         \"official\": {\"filter\": \"decimal-aware-extract\", \"strict_match\": strict,\n-                     \"flexible_extract\": flexible},\n+                     \"flexible_extract\": flexible, \"scored_extraction\": extraction,\n+                     \"scored_value\": extracted},\n         \"why\": (\n-            f\"decimal-aware-extract {flexible or '<no number>'} vs {want} -> \"\n+            f\"decimal-aware-extract ({extraction}) {extracted or '<no number>'} vs {want} -> \"\n             f\"{'match' if ok else 'no match'}\"\n             + (f\"; strict-match {strict or '<no #### marker>'} \"\n                f\"({'match' if numeric_equal(strict, want) else 'no match'})\"\n@@ -188,10 +197,12 @@ def _goal(question: str, gold: dict) -> str:\n         \"\\n\"\n         \"## How it is scored\\n\"\n         \"\\n\"\n-        \"- The last number in your answer is compared numerically with the reference\\n\"\n+        \"- If your answer contains `####`, the number immediately after its first\\n\"\n+        \"  occurrence is scored (write `#### 18`, including the space). Otherwise,\\n\"\n+        \"  the last number is compared numerically with the reference\\n\"\n         \"  answer (the adapter's `decimal-aware-extract` metric).\\n\"\n         \"- `18`, `18.0` and `The answer is 18` all score 1 if the reference is 18.\\n\"\n-        \"- Only the last number is scored; your working is not graded separately.\\n\"\n+        \"- Only the extracted number is scored; your working is not graded separately.\\n\"\n     )\n \n \ndiff --git a/data/datasets/livecodebench.py b/data/datasets/livecodebench.py\nindex f474f800..61efd401 100644\n--- a/data/datasets/livecodebench.py\n+++ b/data/datasets/livecodebench.py\n@@ -33,10 +33,9 @@ Reward is per-problem **pass@1**, computed by upstream's own code path: the pinn\n `pass_k_utils.compute_metrics_from_results` (`np.all(gen > 0)`) decides correctness. Both files\n travel as `VERIFY.inputs` out of the pinned archive, so the executor and the aggregation are\n upstream's bytes rather than a transcription of them; the check adds only the process boundary\n-and the platform's reward file. Deviations from upstream's harness, both recorded in the\n-evidence: the global timeout is capped at 600 s (upstream's `(6+1)*n_tests+5` reaches 726 s\n-here), and the reward is one task's pass@1 rather than a batch mean, because the platform grades\n-one task per check.\n+and the platform's reward file. The check uses upstream's global timeout budget\n+`(6+1)*n_tests+5`, within the platform's 900 s verifier bound. The reward is one task's\n+pass@1 rather than a batch mean, because the platform grades one task per check.\n \n What the agent sees\n -------------------\n@@ -278,8 +277,7 @@ def _verify(row: dict) -> dict:\n         ],\n         \"reward_file\": \"/verifier/reward.txt\",\n         \"evidence_file\": \"/verifier/evidence.json\",\n-        # Upstream's own global timeout reaches 726 s on the largest problem here; a check\n-        # capped at 600 s needs room to write its verdict rather than be killed by the runner.\n+        # Leave room beyond upstream's child budget for check startup and verdict writing.\n         \"timeout_s\": 900,\n     }\n     return bind_scorer_input(spec, task_id(row[\"index\"]), [\"tests.json\"])\ndiff --git a/data/datasets/livecodebench/verify/check.py b/data/datasets/livecodebench/verify/check.py\nindex 7f2d4dc9..646f81fb 100644\n--- a/data/datasets/livecodebench/verify/check.py\n+++ b/data/datasets/livecodebench/verify/check.py\n@@ -18,14 +18,15 @@ verbatim in `data/datasets/livecodebench.py`) then counts a generation as correc\n 0.0 -- which is the reward here, and why the metric is named `pass@1` in the evidence rather\n than \"accuracy\".\n \n-Two deviations, both recorded\n------------------------------\n-1. **The global timeout is capped.** Upstream kills the child after\n-   `(timeout + 1) * n_tests + 5` seconds; measured over this pool that is at most 726 s (103\n-   tests), and it scales with the problem. This check caps it at `CAP_S`, marks the run failed\n-   when the cap is hit -- the same verdict upstream reaches when it kills the child -- and says\n-   so in `why`.\n-2. **One generation, one problem.** The platform grades one task per check, so pass@k for\n+Timeout budget and the per-task metric\n+--------------------------------------\n+Upstream kills the child after `(timeout + 1) * n_tests + 5` seconds. The former 600 s\n+cap bounded the check's child wait, but could reject a correct program before upstream's\n+budget expired. Use the upstream budget: for 103 tests at timeout=6 it is 726 s, within\n+the adapter's existing 900 s verifier bound (`livecodebench.py::_verify`), which still\n+bounds the entire check. Removing the inner cap therefore preserves that outer bound.\n+\n+**One generation, one problem.** The platform grades one task per check, so pass@k for\n    k > 1 has no second sample to average over; k = 1 is the only well-defined value and the\n    evidence says so.\n \n@@ -59,8 +60,6 @@ from data.scaffolds.scorer_input import add_arguments, run_bound\n \n #: Upstream's per-test budget (`testing_util.run_test(..., timeout=6)`).\n PER_TEST_TIMEOUT = 6\n-#: This check's cap on upstream's `(timeout + 1) * n_tests + 5`.\n-CAP_S = 600\n \n \n def _workdir_on_path() -> None:\n@@ -175,7 +174,7 @@ def _score(args, inputs, receipt) -> int:\n         return _measure(args, 0.0, \"no answer (measured zero): solution.py is missing or empty\",\n                         total, 0, [])\n \n-    cap = min(CAP_S, (PER_TEST_TIMEOUT + 1) * total + 5)\n+    cap = (PER_TEST_TIMEOUT + 1) * total + 5\n     queue: multiprocessing.Queue = multiprocessing.Queue()\n     process = multiprocessing.Process(target=_child, args=(tests_text, solution, queue))\n     process.start()\ndiff --git a/data/datasets/physicsquestions.py b/data/datasets/physicsquestions.py\nindex f0b62f89..5dc930ff 100644\n--- a/data/datasets/physicsquestions.py\n+++ b/data/datasets/physicsquestions.py\n@@ -23,7 +23,7 @@ The metric, verbatim\n BIG-bench's `physics_questions/task.json` declares `metrics: [\"exact_str_match\", \"bleu\"]`\n and its examples carry a **list** target. `exact_str_match` is BIG-bench's standard\n metric: the prediction, stripped of surrounding whitespace, must equal one of the targets\n-exactly, after the reference strips the trailing period. So `7 km` and `7187 m` both score\n+exactly, after both sides strip trailing periods. So `7 km` and `7187 m` both score\n for the row above, and they are **not equal numbers** (7187 m is 7.187 km) -- they are two\n roundings of the same quantity, which is why the target is a list rather than a value.\n \n@@ -93,11 +93,11 @@ def accepted_answers(target: str) -> list[str]:\n def exact_str_match(prediction: str, ground_truth: str) -> bool:\n     \"\"\"BIG-bench's `exact_str_match`, as its examples define it.\n \n-    The prediction is stripped; the reference has a trailing period stripped (the task's\n-    own examples end in one and the answers do not). Nothing else is normalised: case and\n+    Both sides strip surrounding whitespace and trailing periods, as the answer contract\n+    promises. Nothing else is normalised: case and\n     units are part of the answer, which is why the dataset lists several spellings.\n     \"\"\"\n-    return str(prediction).strip() == str(ground_truth).strip().rstrip(\".\")\n+    return str(prediction).strip().rstrip(\".\") == str(ground_truth).strip().rstrip(\".\")\n \n \n def score(prediction: str, gold: dict) -> dict:\ndiff --git a/data/datasets/sportsunderstanding.py b/data/datasets/sportsunderstanding.py\nindex 18c0195f..25d6453d 100644\n--- a/data/datasets/sportsunderstanding.py\n+++ b/data/datasets/sportsunderstanding.py\n@@ -20,7 +20,8 @@ or the reverse), not with a free-text metric. ReWOO's copy flattened that into a\n \n `multiple_choice_grade` for a two-way generative task is \"does the response identify the\n correct choice\". The rule transcribed in the test is the narrowest one that does that\n-without guessing: the answer must contain the correct label, case-insensitively.\n+without guessing: the answer must identify the correct label, case-insensitively,\n+with an immediately negated label interpreted as its complement (see `_chosen_labels`).\n \n **The one honest weakness, stated here and not discovered later.** A response containing\n **both** labels (`it could be plausible or implausible`) satisfies a substring rule for\n@@ -77,19 +78,43 @@ def names_both(prediction: str) -> bool:\n     return all(substring_choice(prediction, label) for label in LABELS)\n \n \n+def _chosen_labels(prediction: str) -> set[str]:\n+    \"\"\"Resolve label words, mapping immediate negation to the complementary label.\n+\n+    Handle `not plausible`, `no plausible`, `n't plausible`, and contractions such as\n+    `isn't plausible` / `wasn't plausible` (also curly apostrophes), and the same forms\n+    before `implausible`. Whitespace may separate the negator and label; matching is\n+    case-insensitive. Conflicting resolved choices are not a single choice.\n+\n+    This is not a grammar parser: it does not handle double negation, intervening words\n+    (`not very plausible`), negation after a label (`plausible it isn't`), synonyms\n+    (`hardly plausible`), or sarcasm. `names_both` still rejects both literal labels.\n+    \"\"\"\n+    text = str(prediction).lower()\n+    choices = set()\n+    for match in re.finditer(r\"(?<![A-Za-z])(plausible|implausible)(?![A-Za-z])\", text):\n+        label = match.group(1)\n+        negated = re.search(r\"(?<![A-Za-z])(?:not|no|[A-Za-z]*n['\u2019]t)\\s+$\",\n+                            text[:match.start()])\n+        choices.add(LABELS[1 - LABELS.index(label)] if negated else label)\n+    return choices\n+\n+\n def score(prediction: str, gold: dict) -> dict:\n     want = str(gold.get(\"answer\", \"\")).lower()\n     both = names_both(prediction or \"\")\n-    hit = (not both) and substring_choice(prediction or \"\", want)\n+    choices = _chosen_labels(prediction or \"\")\n+    hit = (not both) and choices == {want}\n     return {\n         \"reward\": 1.0 if hit else 0.0,\n         \"correct\": hit,\n-        \"official\": {\"metric\": \"multiple_choice_grade (the correct label named)\",\n+        \"official\": {\"metric\": \"multiple_choice_grade (the correct label identified)\",\n                      \"label\": want,\n                      \"substring_rule\": substring_choice(prediction or \"\", want),\n-                     \"named_both_labels\": both},\n+                     \"named_both_labels\": both,\n+                     \"interpreted_labels\": sorted(choices)},\n         \"why\": (\n-            f\"{'names' if hit else 'does not name'} {want!r}\"\n+            f\"{'identifies' if hit else 'does not identify'} {want!r}\"\n             + (\"; the answer names both labels, so it did not choose\" if both else \"\")\n         ),\n     }\ndiff --git a/tests/quality/test_gsm8k_official_scorer.py b/tests/quality/test_gsm8k_official_scorer.py\nindex 5891a361..58910e50 100644\n--- a/tests/quality/test_gsm8k_official_scorer.py\n+++ b/tests/quality/test_gsm8k_official_scorer.py\n@@ -116,9 +116,9 @@ def test_adapter_comparison_is_distinct_from_string_and_float_exact_match(gsm8k)\n     (\"#### 7,000\", \"7000\"),\n     (\"#### -3.25\", \"-3.25\"),\n     (\"#### 18.0\", \"18.0\"),\n-    (\"#### 2 then #### 3.5\", \"3.5\"),\n+    (\"#### 2 then #### 3.5\", \"2\"),\n ])\n-def test_adapter_strict_marker_extraction_uses_last_match(gsm8k, text, extracted):\n+def test_adapter_strict_marker_extraction_uses_first_marker(gsm8k, text, extracted):\n     assert gsm8k.official_strict(text) == extracted\n \n \n"
+
+=== status ===
+$ git status --short
+exit_code: 0
+output:
+ M data/datasets/gsm8k.py
+ M data/datasets/livecodebench.py
+ M data/datasets/livecodebench/verify/check.py
+ M data/datasets/physicsquestions.py
+ M data/datasets/sportsunderstanding.py
+ M tests/quality/test_gsm8k_official_scorer.py
+?? tests/quality/test_w_metricfix.py
+
+=== baseline ===
+$ git rev-parse HEAD
+exit_code: 0
+output:
+38a302e5c5edb9d1b26b0e642a40301f013f5cad
+
+=== final-tests ===
+$ TMPDIR=/tmp/metricfix-tmp PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q --tb=short -p no:cacheprovider tests/quality/test_w_metricfix.py tests/quality/test_gsm8k_official_scorer.py --basetemp=/tmp/metricfix-pytest-final
+exit_code: 0
+output:
+..............................................                           [100%]
+46 passed in 0.12s
+
+=== final-cleanup ===
+$ python3 - <<'PY'
+import shutil
+from pathlib import Path
+for name in ('metricfix-pytest-final', 'metricfix-synthetic', 'metricfix-tmp'):
+    path = Path('/tmp') / name
+    if path.exists():
+        shutil.rmtree(path)
+    print(f'removed {path}')
+PY
+exit_code: 0
+output:
+removed /tmp/metricfix-pytest-final
+removed /tmp/metricfix-synthetic
+removed /tmp/metricfix-tmp
+
+=== protected-scope-and-cleanup ===
+$ python3 - <<'PY'
+import subprocess
+from pathlib import Path
+protected = ['AGENTS.md', 'registry/dataset-blockers.json', 'docs/adapter-integration-journal.md']
+checks = sorted(str(p) for p in Path('data/datasets').glob('*/verify/check.py')
+                if str(p) != 'data/datasets/livecodebench/verify/check.py')
+scoped = protected + checks
+result = subprocess.run(['git', 'diff', '--name-only', 'HEAD', '--', *scoped],
+                        capture_output=True, text=True, check=True)
+print('protected scope:')
+for path in scoped:
+    print(path)
+print('changed protected paths:', result.stdout.splitlines())
+assert result.stdout == ''
+print('temporary paths still present:', [str(p) for p in Path('/tmp').glob('metricfix-*')])
+assert not list(Path('/tmp').glob('metricfix-*'))
+PY
+exit_code: 0
+output:
+protected scope:
+AGENTS.md
+registry/dataset-blockers.json
+docs/adapter-integration-journal.md
+data/datasets/agentdojo/verify/check.py
+data/datasets/alfworld/verify/check.py
+data/datasets/appworld/verify/check.py
+data/datasets/bird_minidev/verify/check.py
+data/datasets/ds1000/verify/check.py
+data/datasets/gaia/verify/check.py
+data/datasets/jericho/verify/check.py
+data/datasets/scienceworld/verify/check.py
+data/datasets/spreadsheetbench/verify/check.py
+data/datasets/tau_bench/verify/check.py
+changed protected paths: []
+temporary paths still present: []
+
+=== final-scope-and-semantics-audit ===
+$ python3 - <<'PY'
+import ast
+import subprocess
+from pathlib import Path
+expected = {'data/datasets/gsm8k.py', 'data/datasets/livecodebench.py',
+            'data/datasets/livecodebench/verify/check.py', 'data/datasets/physicsquestions.py',
+            'data/datasets/sportsunderstanding.py', 'tests/quality/test_gsm8k_official_scorer.py',
+            'tests/quality/test_w_metricfix.py', 'registry/w-metricfix.md',
+            'registry/w-metricfix-validation.txt'}
+changed = set(subprocess.check_output(['git', 'diff', '--name-only', 'HEAD'], text=True).splitlines())
+untracked = set(subprocess.check_output(['git', 'ls-files', '--others', '--exclude-standard'], text=True).splitlines())
+assert changed | untracked == expected, (changed, untracked)
+print('changed/created files:', len(expected))
+for relative, names in (
+    ('data/datasets/gsm8k.py', ('numeric_equal', 'official_flexible')),
+    ('data/datasets/sportsunderstanding.py', ('substring_choice', 'names_both')),
+    ('data/datasets/livecodebench.py', ('_verify',)),
+):
+    before = ast.parse(subprocess.check_output(['git', 'show', f'HEAD:{relative}'], text=True))
+    after = ast.parse(Path(relative).read_text(encoding='utf-8'))
+    for name in names:
+        old = next(node for node in before.body if isinstance(node, ast.FunctionDef) and node.name == name)
+        new = next(node for node in after.body if isinstance(node, ast.FunctionDef) and node.name == name)
+        assert ast.dump(old) == ast.dump(new), (relative, name)
+        print(f'unchanged function AST: {relative}::{name}')
+for path in sorted(expected):
+    assert Path(path).stat().st_size < 1_000_000, path
+print('all nine candidate files < 1000000 bytes')
+PY
+exit_code: 0
+output:
+changed/created files: 9
+unchanged function AST: data/datasets/gsm8k.py::numeric_equal
+unchanged function AST: data/datasets/gsm8k.py::official_flexible
+unchanged function AST: data/datasets/sportsunderstanding.py::substring_choice
+unchanged function AST: data/datasets/sportsunderstanding.py::names_both
+unchanged function AST: data/datasets/livecodebench.py::_verify
+all nine candidate files < 1000000 bytes
+
+=== final-blocker-check ===
+$ python3 tools/check_dataset_blockers.py
+exit_code: 0
+output:
+{"valid": true, "datasets": 28, "shared_blockers": 0, "historical_records": 11, "production_authorized": false}
+
+=== final-diff-check ===
+$ git diff --check
+exit_code: 0
+output:
+<empty output>
+
+The diff-review output above uses JSON string encoding to preserve exact whitespace.
+
+=== staged-whitespace-check-before-encoding ===
+$ git diff --cached --check
+exit_code: 2
+output_json (decode to recover exact output bytes):
+"registry/w-metricfix-validation.txt:163: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:174: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:180: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:197: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:203: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:208: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:210: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:211: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:226: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:227: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:263: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:264: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:280: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:300: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:320: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:322: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:327: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:328: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:333: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:351: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:355: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:364: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:365: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:372: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:378: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:383: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:384: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:443: trailing whitespace.\n+ \nregistry/w-metricfix-validation.txt:444: trailing whitespace.\n+ \n"
+
+=== staged-whitespace-check-after-encoding ===
+$ git diff --cached --check
+exit_code: 0
+output:
+<empty output>
+
+=== committed-file-sizes ===
+$ python3 - <<'PY'
+import subprocess
+from pathlib import Path
+paths = subprocess.check_output(['git', 'diff', '--cached', '--name-only'], text=True).splitlines()
+for relative in paths:
+    size = Path(relative).stat().st_size
+    assert size < 1_000_000, relative
+    print(f'{size} {relative}')
+PY
+exit_code: 0
+output:
+14291 data/datasets/gsm8k.py
+19344 data/datasets/livecodebench.py
+10584 data/datasets/livecodebench/verify/check.py
+10819 data/datasets/physicsquestions.py
+10737 data/datasets/sportsunderstanding.py
+32609 registry/w-metricfix-validation.txt
+5104 registry/w-metricfix.md
+5875 tests/quality/test_gsm8k_official_scorer.py
+9108 tests/quality/test_w_metricfix.py

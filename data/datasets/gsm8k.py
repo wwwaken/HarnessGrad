@@ -15,21 +15,23 @@ it instead of imposing one -- see "The split" below.
 
 Scorer identity and provenance
 -----------------------------
-This adapter uses **decimal-aware-extract**: the last signed integer or decimal,
-with commas and currency signs removed, compared using an absolute tolerance of
-`1e-6` (exclusive). This is an adapter metric, distinct from upstream exact match.
+This adapter uses **decimal-aware-extract**: the number at the first `####` marker,
+or the last signed integer or decimal when no marker is present, compared using an
+absolute tolerance of `1e-6` (exclusive). This is an adapter metric, distinct from
+upstream exact match.
 The inherited integer-only reference is pinned to its actual repository commit in
 `tests/fixtures/gsm8k_original/`. Its historical upstream attribution is unverified;
 the fixture preserves the original contract, not a claim of upstream equivalence:
 
 | filter | rule | regex (verbatim) |
 | --- | --- | --- |
-| adapter strict-marker extraction | the last `#### <number>` | `#### (\-?[0-9\.\,]+)` |
+| adapter strict-marker extraction | the first `####` must start `#### <number>` | `#### (\-?[0-9\.\,]+)` |
 | original integer-only reference | the last integer anywhere in the answer | `(-?[$]?\d[\d,]*)` |
 
 The integer-only flexible extractor reads `18.0` as `0` and `3.5` as `5`; this
-adapter preserves each decimal as one number. It retains strict-match extraction
-alongside the scored extraction in evidence. The legacy evidence key `official`
+adapter preserves each decimal as one number. Commas are removed in both extractors;
+currency signs are removed by the flexible extractor. Evidence records both extractions
+and which one supplied the scored number. The legacy evidence key `official`
 and function name `official_flexible` remain for compatibility; neither certifies
 equivalence to an upstream scorer. Upstream exact match compares normalized strings,
 whereas this adapter accepts `18.0` for a gold answer of `18`.
@@ -43,7 +45,8 @@ Which bytes are graded
 `answer.txt`, written by the harness (or by `python3 qa submit`). The reasoning is not
 graded separately or required: a harness that emits only `18` scores the same as one
 that emits a full derivation ending in `18`. Extraction scans the entire answer and
-uses its last number.
+uses the first `####` marker if present, otherwise its last number. A malformed first
+marker receives zero rather than falling back to another number.
 
 The split
 ---------
@@ -84,7 +87,7 @@ ANSWER_MARK = "####"
 #: This differs from the immutable original integer-only flexible-extract fixture.
 FLEXIBLE_RE = re.compile(r"(-?[$]?(?:\d[\d,]*\.\d+|\d[\d,]*))")
 
-#: Adapter strict-marker extraction uses the last match. The pattern also appears
+#: Adapter strict-marker extraction uses the first marker. The pattern also appears
 #: upstream; matching the pattern alone does not establish full scorer equivalence.
 STRICT_RE = re.compile(r"#### (\-?[0-9\.\,]+)")
 
@@ -127,11 +130,15 @@ def official_flexible(text: str) -> str:
 
 
 def official_strict(text: str) -> str:
-    r"""Adapter's last `#### (\-?[0-9\.\,]+)` match; legacy function name."""
-    found = STRICT_RE.findall(text)
-    if not found:
+    r"""Extract `#### (\-?[0-9\.\,]+)` at the first marker; legacy function name.
+
+    A malformed first marker returns an empty value, even if a later marker is valid.
+    """
+    _, marker, suffix = text.partition(ANSWER_MARK)
+    found = STRICT_RE.match(marker + suffix) if marker else None
+    if found is None:
         return ""
-    return found[-1].replace(",", "")
+    return found.group(1).replace(",", "")
 
 
 def numeric_equal(got: str, want: str) -> bool:
@@ -151,14 +158,17 @@ def score(prediction: str, gold: dict) -> dict:
     want = str(gold.get("answer", "")).strip()
     flexible = official_flexible(prediction or "")
     strict = official_strict(prediction or "")
-    ok = numeric_equal(flexible, want)
+    extraction = "strict_match" if ANSWER_MARK in (prediction or "") else "flexible_extract"
+    extracted = strict if extraction == "strict_match" else flexible
+    ok = numeric_equal(extracted, want)
     return {
         "reward": 1.0 if ok else 0.0,
         "correct": ok,
         "official": {"filter": "decimal-aware-extract", "strict_match": strict,
-                     "flexible_extract": flexible},
+                     "flexible_extract": flexible, "scored_extraction": extraction,
+                     "scored_value": extracted},
         "why": (
-            f"decimal-aware-extract {flexible or '<no number>'} vs {want} -> "
+            f"decimal-aware-extract ({extraction}) {extracted or '<no number>'} vs {want} -> "
             f"{'match' if ok else 'no match'}"
             + (f"; strict-match {strict or '<no #### marker>'} "
                f"({'match' if numeric_equal(strict, want) else 'no match'})"
@@ -183,15 +193,17 @@ def _goal(question: str, gold: dict) -> str:
         f"    python3 {base.CLI_FILE} submit \"<the number>\"\n"
         "\n"
         "For example, a correct submission is `18` or `1250` after the commas are\n"
-        "dropped. Units, currency signs and explanatory prose are stripped before the\n"
-        "comparison; the reasoning is not graded.\n"
+        "dropped. Without a `####` marker, units, currency signs and explanatory prose\n"
+        "are ignored during extraction; the reasoning is not graded.\n"
         "\n"
         "## How it is scored\n"
         "\n"
-        "- The last number in your answer is compared numerically with the reference\n"
+        "- If your answer contains `####`, the number immediately after its first\n"
+        "  occurrence is scored (write `#### 18`, including the space). Otherwise,\n"
+        "  the last number is compared numerically with the reference\n"
         "  answer (the adapter's `decimal-aware-extract` metric).\n"
         "- `18`, `18.0` and `The answer is 18` all score 1 if the reference is 18.\n"
-        "- Only the last number is scored; your working is not graded separately.\n"
+        "- Only the extracted number is scored; your working is not graded separately.\n"
     )
 
 

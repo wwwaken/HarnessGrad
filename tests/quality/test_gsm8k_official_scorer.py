@@ -116,9 +116,9 @@ def test_adapter_comparison_is_distinct_from_string_and_float_exact_match(gsm8k)
     ("#### 7,000", "7000"),
     ("#### -3.25", "-3.25"),
     ("#### 18.0", "18.0"),
-    ("#### 2 then #### 3.5", "3.5"),
+    ("#### 2 then #### 3.5", "2"),
 ])
-def test_adapter_strict_marker_extraction_uses_last_match(gsm8k, text, extracted):
+def test_adapter_strict_marker_extraction_uses_first_marker(gsm8k, text, extracted):
     assert gsm8k.official_strict(text) == extracted
 
 

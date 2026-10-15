@@ -33,10 +33,9 @@ Reward is per-problem **pass@1**, computed by upstream's own code path: the pinn
 `pass_k_utils.compute_metrics_from_results` (`np.all(gen > 0)`) decides correctness. Both files
 travel as `VERIFY.inputs` out of the pinned archive, so the executor and the aggregation are
 upstream's bytes rather than a transcription of them; the check adds only the process boundary
-and the platform's reward file. Deviations from upstream's harness, both recorded in the
-evidence: the global timeout is capped at 600 s (upstream's `(6+1)*n_tests+5` reaches 726 s
-here), and the reward is one task's pass@1 rather than a batch mean, because the platform grades
-one task per check.
+and the platform's reward file. The check uses upstream's global timeout budget
+`(6+1)*n_tests+5`, within the platform's 900 s verifier bound. The reward is one task's
+pass@1 rather than a batch mean, because the platform grades one task per check.
 
 What the agent sees
 -------------------
@@ -278,8 +277,7 @@ def _verify(row: dict) -> dict:
         ],
         "reward_file": "/verifier/reward.txt",
         "evidence_file": "/verifier/evidence.json",
-        # Upstream's own global timeout reaches 726 s on the largest problem here; a check
-        # capped at 600 s needs room to write its verdict rather than be killed by the runner.
+        # Leave room beyond upstream's child budget for check startup and verdict writing.
         "timeout_s": 900,
     }
     return bind_scorer_input(spec, task_id(row["index"]), ["tests.json"])

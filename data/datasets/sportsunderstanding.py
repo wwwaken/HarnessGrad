@@ -20,7 +20,8 @@ or the reverse), not with a free-text metric. ReWOO's copy flattened that into a
 
 `multiple_choice_grade` for a two-way generative task is "does the response identify the
 correct choice". The rule transcribed in the test is the narrowest one that does that
-without guessing: the answer must contain the correct label, case-insensitively.
+without guessing: the answer must identify the correct label, case-insensitively,
+with an immediately negated label interpreted as its complement (see `_chosen_labels`).
 
 **The one honest weakness, stated here and not discovered later.** A response containing
 **both** labels (`it could be plausible or implausible`) satisfies a substring rule for
@@ -77,19 +78,43 @@ def names_both(prediction: str) -> bool:
     return all(substring_choice(prediction, label) for label in LABELS)
 
 
+def _chosen_labels(prediction: str) -> set[str]:
+    """Resolve label words, mapping immediate negation to the complementary label.
+
+    Handle `not plausible`, `no plausible`, `n't plausible`, and contractions such as
+    `isn't plausible` / `wasn't plausible` (also curly apostrophes), and the same forms
+    before `implausible`. Whitespace may separate the negator and label; matching is
+    case-insensitive. Conflicting resolved choices are not a single choice.
+
+    This is not a grammar parser: it does not handle double negation, intervening words
+    (`not very plausible`), negation after a label (`plausible it isn't`), synonyms
+    (`hardly plausible`), or sarcasm. `names_both` still rejects both literal labels.
+    """
+    text = str(prediction).lower()
+    choices = set()
+    for match in re.finditer(r"(?<![A-Za-z])(plausible|implausible)(?![A-Za-z])", text):
+        label = match.group(1)
+        negated = re.search(r"(?<![A-Za-z])(?:not|no|[A-Za-z]*n['’]t)\s+$",
+                            text[:match.start()])
+        choices.add(LABELS[1 - LABELS.index(label)] if negated else label)
+    return choices
+
+
 def score(prediction: str, gold: dict) -> dict:
     want = str(gold.get("answer", "")).lower()
     both = names_both(prediction or "")
-    hit = (not both) and substring_choice(prediction or "", want)
+    choices = _chosen_labels(prediction or "")
+    hit = (not both) and choices == {want}
     return {
         "reward": 1.0 if hit else 0.0,
         "correct": hit,
-        "official": {"metric": "multiple_choice_grade (the correct label named)",
+        "official": {"metric": "multiple_choice_grade (the correct label identified)",
                      "label": want,
                      "substring_rule": substring_choice(prediction or "", want),
-                     "named_both_labels": both},
+                     "named_both_labels": both,
+                     "interpreted_labels": sorted(choices)},
         "why": (
-            f"{'names' if hit else 'does not name'} {want!r}"
+            f"{'identifies' if hit else 'does not identify'} {want!r}"
             + ("; the answer names both labels, so it did not choose" if both else "")
         ),
     }
