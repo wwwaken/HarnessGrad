@@ -190,39 +190,57 @@ def harness_names(repo: Path) -> list[str]:
         return []
 
 
-def declares_load(path: Path) -> bool:
-    """Whether a module is a dataset: it declares a top-level, zero-argument ``load()``.
+def declares_dataset(path: Path) -> bool:
+    """Whether a module declares itself a dataset: ``KIND = "dataset"``.
 
-    Parsed with ``ast`` rather than imported: importing every dataset would
-    execute it (and could need a container or a model endpoint) just to list a
-    name.  The zero-argument test is what separates a dataset from
-    ``data/scaffolds/registry.py``, whose ``load(name)`` is the loader the driver calls:
-    it is infrastructure, not a task set.
+    This is the rule ``data/scaffolds/registry.py:published()`` applies, and that
+    module is documented as the one answer to "which datasets exist". The rule is
+    deliberately the quiet one: a module that does not declare itself is a fixture,
+    so a dataset that forgets the line is hidden from the chooser rather than
+    offered as something a reader can run.
+
+    Parsed with ``ast`` rather than imported, for the reason the previous
+    ``declares_load`` gave: importing every adapter would execute it -- and could
+    need a container or a model endpoint -- just to list a name. Matching on the
+    parsed literal rather than the source text also survives quote style;
+    ``agentdojo`` spells it ``'dataset'``.
+
+    It replaces a ``declares_load`` test that required a *zero-argument* ``load()``.
+    That test disagreed with the registry in both directions, and the disagreement
+    was visible to a reader: it dropped ``musique``, which declares a keyword-only
+    ``load(*, mode=...)``, while keeping the three top-level fixtures, which declare
+    ``KIND = "fixture"`` and were never datasets at all.
     """
     try:
         tree = ast.parse(path.read_text(encoding="utf-8", errors="replace"))
     except (OSError, SyntaxError, ValueError):
         return False
     for node in tree.body:
-        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        if not isinstance(node, ast.Assign):
             continue
-        if node.name != "load":
+        if not any(isinstance(t, ast.Name) and t.id == "KIND" for t in node.targets):
             continue
-        args = node.args
-        if (not args.args and not args.posonlyargs and not args.kwonlyargs
-                and args.vararg is None and args.kwarg is None):
-            return True
+        try:
+            return ast.literal_eval(node.value) == "dataset"
+        except (ValueError, SyntaxError):
+            return False
     return False
 
 
 def dataset_names(repo: Path) -> list[str]:
-    """``data/datasets/*.py (plus top-level fixtures)`` modules that declare a top-level ``load()``."""
-    root = repo / "data"
+    """The datasets a reader may choose -- the same set ``registry.published()`` returns.
+
+    Reads ``data/datasets/`` only. The top-level ``data/*.py`` modules are the
+    platform's own scaffolding (``demo``, ``probe_set``, ``broken_service``,
+    ``verify_*``); offering them beside real datasets is the confusion measured on
+    2026-10-06 and recorded in ``data/scaffolds/registry.py``.
+    """
     try:
-        return sorted(p.stem for directory in (root, root / "datasets")
-                      for p in directory.glob("*.py") if declares_load(p))
+        paths = sorted((repo / "data" / "datasets").glob("*.py"))
     except OSError:
         return []
+    return [p.stem for p in paths
+            if p.stem not in ("registry", "__init__") and declares_dataset(p)]
 
 
 def improver_registry(repo: Path) -> tuple[list[str], str | None, str | None]:

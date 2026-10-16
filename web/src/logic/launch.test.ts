@@ -22,7 +22,7 @@ import type { LaunchOptions } from "@/types";
 
 const OPTIONS: LaunchOptions = {
   harnesses: ["loop", "loop_plain"],
-  datasets: ["demo", "terminal_bench"],
+  datasets: ["gsm8k", "terminal_bench"],
   samplings: ["all", "random_10"],
   improvers: ["deepseek", "codex"],
   modes: ["A", "B"],

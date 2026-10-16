@@ -19,9 +19,9 @@ cd web && python3 scripts/build_fixtures.py     # reads ../runs/ read-only
 | `run-ds-rrsi.json` | `runs/ds-rrsi` — the compare partner | 164 KB |
 | `task-ds-dgm-r0-cobol-modernization.json` | verdict + full trace for one task | 85 KB |
 | `task-ds-dgm-r0-fix-git.json` | verdict + full trace for one task | 25 KB |
-| `launch-options.json` | the harnesses, datasets and improver names actually on this machine, plus which fields come from `.env` | 4 KB |
+| `launch-options.json` | the harnesses, datasets and improver names actually on this machine, plus which fields come from `.env` | 7 KB |
 
-The whole directory is ~440 KB. The real `runs/` tree is tens of megabytes and is not
+The whole directory is ~444 KB. The real `runs/` tree is tens of megabytes and is not
 committed here.
 
 ## What is verbatim, and what is derived

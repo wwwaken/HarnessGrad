@@ -43,6 +43,13 @@ REPO = WEB.parent
 RUNS = REPO / "runs"
 OUT = WEB / "src" / "fixtures" / "data"
 
+# The read API owns the rule for "which datasets exist"; import it rather than globbing here
+# as well. Globbing twice is how the fixtures and the API drifted apart: this file filtered
+# `verify_*` and the API did not, and neither applied the registry's `KIND` declaration, so
+# one offered six scaffolding modules and the other silently dropped `musique`.
+sys.path.insert(0, str(WEB))
+from server.launch import dataset_names  # noqa: E402
+
 # Runs shown in the Experiments table. Chosen for coverage, not for score.
 CURATED_RUNS = [
     "ds-dgm",              # valid, not certified; the flagship compare run
@@ -411,12 +418,7 @@ def build_launch_options() -> dict:
         d.name for d in (REPO / "base_harness").iterdir()
         if (d / "harness.json").is_file()
     )
-    datasets = sorted(
-        p.stem for directory in (REPO / "data", REPO / "data/datasets")
-        for p in directory.glob("*.py")
-        if not p.stem.startswith(("registry", "verify_"))
-        and not (directory.name == "datasets" and p.stem == "__init__")
-    )
+    datasets = dataset_names(REPO)
     improvers_raw = read_json(REPO / "improvers" / "improvers.json") or {}
     improver_names = sorted((improvers_raw.get("improvers") or {}).keys())
     if improvers_raw.get("default"):
