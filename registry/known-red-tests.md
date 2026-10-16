@@ -881,3 +881,37 @@ file cleans up correctly when it is allowed to finish.
 `docker network inspect <name>` *before* believing the failure, and never run this file in the foreground
 under a short timeout during a parallel sweep. A red here that names `already exists` is a leftover, not a
 defect. This belongs with the file's other "do not mistake these for regressions" entries.
+
+## Sweep on 2026-10-16 - `twowikimultihopqa`'s oracle arm is red, and the test is the stale part
+
+Found while running the AIME registration's acceptance set. Two node ids, one cause:
+
+| node id | classification |
+| --- | --- |
+| `test_dataset_controls.py::test_the_control_reaches_one_and_the_noop_reaches_zero[twowikimultihopqa]` | pre-existing |
+| `test_qa_dataset_contract.py::test_the_check_grades_the_reference_answer_as_one[twowikimultihopqa]` | pre-existing |
+
+The mechanical question first: **was either file, or the module it exercises, changed by this work?**
+No. `git diff --name-only 2a28e1fd..HEAD` touches neither `data/datasets/twowikimultihopqa.py` nor
+`data/scaffolds/qa/`, and `git log -S 'twowiki_prediction_json_pair_schema_unsupported'` puts the
+refusal in `4186c39b`, `6b0c78ea`, `5c7a94b3` and `fbcf70d8` - all ancestors of the pre-session HEAD
+`2a28e1fd`. Confirmed by **reproduction, not by reading**: a registered worktree at `2a28e1fd`
+(`git worktree add --detach`) fails the controls test with the identical
+`CONTROL FAILED: expected reward 1, got -1`, and was removed afterwards.
+
+What it actually is. The oracle arm submits the released answer and the **scorer refuses the item**:
+
+    twowiki_prediction_json_pair_schema_unsupported: predicted_evidence pairs cannot express 2Wiki
+    evidence triples; submit supporting_facts and evidence in answer.txt JSON via qa submit @submission.json
+
+`returncode 3`, `measured: false`, `reward -1` - the correct refusal shape, and exactly the
+`EVIDENCE_AWARE` / pair-schema refusal the fidelity phase's registry note records as deliberate. So
+the **test's expectation is the stale part**: `test_dataset_controls.py` still asks the oracle for
+`reward 1` on a dataset whose scorer is documented as unable to express its evidence, and
+`test_qa_dataset_contract.py` asks the same through `_materialize(..., oracle=True)`.
+
+Fix shape, not applied here because it is a decision about the dataset rather than a rename: either
+the oracle arm must submit the structured `submission.json` form the refusal names, or
+`twowikimultihopqa` joins the refusal family with its reason recorded, the way `gaia` and the four
+permanent refusals are handled. Leaving it red is the one option that is not available, because it
+makes two real gates read as noise.

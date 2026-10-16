@@ -50,8 +50,12 @@ def tracked_registry():
 ])
 def test_every_journal_coverage_entry_points_at_its_migrated_review(
         dataset, blocker, tracked_registry):
+    # The title each dataset's own review carries. `aime` is the first entry whose review was
+    # written for a port rather than recovered from the combined b2 document, so its title
+    # follows the per-dataset convention above rather than the `## <name> source-only review`
+    # spelling the b2 filings use.
     titles = {"fever": "FEVER", "physicsquestions": "Physics Questions",
-              "reasoning_gym": "Reasoning Gym"}
+              "reasoning_gym": "Reasoning Gym", "aime": "AIME"}
     reviews = [item for item in blocker["evidence"]
                if item == {"kind": "external-reference",
                            "path": f"/site/dataset-reviews/{dataset}.md",

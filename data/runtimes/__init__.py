@@ -9,7 +9,7 @@ NATIVE_PINS = {
     "chessbench_puzzles": {
         "dataset": "chessbench_puzzles",
         "manifest": "data/runtimes/chessbench_puzzles-native.json",
-        "sha256": "b659926d93273b11654b140801c83e9a1d5231a3c679310a5981ab6befcbc20c",
+        "sha256": "615b3b6fb8a1b9eff2dd75187ba739a7dc3363f8e1af31b017600ab5f3632859",
     },
     "alfworld": {
         "dataset": "alfworld",

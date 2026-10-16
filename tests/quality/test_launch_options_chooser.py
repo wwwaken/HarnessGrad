@@ -70,7 +70,7 @@ def test_the_chooser_offers_declared_datasets_and_nothing_else():
 
     assert offered == datasets, (
         "the Launch form must offer exactly the modules that declare KIND = 'dataset'")
-    assert len(offered) == 28, f"expected the registry's 28 datasets, got {len(offered)}"
+    assert len(offered) == 29, f"expected the registry's 29 datasets, got {len(offered)}"
     assert not (set(offered) & set(fixtures)), f"fixtures offered: {sorted(set(offered) & set(fixtures))}"
 
     # The three top-level scaffolding modules call themselves fixtures in their own source.

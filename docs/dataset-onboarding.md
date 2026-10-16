@@ -88,7 +88,7 @@ onboarded without a way to show its grade is reachable.
 | the check that runs over *every* published dataset | `tests/quality/test_dataset_lint.py` |
 | the check that every dataset declares a control and a metric test, and runs the controls | `tests/quality/test_dataset_controls.py` |
 | the classification: derived axes plus the one judged axis, as a `(demand, surface)` pair | `tools/dataset_classes.py` |
-| current blocker families, work status, evidence and next actions; preserved historical incompletes | `docs/dataset-blockers.json`; validate with `python3 tools/check_dataset_blockers.py` without importing adapters |
+| current blocker families, work status, evidence and next actions; preserved historical incompletes | `registry/dataset-blockers.json`; validate with `python3 tools/check_dataset_blockers.py` without importing adapters. **The registry moved here from `docs/dataset-blockers.json`**, which no longer exists; citations of the old path elsewhere in this repository are historical records and are deliberately left alone |
 | the declared coverage gap (a demand the vocabulary names with no adapter yet) | `tools/dataset_classes.py::UNCOVERED_DEMANDS` — `memory` today, with its two planned surfaces and the five screened candidates |
 | which Harness function a dataset makes score-relevant, and which functions no dataset covers | `tools/dataset_classes.py::EXERCISES` / `FUNCTIONS` / `UNCOVERED_FUNCTIONS`; the reasoning is in `docs/harness-functional-coverage.md` |
 | the shared control for `command` datasets | `data/scaffolds/command_control.py` + `data/scaffolds/command_oracle_harness/` |

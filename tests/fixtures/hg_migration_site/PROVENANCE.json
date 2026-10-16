@@ -409,5 +409,14 @@
   "bytes": 4755,
   "sha256": "d913fcdd8f8d5c4e15543dc688b13efc1d944545cabed7b034278f490a1c33e0",
   "transform": "section extracted verbatim; title line added; provenance comment added"
+ },
+ {
+  "reference": "/site/dataset-reviews/aime.md",
+  "carrier": "tests/fixtures/hg_migration_site/dataset-reviews/aime.md",
+  "source_path": "docs/dataset-reviews/aime.md",
+  "source_commit": "67c9a6817a8684245e9ee7620ec82c9fdb721f95",
+  "bytes": 11224,
+  "sha256": "282ab4122a5f5d2048eb63cafc7e1328f1029a484bd267e90bb4679f94da6c7d",
+  "transform": "verbatim copy of the tracked file. Unlike the six migrations above, this one is a FORWARD archive rather than a recovery: docs/dataset-reviews/aime.md is present in this repository, and its carrier exists because the /site/ citation convention requires an archived copy of every cited review. source_commit is the commit that introduced the review."
  }
 ]

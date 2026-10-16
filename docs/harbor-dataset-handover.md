@@ -27,20 +27,28 @@ execution. Borrow those; do not inherit the execution model.
 
 ### The per-adapter table
 
-Fill this in once per adapter before touching code. Four questions decide everything.
+Fill this in once per adapter before touching code. **Five** questions decide everything. The
+fifth was added after the first port attempt, because it is the one that is easiest to skip and
+it killed the obvious first candidate.
 
-| adapter | container needed? | delivery | `parity_experiment.json`? | Harbor is the upstream? | route | runnable today? |
-| --- | --- | --- | --- | --- | --- | --- |
-| `aime` | no (text + exact match) | one-shot | ? | no — the metric is the paper's | **port** | yes |
-| `gpqa-diamond` | no | one-shot | ? | no | **port** | yes |
-| `hle` | no | one-shot | ? | no | **port** | yes |
-| `simpleqa` | no | one-shot | ? | no | **port** | yes |
-| `locomo` | no | one-shot, whole transcript | yes | no — upstream is `snap-research/locomo` | **port** | yes |
-| `swebench` | yes | environment | ? | **no** — upstream is the SWE-bench package | wrap | no — blocked |
-| `terminal-bench` | yes | environment | ? | **yes** — Harbor is the official harness | wrap | no — blocked |
-| `osworld`, `theagentcompany`, `tau3-bench`, `mlgym-bench`, `swelancer` | yes | environment | ? | no | wrap | no — blocked |
+| adapter | container needed? | delivery | upstream open + pinnable? | `parity_experiment.json`? | Harbor is the upstream? | route | runnable today? |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `aime` | no (text + integer match) | one-shot | **yes** — `GAIR-NLP/AIME-Preview` @ `7011a9ea…`, 3 JSONL, 162 KB | **no** | no | **port** | yes |
+| `gpqa-diamond` | no | one-shot | **no** — upstream is HF `Idavidrein/gpqa`, **gated**; Harbor's generated tasks sit in a **4.2 GB** repo | yes (87.88 ± 0.58 vs 87.21 ± 0.34) | no | port, but see §2 | blocked on data |
+| `locomo` | no | one-shot, whole transcript | ? | yes | no | **port** | yes |
+| `simpleqa` | no | one-shot | ? | ? | no | port | yes |
+| `swebench` | yes | environment | ? | ? | **no** — upstream is the SWE-bench package | wrap | no — blocked |
+| `terminal-bench` | yes | environment | ? | ? | **yes** — Harbor is the official harness | wrap | no — blocked |
 
-`?` means unverified. Run the check described in §3 to fill it.
+`?` means unverified. Run the checks described in §2 and §3 to fill it.
+
+**Why the fifth question is decisive.** A gated upstream cannot be pinned by `downloads()`, and
+Harbor's generated tasks are published in `harbor-framework/harbor-datasets`, which is **4.2 GB**
+— too large to fetch for one dataset, and `downloads()` has no per-file kind. So an adapter whose
+only reachable data source is either gated or inside that repository is **not** a first target,
+however simple its metric is. `gpqa-diamond` is exactly this case: a one-line metric and a good
+parity record, and no data we can pin. `aime` became the first target because its upstream is a
+small open repository.
 
 **Rule of thumb:** if the task is "read this text, answer this question, compare to gold", port it
 and it runs today. If the task is "work inside an environment and leave artifacts for a verifier",
@@ -74,9 +82,13 @@ is a **platform capability**, not a labelling choice: answering it needs a recor
 whether the Harness wrote to a store. `.state/` is a per-task tmpfs and never reaches the curve,
 so today that question has no answer in the data.
 
-**Also check coverage when labelling.** Today `exercises` never uses `delegation`, `reliability` or
-`cost` across all 28 datasets, and `demand: memory` has no dataset at all. A new dataset that fills
-one of those is worth more than one that duplicates an existing cell.
+**Also check coverage when labelling, and expect a port to add none.** `exercises` still never uses
+`delegation`, `reliability` or `cost` across all 29 datasets, and `demand: memory` has no dataset at
+all. `aime` — the first port actually completed — landed on the existing `(reasoning, reasoning)`
+cell with the existing `{context, verification}` exercise set, so it moved coverage by **zero**. That
+is the expected result of porting a member of a family you already have, and it is the reason to
+pick the next target from the gap list rather than from the list of adapters that look easiest. A new
+dataset that fills one of those cells is worth more than one that duplicates an existing cell.
 
 ## 2. What a Harbor adapter is made of, and where the data is
 
@@ -132,11 +144,12 @@ Harbor-specific changes.
 
 | step | what changes for Harbor |
 | --- | --- |
-| **0. triage** | Answer the four questions in §0. Container + environment-shaped → **stop**, it is blocked. Also check for `parity_experiment.json`. |
+| **0. triage** | Answer the five questions in §0. Container + environment-shaped → **stop**, it is blocked. Also check for `parity_experiment.json`. |
 | **1. read the source, not the README** | **Find the scorer**, wherever this adapter keeps it — a task-template verifier, or a `metric.py` (§2). Read **`parity_experiment.json`** if it exists. Also settle the **delivery shape** (§1) — it decides the label. |
 | **2. choose the gate-3 form** | Transcribe the scorer's rule verbatim and pin its source; or report a published table column under its own name; or refuse. Where a parity record exists, cite it as the equivalence evidence. |
-| **3. `downloads()`** | Pin **`harbor-framework/harbor-datasets`** at a commit and digest — *not* the adapter's own upstream, which is often gated (GPQA's is). Record the provenance chain in the docstring. |
-| **6. scorer into a test + drift test** | Quote the scorer's lines, **pin `harbor-datasets`**, cite the parity record, and add the drift test so a change upstream breaks our test rather than our number. |
+| **3. `downloads()`** | Pin **what the adapter actually reads**, which is not the same repository twice. If the adapter's own upstream is open and small, pin *that* at a commit and digest and leave `harbor-datasets` alone (AIME: `GAIR-NLP/AIME-Preview` @ `7011a9ea…`). Only when the upstream is gated or absent do you pin `harbor-framework/harbor-datasets` at a commit and digest — and the 4.2 GB figure is why that fallback usually ends the attempt instead of starting it (GPQA). Record the provenance chain in the docstring either way, and watch for adapters that fetch from a **branch** rather than a commit: Harbor's AIME `main.py` reads `raw.githubusercontent.com/.../main/...`, which moves, so the commit is the fix, not a nicety. |
+| **5. the instruction** | Harbor's `instruction.md` is the task text and it does **not** state the metric. Carry the platform's interface facts — the answer path, and the `qa submit` sentence `tests/quality/test_qa_dataset_contract.py` requires — and **do not restate the comparison rule**. For a bare string equality, spelling out that `070` and `70.` score 0 removes a format trap the benchmark leaves in place, and our number stops being comparable to Harbor's; an instruction-level advantage is still an advantage. Eleven adapters here *do* restate their metrics, so this is a deliberate exception for ported tasks, not the house style. `aime` records the decision in `_goal`; `gaia` and `terminal_bench` take the same position. |
+| **6. scorer into a test + drift test** | Quote the scorer's lines, pin the source you pinned in step 3, cite the parity record **if one exists** (AIME has none, so the transcription carries the whole claim), and add the drift test so a change upstream breaks our test rather than our number. Vendoring the files and re-deriving their **git blob digests** is stronger than a sha256 alone: a fixture edited by one byte cannot then pass as "the same file". |
 | **7. label and register** | As in the base doc, **plus** a `source` field pointing at Harbor — which needs the schema change listed under prerequisites. The registry row is an exact set of seven fields today and is drift-checked against `tools/dataset_classes.py`. |
 
 The three hard gates are unchanged: **step 0** (can it be done at all), **step 5** (oracle → 1 and

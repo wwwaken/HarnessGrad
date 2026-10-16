@@ -133,6 +133,10 @@ _JOURNAL_REVIEWS = {
     "fever": ("/site/dataset-reviews/fever.md", "# FEVER source-only journal review"),
     "physicsquestions": ("/site/dataset-reviews/physicsquestions.md", "# Physics Questions source-only journal review"),
     "reasoning_gym": ("/site/dataset-reviews/reasoning_gym.md", "# Reasoning Gym source-only journal review"),
+    # The first *new* journal-coverage blocker since the 2026-10-15 closures, and a new filing
+    # rather than a migration: `aime` is the platform's first ported Harbor adapter, and its
+    # review carries the provenance and the instruction-fidelity decision that route needs.
+    "aime": ("/site/dataset-reviews/aime.md", "# AIME source-only journal review"),
     **{name: ("/site/dataset-source-reviews-b2.md", f"## {name} source-only review")
        for name in ("sportsunderstanding", "spreadsheetbench", "strategyqa")},
 }
@@ -141,17 +145,17 @@ _JOURNAL_REVIEWS = {
 def test_every_journal_coverage_dataset_points_to_its_migrated_review(document):
     """Every *open* journal-coverage blocker must point at its migrated review.
 
-    All six reviewed datasets closed their journal-coverage blocker on 2026-10-15, so `covered` is
-    empty today: the loop below now guards the *next* journal-coverage blocker rather than a live
-    set, and it refuses one whose review identity was never mapped instead of raising `KeyError`.
-    The non-vacuity check therefore moved to the mapping itself - every migrated review identity
-    must still name a published dataset, and there must still be all six of them, because the
-    parametrized content check below is driven by this same mapping and would shrink silently
-    with it.
+    All six reviewed datasets closed their journal-coverage blocker on 2026-10-15, and `aime`
+    opened the next one when it was registered as the platform's first ported Harbor adapter, so
+    the loop below finally has a live set to guard rather than only a hypothetical next entry. It
+    refuses a blocker whose review identity was never mapped instead of raising `KeyError`. The
+    non-vacuity check rides on the mapping itself - every identity must name a published dataset,
+    and the count is pinned so the parametrized content check below cannot shrink silently. The
+    pin is a floor on care, not a ceiling: registering a dataset raises it deliberately.
     """
     published = {e["dataset"] for e in document["datasets"]}
     assert set(_JOURNAL_REVIEWS) <= published, sorted(set(_JOURNAL_REVIEWS) - published)
-    assert len(_JOURNAL_REVIEWS) == 6, sorted(_JOURNAL_REVIEWS)
+    assert len(_JOURNAL_REVIEWS) == 7, sorted(_JOURNAL_REVIEWS)
     covered = set()
     for entry in document["datasets"]:
         for blocker in entry["blockers"]:
