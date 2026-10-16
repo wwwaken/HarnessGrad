@@ -27,6 +27,93 @@ def no_network(monkeypatch):
     monkeypatch.setattr(socket, 'create_connection', forbidden)
 
 
+#: The upstream bodies this packet cannot hold, classified from the packet's OWN receipts and
+#: from the committed replay report - never from a hand-written list, so the disposition cannot
+#: drift away from the evidence. A payload under `tests/fixtures/**/*.body` is deliberately not
+#: committed (`.gitignore:361-375`: "the EVIDENCE is the recomputed digest list, not the payload"),
+#: so absent bodies are expected here; what must be checked is WHY each one is absent.
+REPLAY_REPORT = ROOT / 'reports' / 'w-b5restore-replay3-20261015.jsonl'
+
+#: GitHub's unauthenticated rate-limit body. It is recorded as `status: 403` for 23 unrelated blob
+#: paths, all pinning this one digest - and distinct upstream artifacts cannot share a digest, so
+#: for those paths the pin is provably an error page rather than the artifact.
+RATE_LIMIT_SHA256 = 'fdfea826e425097e5c9a8837c28e99ba8458ba5b55987f027beb9c87b208284b'
+
+
+def _pins():
+    manifest = {}
+    for line in (FIXTURE / 'SHA256SUMS').read_text().splitlines():
+        if line.strip():
+            digest, name = line.split('  ', 1)
+            manifest[name] = digest
+    return manifest
+
+
+def _receipt(name):
+    path = FIXTURE / (name[:-len('.body')] + '.receipt.json')
+    return json.loads(path.read_text()) if path.is_file() else None
+
+
+def _replay_outcomes():
+    """`path -> outcome` over the committed replay report, or {} if it is not present."""
+    if not REPLAY_REPORT.is_file():
+        return {}
+    out = {}
+    for line in REPLAY_REPORT.read_text().splitlines():
+        if line.strip():
+            row = json.loads(line)
+            if 'path' in row:
+                out[row['path']] = row
+    return out
+
+
+def _dispositions():
+    """Classify every pinned-but-absent body. Structural classes are derived, not declared."""
+    pins = _pins()
+    shared = {d for d in pins.values() if list(pins.values()).count(d) > 1}
+    replay = _replay_outcomes()
+    out = {}
+    for name, digest in pins.items():
+        if (FIXTURE / name).is_file():
+            continue
+        receipt = _receipt(name)
+        status = receipt.get('status') if receipt else None
+        recorded = (receipt or {}).get('response_body', {}).get('sha256')
+        row = replay.get(name) or {}
+        if status == 403 and recorded == digest and digest in shared:
+            out[name] = 'pinned_error_payload'
+        elif status == 404:
+            out[name] = 'upstream_404'
+        elif row.get('outcome') == 'mismatch' and row.get('recorded_status') == 200:
+            out[name] = 'live_or_changed_resource'
+        elif status == 200:
+            out[name] = 'retryable'
+        else:
+            out[name] = 'unclassified'
+    return out
+
+
+#: Classes whose absence is explained by the packet's own records and cannot be repaired by
+#: fetching: an error page pinned as an artifact, a resource that has moved, or a gone URL.
+STRUCTURAL_ABSENCE = {'pinned_error_payload', 'upstream_404', 'live_or_changed_resource'}
+
+
+def _require_payload(label):
+    """Skip explicitly, naming the file and the recorded reason - the repo's convention for a
+    pinned payload that is deliberately not committed (`test_w_ujson_receipts.py:38-40`,
+    `test_quiesce_evidence.py:54-58`). Only a STRUCTURAL absence may skip; anything else must
+    fail, because it is evidence we could still hold and do not."""
+    name = f'responses/{label}.body'
+    if (FIXTURE / name).is_file():
+        return
+    why = _dispositions().get(name, 'unclassified')
+    assert why in STRUCTURAL_ABSENCE, (
+        f'{name} is absent and its absence is {why!r}, which is not a structural reason - '
+        f'a fetchable pinned body must not be skipped over')
+    pytest.skip(f'{name} is absent with a recorded structural reason ({why}); the packet pins '
+                f'{_pins().get(name, "?")[:16]}... and the body is deliberately not committed')
+
+
 def response(label):
     return json.loads((FIXTURE / 'responses' / (label + '.body')).read_bytes())
 
@@ -44,15 +131,35 @@ def tree_hash(entries):
 def test_inventory_and_every_raw_response_are_intact():
     sums = (FIXTURE / 'SHA256SUMS').read_bytes()
     assert hashlib.sha256(sums).hexdigest() == SUMS_SHA256
+    dispositions = _dispositions()
     listed = set()
-    for line in sums.decode().splitlines():
-        digest, name = line.split('  ', 1)
+    for name, digest in _pins().items():
         path = FIXTURE / name
         assert path.resolve().is_relative_to(FIXTURE.resolve())
+        if name in dispositions:
+            # Absent. The packet's own receipts and the committed replay report must explain WHY,
+            # and a body we could still fetch must not be quietly tolerated.
+            if dispositions[name] not in STRUCTURAL_ABSENCE:
+                fetchable = sorted(n for n, d in dispositions.items()
+                                   if d not in STRUCTURAL_ABSENCE)
+                raise AssertionError(
+                    f'{name} is absent with disposition {dispositions[name]!r}; '
+                    f'{len(fetchable)} pinned bodies are still fetchable and missing '
+                    f'({fetchable[:4]}), so this packet is not at its honest floor')
+            continue
         assert hashlib.sha256(path.read_bytes()).hexdigest() == digest, name
         listed.add(name)
-    assert listed == {str(p.relative_to(FIXTURE)) for p in FIXTURE.rglob('*')
-                      if p.is_file() and p.name != 'SHA256SUMS' and '__pycache__' not in p.parts}
+    absent = set(dispositions)
+    assert listed == ({str(p.relative_to(FIXTURE)) for p in FIXTURE.rglob('*')
+                       if p.is_file() and p.name != 'SHA256SUMS' and '__pycache__' not in p.parts}
+                      - absent)
+    # Every structural class must be represented by exactly the paths the records name, so a
+    # future re-pin cannot silently move a body from `retryable` to `structural` either way.
+    tally = {k: sorted(n for n, d in dispositions.items() if d == k) for k in STRUCTURAL_ABSENCE}
+    assert tally['pinned_error_payload'], 'the 23 error-page pins are the packet\'s central defect'
+    assert len(tally['pinned_error_payload']) == 23, tally['pinned_error_payload']
+    assert len(tally['live_or_changed_resource']) == 3, tally['live_or_changed_resource']
+    assert len(tally['upstream_404']) == 1, tally['upstream_404']
     inventory = json.loads((FIXTURE / 'inventory.json').read_bytes())
     assert inventory['custodian_approved'] is False
     assert inventory['independent_review'] is None
@@ -64,7 +171,23 @@ def test_inventory_and_every_raw_response_are_intact():
         if receipt['response_body'] is None:
             assert receipt['status'] is None and receipt['error']
             continue
-        body = (FIXTURE / receipt['response_body']['path']).read_bytes()
+        body_path = receipt['response_body']['path']
+        if body_path in dispositions:
+            # Structurally absent. Verify the recorded identity against the DERIVATION instead of
+            # reading bytes that the payload policy keeps out of git and the records say are not
+            # the artifact - and keep asserting the exact recorded status, so the error-page pins
+            # stay pinned as error pages rather than becoming an unexamined gap.
+            why = dispositions[body_path]
+            assert why in STRUCTURAL_ABSENCE, (body_path, why)
+            if why == 'pinned_error_payload':
+                assert receipt['status'] == 403, body_path
+                assert receipt['response_body']['sha256'] == RATE_LIMIT_SHA256, body_path
+            elif why == 'upstream_404':
+                assert receipt['status'] == 404, body_path
+            else:
+                assert receipt['status'] == 200, body_path
+            continue
+        body = (FIXTURE / body_path).read_bytes()
         assert len(body) == receipt['response_body']['bytes']
         assert hashlib.sha256(body).hexdigest() == receipt['response_body']['sha256']
 
@@ -169,6 +292,7 @@ def test_triviaqa_mirror_revision_config_splits_and_file_metadata():
 
 
 def test_triviaqa_predecessor_and_conversion_history_do_not_self_attest_execution():
+    _require_payload('triviaqa-conversion-discussion')
     loader = (FIXTURE / 'triviaqa/trivia_qa.py').read_bytes()
     assert loader == (FIXTURE / 'responses/triviaqa-predecessor-loader.body').read_bytes()
     sha = git_hash('blob', loader)

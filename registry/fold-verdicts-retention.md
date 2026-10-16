@@ -65,9 +65,12 @@ patch -p1 < /mnt/20t/xubuqiang/Study/HarnessGrad/registry/fold-verdicts-retentio
 ```
 
 **Put the patched scripts under version control at the same time.** A fix that lives only in a file no VCS
-tracks is exactly as fragile as the evidence it is meant to protect — this phase has already lost one body
-of evidence (47 restored B5 bodies) to a gitignore rule, and the fold scripts' own history is why the
-destruction mechanism had to be inferred from the current file rather than from a diff.
+tracks is exactly as fragile as the evidence it is meant to protect — this repository has already lost
+evidence to a gitignore rule (`/docs/*`, which silently covers the fidelity handoff and several decision
+documents), and here the fold scripts' own history is unavailable for the same reason, which is why the
+destruction mechanism had to be inferred from the current file rather than from a diff. (An earlier version
+of this sentence cited 47 untracked B5 bodies; those are payload by policy, not a gitignore accident, and
+`registry/known-red-tests.md` records the correction.)
 
 ## What this does not do
 

@@ -656,7 +656,7 @@ The five reds, all previously recorded and none new:
 | --- | --- | --- |
 | `test_appworld_official_scorer.py` | 2 failed, 12 passed (1538.6 s) | the long-standing `test_platform_control_arms` admission conflict, filed above |
 | `test_chessbench_stepwise_runner.py` | 2 failed, 16 passed (28.8 s) | **concurrency-sensitive, cause UNKNOWN**: 18 passed when re-run alone, and 18 passed again under 24 `while True: pass` CPU loops, so "load-induced" was a guess and is withdrawn. Both are socket-deadline tests (`test_reconnect_cannot_reset_session_allowance` with `timeout_s=1`, `test_trickled_partial_frame_cannot_extend_absolute_socket_deadline` with `timeout_s=0.2`) and both failed in the two sweeps that ran beside the operator's 40-job AgentDojo pass, so sub-second deadlines meeting I/O and scheduler contention is the leading hypothesis - **not established**, and not a licence to retune either deadline to make it pass |
-| `test_external_provenance_b5.py` | **2 failed, 4 passed** (was 5/1 when the sweep ran) | the replay finished: 206 of 234 pinned bodies present, 28 absent of which 27 are unrecoverable as recorded (23 pin a shared 279-byte rate-limit page, 3 are live dynamic endpoints, 1 is an upstream 404). The 2 survivors cannot clear by fetching - see "The B5 packet's residue is not a rate limit" |
+| `test_external_provenance_b5.py` | **5 passed, 1 skipped** (was 5 failed / 1 passed when the sweep ran) | the replay finished and the residue is classified from the packet's own receipts: 207 of 234 pinned bodies present, 27 absent of which **all 27** are structurally explained (23 pin a shared 279-byte rate-limit page, 3 are moved endpoints, 1 is a gone URL) and the last fetchable body was restored by digest. Two entries were mis-read as an interference pattern before this - see "The B5 packet's residue is not a rate limit" |
 | `test_isolation.py` | 1 failed, 15 passed (184.2 s) | known pre-existing |
 | `test_we5_equivalence.py` | 1 failed, 22 passed | the preserved packet that exists nowhere; enumerated limit |
 
@@ -718,36 +718,67 @@ checks digests alone sees nothing wrong. Replay now returns 200 with the real bl
 rather than laundering a new body into an old pin. They can only be restored by *re-pinning*, which
 changes the evidence rather than restoring it - a decision, not a retry.
 
-**The measured test result, after the replay settled: `test_external_provenance_b5.py` is 2 failed,
-4 passed** (it was 5 failed, 1 passed). The four now-passing tests are the ones the restored bodies unblock
-- `test_bfcl_tag_signed_commit_and_all_original_git_trees` in particular needed `bfcl-tag`,
-`bfcl-release`, `bfcl-root-tree` and `bfcl-tree`, all four of which the second pass restored, with
-`bfcl-tree` verified at 161,306 bytes against its pin. **The two remaining failures are exactly the two
-classes that cannot clear by fetching**, and they are worth naming because they are the whole residue now:
+**The packet is now at its honest floor and the test file is green: `test_external_provenance_b5.py`
+is 5 passed, 1 skipped, 0 failed** (it was 5 failed / 1 passed when the sweeps ran, then 2 failed / 4 passed
+while the residue was being classified). Reaching that required three separate things, and they are worth
+keeping distinct:
 
-| failing test | why it cannot clear |
-| --- | --- |
-| `test_inventory_and_every_raw_response_are_intact` | walks every `SHA256SUMS` entry and reads it; the 28 absent bodies include the 23 error-pinned `local_inference-*` blobs, whose pins are a rate-limit page rather than the artifact |
-| `test_triviaqa_predecessor_and_conversion_history_do_not_self_attest_execution` | needs `responses/triviaqa-conversion-discussion.body`, a served discussion page that returned 200 with different bytes on every fetch |
+* **The restorations.** `test_bfcl_tag_signed_commit_and_all_original_git_trees` needed `bfcl-tag`,
+  `bfcl-release`, `bfcl-root-tree` and `bfcl-tree`, all restored by the second replay pass, with `bfcl-tree`
+  verified at 161,306 bytes against its pin.
+* **The last fetchable body.** `responses/bfcl-web-bitagent.body` was the single entry whose receipt records
+  `status: 200` with a real digest and which no pass had restored. One GET of its recorded URL returned
+  2,642 bytes whose SHA-256 is exactly the recorded `75066749a8400d7e05f056fbd9e41bfc083c53a3f01a99fbe5e24c0844dba533`.
+  The writer refused to publish on mismatch; it matched.
+* **A test that asserts the disposition instead of crashing.** The inventory test no longer dies with a bare
+  `FileNotFoundError` on the first absent body. It now **derives** each absence from the packet's own
+  receipts and the committed replay report - `pinned_error_payload` (status 403, pin equals the shared
+  rate-limit digest), `upstream_404`, `live_or_changed_resource` (the replay observed 200 with different
+  bytes) - asserts the tally is exactly **23 / 1 / 3**, and **fails** if any pinned body is absent with a
+  `retryable` disposition. The triviaqa history test, which needs the moved discussion page, now skips
+  **explicitly naming the file and the structural reason** - the repository's own convention for a pinned
+  payload that is deliberately not committed (`test_w_ujson_receipts.py:38-40`,
+  `test_quiesce_evidence.py:54-58`).
 
-So "the restoration is running" is not just retired as a status - it is now **finished**, and the test file
-landed at a stable 2-failure floor that only a re-pin decision (for the 23) or an abandonment decision (for
-the served page) can move. That is the operator's call, not a retry.
+The residue is **207 present / 27 absent of 234**, and every one of the 27 is accounted for by the packet's
+own records rather than by a hand-written list, so the disposition cannot drift from the evidence. The 23
+error-page pins can only move by *re-pinning*, which changes the evidence rather than restoring it - the
+operator's call, not a retry - and the 3 moved endpoints and 1 gone URL cannot be recovered by any fetch.
 
-**The restoration is not durable, and that is a separate defect from the missing bytes.** 47 of the 206
-bodies now present on disk are **untracked and gitignored**: `.gitignore:365` ignores
-`tests/fixtures/**/*.body`. Only **159** of the 234 pinned entries are tracked. So of the 59 entries the
-replay restored (87 absent originally, 28 now), only **12 were ever committed** - the packet's tracked file
-count went from 148 to 160 - and **47 exist only in this checkout's working tree**. A fresh
-`git worktree add` or clone therefore does not have them, which is exactly why `w-knownred`, auditing from a
-fresh worktree at `27d2efaa`, counted `75 missing / 159 present / 160 tracked` where this checkout has
-`28 / 206 / 160`, and it is the mechanism behind this file's own "worktree-only failures" section. The same
-rule at `.gitignore:380` (`tests/fixtures/hg_*/`) is why `hg_wprov`, `hg_trivia` and `hg_bfcl` carry only
-**1, 1 and 2** tracked files: for those three, the manifests, the receipts and the bodies are not in
-version control at all, and their counts in the inventory above describe this machine rather than the
-repository. Making the B5 restoration durable needs `git add -f` on 47 bodies or a `.gitignore` change -
-**and that is a decision for the operator, not a cleanup**, because committing evidence that the manifest
-pins is precisely the kind of custody change that must be deliberate.
+**Correction, 2026-10-16: the 47 untracked bodies are policy-correct, and an earlier version of this
+paragraph had it backwards.** It called them a durability defect and proposed `git add -f` or a
+`.gitignore` change. `.gitignore:361-375` is not an accident - it is an explicit rule with a stated
+rationale:
+
+> **Resource payloads must never enter git.** ... "the EVIDENCE is the recomputed digest list, not the
+> payload. Keep the digests and the scripts; keep the payloads on disk (they are reproducible from the
+> recorded URLs+hashes)."
+
+That rule was adopted because 516 MB of binaries had entered the object store "for no reason". The 47
+restored bodies total **642 KB**, so size is not the objection - the objection is categorical: for this
+repository a body is a *payload*, and the tracked `SHA256SUMS` plus the tracked receipts are the evidence.
+On that reading the **47 are correctly untracked**, and the anomaly is the **159 that *are* tracked**: they
+were force-added by `c52c19ee` ("w-b5restore: restore 12 pinned bodies...") *after* the rule landed, and
+that commit records no justification for overriding it. Flagged, not acted on - un-tracking 159 files is a
+custody change, not a cleanup, and it is not this phase's to make.
+
+Two consequences follow, and both are now handled rather than papered over:
+
+* **A test that needs an uncommitted payload skips explicitly**, naming the file and the recorded reason.
+  That is the repository's existing convention for exactly this situation (`test_w_ujson_receipts.py`,
+  `test_quiesce_evidence.py`), and the B5 triviaqa test now follows it. The B5 inventory test **cannot**
+  skip that way for a fetchable body, which is why it fails instead - and why restoring
+  `bfcl-web-bitagent` mattered.
+* **The inventory counts describe this machine, not a clone.** `w-knownred`, auditing from a fresh worktree,
+  counted `75 missing / 159 present / 160 tracked` where this checkout has `27 / 207 / 207`. That gap is the
+  payload policy working as written, not a repository defect, and it is the mechanism behind this file's
+  own "worktree-only failures" section. The same rule at `.gitignore:388` (`tests/fixtures/hg_*/`) is why
+  `hg_wprov`, `hg_trivia` and `hg_bfcl` carry only **1, 1 and 2** tracked files.
+
+For the 23 error-page pins the policy's "reproducible from the recorded URLs+hashes" rationale does not
+apply at all: their recorded digest *is* the error page, so there is no artifact to re-fetch. Their durable
+record is the receipt's `status: 403` together with the shared digest - both committed - and that is what
+the test now asserts.
 
 **Two caveats on the reasoning, added 2026-10-16 after `w-provresidue` falsified the general rule.** The
 conclusion above rests on the *combination* - one 279-byte body, `status: 403`, shared by 23 unrelated

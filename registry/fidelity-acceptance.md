@@ -156,8 +156,11 @@ receipts record that value and removing it would stop them validating - a custod
 container route**, which is why the gateway exists; and `test_services.py:732-746` uses 8001 as an
 arbitrary local address to test gateway *mapping*, where the port is the point. The new note
 `docs/local-model-endpoints.md` is allowlisted in `.gitignore` (`!/docs/local-model-endpoints.md`) so it is
-actually tracked - the durability rule this phase learned when 47 restored B5 bodies turned out to be
-gitignored.
+actually tracked. That allowlist is the mechanism that decides what under `docs/` is public, and it is
+the trap this phase actually hit: the fidelity handoff and several decision docs are covered by `/docs/*`,
+so they are local-only unless named. (An earlier version of this sentence cited the 47 untracked B5 bodies
+as the same lesson; they are a different thing - payload, not document - and
+`registry/known-red-tests.md` now records that correction.)
 
 ## The metric-identity fixes are score-neutral on the surviving evidence
 
