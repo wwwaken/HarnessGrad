@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.svg" alt="" width="76">
+</p>
+
 <h1 align="center">HarnessGrad</h1>
 
 <p align="center"><strong>The gradient for harness self-improvement — measurable, attributable, comparable.</strong></p>
