@@ -102,41 +102,72 @@ Rules the checker enforces and the observer must therefore satisfy:
    alternative to refusing; it needs a second alternative that is *evidence*, not permission —
    an admitted runtime observation for that task and trial.
 
-## One more gate, which observation cannot open: the network policy
+## One more gate, which observation cannot open: the network
 
-A container task that needs to reach its own service must not assume the observation is the only
-obstacle. It is not, and the second gate is the harder one because it is a **policy precondition
-rather than a missing fact**:
+A container task has a second blocker, and it is worse than a missing fact because it is a
+**policy precondition**:
 
 ```python
 # eval/admission/runner_admission.py:151
 _require(policy["network"] == "none", "network_policy_not_supported")
-# eval/policy/runtime_policy.py:17
-if network not in (None, "none"):
-    raise ValueError(f"unsupported native sandbox network policy: {network!r}")
 ```
 
-Both are evaluated before any observation is consulted, so **a perfect observer still refuses a
-task that declares a `services` network**. Widening this is not part of producing the
-observation; it is a change to the contract, and it means admitting tasks whose network
-enforcement is not `none` — a different decision with a different owner.
+This runs before any observation is consulted, so a perfect observer still refuses a task whose
+declared policy is anything but `none`.
 
-**The platform already has the pattern for reaching a platform-side service with the network
-off, twice.** `eval/service/unix_model_relay.py` is documented as *"Agent-only HTTP over
-AF_UNIX, with a fixed localhost:8002 model route"*, and `eval/service/unix_stepwise_relay.py`
-hands a harness `HG_STEPWISE_SOCKET` for the same purpose. In both, the service lives on the
-platform side, is published as an **AF_UNIX socket**, and the harness is told the path through an
-environment variable — inside `unshare-net`, with `network: "none"` intact.
+**An earlier version of this file also cited `eval/policy/runtime_policy.py::admit_native_network`
+as a rejection point here. That was wrong, and the dataset side caught it:** the runner calls it
+under `if not is_exec:` (`eval/run/runner.py:251-252`), so it governs the native `files` path
+only. A Docker `exec` task does not pass through it. The refusal that stops such a task today is
+`_refuse_unobserved_policies`; the validator above is what it meets next.
 
-So the shape to reach for is a third instance of that pattern, not a new network policy:
+### The harder half: the platform's own gateway network
 
-* the service stays a separate process; it simply does not need a container network identity;
-* it is published as a unix socket, and the harness receives the path in an env var;
-* `policy["network"]` stays `"none"`, so the gate above is satisfied rather than widened;
-* the resource observation from the rest of this file is then the only remaining gap.
+`admit_runtime` also requires `observed["network"] == "none"` **and** `observed["attachments"] == []`
+(line 164). For a Docker task that calls a model, the platform cannot currently satisfy either,
+and the reason is the platform's own plumbing rather than anything the task declares:
 
-The two existing relays are written against a *fixed* route, so a general-purpose service relay
-is new code — but of a shape that already exists twice in this tree.
+* `eval/containers/container.py:1040` — at create time the platform builds an **internal network**
+  and publishes the model gateway on that network's gateway address;
+* `eval/run/runner.py:473` — *"With a gateway published, the harness joins the internal network"*;
+* `eval/run/runner.py:655` — the network is removed per run, which is why it is per-run state at
+  all;
+* `eval/containers/container_state.py:6` names "a model gateway, a published network" among the
+  things a container-state run has to get right.
+
+So it is not only a task-declared `services` network that fails the check: **a task that declares
+`network: "none"` and needs a model has a network attachment anyway, because the platform
+attaches it.** Reading limits and attachments back will therefore report a network for exactly
+the tasks the validator demands have none.
+
+This is a sharper problem than "relax the gate", and it suggests the fix should *distinguish*
+two things the current check conflates:
+
+* a **task-declared** network (`services`, `bridge`, …) — its topology is the task's choice and
+  the platform cannot vouch for it; refusing it is the point of this gate;
+* a **platform-authored** network — the gateway network, or a socket-backed service the platform
+  itself started. Its topology is known to the platform by construction, so it can be *recorded*
+  by name, gateway address and the exact attachment list rather than refused.
+
+Recording a platform-authored attachment is not the same as admitting a declared one, and it does
+not require the validator to start accepting `services`. It does require an explicit statement of
+**which** networks and sockets the platform is willing to author — a policy question with an
+owner, and a smaller one than widening the network contract.
+
+### The socket precedent, and its limits
+
+`eval/service/unix_model_relay.py` is documented as *"Agent-only HTTP over AF_UNIX, with a fixed
+localhost:8002 model route"*, and `eval/service/unix_stepwise_relay.py` hands a harness
+`HG_STEPWISE_SOCKET`. In both, the service is platform-side, is published as an **AF_UNIX
+socket**, and the harness is told the path through an environment variable — with
+`network: "none"` intact.
+
+Two limits, reported by the dataset side and now checked here: the model relay is written
+against a **fixed route** (`HOST, PORT, ROUTE = "127.0.0.1", 8002, "/v1/chat/completions"`) with a
+small probe-call budget, and `NativeModelRoute` refuses anything but plaintext HTTP —
+`eval/service/native_model_route.py:60-62` raises `GatewayUnavailable("native offline model route
+requires a plain HTTP base URL")`. Neither carries an external HTTPS API and a full episode
+unmodified, so this is a shape to extend, not a component to reuse as-is.
 
 A workdir that is an ordinary bind mount also cannot be admitted: each declared surface must
 report `backend` in `("tmpfs", "project-quota")` with matching `bytes`/`inodes` and a unique
