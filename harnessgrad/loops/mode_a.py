@@ -27,6 +27,7 @@ from eval.observe.console import CONSOLE as console
 from eval.run.runner import evaluate
 from harnessgrad import PLATFORM_API_VERSION
 from harnessgrad import code_metrics
+from harnessgrad import components
 from harnessgrad import config as platform_config
 from harnessgrad import policies
 from harnessgrad.channel import _stage_for_method
@@ -566,6 +567,27 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
         # the method-facing page quotes as "what moved this round".
         point["editable_surface_touched"] = _touched_paths(
             work, curve[-1]["identity"]["harness_sha"], sha)
+        # **Which component moved, when the harness says which is which.** `components` in
+        # `harness.json` is a map for reading, never a fence: the platform's design is that a
+        # harness is *entirely* editable -- `INTERFACE.md` §4.1-4.3 draws the boundary around
+        # a harness's `method/` directory and its `accept` rule and nowhere else -- so a path
+        # the map does not name is recorded as `unattributed` rather than refused. Without
+        # this, "the harness evolved" has no referent: `editable_surface_touched: ["agent.py"]`
+        # says a file moved but not which of the ten components improved.
+        #
+        # Read from `work`. `harness.json` is a protected file (`cli_improver.propose` reports
+        # it, and every method prompt forbids editing it), so the map cannot legitimately
+        # change under a round's feet; if a method changes it anyway, the path appears in
+        # `editable_surface_touched` and in `unattributed` where a reader can see it.
+        try:
+            point["editable_surface_components"] = components.attribute(
+                point["editable_surface_touched"], components.declared_components(work))
+        except components.ComponentDeclarationError as exc:
+            # A malformed declaration is a fact about the harness, not a reason to lose the
+            # round's measurement. The raw paths are already on the point above.
+            point["editable_surface_components"] = {
+                "components": [], "unattributed": point["editable_surface_touched"],
+                "declaration_error": str(exc)}
         # ------------------------------------------------------------------
         # Anthropic's two evaluator-side policies, **recorded rather than enforced**
         # (`harnessgrad/policies.py` states why): a geometric mean whose lowest term binds,
@@ -574,15 +596,47 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
         # no acceptance rule -- the method owns that -- so the numbers go on the point and a
         # method that wants the gate reads them from there.
         #
-        # The baseline is the run's own H0 point: it is measured on the same task set, by the
-        # same platform, and it is the thing "did this edit help" is already about.
+        # The baseline is the run's own H0 point by default: it is measured on the same task
+        # set, by the same platform, and it is the thing "did this edit help" is already
+        # about. `--baseline` replaces it with a **frozen reference** -- one point, measured
+        # once and reused by every method that follows. That is what cross-method comparison
+        # needs: a per-run H0 puts every method on its own axis, which is the confounding this
+        # platform exists to remove. The price is that nothing re-measures the frozen
+        # reference, so this run checks and records whether it still describes the run in
+        # front of it (`reference_problems`) rather than assuming it does.
+        #
         # Recorded only where a baseline exists and both sides have the studied breakdown, so
         # H0 itself and an eval-side point carry neither field rather than a null.
         studied = policies.studied_per_task(point)
-        baseline_point = curve[0] if curve else None
+        if args.baseline:
+            try:
+                baseline_point = json.loads(Path(args.baseline).read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError) as exc:
+                console.note(f"--baseline {args.baseline!r} is not a readable curve point: "
+                             f"{exc}", level="error")
+                return 2
+            if not isinstance(baseline_point, dict):
+                console.note(f"--baseline {args.baseline!r} must hold one curve-point object",
+                             level="error")
+                return 2
+            baseline_kind = "frozen"
+        else:
+            baseline_point = curve[0] if curve else None
+            baseline_kind = "same-run"
         baseline_studied = (policies.studied_per_task(baseline_point)
                             if baseline_point else {})
         if res is not None and studied and baseline_studied:
+            # One description of the reference, so the two statistics below name the same
+            # thing and a reader does not have to reconcile them.
+            point["baseline"] = {
+                "kind": baseline_kind,
+                "run_id": baseline_point.get("run_id"),
+                "round": baseline_point.get("round"),
+                "path": args.baseline or None,
+                "problems": policies.reference_problems(
+                    baseline_point, point,
+                    reference_tasks=baseline_studied, current_tasks=studied),
+            }
             point["score_geomean"] = round(policies.geomean(list(studied.values())), 6)
             point["capability_floor"] = {
                 "baseline": f"round-{baseline_point.get('round', 0)}",
@@ -590,6 +644,19 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
                     studied, baseline_studied,
                     candidate_std=(res.get("per_task_std") or {}),
                     baseline_std=(baseline_point.get("per_task_std") or {})),
+            }
+            # **The other direction.** `capability_floor` records only where a candidate is
+            # *below* the baseline, because Anthropic's criterion is a disqualification.
+            # Nothing asked where it is above, and `score_ci95` cannot answer it: that interval
+            # is computed over *tasks*, so it does not shrink when a run repeats them -- on
+            # alfworld's 134 tasks at a mean of 0.47 it is roughly +/-0.09 wide, which is
+            # wider than the effect a harness edit produces. The same tasks appear on both
+            # points, so the comparison is paired and the discordant pairs are the signal.
+            # Recorded beside the floor, not instead of it: one says "this candidate is
+            # safely no worse", the other says "this candidate is better than chance allows".
+            point["improvement"] = {
+                "baseline": f"round-{baseline_point.get('round', 0)}",
+                **policies.improvement(studied, baseline_studied),
             }
         # **What the candidate is, as code.** HarnessDev measured this on the harnesses
         # their creators wrote: "of 169 new functions or classes, 113 are reachable from

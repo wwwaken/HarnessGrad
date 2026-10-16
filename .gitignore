@@ -363,6 +363,15 @@ harnessgrad_work/
 # this file only records what changes when the dataset comes from Harbor.
 !/docs/harbor-dataset-handover.md
 
+# The protocol for producing an H0 -> H1 harness-evolution result: the control arm the corpus
+# proves is necessary, the two structural limits of the staged path (`staged_task_set` forces
+# `trials=1`, so `ci_available` can never be true; `_require_publication` withholds the score),
+# and the rule for what counts as a result. It has to survive a clone because a future run is
+# launched from it and because the limits are read *before* a run rather than after a receipt;
+# `docs/runtime-observation-brief.md` remains the specification for the one thing that would
+# unblock the staged path, and this file does not restate it.
+!/docs/harness-evolution-protocol.md
+
 # A `git bundle` of this repository contains **all** of its history, including the
 # local notes above if they were ever tracked. Never committable.
 *.bundle

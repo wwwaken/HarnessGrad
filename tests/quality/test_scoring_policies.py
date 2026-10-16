@@ -149,7 +149,203 @@ def test_a_candidate_round_carries_both_policies_and_h0_carries_neither(tmp_path
               (runs / "policies" / "curve.jsonl").read_text().splitlines() if l.strip()]
     assert len(points) == 2, points
     assert "capability_floor" not in points[0] and "score_geomean" not in points[0]
+    assert "improvement" not in points[0], points[0]
     candidate = points[1]
     assert candidate["capability_floor"]["baseline"] == "round-0"
     assert candidate["capability_floor"]["checked"] == len(candidate["per_task"])
     assert isinstance(candidate["score_geomean"], float)
+    # `echo_base` hands back the same harness, so no task was discordant and the honest
+    # answer is "the question could not be asked" -- not a `false` that reads like a pass,
+    # and not an absent field.
+    assert candidate["improvement"]["baseline"] == "round-0", candidate["improvement"]
+    assert candidate["improvement"]["gained"] == 0
+    assert candidate["improvement"]["lost"] == 0
+    assert candidate["improvement"]["direction"] == "unchanged"
+    assert candidate["improvement"]["significant"] is False
+
+
+# ------------------------------------------------- 配对改进统计(floor 的镜像) ---
+
+def _pair(n, gained, lost, rate=0.47):
+    """n 道题、基线通过率 `rate`:`gained` 道 0->1,`lost` 道 1->0,其余不变。
+
+    默认 `rate=0.47` 是 alfworld 那个池子的形状(134 题、均值 0.470)。两组必须取自不同
+    的基线值 —— 第一版把两组都放进 base=0 那半,于是"退步"根本没发生,而且池子均值只有
+    0.0075,和"边际区间看不见这个翻转"那条测试的前提完全不符。
+    """
+    ones = round(n * rate)
+    base = {f"t{i}": (1.0 if i < ones else 0.0) for i in range(n)}
+    cand = dict(base)
+    for i in range(ones, ones + gained):          # 0 -> 1
+        cand[f"t{i}"] = 1.0
+    for i in range(lost):                         # 1 -> 0
+        cand[f"t{i}"] = 0.0
+    return cand, base
+
+
+def test_a_paired_gain_is_detected_where_the_marginal_interval_is_not():
+    """**这条就是它存在的理由。** 边际区间是按题算的,所以对同一批题重跑不会缩小它。
+
+    alfworld 的批量是 134 题、均值约 0.47,`score_ci95` 宽度约 0.17 —— 比一次 harness 编辑
+    能带来的效应还大。但同一批题在 H0/H1 之间是**配对**的,而 8 比 1 的翻转在符号检验下
+    p≈0.039。所以这条测试同时断言两件事:配对检验显著,而边际区间仍然包含基线均值。
+    如果有人把这个函数改成比较两个边际均值,第二条会失败。
+    """
+    from eval.run.metrics import ci95  # noqa: PLC0415
+
+    cand, base = _pair(134, gained=8, lost=1)          # 8 道 0->1,1 道 1->0
+    got = policies.improvement(cand, base)
+    assert (got["gained"], got["lost"]) == (8, 1)
+    assert got["significant"] is True, got
+    assert got["direction"] == "better", got
+
+    lo, hi = ci95(list(cand.values()))                 # the marginal reading, same data
+    base_mean = sum(base.values()) / len(base)
+    assert lo <= base_mean <= hi, (
+        f"the marginal interval [{lo:.3f}, {hi:.3f}] no longer contains the baseline mean "
+        f"{base_mean:.3f}; this test's premise is that it cannot see an 8-vs-1 flip")
+
+
+def test_a_small_asymmetry_is_not_called_an_improvement():
+    """5 比 1 在符号检验下 p≈0.22 —— 不显著。测试要能拒绝,否则它只是装饰。"""
+    cand, base = _pair(134, gained=5, lost=1)
+    got = policies.improvement(cand, base)
+    assert got["net"] == 4 and got["direction"] == "better"
+    assert got["significant"] is False, got
+
+
+def test_a_significant_regression_is_not_an_improvement():
+    """方向与显著性是两个字段,不能合成一个。退步也会"显著"。"""
+    cand, base = _pair(134, gained=0, lost=8)
+    got = policies.improvement(cand, base)
+    assert got["significant"] is True
+    assert got["direction"] == "worse", got
+    # 读法是合取,不是单独看 significant。
+    assert not (got["significant"] and got["direction"] == "better")
+
+
+def test_no_discordant_pair_says_the_question_could_not_be_asked():
+    """没有翻转 = 没问到问题,不是"没有改进"。与 `ci_entirely_below: None` 同一种诚实。"""
+    base = {"a": 1.0, "b": 0.0, "c": 0.5}
+    got = policies.improvement(dict(base), base)
+    assert got["p_value"] == 1.0 and got["significant"] is False
+    assert got["direction"] == "unchanged" and got["net"] == 0
+
+
+def test_only_tasks_present_on_both_sides_are_compared():
+    """配对的前提是同一个任务。只在一侧出现的题不能进分母 —— 否则 `checked` 说谎。"""
+    got = policies.improvement({"a": 1.0, "b": 1.0}, {"a": 0.0, "c": 1.0})
+    assert got["checked"] == 1, got
+    assert got["gained_ids"] == ["a"] and got["lost_ids"] == []
+    assert got["net_rate"] == 1.0
+
+
+def test_the_test_ignores_magnitude_but_the_rate_does_not():
+    """符号检验数"对",net_rate 数"量"。两者都必须报,读者不该被迫二选一。"""
+    base = {"big": 1.0, "small": 0.0}
+    cand = {"big": 0.0, "small": 0.1}          # 一个大幅退步,一个微小进步
+    got = policies.improvement(cand, base)
+    assert got["gained"] == 1 and got["lost"] == 1
+    assert got["direction"] == "unchanged"     # the sign test sees one each way
+    assert got["net_rate"] < 0, got            # the magnitude sees a loss
+
+
+# ------------------------------------------------- 冻结参考点:漂移检查 ---
+
+def _point(*, agent_model="m", agent_backend="openai", harness_name="loop",
+           framework_version="0.1.0", harness_sha="aaa",
+           tasks=("a", "b"), score=0.5):
+    """A curve point, with the parameters named the way `REFERENCE_FIXED` names them.
+
+    The first version used short names (`model`, `sha`) and the parametrized drift tests then
+    passed `agent_model=...`, which is a `TypeError` rather than a test result -- four tests
+    failed for a reason that had nothing to do with the code under test.
+    """
+    return {"run_id": "r", "round": 0, "score": score,
+            "identity": {"agent_model": agent_model, "agent_backend": agent_backend,
+                         "harness_name": harness_name,
+                         "framework_version": framework_version,
+                         "harness_sha": harness_sha},
+            "per_task": {t: score for t in tasks}}
+
+
+def test_editing_the_harness_is_not_drift():
+    """**`harness_sha` 必须允许不同** —— 那正是方法改的东西。
+
+    把它放进必须一致的字段里,等于拒绝每一个真实实验。要一致的是"被测对象之外"的那些:
+    模型、后端、harness 家族、平台版本。
+    """
+    assert policies.reference_problems(_point(harness_sha="aaa"), _point(harness_sha="bbb")) == []
+
+
+@pytest.mark.parametrize("field,value", [
+    ("agent_model", "another-model"),
+    ("agent_backend", "mock"),
+    ("harness_name", "other_harness"),
+    ("framework_version", "0.2.0"),
+])
+def test_a_changed_fixed_field_is_named(field, value):
+    ref, cur = _point(), _point(**{field: value})
+    problems = policies.reference_problems(ref, cur)
+    assert len(problems) == 1 and field in problems[0], problems
+
+
+def test_a_changed_task_set_is_reported_with_counts():
+    """**这条是最会静默出错的一条。** `improvement` 在交集上配对,所以题目集合不同不会报错,
+    它只会让比较悄悄变小,然后给出一个关于幸存者的 p 值。"""
+    problems = policies.reference_problems(_point(tasks=("a", "b", "c")),
+                                           _point(tasks=("a", "b")))
+    assert len(problems) == 1 and "1 dropped" in problems[0] and "2 shared" in problems[0]
+
+
+def test_a_disjoint_task_set_says_so():
+    problems = policies.reference_problems(_point(tasks=("a",)), _point(tasks=("z",)))
+    assert any("share no task" in p for p in problems), problems
+
+
+def test_a_reference_that_still_describes_the_run_has_no_problems():
+    assert policies.reference_problems(_point(), _point()) == []
+
+
+# --------------------------------------------- 冻结参考点:端到端接线 ---
+
+def test_a_frozen_reference_is_honoured_and_recorded(tmp_path):
+    """`--baseline` 把基线从"本次 run 的 round 0"换成一份**冻结参考点**,并把它记在点上。
+
+    声明而不是推断:不给 `--baseline` 时基线是本 run 的 round 0(这是**一个**方法的对照,
+    对其它每个方法都是**不同的**参考)。冻结参考让所有方法站在一根轴上 —— 代价是没人再测
+    它,所以它必须被检查。
+    """
+    runs = tmp_path / "runs"
+    env = {**os.environ, "HG_AGENT_BACKEND": "mock"}
+
+    def run(run_id, extra):
+        proc = subprocess.run(
+            [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+             "--rounds", "1", "--run-id", run_id, "--dataset", "demo",
+             "--sampling", "all", "--runs-root", str(runs),
+             "--work-root", str(tmp_path / ("work-" + run_id)),
+             "--method-entrypoint", f"{sys.executable} {ROOT / 'methods/echo_base/run.py'}",
+             *extra],
+            cwd=ROOT, capture_output=True, text=True, timeout=900, env=env)
+        assert proc.returncode == 0, f"{proc.stdout[-600:]}\n{proc.stderr[-600:]}"
+        return [json.loads(l) for l in
+                (runs / run_id / "curve.jsonl").read_text().splitlines() if l.strip()]
+
+    first = run("ref-run", [])
+    # Without `--baseline` the reference is this run's own round 0, and the point says so
+    # rather than staying silent: the field is how a reader tells the two kinds apart.
+    assert first[1]["baseline"]["kind"] == "same-run", first[1]["baseline"]
+    assert first[1]["baseline"]["round"] == 0, first[1]["baseline"]
+
+    frozen = tmp_path / "frozen.json"
+    frozen.write_text(json.dumps(first[0]))
+
+    second = run("frozen-run", ["--baseline", str(frozen)])
+    got = second[1]["baseline"]
+    assert got["kind"] == "frozen", got
+    assert got["run_id"] == "ref-run", got
+    assert got["problems"] == [], got
+    # Both statistics still name their baseline, and the paired test still ran.
+    assert second[1]["improvement"]["baseline"].startswith("round-")
+    assert second[1]["improvement"]["direction"] in ("better", "worse", "unchanged")
