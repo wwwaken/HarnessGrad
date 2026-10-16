@@ -140,19 +140,59 @@ So it is not only a task-declared `services` network that fails the check: **a t
 attaches it.** Reading limits and attachments back will therefore report a network for exactly
 the tasks the validator demands have none.
 
-This is a sharper problem than "relax the gate", and it suggests the fix should *distinguish*
-two things the current check conflates:
+This is a sharper problem than "relax the gate", and an earlier version of this section answered it
+wrongly. It proposed splitting networks into **task-declared** and **platform-authored** and
+recording the second kind. The dataset side showed that split does not hold: **both** the model
+gateway network **and** a dataset's service network are created by the platform calling
+`services.create_network()`, and the service containers are started, attached and cleaned up by
+the platform too. A network can therefore be platform-created *and* task-declared at once, so the
+proposed categories overlap and cannot carry a rule.
 
-* a **task-declared** network (`services`, `bridge`, …) — its topology is the task's choice and
-  the platform cannot vouch for it; refusing it is the point of this gate;
-* a **platform-authored** network — the gateway network, or a socket-backed service the platform
-  itself started. Its topology is known to the platform by construction, so it can be *recorded*
-  by name, gateway address and the exact attachment list rather than refused.
+### The rule
 
-Recording a platform-authored attachment is not the same as admitting a declared one, and it does
-not require the validator to start accepting `services`. It does require an explicit statement of
-**which** networks and sockets the platform is willing to author — a policy question with an
-owner, and a smaller one than widening the network contract.
+The property the check exists for is not *who called `create_network`*. It is **whether the
+platform authors the topology and can enumerate every endpoint that becomes reachable**. Judge
+every channel by that:
+
+* a network whose membership, hostnames or ports come from the **dataset declaration** fails it:
+  the platform is outside that network and cannot enumerate what a container inside it can reach.
+  Recording the network name and an attachment list would satisfy the letter of the check while
+  losing the point of it. **This is why "record a platform-authored network" is withdrawn here and
+  not adopted**, and why a `services` declaration stays refused;
+* a **platform-authored channel with a fixed, explicit operation list** passes it: the platform
+  says which socket, which operations, and with what bounds, and can verify the list.
+
+**Route for both of a container task's comms: the socket.** The material service and the model
+both go over AF_UNIX, and the container keeps `network: "none"` with no attachments:
+
+| | approved surface |
+| --- | --- |
+| model | one fixed route (`/v1/chat/completions`), as the existing relay already pins |
+| a task's material service | an **explicit operation list** authored by the platform — for a `next` / `ack` / `submit` client, those three, and nothing else |
+
+Not approved: a general-purpose relay, a proxy, and any channel whose operations the dataset
+chooses.
+
+### What that costs, and what it does not change
+
+The two existing `admit_runtime` checks **do not change**: `policy["network"] == "none"` and
+`observed["network"] == "none"` with `observed["attachments"] == []` stay exactly as they are,
+because a socket is not a network attachment. Recording the authorized channels is an
+**additive** observation field — an extension of the check, not a relaxation of it.
+
+The work this implies on the exec path is real and is the item to schedule first:
+
+* the model gateway must stop being published on a Docker network for a task that runs with
+  `network: "none"`, so the exec path needs the same AF_UNIX model route the native path uses —
+  and that route must carry an external HTTPS API and a full episode, which neither existing relay
+  does today (see below);
+* the task's service must be reachable over a socket the platform authors, which means a new
+  relay, a new mount, and lifecycle and cleanup for it;
+* the observation collector must read the channels back and the validator must record them.
+
+If the socket route turns out to be infeasible for the model, then accepting a recorded
+platform-authored **network** is a separate contract change, and it must be argued explicitly —
+it is not implied by this brief.
 
 ### The socket precedent, and its limits
 
@@ -216,18 +256,28 @@ and its observed deadline.
 
 ## Acceptance
 
-Two tests, and the second one is the one that matters:
+The network and attachment requirements are **unchanged** by the route above: `network` is
+`"none"` and `attachments` is `[]`, because a socket is not an attachment. Nothing here relaxes
+them, and the channel record is additive.
+
+Three tests, and the second and third are the ones that matter:
 
 1. **It admits.** A container started with a declared policy produces an observation that
-   `admit_runtime` accepts, and the resulting curve point records the admitted limits.
+   `admit_runtime` accepts, the authorized channels are recorded with their operation lists, and
+   the resulting curve point carries the admitted limits.
 2. **It refuses a liar.** Feed `admit_runtime` an observation whose `resources` do not match the
    policy, whose `network` is `"bridge"`, whose `attachments` is non-empty, whose
    `resource_backend` is missing, whose `read_only_root` is `False`, and whose two surfaces share
-   a `scope_id`. Each must be refused with the code in the table above. The existing tests in
-   `tests/quality/test_runner_admission.py` are the place to add these.
+   a `scope_id`. Each must be refused with the code in the table above.
+3. **It refuses a channel it did not authorize.** A run whose observation names a socket the
+   policy did not declare, or whose relay served an operation outside the declared list, is
+   refused rather than scored. Without this test the channel record is a formality: the point of
+   enumerating operations is that the enumeration is checked.
 
-A test that only proves the happy path proves nothing here: the value of this module is what it
-does when the enforcement is *not* what was declared.
+Tests 2 and 3 are the ones that prove anything. A test that only proves the happy path proves
+nothing here: the value of this module is what it does when the enforcement, or the channel, is
+*not* what was declared. The existing tests in `tests/quality/test_runner_admission.py` are the
+place to add these.
 
 ## What not to do
 
