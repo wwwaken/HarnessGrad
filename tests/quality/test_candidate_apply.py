@@ -768,3 +768,42 @@ def test_a_candidate_that_does_not_compile_is_unmeasured_not_zero(tmp_path):
     assert broken[-1]["measured_by_platform"] is False
     assert broken[-1]["n_scored"] == 0 and broken[-1]["per_task"] == {}
     assert broken[-1]["scorer_isolation_class"] == "unknown"
+
+
+def test_the_candidate_preflight_never_executes_the_candidate(tmp_path):
+    """**预检不执行模块代码。** 这条性质是必须的,因为它发生在一个危险的时刻。
+
+    预检跑在**测量沙箱存在之前**(`harnessgrad/loops/mode_a.py:433`,在
+    `commit_state` 与任何 `bwrap` 之前)。如果它执行候选,平台就会在完全没有沙箱的情况下
+    运行**方法写出来的代码** —— 而候选正是那个不可信的东西。所以平台自带的候选重检
+    (`eval/run/candidate.py`,注释写着"the method is not trusted")选的是不执行的检法:
+    复用 `tools/validate_harness.py` 的结构检查,加上 `env_kinds` 不得放宽、`role` 不得改。
+
+    它现在成立只靠一个参数:`eval/run/candidate.py:67` 传 `smoke=False`,而
+    `tools/validate_harness.py:150` 的 `if smoke and ...` 才是执行那一步。参数是会被顺手
+    改掉的东西,`smoke=True` 又会跑 `<entrypoint> --task <trivial>` —— 所以把"不执行"
+    钉成行为测试,而不是留在一次阅读里。
+
+    带**反向对照**:同一个树在 `smoke=True` 下**必须**真的被执行,否则第一个断言可以是
+    空的(比如 entrypoint 根本没被解析到)。
+    """
+    marker = tmp_path / "EXECUTED"
+    dest = _harness(tmp_path / "dest", body=(
+        "import pathlib\n"
+        "import sys\n"
+        f"pathlib.Path({str(marker)!r}).write_text('ran')\n"
+        "sys.exit(0)\n"))
+
+    problems = candidate.validate(dest)
+    assert not marker.exists(), (
+        "the candidate preflight executed the candidate. The pre-check runs before the "
+        "measurement sandbox exists, so this runs method-produced code unsandboxed")
+    assert problems == [], problems
+
+    # Negative control: `smoke=True` is the path that does run it, so the assertion above is
+    # a real observation rather than a vacuous one.
+    import tools.validate_harness as harness_validator  # noqa: PLC0415
+    harness_validator.validate(dest, True)
+    assert marker.exists(), (
+        "the negative control did not execute the entrypoint, so the preflight's silence "
+        "proves nothing about whether it would have")
