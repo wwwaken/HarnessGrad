@@ -248,3 +248,104 @@ def test_the_test_ignores_magnitude_but_the_rate_does_not():
     assert got["gained"] == 1 and got["lost"] == 1
     assert got["direction"] == "unchanged"     # the sign test sees one each way
     assert got["net_rate"] < 0, got            # the magnitude sees a loss
+
+
+# ------------------------------------------------- 冻结参考点:漂移检查 ---
+
+def _point(*, agent_model="m", agent_backend="openai", harness_name="loop",
+           framework_version="0.1.0", harness_sha="aaa",
+           tasks=("a", "b"), score=0.5):
+    """A curve point, with the parameters named the way `REFERENCE_FIXED` names them.
+
+    The first version used short names (`model`, `sha`) and the parametrized drift tests then
+    passed `agent_model=...`, which is a `TypeError` rather than a test result -- four tests
+    failed for a reason that had nothing to do with the code under test.
+    """
+    return {"run_id": "r", "round": 0, "score": score,
+            "identity": {"agent_model": agent_model, "agent_backend": agent_backend,
+                         "harness_name": harness_name,
+                         "framework_version": framework_version,
+                         "harness_sha": harness_sha},
+            "per_task": {t: score for t in tasks}}
+
+
+def test_editing_the_harness_is_not_drift():
+    """**`harness_sha` 必须允许不同** —— 那正是方法改的东西。
+
+    把它放进必须一致的字段里,等于拒绝每一个真实实验。要一致的是"被测对象之外"的那些:
+    模型、后端、harness 家族、平台版本。
+    """
+    assert policies.reference_problems(_point(harness_sha="aaa"), _point(harness_sha="bbb")) == []
+
+
+@pytest.mark.parametrize("field,value", [
+    ("agent_model", "another-model"),
+    ("agent_backend", "mock"),
+    ("harness_name", "other_harness"),
+    ("framework_version", "0.2.0"),
+])
+def test_a_changed_fixed_field_is_named(field, value):
+    ref, cur = _point(), _point(**{field: value})
+    problems = policies.reference_problems(ref, cur)
+    assert len(problems) == 1 and field in problems[0], problems
+
+
+def test_a_changed_task_set_is_reported_with_counts():
+    """**这条是最会静默出错的一条。** `improvement` 在交集上配对,所以题目集合不同不会报错,
+    它只会让比较悄悄变小,然后给出一个关于幸存者的 p 值。"""
+    problems = policies.reference_problems(_point(tasks=("a", "b", "c")),
+                                           _point(tasks=("a", "b")))
+    assert len(problems) == 1 and "1 dropped" in problems[0] and "2 shared" in problems[0]
+
+
+def test_a_disjoint_task_set_says_so():
+    problems = policies.reference_problems(_point(tasks=("a",)), _point(tasks=("z",)))
+    assert any("share no task" in p for p in problems), problems
+
+
+def test_a_reference_that_still_describes_the_run_has_no_problems():
+    assert policies.reference_problems(_point(), _point()) == []
+
+
+# --------------------------------------------- 冻结参考点:端到端接线 ---
+
+def test_a_frozen_reference_is_honoured_and_recorded(tmp_path):
+    """`--baseline` 把基线从"本次 run 的 round 0"换成一份**冻结参考点**,并把它记在点上。
+
+    声明而不是推断:不给 `--baseline` 时基线是本 run 的 round 0(这是**一个**方法的对照,
+    对其它每个方法都是**不同的**参考)。冻结参考让所有方法站在一根轴上 —— 代价是没人再测
+    它,所以它必须被检查。
+    """
+    runs = tmp_path / "runs"
+    env = {**os.environ, "HG_AGENT_BACKEND": "mock"}
+
+    def run(run_id, extra):
+        proc = subprocess.run(
+            [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+             "--rounds", "1", "--run-id", run_id, "--dataset", "demo",
+             "--sampling", "all", "--runs-root", str(runs),
+             "--work-root", str(tmp_path / ("work-" + run_id)),
+             "--method-entrypoint", f"{sys.executable} {ROOT / 'methods/echo_base/run.py'}",
+             *extra],
+            cwd=ROOT, capture_output=True, text=True, timeout=900, env=env)
+        assert proc.returncode == 0, f"{proc.stdout[-600:]}\n{proc.stderr[-600:]}"
+        return [json.loads(l) for l in
+                (runs / run_id / "curve.jsonl").read_text().splitlines() if l.strip()]
+
+    first = run("ref-run", [])
+    # Without `--baseline` the reference is this run's own round 0, and the point says so
+    # rather than staying silent: the field is how a reader tells the two kinds apart.
+    assert first[1]["baseline"]["kind"] == "same-run", first[1]["baseline"]
+    assert first[1]["baseline"]["round"] == 0, first[1]["baseline"]
+
+    frozen = tmp_path / "frozen.json"
+    frozen.write_text(json.dumps(first[0]))
+
+    second = run("frozen-run", ["--baseline", str(frozen)])
+    got = second[1]["baseline"]
+    assert got["kind"] == "frozen", got
+    assert got["run_id"] == "ref-run", got
+    assert got["problems"] == [], got
+    # Both statistics still name their baseline, and the paired test still ran.
+    assert second[1]["improvement"]["baseline"].startswith("round-")
+    assert second[1]["improvement"]["direction"] in ("better", "worse", "unchanged")

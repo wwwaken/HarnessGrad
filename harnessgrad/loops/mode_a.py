@@ -596,15 +596,47 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
         # no acceptance rule -- the method owns that -- so the numbers go on the point and a
         # method that wants the gate reads them from there.
         #
-        # The baseline is the run's own H0 point: it is measured on the same task set, by the
-        # same platform, and it is the thing "did this edit help" is already about.
+        # The baseline is the run's own H0 point by default: it is measured on the same task
+        # set, by the same platform, and it is the thing "did this edit help" is already
+        # about. `--baseline` replaces it with a **frozen reference** -- one point, measured
+        # once and reused by every method that follows. That is what cross-method comparison
+        # needs: a per-run H0 puts every method on its own axis, which is the confounding this
+        # platform exists to remove. The price is that nothing re-measures the frozen
+        # reference, so this run checks and records whether it still describes the run in
+        # front of it (`reference_problems`) rather than assuming it does.
+        #
         # Recorded only where a baseline exists and both sides have the studied breakdown, so
         # H0 itself and an eval-side point carry neither field rather than a null.
         studied = policies.studied_per_task(point)
-        baseline_point = curve[0] if curve else None
+        if args.baseline:
+            try:
+                baseline_point = json.loads(Path(args.baseline).read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError) as exc:
+                console.note(f"--baseline {args.baseline!r} is not a readable curve point: "
+                             f"{exc}", level="error")
+                return 2
+            if not isinstance(baseline_point, dict):
+                console.note(f"--baseline {args.baseline!r} must hold one curve-point object",
+                             level="error")
+                return 2
+            baseline_kind = "frozen"
+        else:
+            baseline_point = curve[0] if curve else None
+            baseline_kind = "same-run"
         baseline_studied = (policies.studied_per_task(baseline_point)
                             if baseline_point else {})
         if res is not None and studied and baseline_studied:
+            # One description of the reference, so the two statistics below name the same
+            # thing and a reader does not have to reconcile them.
+            point["baseline"] = {
+                "kind": baseline_kind,
+                "run_id": baseline_point.get("run_id"),
+                "round": baseline_point.get("round"),
+                "path": args.baseline or None,
+                "problems": policies.reference_problems(
+                    baseline_point, point,
+                    reference_tasks=baseline_studied, current_tasks=studied),
+            }
             point["score_geomean"] = round(policies.geomean(list(studied.values())), 6)
             point["capability_floor"] = {
                 "baseline": f"round-{baseline_point.get('round', 0)}",

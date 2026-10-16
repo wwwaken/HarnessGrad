@@ -347,6 +347,19 @@ def _main(attempt: dict) -> int:
                     help="--side eval: the train run whose harness state to measure")
     ap.add_argument("--from-round", type=int, default=None,
                     help="--side eval: which round of that run (default: its last)")
+    ap.add_argument("--baseline", default=None,
+                    help="a frozen reference point to measure this run against, as a JSON "
+                         "file holding one curve point (the object a `curve.jsonl` line "
+                         "carries). Declared rather than inferred: without it the baseline "
+                         "is round 0 of this same run, which is the control for one method "
+                         "and a different reference for every other one. A frozen reference "
+                         "puts every method on one axis, which is what cross-method "
+                         "comparison needs -- and because nothing re-measures it, this run "
+                         "checks and records whether it still describes the run in front of "
+                         "it (agent model, backend, harness family, framework version and "
+                         "the task set). Measure the frozen reference well: it is amortized "
+                         "over every method that uses it, so its own sampling noise is "
+                         "baked into all of them.")
     ap.add_argument("--seed", default=None,
                     help="the environment's seed (INTERFACE.md §2.5.7). A per-task "
                          "seed is derived from it and given to services that declare "

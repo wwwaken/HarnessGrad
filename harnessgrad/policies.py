@@ -205,3 +205,58 @@ def improvement(candidate: dict, baseline: dict, *, alpha: float = 0.05) -> dict
         "test": ("sign test over discordant pairs; McNemar's exact test when the per-task "
                  "scores are binary"),
     }
+
+
+#: Identity fields that must agree between a candidate and the reference it is compared
+#: against. **`harness_sha` and `harness_identity.config` are deliberately absent**: they are
+#: what the method edits, so requiring them to match would refuse every real experiment. The
+#: fields here are the ones that must be held fixed for the comparison to be about the edit --
+#: a different agent model, backend or harness family makes the two numbers answers to
+#: different questions.
+REFERENCE_FIXED = ("agent_model", "agent_backend", "harness_name", "framework_version")
+
+
+def reference_problems(reference: dict, current: dict, *,
+                       reference_tasks=None, current_tasks=None) -> list[str]:
+    """Why a reference point may not be comparable with the point being measured against it.
+
+    A frozen reference is amortized over every future method, which is what makes cross-method
+    comparison honest -- every method sits on one axis. The price is that nothing re-measures
+    it, so it cannot notice that *it* has stopped describing the run in front of it. This is
+    that check, and it is mechanical rather than advisory: the fields are already on both
+    points.
+
+    **The task set is the one that bites silently.** `improvement` pairs task by task over
+    `set(candidate) & set(baseline)`, so a reference whose task ids differ does not fail -- it
+    quietly shrinks the comparison and reports a p-value about the survivors. Measured: a run
+    with `--split default` scored 81 tasks under `split_sha 919f17c8` while the archived
+    reference scored 82 under `249d6aac`; one task moved sides and nothing would have said so.
+
+    Returns named problems, empty when the reference holds.
+    """
+    ref_id = dict((reference or {}).get("identity") or {})
+    cur_id = dict((current or {}).get("identity") or {})
+    problems = []
+    for field in REFERENCE_FIXED:
+        was, now = ref_id.get(field), cur_id.get(field)
+        if was != now:
+            problems.append(f"{field} changed: reference {was!r}, this run {now!r}")
+    # **Defaulted from the points themselves.** The task set is the check that bites
+    # silently, so leaving it to a caller to pass means the one check that must not be
+    # forgotten is the one that is. Explicit arguments still win, because a point's studied
+    # side is not always its `per_task` (`staged_per_task` exists for that).
+    if reference_tasks is None:
+        reference_tasks = (reference or {}).get("per_task") or {}
+    if current_tasks is None:
+        current_tasks = (current or {}).get("per_task") or {}
+    if reference_tasks and current_tasks:
+        ref, cur = set(reference_tasks), set(current_tasks)
+        shared = ref & cur
+        if ref != cur:
+            problems.append(
+                f"task set changed: {len(ref)} in the reference, {len(cur)} here, "
+                f"{len(shared)} shared; {len(ref - cur)} dropped and {len(cur - ref)} new. "
+                f"The paired test only sees the shared tasks")
+        if not shared:
+            problems.append("the reference and this run share no task at all")
+    return problems

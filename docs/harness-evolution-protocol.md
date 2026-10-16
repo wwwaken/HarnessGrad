@@ -27,9 +27,24 @@ eight is inside the band — `tau-a-r10` moved +0.018 (less than one task), `str
 
 Two consequences, and neither is optional:
 
-* **A control arm at the same configuration, in the same session.** Without it the method arm's
-  movement is indistinguishable from what happens when nothing is edited. This is the one thing
-  the platform's own records already prove is necessary.
+* **A reference that every method is measured against -- one, frozen, and measured well.** A
+  per-run H0 gives each method its own axis, which is the confounding this platform exists to
+  remove: two curve points belong on one axis only when their provenance agrees
+  (`INTERFACE.md` §2.3). `--baseline <point.json>` declares a frozen reference; without it the
+  baseline is round 0 of the same run, which is right for one method and wrong for a series.
+  The price is that nothing re-measures it, so every run checks the fields that must be held
+  fixed -- agent model, backend, harness family, framework version, and the task set -- and
+  records the problems on `point["baseline"]["problems"]` rather than assuming they are empty.
+* **The frozen reference is amortized over every method, so spend on its precision.**
+  `B2-noop` moved +0.2 with no edit, at `temperature=0.0` and an unchanged `harness_sha`, so the
+  noise is endpoint-side and per-call independent: it does not *bias* a frozen reference, it is
+  baked into it permanently. Measure the reference once with `--trials 3` so its `per_task` is
+  a majority over trials, and keep the method runs cheap at `--trials 1`. This inverts the
+  earlier advice on this page, which was written when the baseline was per-run.
+* **A no-op arm stops being the control and becomes the drift probe.** Re-run the unedited
+  harness against the frozen reference: if it moves, the reference no longer describes today's
+  platform. That is the one thing a frozen reference cannot detect by itself, and
+  `point["baseline"]["problems"]` is where it has to surface.
 * **Enough tasks that one task is small.** `full-a` used 51 and is the only run in the corpus at
   a scale where a two-task move does not dominate the number.
 
@@ -117,26 +132,45 @@ the honest long path and it blocks everything else in the meantime.
 #    than `terminal_bench`, which needs Docker per task and costs an order of magnitude more.
 #    Measured: one aime task ran end to end in 44.3 s with both GPUs saturated.
 
-# 1. Calibrate the band. One arm, no method, the exact configuration the experiment will use.
-python3 driver.py --harness loop --dataset <name> --split official --side eval \
+# 1. Measure the reference ONCE, well, and freeze it. `--split declared` (or omitting
+#    `--split`) is the dataset's own division; `--split default` is the platform's hash third
+#    and is a DIFFERENT task set -- measured: 82 tasks under split_sha 249d6aac against 81
+#    under 919f17c8 for alfworld. Freeze the round-0 line of that curve as the reference.
+python3 driver.py --harness loop --dataset <name> --split declared --side train \
   --sampling all --trials 3 --jobs <n> --rounds 0 --improver none \
-  --run-id <fresh>-calib --runs-root <runs>
+  --run-id <fresh>-reference --runs-root <runs>
+head -1 <runs>/<fresh>-reference/curve.jsonl > reference.json
 
-# 2. The same configuration again, unchanged. The difference between step 1 and step 2 IS the
-#    band; if it is not smaller than the effect being claimed, stop and raise the task count.
+# 2. Probe the reference for drift before trusting it: the unedited harness, today. It should
+#    land where the reference says. If it does not, the reference is stale -- stop.
+python3 driver.py --harness loop --dataset <name> --split declared --side train \
+  --sampling all --trials 1 --jobs <n> --rounds 0 --improver none \
+  --run-id <fresh>-driftprobe --runs-root <runs> --baseline reference.json
 
-# 3. The method arm, same tasks, same --trials, same side, no `--from-run`.
-python3 driver.py --harness loop --dataset <name> --split official --side eval \
-  --sampling all --trials 3 --jobs <n> --rounds <n> --improver <name> \
-  --run-id <fresh>-method --runs-root <runs>
+# 3. Every method run, cheap, against the same frozen reference.
+python3 driver.py --harness loop --dataset <name> --split declared --side train \
+  --sampling all --trials 1 --jobs <n> --rounds <n> --improver <name> \
+  --method-entrypoint "<method>" --run-id <fresh>-method --runs-root <runs> \
+  --baseline reference.json
 
-# 4. Read the two curves together. `score`, `score_std`, `n_trials`,
-#    `editable_surface_touched` and `editable_surface_components` are all on the point.
+# 4. Read the points. `score`, `score_std`, `n_trials`, `improvement`, `capability_floor`,
+#    `editable_surface_touched`, `editable_surface_components` and `baseline` are all on the
+#    point; `baseline.problems` being non-empty invalidates the comparison.
 ```
 
-`--side eval` with `--split official` scores the benchmark's own evaluation set. Fix the task set
-for the whole experiment (`--tasks` or a `--split` file) so round 0 is not a different draw from
-the rounds that follow.
+**`--split declared` and `--split default` are different task sets.** `declared` is the
+adapter's own `SPLIT`; `default` is the platform's documented rule, a deterministic third by
+hash of the task id. They agree in shape and differ at the boundary -- on alfworld, 82 against
+81, `split_sha 249d6aac` against `919f17c8`. A frozen reference must name the same one the
+analysis was made on, and `reference_problems` reports the difference when it does not, because
+the paired test would otherwise silently shrink to the intersection.
+
+`--side eval` is **not** "score the eval side now": in the driver it means *score a harness a
+previous train run produced* and needs `--from-run`. A dataset whose whole pool is evaluation
+material (`OFFICIAL_EVAL = None`, which is `alfworld`) therefore has no single-run path to a
+full-pool number -- `--split official --side train` is empty and `--side eval` wants a source
+run. The operator's fold of two runs is the way that exists today, and this page does not
+pretend otherwise.
 
 ## 4. What counts as a result
 
