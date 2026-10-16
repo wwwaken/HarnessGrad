@@ -482,6 +482,15 @@ def resolve(config: dict | None = None, *, version: str = "", requested: str = "
             tree = Path(str(declared)).expanduser()
             if tree.is_dir() and str(tree) not in trees:
                 trees.append(str(tree))
+        # The tool's **own home**, when the entry builds one for this role rather than
+        # borrowing the operator's. Two jobs: the sandbox has to bind it, because
+        # `methods/cli_improver.py` copies it into the round's workspace, and the method has
+        # to be told the path -- an ambient `DSH_HOME` is exactly the coupling this replaces.
+        tool_home = str(entry.get("home") or "")
+        if tool_home:
+            home_path = Path(tool_home).expanduser()
+            if home_path.is_dir() and str(home_path) not in trees:
+                trees.append(str(home_path))
         # **A bash launcher does not reveal where its interpreter is.** `runtime_trees`
         # follows the shebang, so codex's `codex.js` hands back node's installation for
         # free -- but this launcher's shebang is `bash`, and `sh`/`bash`/`env` are
@@ -505,6 +514,12 @@ def resolve(config: dict | None = None, *, version: str = "", requested: str = "
                 "kind": str(entry.get("kind") or ""),
                 "name": entry.get("name") or key,
                 "argv_style": str(entry.get("argv_style") or ""),
+                # The home this CLI should run against, and the one credential it may hold.
+                # Not identity: both are environment facts, and neither belongs on a curve
+                # point (`_improver_identity` filters them out) -- but the method needs both,
+                # and the resolution is the only place that read them off the entry.
+                "home": tool_home,
+                "api_key_env": str(entry.get("api_key_env") or ""),
                 "model": (model_override
                           or declared_model(config, source=config_home(), entry=entry)),
                 "runtime": trees,

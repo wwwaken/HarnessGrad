@@ -290,6 +290,49 @@ def test_the_dsh_home_is_seeded_into_the_workspace(tmp_path, monkeypatch):
     assert "something-else" in (home / "settings.yaml").read_text()
 
 
+def test_the_seeded_home_does_not_follow_symlinks(tmp_path, monkeypatch):
+    """`profiles/` 是 pnpm 的软链接农场,而 `copytree` 默认会**解引用**它们。
+
+    实测(2026-10-16,`alfworld-dshsmoke3`):`profiles/node_modules` 下有 **277 个软链接**,
+    每个指向 DSH checkout 里某个包的 `node_modules`;默认的 `copytree` 于是把**目标**递归拷
+    进来,而那些目标里又各自带 `node_modules` —— 复制无界。round 1 在这个调用里坐了十几分钟,
+    132s user / 510s system,py-spy 栈上是几千层 `_copytree`,磁盘上什么也没多出来。整个 9 方法
+    批次会一起死在这里,而且它不报错,只是不动。
+
+    这条测试用一个"目录软链接 + 目标里放一堆文件"来钉住它:链接必须还是链接,目标的文件
+    **不许**出现在种出来的 home 里。
+    """
+    source = tmp_path / "real-dsh-home"
+    target = tmp_path / "checkout" / "pkg"
+    target.mkdir(parents=True)
+    for i in range(50):
+        (target / f"file{i}").write_text("x" * 100)
+    (source / "profiles" / "headless").mkdir(parents=True)
+    (source / "profiles" / "headless" / "package.json").write_text("{}")
+    (source / "profiles" / "node_modules").mkdir()
+    (source / "profiles" / "node_modules" / "linked-package").symlink_to(target)
+    monkeypatch.setenv("DSH_HOME", str(source))
+    workspace = tmp_path / "ws"
+    workspace.mkdir()
+
+    ci._seed_dsh_home(workspace, {})
+
+    seeded = workspace / ".dsh-home" / "profiles"
+    link = seeded / "node_modules" / "linked-package"
+    assert link.is_symlink(), (
+        "软链接被解引用了 —— 这正是把 profiles 的复制变成无界复制的原因")
+    # 链到的是**原来的目标**,不是一份拷贝
+    assert link.readlink() == target
+    # 真目录要真的复制过来(profile 必须能 boot,而且 dsh 会重写 profiles/<name>/cordis.yml,
+    # 所以它得是可写的真实目录)
+    assert (seeded / "headless" / "package.json").is_file()
+    # **判别标准是真实文件数**,不是 `is_dir()`:后者会跟随软链接,对链接也返回 True。
+    # 解引用的版本会把目标里那 50 个文件全拷进来。
+    real = [p for p in seeded.rglob("*") if p.is_file() and not p.is_symlink()]
+    assert len(real) < 10, (
+        f"目标被解引用进来了:种出来的 home 里有 {len(real)} 个真实文件(链接保持为链接时只有 1 个)")
+
+
 def test_the_launcher_pins_the_model_on_the_command_line(tmp_path):
     """模型必须是**命令行上的事实**,不是环境里的。
 

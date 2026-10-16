@@ -307,6 +307,16 @@ def _seed_dsh_home(workspace: Path, env: dict) -> Path:
     has nothing to boot, and the credentials. Measured: `profiles/` is 1.3 MB, so a copy per
     round is cheaper than making the sandbox's read-only bind conditional.
 
+    **`symlinks=True`, and that is not a detail.** `profiles/node_modules` is a pnpm link
+    farm -- measured here, 277 symlinks, each pointing into a package's `node_modules`
+    inside the DSH checkout -- and `copytree` dereferences symlinks by default. So the
+    ordinary call copied the *targets*, every one of which carries further `node_modules`,
+    and the copy was unbounded. Measured (`alfworld-dshsmoke3`, 2026-10-16): round 1 sat in
+    this call for over ten minutes, 132 s user and 510 s system time, with thousands of
+    nested `_copytree` frames and nothing on disk to show for it. The seeded home is meant
+    to be a small writable overlay; copying links as links makes it one. The links resolve,
+    because the DSH checkout is bound read-only into the same namespace.
+
     `settings.yaml` comes too, so the improver runs in the operator's environment -- but the
     model it uses is not read from there: the launcher pins `agent-default-model` with
     `--patch`, which is applied after the profile's user layer, so the recorded model cannot
@@ -314,14 +324,62 @@ def _seed_dsh_home(workspace: Path, env: dict) -> Path:
     """
     home = workspace / ".dsh-home"
     home.mkdir(exist_ok=True)
-    source = Path(os.environ.get("DSH_HOME") or (Path.home() / ".dsh")).expanduser()
+    # **The declared home wins over the ambient one.** `DSH_HOME` is exported by this tool
+    # environment, so the driver and every method inherit it -- which meant the improver read
+    # the operator's settings file (complete with third-party `llm-pi-ai` providers nobody
+    # chose for it) and that "which model edits the harness" was a property of the shell. The
+    # registry entry names the home this tool should use; the fallbacks keep the older
+    # behaviour reachable for an improver that has not been given one.
+    source = Path(os.environ.get("HG_IMPROVER_DSH_HOME")
+                  or os.environ.get("DSH_HOME")
+                  or (Path.home() / ".dsh")).expanduser()
     for name in ("settings.yaml", ".credentials.yaml"):
         if (source / name).is_file():
             shutil.copy2(source / name, home / name)
     if (source / "profiles").is_dir():
-        shutil.copytree(source / "profiles", home / "profiles", dirs_exist_ok=True)
+        shutil.copytree(source / "profiles", home / "profiles", symlinks=True,
+                        dirs_exist_ok=True)
     env["DSH_HOME"] = str(home)
     return home
+
+
+#: What a CLI subprocess may keep, besides the one credential its entry names. An allowlist
+#: rather than a denylist of secret-shaped names, because the point is a boundary and a
+#: boundary that has to recognise every way a secret can be spelled is not one. `PATH` and
+#: `HOME` because a program cannot start without them; `TMPDIR`/`TMP`/`TEMP` because node and
+#: pnpm both use them; `LANG`/`LC_*`/`TZ`/`TERM` because encoding and timestamps end up in
+#: logs; the proxy variables because a deployment behind one would otherwise watch the
+#: improver fail to reach its own endpoint and read it as a method bug.
+_ENV_KEEP = ("PATH", "HOME", "TMPDIR", "TMP", "TEMP", "LANG", "LC_ALL", "LC_CTYPE", "TZ",
+             "TERM", "SHELL", "USER", "LOGNAME", "NODE_OPTIONS", "NODE_PATH",
+             "HTTP_PROXY", "HTTPS_PROXY", "NO_PROXY", "http_proxy", "https_proxy", "no_proxy")
+
+
+def _restrict_env(env: dict, improver: dict) -> list[str]:
+    """Leave the improver exactly one credential, and say what was withheld.
+
+    A CLI improver runs with whatever the method inherited, and the method inherits the
+    driver's environment -- which holds the agent's key and every provider's alongside the
+    improver's. So a dsh improver *could* reach an endpoint nobody chose for it, and "no
+    forbidden models, no other endpoints" rested on it not trying. This makes that structural
+    rather than aspirational.
+
+    **Only for an entry that declares `api_key_env`** -- one that has opted into naming the
+    single credential it needs. codex does not, and its provider config can name any variable,
+    so it keeps the environment it has always had; narrowing it here would be a change nobody
+    asked for, made in the one place least able to notice.
+
+    Returns the names dropped. The round records them, so the boundary is visible in the
+    receipt instead of being an invisible difference between two improvers.
+    """
+    declared = str(improver.get("api_key_env") or "")
+    if not declared:
+        return []
+    kept = [name for name in _ENV_KEEP if name in env]
+    withheld = sorted(name for name in env if name not in kept and name != declared)
+    for name in withheld:
+        del env[name]
+    return withheld
 
 
 def _stage_evidence(workspace: Path, req: dict) -> Path:
@@ -469,9 +527,14 @@ def propose(req: dict, parent: Path, *, prompt: str | None = None,
     timeout = int(os.environ.get("HG_IMPROVER_TIMEOUT_S", "1800"))
     started = time.time()
     env = dict(os.environ)
+    # **Narrow the environment first, then seed into it.** The order matters twice over: the
+    # restriction must see the inherited environment (that is what it is narrowing), and the
+    # seeding must run after it so the `DSH_HOME` it sets is the one the improver gets --
+    # restricting afterwards would delete the very variable that points at the seeded home.
+    style = str((req.get("improver") or {}).get("argv_style") or "codex")
+    withheld = _restrict_env(env, req.get("improver") or {})
     # The CLI's own state, seeded into the workspace because the sandbox binds the
     # improver's trees read-only and nothing under `$HOME` is reachable from inside it.
-    style = str((req.get("improver") or {}).get("argv_style") or "codex")
     if style == "dsh":
         _seed_dsh_home(workspace, env)
     else:
@@ -500,6 +563,10 @@ def propose(req: dict, parent: Path, *, prompt: str | None = None,
         "seconds": round(time.time() - started, 1),
         "files_changed": changed,
         "note": summary,
+        # What the boundary withheld, so a reader can tell two improvers apart by what they
+        # *could* reach and not only by what they did. Empty for an improver that declares no
+        # `api_key_env`, which is every improver that has not opted into being narrowed.
+        "env_withheld": withheld,
     }
     return {"candidate": candidate, "changed": changed, "files": changed,
             "protected": protected, "exit_code": code, "seconds": reported["seconds"],
