@@ -1025,8 +1025,25 @@ def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:
         except OSError:
             continue
     if not edits:
+        # **A crashed CLI improver is not a decision.** `cli_improver.run` already draws this
+        # line (`if code != 0 and not changed:` -> `reported["error"]`), and this path did
+        # not: it wrapped whatever the improver had printed into `{"no_change": <prose>}`,
+        # so a call that never ran became a method saying "I chose not to change anything".
+        # Measured (`v12-dgm`, 2026-10-05): the improver was codex, three rounds printed
+        # prose and edited nothing, and the curve read "DGM: no child produced" -- a decision
+        # nobody made, in the shape `UnparseableReply`'s own docstring forbids.
+        #
+        # Raised, not returned, because the two callers already do the right thing with an
+        # exception: `ask_for_json` retries it with the failure fed back, and a method that
+        # calls `ask` directly records it as an outage rather than as a proposal it declined.
+        if result["exit_code"] != 0:
+            raise UnparseableReply(
+                f"the CLI improver exited {result['exit_code']} and changed nothing: "
+                f"{(result['note'] or '').strip()[:300]}")
+        # Exit 0 with no files is a genuine decline, and `cli_improver`'s prompt makes it name
+        # a mechanism, so the note *is* the reason. Kept as `no_change` on purpose.
         return {"no_change": result["note"] or (
-            f"the CLI improver exited {result['exit_code']} and changed nothing")}
+            "the CLI improver exited 0 and changed nothing")}
     return {"files": edits,
             "hypothesis": result["note"] or f"{len(edits)} file(s) edited by the CLI"}
 

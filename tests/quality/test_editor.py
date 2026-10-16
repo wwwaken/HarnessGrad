@@ -387,6 +387,76 @@ def test_an_unreadable_reply_raises_instead_of_reporting_no_change(monkeypatch):
     assert "refuse" in str(exc.value), exc.value
 
 
+def _cli_harness(tmp_path: Path, monkeypatch) -> Path:
+    """A harness whose `round.json` resolved a CLI improver, so `ask` dispatches to it.
+
+    The three `HG_METHOD_*` variables are set even though the CLI branch never reaches the
+    endpoint: `ask` calls `model_settings()` *before* it dispatches (`methods/editor.py:1069`),
+    so a CLI improver is asked for endpoint credentials it does not use. Recorded here rather
+    than worked around silently -- it is the same conflation of the two improver layers that
+    the `no_change` collapse below is.
+    """
+    base = _write_harness(tmp_path / "h")
+    (base / "_harnessgrad" / "round.json").write_text(json.dumps(
+        {"identity": {"improver": {"name": "codex", "kind": "cli", "path": "/x/codex.js"}}}))
+    monkeypatch.setenv("HG_METHOD_BASE_URL", "http://stub/v1")
+    monkeypatch.setenv("HG_METHOD_API_KEY", "stub")
+    monkeypatch.setenv("HG_METHOD_MODEL", "stub")
+    return base
+
+
+def _stub_cli(monkeypatch, *, exit_code: int, note: str, files: list | None = None,
+              tmp_path: Path | None = None) -> None:
+    import cli_improver
+
+    def stub(*_a, **_k):
+        return {"candidate": (tmp_path or Path("/nonexistent")), "changed": files or [],
+                "files": files or [], "protected": [], "exit_code": exit_code,
+                "seconds": 0.1, "note": note, "reported": {}, "transcript": "…"}
+
+    monkeypatch.setattr(cli_improver, "propose", stub)
+
+
+def test_a_crashed_cli_improver_raises_instead_of_reporting_no_change(tmp_path, monkeypatch):
+    """**CLI 那条路漏了同一条规则,而上面那条测试只守住了 endpoint 那条。**
+
+    `UnparseableReply` 的 docstring 自己写着两者的区别:*"collapsing the second into the
+    first puts a decision in the curve that nobody made."* `_ask_cli` 正是那个 collapse:
+    improver 退出码非 0、一个文件没改,它却把 `result["note"]`(improver 打印的一段 prose)
+    包成 `{"no_change": <prose>}` 返回。
+
+    实测(`v12-dgm`,2026-10-05):improver 是 codex CLI,三轮都只打印 prose、没改文件,
+    于是 `"no_change" in reply` 成立、`edits=[]`,曲线上写的是 "DGM: no child produced"。
+    同仓库的 `cli_improver.run` 对**同一情形**记的是 error(`if code != 0 and not changed`),
+    两条路不一致 —— 这条测试钉住它们一致。
+    """
+    import editor
+    monkeypatch.delenv("HG_IMPROVER", raising=False)
+    base = _cli_harness(tmp_path, monkeypatch)
+    _stub_cli(monkeypatch, exit_code=1, note="Let me check the index files differently:",
+              tmp_path=tmp_path)
+    with pytest.raises(editor.UnparseableReply) as exc:
+        editor.ask("prompt", base=base, parent=base)
+    assert "exited 1" in str(exc.value), exc.value
+    assert "index files" in str(exc.value), "原因必须留在异常里,不能丢掉"
+
+
+def test_a_cli_improver_that_declines_is_still_a_no_change(tmp_path, monkeypatch):
+    """**不要修过头。** 干净退出、没改文件 = improver 真的决定不改,这是合法答案。
+
+    `cli_improver` 的 prompt 要求 `no_change` 必须点名机制,所以那段 prose 就是理由本身。
+    把这一条也抛掉,等于把"方法决定不改"变成"调用坏了",是反方向的同一个错误。
+    """
+    import editor
+    monkeypatch.delenv("HG_IMPROVER", raising=False)
+    base = _cli_harness(tmp_path, monkeypatch)
+    _stub_cli(monkeypatch, exit_code=0, note="no_change: the retry cap is already 3",
+              tmp_path=tmp_path)
+    reply = editor.ask("prompt", base=base, parent=base)
+    assert "no_change" in reply, reply
+    assert "retry cap" in str(reply["no_change"]), reply
+
+
 def test_the_hypothesis_is_found_wherever_the_model_put_it():
     """实测:要的是顶层 `hypothesis`,模型塞进了 file 对象里,于是标签是空的 ——
     一次真实的 8 KB 编辑被记成了"没有理由"。两处都读。"""
