@@ -48,6 +48,30 @@ That is the marginal band, and it is why a marginal comparison cannot see a comp
 edit. `--trials` still matters, but for the *floor* guard rather than for this (see §2): the
 paired test in §4 is what makes a 134-task pool enough.
 
+**What the corpus's best actually is, in paired terms.** Applying `improvement` to every
+archived run with a paired baseline — 63 runs, 145 candidate rounds — gives the sharpest
+statement of the problem:
+
+| discordant pairs (best → worst) | rounds |
+| --- | --- |
+| 3 gained / 0 lost (`p = 0.25`) | 4 |
+| 2 / 1, 2 / 0, 1 / 1, 1 / 0 | 8 |
+| 0 gained / 1 or 2 lost | 11 |
+| **0 / 0 — nothing discordant** | **101** |
+
+**Zero rounds are significant.** The largest one-directional movement anywhere in the corpus is
+**three tasks**, and `B2-noop` — the no-edit control — produces exactly that (3 gained / 0 lost,
+`p = 0.25`), as does `B2-rrsi`. So the corpus's best "improvement" is the same size as the
+control's, which is the same conclusion §1's mean comparison reaches, now with a test behind it.
+
+The 101 zero-discordance rounds are silent by *vacuity*, not evidence of no change, and the
+record says so: `direction: "unchanged"` with `gained = lost = 0`. That is consistent with the
+75-of-129 rounds that produced no edit at all.
+
+The bar for the experiment is therefore explicit: **six discordant pairs in one direction**
+(6-0, `p = 0.031`) is the smallest significant result, and eight against one (`p = 0.039`) is
+the first that also tolerates a regression.
+
 ## 2. What each path can and cannot produce
 
 Two limits are structural. Both were verified this round by running the code, not by reading it.
@@ -153,3 +177,42 @@ already contains 88 flat curves and 8 false positives; one more of either adds n
   re-validates every candidate before measurement without executing it;
   `tests/quality/test_candidate_apply.py` now pins the non-execution property, which previously
   held only by an argument.
+
+## 6. The first experiment: validate the instrument before attributing anything to a method
+
+The failure structure on `alfworld` is measured, not guessed, and it points at one specific
+change. From the 134 archived trajectories (`refix-alfworld-train` + `-eval`, 63 pass / 71 fail):
+
+| | pass (n=63) | fail (n=71) |
+| --- | --- | --- |
+| loop iterations | median **14**, min 7, max 32 | median **32**, min 7, max 32 |
+| hit the 32-iteration cap | **1 / 63** | **37 / 71** |
+| parse errors | 0 | 0 |
+| context trims | 0 | 0 |
+
+**The failures are not formatting failures and not context overflow — they stop at the cap.**
+(The `step` key appears on four auxiliary record types besides `reply`; counting records rather
+than iterations inflates the figure, which is how an earlier reading of this data produced
+"66 steps". The table counts `reply` records, one per iteration.)
+
+And the cap is **below the environment's own budget**: `MAX_STEPS` defaults to 32
+(`base_harness/loop/agent.py:63`) and the adapter never raises it, while `STEP_BUDGET = 50`
+(`data/datasets/alfworld/lib/gym_env.py:44`). So the harness ends the episode eighteen actions
+before the environment would. Passing tasks need a median of fourteen, so the cap does not bind
+them.
+
+**The first experiment should therefore be a hand-authored H1, not a method run.** Raise the cap
+to the environment's budget and measure. The reason is methodological: a method's edit may be
+arbitrary, so a null result would leave "the instrument cannot see a real improvement" and "the
+method proposed nothing useful" indistinguishable — and the corpus is full of exactly that
+ambiguity (101 of 145 rounds have zero discordant pairs). A known-answer H1 costs two runs
+instead of a method loop and it tests the *measurement chain*: if the paired test cannot see a
+change that the failure structure predicts, the instrument is what is broken.
+
+Prediction, stated before the run so it can be wrong: converting six or more of the
+thirty-seven capped failures gives `6 gained / 0 lost`, `p = 0.031`, which is the smallest
+significant result §4 accepts. `alfworld` is the dataset for this because its controls reach 1
+and 0 (verified), its pool is small enough to run whole, and its failures are step-limited
+rather than knowledge-limited.
+
+Only after a known-answer H1 moves the number is a method run interpretable.
