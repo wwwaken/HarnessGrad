@@ -5692,3 +5692,56 @@ and the decision documents, not the payloads.
 
 **Verified:** 115 passed / 1 skipped across the B5, registry, docs, boundary, import-direction and lint
 files; 172 passed / 17 skipped across the registry-reading set; checker `valid` on every commit.
+
+## 2026-10-16 (publish) — The remote was not a first push, and main had diverged 50 commits
+
+**The operator asked to push `main`. `git push origin main` would have been rejected**, and finding that
+out first is the whole value of this entry. `git ls-remote origin` showed `refs/heads/main` at
+`5cb804e6012254012e5ee50538c6ea7c4c7cf3f4` - a commit **not present locally at all** - while the local repo
+had **no remote-tracking refs**, so nothing locally recorded that the remote had ever been pushed to.
+
+**The diagnosis, measured before touching anything.** Remote and local share the ancestor `f3fca7f8` and
+have diverged: remote **+50**, local **+513**. The remote's 50 unique commits are the **pre-rewrite SHAs** -
+local history was rewritten on 2026-10-15 (`.git/filter-repo/already_ran` and `changed-refs` are still
+there), and **all 50 of their subjects already exist in local main** (50/50, zero unique). The remote also
+carries **503 paths local main does not**: every one is a **pre-move location** (`data/agentdojo/bridge.py`,
+`data/aggregation.py`, ...) from before `03ecb68c` moved 28 adapters to `data/datasets/`. And the decisive
+check - **all 503 of those blobs exist in the local object store** (0 absent), so replacing the remote loses
+nothing anywhere.
+
+| check | result |
+| --- | --- |
+| remote-only commits | 50, **all** subjects present in local main |
+| remote-only paths | 503, all pre-`03ecb68c` locations |
+| those paths' blobs present locally | **503 / 503**, 0 absent |
+| remote vs local tree | 10.2 MB / 1,054 files vs 75.0 MB / 4,851 files |
+| payloads (files >= 1 MB) on either side | **0** |
+| credential scan (working tree + history patterns) | clean - every `sk-` hit is a ScienceWorld `task_id` or a CloudFront `X-Amz-Cf-Id` |
+
+**Published with `--force-with-lease=main:5cb804e6…`, not `--force`**, so a concurrent push to the remote
+would have failed the command instead of being silently overwritten:
+
+```
+ + 5cb804e6...f4e15ba2 main -> main (forced update)
+```
+
+`origin/main` is now `f4e15ba2` = local `main`, and the remote carries exactly two refs (`HEAD`, `main`) -
+no stray branches. Only `main` was pushed, as instructed.
+
+**Two things the operator should know, neither of them caused by this push:**
+
+* **GitHub reports 18 Dependabot alerts (4 critical, 3 high, 11 moderate) on the default branch**, and
+  **five of the seven dependency manifests are retained upstream fixtures** -
+  `tests/fixtures/bfcl_ast_source/*/pyproject.toml`, `triviaqa_upstream/requirements.txt`,
+  `twowikihopqa_upstream_codex197/requirements.txt`, `ujson_pypi_codex226/requirements-codex226.txt`. Those
+  are third-party benchmark source kept as evidence with pinned licences and hashes; their dependency
+  versions are **not ours to fix**, and "fixing" them would change retained evidence. Only
+  `base_harness/loop/requirements.txt` and `web/package.json` are ours. A `.github/dependabot.yml` that
+  excludes `tests/fixtures/` would turn 18 alerts into the handful that are actionable.
+* **The repo was tidied non-destructively, not rewritten.** `git gc` took `.git` from **119 MB to 83 MB**
+  in 12 s. A history rewrite was considered and rejected on the evidence: the largest packed object in the
+  entire history is **1.00 MB**, the 106.65 MB raw figure for `docs/adapter-integration-journal.md` is the
+  sum over hundreds of deltas and does not appear in the packed top-12 at all, and this repository has
+  already paid for one rewrite - which is why GSM8K's archived-run `platform.git_sha` is unresolvable.
+  Measured clone cost: **37.5 MB to download** (`--depth 1`: 14 MB); 134 MB on disk, of which 89 MB is the
+  checked-out tree and 37 MB is local-only worktree indexes that are never pushed.
