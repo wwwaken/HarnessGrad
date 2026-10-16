@@ -7,6 +7,18 @@
 # improver and the endpoint layer: the endpoint gets evidence inlined into a prompt and
 # capped, this one gets the workspace and reads whatever it decides it needs.
 #
+# **Why it lives in `methods/` and not in `improvers/`.** The method sandbox binds
+# `PLATFORM_ROOT/methods` -- the directory the method's own program lives in -- and
+# deliberately drops every tree that lies inside the platform (`harnessgrad/methods.py`,
+# the guard whose docstring is about not undoing the hide). A launcher under
+# `improvers/` is therefore *invisible* to the method that has to execute it. Measured:
+# `round 1: method entrypoint failed ... the platform named an improver at
+# '.../improvers/dsh-improver', which does not exist inside this sandbox`. The choice was
+# to widen that guard or to move the file; widening it means an operator-writable registry
+# could name any directory under the platform -- `data/` holds the expected answers -- so
+# the launcher sits beside `cli_improver.py`, which is the module that runs it and is
+# already bound for exactly this reason.
+#
 # Why a launcher instead of pointing the registry straight at the built CLI: the model has
 # to be a fact of the *command line*, not of ambient state. dsh reads `agent-default-model`
 # out of `$DSH_HOME/settings.yaml`, which belongs to whoever is logged in on this machine --

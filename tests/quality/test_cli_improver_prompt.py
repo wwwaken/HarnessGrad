@@ -317,7 +317,7 @@ def test_the_launcher_pins_the_model_on_the_command_line(tmp_path):
            "HG_DSH_ROOT": str(root), "HG_IMPROVER_MODEL": "deepseek-flash"}
 
     def run(extra_env=None):
-        proc = subprocess.run([str(ROOT / "improvers" / "dsh-improver"), "TASK TEXT"],
+        proc = subprocess.run([str(ROOT / "methods" / "dsh-improver"), "TASK TEXT"],
                               cwd=str(candidate), env={**env, **(extra_env or {})},
                               capture_output=True, text=True, timeout=120)
         assert proc.returncode == 0, proc.stderr

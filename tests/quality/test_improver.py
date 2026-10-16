@@ -584,3 +584,29 @@ def test_the_shipped_dsh_entry_declares_what_the_code_branches_on():
     assert entry["model"], "必须声明模型,否则记录里说不出它用的是什么"
     assert improver.forbidden_reason(config, entry["model"]) == ""
 
+
+def test_the_launcher_lives_where_the_method_sandbox_already_looks():
+    """**这条是实测出来的**:launcher 放在 `improvers/` 下时,round 1 直接死。
+
+    `_method_sandbox_plan` 把 `PLATFORM_ROOT/methods` 绑进方法的 namespace —— 方法自己的
+    程序在那儿 —— 而它**故意**丢掉每一个位于平台内部的 `runtime` 树,那正是"平台对方法不
+    可见"这条性质的守卫。所以一个放在 `improvers/` 下的 launcher,对必须执行它的方法是
+    不可见的:
+
+        round 1: method entrypoint failed: exit 1 -- the platform named an improver at
+        '.../improvers/dsh-improver', which does not exist inside this sandbox.
+
+    放宽那个守卫的代价是一个操作者可写的注册表能点名平台下的**任意**目录,而 `data/` 里
+    放着每道题的期望答案。所以 launcher 和 `cli_improver.py` 放在一起 —— `methods/` 本来
+    就是为这个绑定的 —— 而这条测试把那个位置约束写下来,免得以后有人"整理"回 `improvers/`。
+    """
+    from harnessgrad.methods import PLATFORM_ROOT as HG_ROOT
+
+    config = improver.load_config()
+    launcher = (ROOT / config["improvers"]["dsh"]["launcher"]).resolve()
+    bound = (HG_ROOT / "methods").resolve()
+    assert launcher.parent == bound, (
+        f"launcher 必须待在 {bound}(它被只读绑进每个方法的 namespace),而不是 "
+        f"{launcher.parent} —— 后者在平台内部,sandbox plan 会把它丢掉")
+    assert launcher.is_file()
+
