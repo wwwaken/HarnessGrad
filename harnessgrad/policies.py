@@ -135,3 +135,73 @@ def floor_violations(candidate: dict, baseline: dict, *,
     out["count"] = len(out["violations"])
     out["significant"] = sum(1 for v in out["violations"] if v["ci_entirely_below"] is True)
     return out
+
+
+def improvement(candidate: dict, baseline: dict, *, alpha: float = 0.05) -> dict:
+    """Whether a candidate is *better* than the baseline, paired task by task.
+
+    **The mirror `floor_violations` does not have.** That function looks only down: it records
+    the tasks where a candidate sits below the baseline, because Anthropic's criterion is a
+    disqualification. Nothing in this platform asked the other question -- "did this edit buy
+    more tasks than it cost" -- and the marginal interval cannot answer it either: `score_ci95`
+    is computed over *tasks*, so it does not shrink when a run repeats them, and on 134 tasks
+    at a mean near 0.5 it is about +/-0.09 wide, which is larger than the effect a harness edit
+    produces. The operator's own archived runs show the size of that band: `refix-alfworld-train`
+    scored 0.4146 with `score_ci95 [0.307, 0.522]` and `refix-alfworld-eval` scored 0.5577 with
+    `[0.421, 0.694]` -- the same harness and model on two halves of one pool, 0.143 apart, with
+    overlapping intervals.
+
+    Paired data is available and unused: both points carry `per_task`, so the same task can be
+    compared with itself before and after. The statistic is a **sign test over the discordant
+    pairs** -- tasks the edit moved one way against tasks it moved the other -- which for binary
+    per-task scores is exactly McNemar's exact test. It deliberately ignores magnitude, and
+    that is the point: one task flipped 0 -> 1 and one task moved 0 -> 0.3 are one discordant
+    pair each, which is what makes it usable when most tasks are binary. Magnitude is reported
+    separately as `net_rate`, so a reader never has to choose between the two readings.
+
+    `significant` means "the discordance is unlikely if the edit changed nothing". It is **not**
+    the same as an improvement: read `significant and direction == "better"`. A significant
+    regression is possible and is already covered by `floor_violations`.
+
+    Recorded, not enforced, like everything else in this module: a method that wants this gate
+    reads it off the point, and a method that ignores it is not overruled.
+    """
+    shared = sorted(set(candidate) & set(baseline))
+    gained, lost = [], []
+    for task in shared:
+        got, base = float(candidate[task]), float(baseline[task])
+        if got > base:
+            gained.append(task)
+        elif got < base:
+            lost.append(task)
+    n = len(gained) + len(lost)
+    if n == 0:
+        # "We could not ask that question" rather than a `false` that reads like a pass --
+        # the same honesty `floor_violations` keeps with `ci_entirely_below: None`.
+        p_value = 1.0
+    else:
+        k = min(len(gained), len(lost))
+        tail = sum(math.comb(n, i) for i in range(k + 1)) / (2 ** n)
+        p_value = min(1.0, 2.0 * tail)
+    net = len(gained) - len(lost)
+    direction = "better" if net > 0 else ("worse" if net < 0 else "unchanged")
+    return {
+        "checked": len(shared),
+        "gained": len(gained),
+        "lost": len(lost),
+        "net": net,
+        # The change in the mean, which the sign test deliberately does not use.
+        "net_rate": round(
+            (sum(float(candidate[t]) for t in shared)
+             - sum(float(baseline[t]) for t in shared)) / len(shared), 6) if shared else None,
+        "alpha": alpha,
+        "p_value": round(p_value, 6),
+        "significant": bool(p_value < alpha),
+        "direction": direction,
+        # Ids only: the per-task values are already in `per_task` on both points, and a task
+        # set can be 8,792 long.
+        "gained_ids": gained,
+        "lost_ids": lost,
+        "test": ("sign test over discordant pairs; McNemar's exact test when the per-task "
+                 "scores are binary"),
+    }

@@ -149,7 +149,102 @@ def test_a_candidate_round_carries_both_policies_and_h0_carries_neither(tmp_path
               (runs / "policies" / "curve.jsonl").read_text().splitlines() if l.strip()]
     assert len(points) == 2, points
     assert "capability_floor" not in points[0] and "score_geomean" not in points[0]
+    assert "improvement" not in points[0], points[0]
     candidate = points[1]
     assert candidate["capability_floor"]["baseline"] == "round-0"
     assert candidate["capability_floor"]["checked"] == len(candidate["per_task"])
     assert isinstance(candidate["score_geomean"], float)
+    # `echo_base` hands back the same harness, so no task was discordant and the honest
+    # answer is "the question could not be asked" -- not a `false` that reads like a pass,
+    # and not an absent field.
+    assert candidate["improvement"]["baseline"] == "round-0", candidate["improvement"]
+    assert candidate["improvement"]["gained"] == 0
+    assert candidate["improvement"]["lost"] == 0
+    assert candidate["improvement"]["direction"] == "unchanged"
+    assert candidate["improvement"]["significant"] is False
+
+
+# ------------------------------------------------- 配对改进统计(floor 的镜像) ---
+
+def _pair(n, gained, lost, rate=0.47):
+    """n 道题、基线通过率 `rate`:`gained` 道 0->1,`lost` 道 1->0,其余不变。
+
+    默认 `rate=0.47` 是 alfworld 那个池子的形状(134 题、均值 0.470)。两组必须取自不同
+    的基线值 —— 第一版把两组都放进 base=0 那半,于是"退步"根本没发生,而且池子均值只有
+    0.0075,和"边际区间看不见这个翻转"那条测试的前提完全不符。
+    """
+    ones = round(n * rate)
+    base = {f"t{i}": (1.0 if i < ones else 0.0) for i in range(n)}
+    cand = dict(base)
+    for i in range(ones, ones + gained):          # 0 -> 1
+        cand[f"t{i}"] = 1.0
+    for i in range(lost):                         # 1 -> 0
+        cand[f"t{i}"] = 0.0
+    return cand, base
+
+
+def test_a_paired_gain_is_detected_where_the_marginal_interval_is_not():
+    """**这条就是它存在的理由。** 边际区间是按题算的,所以对同一批题重跑不会缩小它。
+
+    alfworld 的批量是 134 题、均值约 0.47,`score_ci95` 宽度约 0.17 —— 比一次 harness 编辑
+    能带来的效应还大。但同一批题在 H0/H1 之间是**配对**的,而 8 比 1 的翻转在符号检验下
+    p≈0.039。所以这条测试同时断言两件事:配对检验显著,而边际区间仍然包含基线均值。
+    如果有人把这个函数改成比较两个边际均值,第二条会失败。
+    """
+    from eval.run.metrics import ci95  # noqa: PLC0415
+
+    cand, base = _pair(134, gained=8, lost=1)          # 8 道 0->1,1 道 1->0
+    got = policies.improvement(cand, base)
+    assert (got["gained"], got["lost"]) == (8, 1)
+    assert got["significant"] is True, got
+    assert got["direction"] == "better", got
+
+    lo, hi = ci95(list(cand.values()))                 # the marginal reading, same data
+    base_mean = sum(base.values()) / len(base)
+    assert lo <= base_mean <= hi, (
+        f"the marginal interval [{lo:.3f}, {hi:.3f}] no longer contains the baseline mean "
+        f"{base_mean:.3f}; this test's premise is that it cannot see an 8-vs-1 flip")
+
+
+def test_a_small_asymmetry_is_not_called_an_improvement():
+    """5 比 1 在符号检验下 p≈0.22 —— 不显著。测试要能拒绝,否则它只是装饰。"""
+    cand, base = _pair(134, gained=5, lost=1)
+    got = policies.improvement(cand, base)
+    assert got["net"] == 4 and got["direction"] == "better"
+    assert got["significant"] is False, got
+
+
+def test_a_significant_regression_is_not_an_improvement():
+    """方向与显著性是两个字段,不能合成一个。退步也会"显著"。"""
+    cand, base = _pair(134, gained=0, lost=8)
+    got = policies.improvement(cand, base)
+    assert got["significant"] is True
+    assert got["direction"] == "worse", got
+    # 读法是合取,不是单独看 significant。
+    assert not (got["significant"] and got["direction"] == "better")
+
+
+def test_no_discordant_pair_says_the_question_could_not_be_asked():
+    """没有翻转 = 没问到问题,不是"没有改进"。与 `ci_entirely_below: None` 同一种诚实。"""
+    base = {"a": 1.0, "b": 0.0, "c": 0.5}
+    got = policies.improvement(dict(base), base)
+    assert got["p_value"] == 1.0 and got["significant"] is False
+    assert got["direction"] == "unchanged" and got["net"] == 0
+
+
+def test_only_tasks_present_on_both_sides_are_compared():
+    """配对的前提是同一个任务。只在一侧出现的题不能进分母 —— 否则 `checked` 说谎。"""
+    got = policies.improvement({"a": 1.0, "b": 1.0}, {"a": 0.0, "c": 1.0})
+    assert got["checked"] == 1, got
+    assert got["gained_ids"] == ["a"] and got["lost_ids"] == []
+    assert got["net_rate"] == 1.0
+
+
+def test_the_test_ignores_magnitude_but_the_rate_does_not():
+    """符号检验数"对",net_rate 数"量"。两者都必须报,读者不该被迫二选一。"""
+    base = {"big": 1.0, "small": 0.0}
+    cand = {"big": 0.0, "small": 0.1}          # 一个大幅退步,一个微小进步
+    got = policies.improvement(cand, base)
+    assert got["gained"] == 1 and got["lost"] == 1
+    assert got["direction"] == "unchanged"     # the sign test sees one each way
+    assert got["net_rate"] < 0, got            # the magnitude sees a loss

@@ -33,23 +33,42 @@ Two consequences, and neither is optional:
 * **Enough tasks that one task is small.** `full-a` used 51 and is the only run in the corpus at
   a scale where a two-task move does not dominate the number.
 
+**The band is set by the task count, not by `--trials`.** An earlier draft of this page said
+otherwise and the operator's own archived runs refute it. `score_ci95` is computed over *tasks*
+(`harnessgrad/records.py:164,211`), so repeating a task does not shrink it. On `alfworld`'s 134
+tasks, at `trials=1`:
+
+| run | score | `score_ci95` |
+| --- | --- | --- |
+| `refix-alfworld-train` | 0.4146 | [0.307, 0.522] |
+| `refix-alfworld-eval` | 0.5577 | [0.421, 0.694] |
+
+One harness, one model, two halves of one pool — **0.143 apart with overlapping intervals**.
+That is the marginal band, and it is why a marginal comparison cannot see a component-level
+edit. `--trials` still matters, but for the *floor* guard rather than for this (see §2): the
+paired test in §4 is what makes a 134-task pool enough.
+
 ## 2. What each path can and cannot produce
 
 Two limits are structural. Both were verified this round by running the code, not by reading it.
 
-**The staged path cannot turn the significance guard on.** `staged_task_set`
-(`eval/policy/diagnostic_policy.py:101-102`) refuses anything but `trials=1, jobs=1`:
+**The staged path cannot turn the *floor* guard on, but that is not what detects an
+improvement.** Two separate things, and conflating them overstated the limit in an earlier
+draft of this page. `staged_task_set` (`eval/policy/diagnostic_policy.py:101-102`) refuses
+anything but `trials=1, jobs=1`:
 
     staged diagnostics and temporary pilots require trials=1, jobs=1
 
-and the capability-floor guard is only available when both sides carry a spread
-(`harnessgrad/policies.py:112`):
+and the capability-floor guard (`harnessgrad/policies.py:112`,
+`bool(candidate_std and baseline_std)`) needs a spread, so at `trials=1` it reports
+`ci_available: false`. But that guard is a **disqualification** — it only asks whether a
+candidate sits *below* the baseline. It was never the improvement detector.
 
-    "ci_available": bool(candidate_std and baseline_std)
-
-With `trials=1` there is no spread, so `ci_available` is `False` and the guard the platform
-already implements cannot fire. This is by design — a diagnostic is one task one trial — but it
-means a staged run can never be the significance-guarded one.
+The improvement detector is `improvement` on the curve point, and it is **paired**: the same
+task compared with itself before and after, over the discordant pairs only, as a sign test
+(McNemar's exact test when the per-task scores are binary). It needs no spread, so it works at
+`trials=1`. `score_ci95` cannot substitute — it is computed over *tasks*, so it does not shrink
+when a run repeats them.
 
 **The staged path also withholds its score.** `_require_publication`
 (`eval/policy/diagnostic_policy.py:160-170`) needs `gates.status == "passed"` plus `cleanup` and
@@ -100,16 +119,24 @@ the rounds that follow.
 A round is an improvement only when **all** of these hold, and the third is what most of the
 corpus fails:
 
-1. its score is above the control arm's band from step 1-2, not merely above H0;
-2. `score_std` is present and `ci_available` is `true`, so the platform's own guard could have
-   fired — a `true` here means the comparison was available, not that it passed;
+1. **`improvement.significant` is `true` and `improvement.direction` is `"better"`**, read from
+   the point. This is the paired test over the same tasks, and it is the primary criterion: at
+   `trials=1` on 134 tasks it separates 8 gained against 1 lost (p ≈ 0.039) from 5 against 1
+   (p ≈ 0.22), while the marginal interval cannot separate either from the baseline. A
+   significant `direction == "worse"` is a regression, not a result — the two fields are a
+   conjunction on purpose and neither alone is a reading;
+2. `score_std` is present and `capability_floor.ci_available` is `true`, so the *floor* guard
+   could have fired — a `true` here means the comparison was available, not that it passed;
 3. `editable_surface_touched` is non-empty **and** `editable_surface_components` names a
    component. A touched path reported as `unattributed` is an honest reading, but it is not a
    claim about a component;
 4. it is monotone across rounds or, if it is not, the reversal is reported rather than dropped —
-   `v9-dgm` went 0.1 → 0.2 → 0.1 and neither end of that is a result.
+   `v9-dgm` went 0.1 → 0.2 → 0.1 and neither end of that is a result;
+5. the control arm from steps 1-2, run at the same configuration, did not move in the same
+   direction by a comparable amount. `improvement` compares two rounds of the *same* run, so it
+   cannot see this; only the control can.
 
-A null result that satisfies 1-4 is worth more than a positive one that does not. The corpus
+A null result that satisfies 1-5 is worth more than a positive one that does not. The corpus
 already contains 88 flat curves and 8 false positives; one more of either adds nothing.
 
 ## 5. What is still weak

@@ -613,6 +613,19 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
                     candidate_std=(res.get("per_task_std") or {}),
                     baseline_std=(baseline_point.get("per_task_std") or {})),
             }
+            # **The other direction.** `capability_floor` records only where a candidate is
+            # *below* the baseline, because Anthropic's criterion is a disqualification.
+            # Nothing asked where it is above, and `score_ci95` cannot answer it: that interval
+            # is computed over *tasks*, so it does not shrink when a run repeats them -- on
+            # alfworld's 134 tasks at a mean of 0.47 it is roughly +/-0.09 wide, which is
+            # wider than the effect a harness edit produces. The same tasks appear on both
+            # points, so the comparison is paired and the discordant pairs are the signal.
+            # Recorded beside the floor, not instead of it: one says "this candidate is
+            # safely no worse", the other says "this candidate is better than chance allows".
+            point["improvement"] = {
+                "baseline": f"round-{baseline_point.get('round', 0)}",
+                **policies.improvement(studied, baseline_studied),
+            }
         # **What the candidate is, as code.** HarnessDev measured this on the harnesses
         # their creators wrote: "of 169 new functions or classes, 113 are reachable from
         # the entry point, 31 are reachable only through dead code, and 25 have no caller"
