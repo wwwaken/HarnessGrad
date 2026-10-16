@@ -49,11 +49,13 @@ jobs:
         working-directory: website
         run: pnpm build
 
+      # The Pages site itself is a one-time repository setting -- Settings -> Pages ->
+      # Source: GitHub Actions -- enabled on 2026-10-16. This step only reads that
+      # configuration. Do not add `enablement: true` to paper over a missing setting:
+      # creating a Pages site requires repository admin, and the workflow's
+      # GITHUB_TOKEN never has it, so it fails with "Resource not accessible by
+      # integration" instead of saying what is actually wrong.
       - uses: actions/configure-pages@v5
-        with:
-          # Creates the Pages site on first run instead of failing with
-          # "Get Pages site failed". Needs the token to have admin on the repo.
-          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
