@@ -1,6 +1,7 @@
 """Read-only CLI/docs checks; never execute H0, a model, or a task payload."""
 import argparse
 from pathlib import Path
+import re
 import shlex
 import socket
 import subprocess
@@ -53,7 +54,13 @@ def test_help_explains_local_prerequisites_and_preserves_authorization_boundary(
 
 def test_readme_demo_commands_parse_without_entering_staged_or_runtime_paths(monkeypatch):
     readme = (ROOT / "README.md").read_text()
-    section = readme.split("## Run it\n", 1)[1].split("\n## ", 1)[0]
+    # Locate the section by its subject, not by its exact heading text. The heading carries
+    # an icon, and pinning the whole line would make a cosmetic rename break this test --
+    # or worse, silently widen it, because `str.split` on a missing separator returns the
+    # whole document and `[0]` is still valid.
+    match = re.search(r"^## [^\n]*Run it\n(.*?)(?=\n## )", readme, re.S | re.M)
+    assert match, "README.md has no 'Run it' section"
+    section = match.group(1)
     assert "export HG_AGENT_BACKEND=mock" in section
     assert "grants no production/H0 authorization" in section
     commands = [shlex.split(line) for line in section.replace("\\\n", " ").splitlines()
