@@ -987,6 +987,69 @@ def cli_improver_identity(base: Path | None) -> dict | None:
     return None
 
 
+def _method_workspace() -> Path:
+    """The directory the platform copies a method's own `*.log` files out of.
+
+    It is this process's working directory: `harnessgrad/loops/mode_a.py` runs the method with
+    `cwd=method_ws` and then calls `records._keep_method_logs(method_ws, run_dir, round)`,
+    which copies the `*.log` files at that directory's root into
+    `<run>/method_logs/round-N/`. Kept as a function rather than an inline `Path.cwd()` so a
+    test can point it somewhere and so the coupling is named in one place.
+    """
+    return Path.cwd()
+
+
+def _keep_improver_transcript(result: dict, improver_ws: Path) -> list[str]:
+    """Copy what the CLI improver left behind to where the platform will keep it.
+
+    **Both files the improver writes are destroyed, and both are evidence.** `propose` writes
+    the transcript -- up to 200 kB of what it read, what it tried, and why it changed nothing
+    -- to `<improver_ws>/improver.log`, and the launcher writes the model pin to
+    `<improver_ws>/.dsh-model-pin.yml`. Both statements about that contract are in the tree
+    (`methods/cli_improver.py`'s module docstring and `harnessgrad/records.py:642`) and both
+    were false for every sandboxed round:
+
+      * `improver_ws` is a `tempfile.mkdtemp` under `/tmp`, and
+        `eval/containers/sandbox.py` mounts an **empty tmpfs** on `/tmp` ("a private /tmp, so
+        two runs cannot read each other's task directories") -- so it is gone with the
+        namespace, not merely un-copied;
+      * `_keep_method_logs` scans the *method workspace*, which is a different directory and a
+        host path bound into the namespace.
+
+    Measured: twelve surviving `hg-cli-ask-*` directories on the host, every one of them
+    empty, and every one of them from a test run -- a test stubs `propose`, so it leaves the
+    directory and nothing in it, while a real round leaves nothing at all. The question this
+    costs is the one a comparison of *methods* is mostly about: did the improver read the
+    traces, or did it guess?
+
+    Written as `*.log` at the method workspace root, which is the convention
+    `_keep_method_logs` documents, so no new path convention is invented and the platform
+    still does not need to know which method it is. Returns the names written.
+    """
+    written: list[str] = []
+    destination = _method_workspace()
+    if not destination.is_dir():
+        return written
+    transcript = str(result.get("transcript") or "")
+    payloads = [(f"improver-{improver_ws.name}.log", transcript[-200_000:])]
+    pin = improver_ws / ".dsh-model-pin.yml"
+    if pin.is_file():
+        # The pin is the record of which model the improver was *actually* given, which is not
+        # always the registry's value: `HG_IMPROVER_MODEL` overrides it, and without this the
+        # override would be invisible in the record.
+        payloads.append((f"improver-{improver_ws.name}-model-pin.log",
+                         pin.read_text(errors="replace")[:4_000]))
+    for name, text in payloads:
+        if not text:
+            continue
+        try:
+            (destination / name).write_text(text, encoding="utf-8")
+        except OSError:
+            continue
+        written.append(name)
+    return written
+
+
 def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:
     """Propose through a **CLI** improver and return the result as an edit sequence.
 
@@ -1017,6 +1080,7 @@ def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:
            "trajectory_out": "", "task_ids": [], "train_task_ids": []}
     result = cli_improver.propose(req, parent, prompt=prompt, facts=facts,
                                    evidence=evidence_pointer(base))
+    _keep_improver_transcript(result, workspace)
     edits: list[dict] = []
     for rel in result["files"]:
         path = Path(result["candidate"]) / rel
