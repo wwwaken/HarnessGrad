@@ -1,0 +1,70 @@
+# Build the introduction site in website/ and publish it to GitHub Pages.
+#
+# The site is a *project* page, so its URLs live under /HarnessGrad/; that prefix is
+# configured once, as `base` in website/astro.config.mjs, not here.
+#
+# Paths are filtered deliberately: a change to the Python platform does not need to
+# rebuild the site, and a change to the site cannot affect a run.
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'website/**'
+      - '.github/workflows/deploy-site.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time, and never cancel one that is already publishing.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: website/pnpm-lock.yaml
+
+      - name: Install
+        working-directory: website
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        working-directory: website
+        run: pnpm build
+
+      - uses: actions/configure-pages@v5
+        with:
+          # Creates the Pages site on first run instead of failing with
+          # "Get Pages site failed". Needs the token to have admin on the repo.
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: website/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
