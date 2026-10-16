@@ -234,15 +234,19 @@ def test_fixtures_are_not_published_and_metadata_is_never_executed(tmp_path):
     ("escape-path", "must stay inside root"),
     ("authorize", "cannot authorize production"),
 ])
-def test_registry_refuses_incomplete_or_misleading_entries(document, mutation, message, blocker_repository_evidence):
-    # `bfcl_v3` rather than the previously-used `jericho`: jericho's only blocker was closed
-    # with measured evidence and it now legitimately carries none, and this test mutates
-    # `blockers[0]`. A dataset with an empty list is a supported state since
-    # `docs/enforcement-proof-decision.md`, so the fixture has to be a dataset that still has
-    # a blocker to corrupt. Keeping the old dataset here would have meant either re-adding a
-    # blocker to satisfy a test, or letting this guard quietly stop testing anything.
-    target = row(document, "bfcl_v3")
-    blocker = target["blockers"][0]
+def test_registry_refuses_incomplete_or_misleading_entries(document, mutation, message,
+                                                          blocker_repository_evidence,
+                                                          attach_synthetic_blocker):
+    # This has to mutate something, and an empty `blockers` list is a supported state since
+    # `docs/enforcement-proof-decision.md`, so it corrupts a **synthetic** entry attached to a
+    # published dataset inside a private copy. Pinning a real dataset here went stale twice
+    # (`jericho`, then `bfcl_v3`, withdrawn by the operator on 2026-10-16) and reading the
+    # registry dynamically stopped working once `appworld` was the only non-refusal blocker left.
+    # The synthetic entry removes the dependency on the live population entirely.
+    document = copy.deepcopy(document)
+    dataset, blocker_id = attach_synthetic_blocker(document)
+    target = row(document, dataset)
+    blocker = next(item for item in target["blockers"] if item["id"] == blocker_id)
     repository_evidence = next(item for item in blocker["evidence"]
                                if item["kind"] == "repository")
     if mutation == "missing":
@@ -390,8 +394,8 @@ def test_archived_b7_closure_evidence(report, site_archive):
     assert site_archive(report).is_file(), f"{report}: the evidence behind the closure is gone"
 
 
-def test_bfcl_ast_work_remains_blocked_on_independent_source_and_index_custody(document):
-    """The custody-of-approval gate is revoked; the acquisition gate is not.
+def test_bfcl_ast_contract_withdrawal_is_recorded_and_the_containment_boundary_survives(document):
+    """Two BFCL gates are gone, and they went for different reasons; the decoder boundary is not.
 
     `release-index-custody` required *human custodian approval* of historical tag/archive
     bindings. Operator decision 2026-10-15: requirements whose content is "someone
@@ -400,19 +404,41 @@ def test_bfcl_ast_work_remains_blocked_on_independent_source_and_index_custody(d
     deferred, not judged unnecessary, which is why the deferral is recorded rather than the
     entry simply vanishing.
 
-    `simple-ast-contract` stays: it asks for concrete missing source bodies and a reviewed
-    invocation graph, which is work rather than a signature.
+    `simple-ast-contract` was then **withdrawn by operator scope decision on 2026-10-16** -
+    "relax these two, there is no need for evidence this rigorous" - because the missing facts
+    are producer-held build-time facts that a rebuild cannot supply. That is a **scope
+    withdrawal, not a finding that the evidence is unobtainable**, and it supersedes the
+    earlier reading that this gate stays because it asks for work rather than a signature.
+    The withdrawal and its named limits are recorded in `registry/withdrawn-requirements.md`.
+
+    What must NOT be read as withdrawn: the retained decoder containment boundary revives with
+    any future official-scorer work, and production stays unauthorized.
     """
     blockers = {item["id"]: item for item in row(document, "bfcl_v3")["blockers"]}
     assert "release-index-custody" not in blockers, (
         "the approval gate was revoked and deferred to operator review")
-    ast_contract = blockers["simple-ast-contract"]
-    assert ast_contract["status"] == "external"
-    assert ast_contract["family"] == "official-scorer-execution"
-    assert {"kind": "repository", "path": "tests/fixtures/bfcl_ast_source/README.md",
-            "locator": "external source/provenance blocker remains open"} in ast_contract["evidence"]
-    assert {"kind": "external-reference", "path": "/site/independent-review-deferred.md",
-            "locator": "revoked as a blocker"} in ast_contract["evidence"]
+    assert "simple-ast-contract" not in blockers, (
+        "the operator withdrew this gate on 2026-10-16; it must not reappear without a new "
+        "operator decision")
+
+    # Whitespace-normalised: the record is prose and wraps, so a raw `in` would fail on a line
+    # break rather than on a missing sentence.
+    withdrawn = " ".join(
+        (ROOT / "registry" / "withdrawn-requirements.md").read_text(encoding="utf-8").split())
+    assert "`bfcl_v3 / simple-ast-contract`" in withdrawn, "the withdrawal record is gone"
+    assert "`triviaqa / hub-export-scorer-linkage`" in withdrawn, "the withdrawal record is gone"
+    assert "Scope note for these two entries" in withdrawn, (
+        "the scope note is what separates this withdrawal from a proven-unobtainable finding")
+    assert "Withdrawn by operator scope decision on 2026-10-16" in withdrawn
+    # The limits a reader must carry forward, and the condition that revives the boundary.
+    for carried in ("87 exact compiled-build entries remain UNKNOWN",
+                    "18669", "17944",
+                    "local alias-max normalized row-EM",
+                    "no invented 725-member explanation",
+                    "function-name diagnostic",
+                    "guarded_decode",
+                    "reopens the original technical gate"):
+        assert carried in withdrawn, f"withdrawal record dropped: {carried!r}"
     assert document["review"]["production_authorized"] is False
 
 

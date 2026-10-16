@@ -36,12 +36,71 @@ There are exactly **two writers**, and the rule is about who yields to whom:
 - If a copy is ever needed for an isolated run, make it a `git worktree` (registered, so
   `git worktree list` shows it) rather than a clone, and remove it when the run is done.
 
+## Temporary files: match the device to the access pattern
+
+**The two disks are different devices, and picking the wrong one costs 50x.** Measured
+2026-10-15:
+
+| device | mount | type | capacity | good at |
+| --- | --- | --- | --- | --- |
+| `nvme0n1` (Samsung 980 PRO 2TB) | `/` | **SSD** (`rotational=0`) | 1.8 TB, shared, ~92% full | **random I/O** — many small files |
+| `sdb` (Seagate ST20000NM004E 18.2 TB) | `/mnt/20t` | **mechanical HDD** (`rotational=1`) | 19 TB, ~73% full | **sequential I/O** — big files, archives |
+
+`/` is shared by **48 people** and about **1.45 TB of it is 47 other users' home directories** —
+space we can neither see nor reclaim. It is not ours to fill. But it is also the only fast device
+for many-small-file work, so the rule is a trade, not a prohibition.
+
+**What a run writes.** `eval/run/runner.py:257` does `tempfile.mkdtemp(prefix="hg-task-")` per
+task and materialises the dataset into it. For AgentDojo that is a **217 MB isolated runtime
+venv** — tens of thousands of small files — so 40 concurrent tasks copy roughly **28 GB** and the
+work is almost pure **random** I/O.
+
+**Measured, same 40 AgentDojo tasks, same two servers, only the temp filesystem changed:**
+
+| temp root | 40 dirs after ~8 min | GPU utilisation |
+| --- | --- | --- |
+| `/mnt/20t` (HDD) | **514 MB** | **0 %** — the model was never reached |
+| `/tmp` (SSD) | **28 GB** | **100 % / 100 %** |
+
+So for a materialisation-heavy dataset the HDD is unusable, and "the disk was 98 % full" was
+**not** the cause of the earlier stall — the device type was.
+
+**Choose by access pattern:**
+
+```bash
+# Many small files (venv copies, per-task materialisation) -> SSD.
+# Bound jobs so the peak fits; 40 tasks peaked at 28 GB against 146 GB free.
+export TMPDIR=/tmp
+python3 driver.py ... --work-root /tmp/hg-<dataset>-work     # per-dataset, so it is easy to reap
+
+# Bulk sequential data (traces, archives, run receipts, compression) -> HDD.
+```
+
+`TMPDIR` must be exported **in the shell that launches the driver**; a background job started from
+a different shell does not inherit it. `--work-root` is a driver flag, so it goes on every
+invocation.
+
+**Do not leave temp on the SSD after a run**: reap `--work-root` and any `hg-task-*` trees, and
+keep an eye on `df -h /`. 146 GB free minus a 28 GB peak is fine; three concurrent
+materialisation-heavy datasets is not.
+
+Two related facts:
+
+* **A killed run leaks its temp tree.** The platform removes it in a `finally`
+  (`eval/run/runner.py:584`), so a survivor means the process was SIGKILLed or SIGTERMed, not
+  that cleanup is broken. Prefer letting a run finish; if you must stop one, delete the
+  `hg-task-*` trees it leaves. Note `nohup` ignores SIGHUP but **not** SIGTERM, so launch long
+  runs with `setsid` to detach them from the tool's process group.
+* Clean `/tmp` with `python3 /mnt/20t/xubuqiang/hg-census/tmp_cleanup.py` (dry-run by default;
+  `--apply` deletes). It only removes trees whose **newest file** is older than the window, and
+  pins `hg-hp4-*` as active.
+
 ## Test execution
 
-Pytest `--basetemp` must be **OUTSIDE the platform tree**, for example
-`--basetemp=/tmp/harnessgrad-pytest-quality`. Driver-based tests use `tmp_path`
-as a harness work root, which the runner correctly refuses inside the platform.
-Omitting the option preserves pytest's normal default.
+Pytest `--basetemp` must be **OUTSIDE the platform tree** — the runner refuses a harness work root
+inside it. A test suite writes thousands of small files, so apply the rule above and put it on the
+**SSD**, e.g. `--basetemp=/tmp/harnessgrad-pytest-quality`, then reap it. Driver-based tests use
+`tmp_path` as a harness work root. Omitting the option preserves pytest's normal default.
 
 ## GPU execution
 

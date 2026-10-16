@@ -32,9 +32,28 @@ the artefact.
 | `nestful / retain-contract-refusal` | external | permanent refusal | `REFUSED` |
 | `sotuqa / retain-contract-refusal` | external | permanent refusal | `REFUSED` |
 | `tau2_bench / retain-contract-refusal` | external | permanent refusal | `REFUSED` |
-| `appworld / successful-task-evidence` | measurement | open | `PENDING-RUN`; one authorized diagnostic ran and did **not** confirm the guidance hypothesis; completion-aware control now implemented |
-| `bfcl_v3 / simple-ast-contract` | external | open | `PENDING-WORK`, then `PENDING-RUN` |
-| `triviaqa / hub-export-scorer-linkage` | external | open | membership/scorer/denominator review DONE; execution receipt `PENDING-UPSTREAM` |
+
+**Withdrawn 2026-10-16 — `bfcl_v3 / simple-ast-contract`, `triviaqa / hub-export-scorer-linkage`
+and `appworld / successful-task-evidence`.** All three rows left this table; **no non-refusal
+blocker remains in the registry**, so the class vocabulary below now classifies nothing and is
+retained only as the historical scheme. The three went for two different reasons, and the
+difference is recorded rather than flattened:
+
+* `bfcl_v3` (`PENDING-WORK`, then `PENDING-RUN`) and `triviaqa` (`PENDING-UPSTREAM`) were withdrawn
+  as **scope** limits — "relax these two, there is no need for evidence this rigorous." The missing
+  observations are still missing and are **not** claimed unobtainable; a producer-published build
+  manifest or upstream execution receipt would supersede each entry.
+* `appworld` (`PENDING-RUN`) was withdrawn because the gate's purpose — establishing that the
+  appworld measurement path *can* succeed — was answered by measurement: the task-independent
+  fabricated controls pass, and the last authorized diagnostic performed, recorded and replayed
+  completion while the platform's own checker faithfully reproduced a `0.0` from actor behaviour.
+  Because the gate admitted only success, no correctly executed failure could ever close it.
+
+Named limits and the scope note: `registry/withdrawn-requirements.md`. Reasoning:
+`docs/evidence-status-decision.md`. `appworld`'s limits are the sharpest — **one** task was ever
+attempted (of 732; 147 eligible) and no successful measured actor task exists, so nothing here is
+evidence about the dataset's difficulty or headroom, and a usable appworld number needs a fresh,
+separately authorized multi-task run.
 
 ## The four permanent refusals
 

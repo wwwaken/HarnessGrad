@@ -48,9 +48,13 @@ def mapping(names):
 #: returning "core only" -- a selection with no adapter test looks identical to a
 #: selection whose adapter tests all pass.
 NO_DEDICATED_TEST = (
-    "api_bank", "fever", "hotpotqa", "physicsquestions", "sotuqa",
-    "sportsunderstanding", "strategyqa", "tau2_bench", "tau_bench", "terminal_bench",
+    "api_bank", "hotpotqa", "physicsquestions", "sotuqa",
+    "sportsunderstanding", "strategyqa", "tau2_bench", "terminal_bench",
 )
+#: `fever` and `tau_bench` left this tuple on 2026-10-16: the fidelity phase added
+#: `test_fever_w_fever.py` and `test_tau_bench_recording_w_taubench.py` but did not delete their
+#: names, which left this guard red on `main`. Found while landing an unrelated registry change;
+#: the deletion is exactly the fix this file's own docstring prescribes.
 
 
 def test_no_new_dataset_arrives_without_a_dedicated_test(names, mapping):

@@ -263,6 +263,97 @@ as mechanism sensitivity and declared not to be generalisation evidence. The pla
 already distinguishes valid, unmeasured and diagnostic, so the label is available —
 but it must not enter the R1 table.
 
+## 5c. Measured: what the pool actually is, and why six of seven datasets run as `full`
+
+Everything above is *design* — how a split would be built. This section is the one
+measurement that changes what we do with it.
+
+The platform derives the split mode from a single adapter field, `OFFICIAL_EVAL`:
+
+* `OFFICIAL_EVAL is None` — the adapter has no notion of "this part of the pool is
+  study material". Every row is benchmark **evaluation** material, so there is nothing
+  to hold out, and imposing a `train`/`eval` cut would manufacture a held-out set out
+  of rows that were never trainable. Such a pool is archived as **`full`**.
+* `OFFICIAL_EVAL` is a list — the adapter knows the released test set, and the pool
+  contains both sides. The split is then the dataset's own, not ours, and it is kept.
+
+Enumerated across the seven adapters actually run:
+
+| Dataset | Source pool | `OFFICIAL_EVAL` | Mode | Why |
+| --- | --- | --- | --- | --- |
+| musique | `musique_ans_v1.0_dev` | `None` | `full` | the pool *is* the dev set |
+| alfworld | `valid_unseen` | `None` | `full` | the pool *is* the valid set |
+| jericho | evaluation games | `None` | `full` | no training games shipped |
+| scienceworld | evaluation set | `None` | `full` | as above |
+| agentdojo | benchmark suites | `None` | `full` | as above |
+| terminal_bench | benchmark tasks | `None` | `full` | as above |
+| gsm8k | released `train` 7473 + `test` 1319 | 1319-entry list | **`train`/`eval`** | genuine released split |
+
+**Consequence, and it is not cosmetic.** For six of the seven, the platform's
+`train`/`eval` is imposed by the platform for its own protocol, not inherited from the
+dataset. The rows we would call "train" are benchmark evaluation rows. Two things
+follow:
+
+1. **Our "study set" is not a training distribution.** Statements that read like
+   "training on N tasks improves the harness" are, for these six, statements about a
+   *subset of an evaluation set*. The honest description is a learning-curve probe over
+   a benchmark pool, and the report must say so.
+2. **Our means are not comparable to published numbers.** A published MuSiQue-dev score
+   is over all 2417 rows; ours is over a platform-chosen subset of them. Any table that
+   places our mean beside a leaderboard number is comparing different test sets.
+
+This is also the reason a **pooled / layered** analysis was considered and then
+dropped. Pooling rows across these six does not turn them into training data; it
+concatenates evaluation sets with different scoring contracts. The `demand × surface`
+cell means from §5b are comparable *as cells*, and nothing more.
+
+### 5c.1 Instance structure differs from row count
+
+Two measured cases where "eligible count" is not the number of independent units:
+
+* **alfworld — 134 evaluated episodes, clustered in 47 task directories.** The
+  134 `valid_unseen` game files are the paper's whole unseen evaluation set, not a
+  2.85x-diluted sample. Each `__trial_<n>` game file is an evaluated episode with its
+  own initial state; the benchmark point estimate remains the mean over all 134
+  episodes. The 47 task-directory groups matter for dependence and uncertainty:
+  group by `task_id.split("__trial_")[0]` when constructing a study/eval split and
+  use group-aware error bars. They do not justify dividing the success rate by
+  134/47 or replacing the benchmark's episode mean with a 47-group macro mean.
+  The archived 0.4254 was measured under a historical 30-action budget; the adapter
+  now uses the paper's 50 (`data/datasets/alfworld/lib/gym_env.py:41-44`, commit
+  `cdb43ac4`), so the protocol difference is repaired in code but the archived number
+  was not re-measured and must not be read as a 50-action result.
+* **musique — 2417 rows, 544 components** (§2), from a genuine re-use graph rather than
+  from repeated trials. Same lesson, different mechanism.
+
+Neither is fixed by any rule in §5. They are arguments for recording the *unit* a number
+is computed over, alongside `split_sha`.
+
+### 5c.2 `Σp(1−p)` does not rank datasets
+
+An early internal statistic scored each dataset by `Σ p(1−p)` over its per-task scores
+and read it as "how much room there is for a harness to improve". That reading is wrong,
+and the measured census shows why:
+
+* `Σ p(1−p)` is maximised by tasks at `p = 0.5`. It measures **scalar-outcome
+  sensitivity** — how much a mean score moves when a single task flips. It says nothing
+  about whether a *harness change* moves anything.
+* A task at `p = 0` contributes zero to it, yet a task the harness currently scores zero
+  on is precisely where an improvement has the most room. The statistic is therefore
+  blind to the largest available gains, not a proxy for them.
+* It is also a property of the **current** harness and model, not of the dataset, so it
+  cannot be an instrument-selection criterion that outlives one configuration.
+
+Measured spread, for the record — MuSiQue density 36.7% (1035 of 2417 rows interior,
+`Σp(1−p)` 221.67 of 604.25), gsm8k density 2.3% (226 interior of 8792), alfworld 0
+interior of 134. If this quantity is reported at all it must be labelled a descriptive
+property of one (dataset, harness, model) triple, and it must not be used to order
+datasets or to predict where a harness will help.
+
+The real signal about where a harness can improve lives in the **trajectories**, not in
+the scalar outcome distribution, and extracting it is the improver's job
+(`propose_changes`), not the split's and not this document's.
+
 ## 6. Open items
 
 * The same measurement has not been run for the other multi-hop adapters

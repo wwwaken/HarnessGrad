@@ -20,9 +20,16 @@ LIVE = ROOT / "registry" / "dataset-blockers.json"
 
 
 @pytest.fixture
-def registry(tmp_path):
+def registry(tmp_path, attach_synthetic_blocker):
     """A private copy of the live registry plus a writer for proposal documents."""
     document = json.loads(LIVE.read_text(encoding="utf-8"))
+    # The pair these tests act on is a **synthetic** entry attached to a published dataset. It used
+    # to be read from the live registry, and that went stale four times on 2026-10-15 as blockers
+    # closed under reading (A) - hotpotqa, strategyqa and fever among them - and again on
+    # 2026-10-16, when the operator withdrew `bfcl_v3/simple-ast-contract` and
+    # `triviaqa/hub-export-scorer-linkage` and left `appworld` as the only one. The assertions are
+    # unchanged; only the source of the blocker is. See `SYNTHETIC_BLOCKER` in `conftest.py`.
+    pair = attach_synthetic_blocker(document)
     target = tmp_path / "registry.json"
     target.write_text(json.dumps(document, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
@@ -31,11 +38,7 @@ def registry(tmp_path):
         path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
         return path
 
-    # The pair these tests act on is read from the registry rather than pinned: fixing it broke four
-    # times on 2026-10-15 as blockers closed under reading (A) - hotpotqa, strategyqa and fever among
-    # them. The assertions are unchanged; only the name of the blocker is dynamic.
-    dataset, blocker_id, _ = an_open_blocker(document)
-    return target, write, (dataset, blocker_id)
+    return target, write, pair
 
 
 def a_blocker(document, dataset=None, blocker_id=None):
@@ -257,15 +260,23 @@ def test_accepts_a_bare_list_of_per_dataset_records(registry, capsys):
 
 
 def test_refuses_a_list_record_with_no_matching_dataset(registry, capsys):
-    """A list record for one open blocker, applied with `--dataset/--blocker` naming a *different*
-    open one, must be refused for having no change entry - not for naming an unknown blocker."""
+    """A list record for a *different* blocker, applied with `--dataset/--blocker` naming this
+    fixture's one, must be refused for having no change entry - not for naming an unknown
+    blocker."""
     target, write, (DS, BL) = registry
     document = json.loads(target.read_text(encoding="utf-8"))
     other = [(row["dataset"], item["id"], item) for row in sorted(
         document["datasets"], key=lambda r: r["dataset"])
         for item in row["blockers"]
         if item["id"] != "retain-contract-refusal" and (row["dataset"], item["id"]) != (DS, BL)]
-    assert other, "this control needs two distinct open non-refusal blockers"
+    if not other:
+        # Only one non-refusal blocker is left in the live registry (`appworld`), so there is no
+        # second live pair to take. This control does not actually need one: the applier must
+        # refuse on "no change entry" *before* it ever resolves the name, which is the whole
+        # point of the assertion below. So the distinct pair is synthesised rather than the
+        # control being dropped or skipped - pinning it to a live second blocker is what broke
+        # this test when `bfcl_v3/simple-ast-contract` was withdrawn on 2026-10-16.
+        other = [("__control__", "not-a-real-blocker", {"next_action": "Synthetic control text."})]
     dataset, blocker_id, blocker = other[0]
     proposal = write("list2.json", [
         {"dataset": dataset, "blocker": blocker_id,

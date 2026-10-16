@@ -300,6 +300,152 @@ IDs, the unauthenticated NEI and omission decisions, and every diagnostic-time o
 score, original-benchmark comparability claim or diagnostic authorization is inferred, and no local
 conversion is treated as authenticating the historical run.
 
+### `bfcl_v3 / simple-ast-contract`
+
+**Former status:** `external`, family `official-scorer-execution`, the dataset's only remaining
+blocker. **Withdrawn by operator scope decision on 2026-10-16**, not as a proven impossibility:
+see the scope note below.
+
+**Asked for:** producer-authenticated compiled-build manifests bound to the exact retained
+archive/member hashes, naming CPython build implementation/version/SOABI, source revisions,
+compiler/flags and compiled inputs; later, exact per-parent loader/`dlopen` choices; complete
+component licence/NOTICE texts bound to those inputs; resolution of the strict websockets
+provenance filename mismatch; a bound local handler/config/grammar; a bounded upstream decoder;
+and recorded official full-call scorer execution with exact source/runtime/input/metric/receipt
+identities.
+
+**Searched:** the exact source/runtime custody and per-target frontier in
+`registry/w-bfclrt-custody.md` and `tests/fixtures/hg_bfclrt/runtime-gaps-*.jsonl` — **87 exact
+compiled-build entries remain UNKNOWN**, including member filenames/SHA-256 and their transitive
+graph. PyPI publication attestations, supplied-leaf signature verification, SBOM declarations and
+static SONAME availability were obtained or examined and are **partial evidence only**. A scoped
+reachability result exists for the retained decoder: `ABSENT` over 317 enumerated platform files
+(308 `.py` + nine shebang scripts) and `UNKNOWN` outside them, with an unwired preflight built
+but deliberately not wired into the platform path.
+
+**Why it cannot be advanced here:** the missing facts are **build-time facts held by the
+producer**. A rebuild, an import smoke or a fabricated direct-function control cannot
+retroactively authenticate an old wheel build, so no amount of work inside this repository
+supplies them.
+
+**Retained:** the function-name diagnostic (identifier-filtered bare-name multiset equality with
+arguments ignored) and its source-only qualifications in `registry/w-evidence-qualification.md`,
+`registry/w-evidence-disclosure.md`, `registry/w-evidence2-row-corrections.md` and
+`registry/w-evidence2-passage-corrections.md`; all frozen receipts; the canonical
+source/runtime/member/licence inventories; the named unresolved frontier; the deliberately
+unwired preflight; `production_authorized: false`. **Any future official-scorer work reopens the
+original technical gate** and must bound or bypass the retained prompting decoder's
+`eval(ast.unparse(value))`
+(`tests/fixtures/bfcl_ast_source/candidate-codex195/files/berkeley-function-call-leaderboard/bfcl_eval/model_handler/utils.py:302`),
+must use `guarded_decode` from `tests/fixtures/hg_bfclguard/gate.py` or record why it does not,
+and must not read the scoped `ABSENT` as general unreachability. No official AST/full-call score
+and no official comparability is claimed.
+
+### `triviaqa / hub-export-scorer-linkage`
+
+**Former status:** `external`, family `source-provenance`, the dataset's only remaining blocker.
+**Withdrawn by operator scope decision on 2026-10-16**, not as a proven impossibility.
+
+**Asked for:** immutable upstream build/export **execution** evidence binding Hub export
+`0f7faf33a3908546c6fd5b73a660e0f8ff173c2f` to the loader/converter actually executed, with
+source/licence hashes, runtime/writer versions and consumed input revision/hashes; plus resolution
+of HumanAnswers input incidence/preservation/redundancy, the counting rule behind prose **18669**
+versus stored `rc.nocontext` validation **17944**, actual Domain/VerifiedEval/source membership,
+row/scorer-key duplicates, complete official key mapping and numeric denominator/aggregation.
+
+**Searched:** the expanded named search recorded in `registry/w-trivia2-review.md:283-297` —
+supported historical-build/path-history interfaces, authenticated job records, unavailable
+historical snapshots and original immutable maintainer artifacts. The authoritative public record
+supplies **ancestry and output declarations but no immutable execution receipt**.
+
+**Why it cannot be advanced here:** the export was produced years ago by a public third party, and
+the execution record was never published. The absence is **bounded, not categorical**: private,
+unindexed, producer-held or later-deleted records remain UNKNOWN, and a maintainer-published
+binding would supersede this entry at its actual scope.
+
+**Retained:** the DECIDED twelve-declarations-versus-eight-export-routes mismatch and the exactly
+four declaration-only names; the limited 17944 stored-row observation, with **no invented
+725-member explanation**; the bound operator first-five eval-side manifest/export and
+scoring-input custody in `tests/fixtures/hg_wsel/triviaqa.json`; v2 and all historical identities
+and receipts; the source-only disclosures in `registry/w-evidence-qualification.md` and
+`registry/w-evidence-disclosure.md`. **The reported figure remains the local alias-max normalized
+row-EM instrument** — not official key-level EM/F1, with no denominator and no official
+comparability claimed. Do not infer execution, member equality, a unique-key denominator or
+HumanAnswers redundancy from ancestry, predecessor blobs, counts, filenames, ETags or converter
+names. No acquisition, payload audit or execution is authorized.
+
+### Scope note for these two entries (operator, 2026-10-16)
+
+These two differ in kind from the entries above, and the difference must not be flattened. The
+earlier entries record requirements **proven unobtainable** after an enumerated search. These two
+are withdrawn because **the operator judged the evidence standard higher than the project needs**:
+"relax these two, there is no need for evidence this rigorous." The missing observations are still
+missing and are **not** claimed to be unobtainable by this decision — a producer-published build
+manifest or upstream execution receipt would supersede each entry at its actual scope. What the
+decision removes is the requirement to keep hunting for them and to hold the datasets short of
+closure until they appear.
+
+This deliberately supersedes two sentences in the 2026-10-15 decision below: ``appworld` and
+`bfcl_v3` stay real remaining work unchanged" now holds for `appworld` only, and `triviaqa` is no
+longer in the "stays open" list. `appworld / successful-task-evidence` is **unchanged and still
+open** — it is not an evidence-acquisition demand but a gate that only a genuine successful
+measured actor task can clear.
+
+### `appworld / successful-task-evidence`
+
+**Former status:** `measurement`, family `actor-protocol`, the dataset's only blocker.
+**Withdrawn by operator scope decision on 2026-10-16**, after the protocol question it was
+written to answer had been answered by measurement.
+
+**Asked for:** a genuine successful measured actor task under the staged pilot policy — the gate
+stated that "source review, API activity and synthetic protocol controls cannot satisfy the gate:
+only a genuine successful measured actor task can do so."
+
+**What was measured.** Three operator-authorized diagnostics ran, all selecting the **same** study
+task `cf6abd2_2` out of **147 eligible** (the pool holds **732** tasks):
+
+* `w-appworld-20261014T225023Z-f02d7cd5` — raw TGC measured, `success=false`, `score=0.0` over 8
+  official tests;
+* `w-appworld2-20261015T050036Z-a6d55a63` — one trial, `jobs=1`, `rounds=0`, unchanged
+  32-step/2048-output-token ceiling; the actor submitted at step 15 after 16 model calls;
+* `appworld-diag-20261015T094842Z-3550c7c4` (commit `a861ca67`, which names the in-world completion
+  boundary in the actor guidance) — **completion was performed, recorded and replayed**: its API log
+  has **15** calls whose last is `POST /supervisor/message`, and that endpoint **is** `complete_task`
+  (`appworld/apps/supervisor/apis.py:45-46`). Re-running the platform's **own** checker on the frozen
+  log reproduces `reward 0.0`, `success False`, `num_tests 8, passes 6, failures 2` —
+  `assert answers match.` (the actor supplied a prose sentence where this state-change task expects
+  `None`, which AppWorld's own API doc requires to be left at the default) and a note-content
+  assertion. **There is no platform defect and no replay defect.**
+
+**Why it is withdrawn.** The gate existed to establish that the measurement path *can* succeed, not
+to measure appworld. That question is now answered by measurement rather than by a success: the
+task-independent fabricated-control set (`tests/quality/test_appworld_completion_control.py`)
+separates the actor/guidance boundary from a recording/verifier wiring fault from a task-state
+failure, and it passes — so the faithful failure is attributable to the actor, not to the
+instrument. Because the gate as written admits **only** success, no amount of correctly executed
+work that fails could ever close it; carrying it would keep the dataset permanently short of
+closure at no scientific benefit.
+
+**Retained:** every measured-zero, staged-null and incomplete exit-125 receipt with its raw/staged
+identity; the distinction between a raw official TGC loss and the staged `score=null` with
+`measured/unmeasured/invalid = 0/1/0` for `policy_enforcement_not_observed`; the completed
+fabricated-control set; the parent correction and the historical W1/W2 scope; the source-level
+relative `MARKER = pathlib.Path(".appworld_task")` reset hazard, whose occurrence in the retained
+runs remains **UNKNOWN**; the requirement that current guidance name discovered in-world completion
+before the harness report (`data/datasets/appworld.py:239-243`); the source-only disclosures in
+`registry/w-evidence-qualification.md` and `registry/w-evidence-disclosure.md`.
+**No selected-task tuning, no rerun of the selected task and no step/token budget increase is
+authorized**, and any future reopening requires fresh staged-policy evidence and separate
+authorization. No run, expansion or production authorization follows, and
+`production_authorized` remains `false`.
+
+**Limits a reader must carry forward.** Only **one** task was ever attempted, once per diagnostic,
+and it is the same task each time. No successful measured actor task exists. Nothing here is
+evidence about appworld's difficulty, about whether this harness fails appworld generally, or about
+the dataset's headroom — and the reported figure must not be described as an appworld score. A
+usable appworld measurement requires a **fresh, separately authorized multi-task run** under the
+staged pilot policy.
+
 ## What this decision does not do
 
 - It does not claim any withdrawn requirement was solved. Each is recorded with its
@@ -309,8 +455,16 @@ conversion is treated as authenticating the historical run.
 - The operator's further decision on 2026-10-15 withdraws the three runtime requirements
   above, superseding the earlier decision to leave this trio untouched. Their limits and
   historical receipts remain; `appworld` and `bfcl_v3` stay real remaining work unchanged.
+- **Superseded in full on 2026-10-16.** The sentence above no longer holds: **`bfcl_v3 /
+  simple-ast-contract` and `triviaqa / hub-export-scorer-linkage` were withdrawn** as operator
+  **scope** decisions, and **`appworld / successful-task-evidence` was withdrawn** because the
+  protocol question it existed to answer was answered by measurement. The next bullet's "stays
+  open" list therefore no longer includes `triviaqa`, and **no non-refusal blocker remains in the
+  registry at all**. The two scope withdrawals are not findings that the missing evidence does not
+  exist; the scope note above states that, and `appworld`'s entry states its own different reason
+  and its one-task limit.
 - It does not withdraw anything whose evidence merely has not been collected yet. The
-  `journal-coverage` family, `hotpotqa` and `triviaqa` stay open because what they need is an
+  `journal-coverage` family and `hotpotqa` stay open because what they need is an
   operator-supplied selected manifest, which is an input rather than an impossibility.
 - Every withdrawn blocker's text, evidence list and historical record remain readable in the
   git history of `registry/dataset-blockers.json`; the removals are the diff.
