@@ -349,6 +349,13 @@ harnessgrad_work/
 # and the detailed design record would exist only in this machine's working tree.
 !/docs/design-notes.md
 
+# The specification for the one thing this repository cannot currently produce: the runtime
+# observation that `admit_runtime` validates and that `_refuse_unobserved_policies` refuses
+# without. It is written to be handed to whoever writes that module, so it has to be readable
+# from a clone rather than from this machine's working tree; `docs/runtime-observation-brief.md`
+# is cited by the container-dataset refusals it explains.
+!/docs/runtime-observation-brief.md
+
 # A `git bundle` of this repository contains **all** of its history, including the
 # local notes above if they were ever tracked. Never committable.
 *.bundle
