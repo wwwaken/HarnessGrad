@@ -13,6 +13,32 @@
             },
             "note": "The upstream Codex CLI, unmodified. `latest` because the first question a user asks is 'can I use the current one' -- and because the version actually used is recorded, so this stays reproducible in the only sense that matters: a number always says what produced it."
         },
+        "dsh": {
+            "name": "dsh",
+            "kind": "cli",
+            "argv_style": "dsh",
+            "version": "latest",
+            "path": "",
+            "launcher": "improvers/dsh-improver",
+            "interpreter": "node",
+            "runtime": [
+                "/mnt/20t/xubuqiang/deepseek-harness",
+                "~/.dsh"
+            ],
+            "build_command": [
+                "git",
+                "-C",
+                "/mnt/20t/xubuqiang/deepseek-harness",
+                "rev-parse",
+                "--short",
+                "HEAD"
+            ],
+            "model": "deepseek-flash",
+            "provider": "deepseek-official",
+            "profile": "headless",
+            "modified": false,
+            "note": "The harness's own agent CLI as the improver: `dsh --profile headless` runs one agentic task in the candidate tree with read/edit/bash tools, on `deepseek-flash` -- the same model the `deepseek` endpoint improver calls, so the two differ in *agency*, not in model. This is what the endpoint layer cannot do: `methods/editor.py` is one chat completion, so evidence must be inlined and is capped (6 traces, worst-first), while this reads `_harnessgrad/` itself and decides what matters. `argv_style` and `launcher` are how an entry says its CLI is not codex; `runtime` is what the method sandbox must bind (`~/.dsh` read-only, for credentials and bundle layers -- the launcher copies them into the workspace because dsh writes sessions under its home); `build_command` identifies the *checkout* rather than the 2 KB launcher, because that repository is live and its build output can change underneath a run. Recorded as `version` on every point, e.g. `0.1.5+cdb43ac4`."
+        },
         "local": {
             "name": "local",
             "kind": "openai-compatible",

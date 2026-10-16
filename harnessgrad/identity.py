@@ -103,8 +103,14 @@ def _skill_sha() -> str | None:
 #: and the round died with "the platform named an improver at ... which does not exist inside
 #: this sandbox" -- a true statement about a URL. It is a URL, not a secret: the key is
 #: copied from `api_key_env` and never written here.
-IMPROVER_IDENTITY_FIELDS = ("name", "kind", "base_url", "version", "sha256", "model",
-                            "requested", "modified", "path")
+#:
+#: `argv_style` is identity rather than plumbing. It is *which CLI this is* -- codex and dsh
+#: do not take the same command line -- and it has to reach the method, because the method is
+#: what builds that command line. Filtered out of the request, a dsh run would have been
+#: handed codex's `exec --sandbox ... -C` and died looking like a method bug; recorded on the
+#: point, it is also what tells two improvers sharing one model apart.
+IMPROVER_IDENTITY_FIELDS = ("name", "kind", "argv_style", "base_url", "version", "sha256",
+                            "model", "requested", "modified", "path")
 
 
 def _improver_identity(improver: dict | None) -> dict:

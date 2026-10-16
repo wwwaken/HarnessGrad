@@ -435,6 +435,81 @@ def resolve(config: dict | None = None, *, version: str = "", requested: str = "
                 "reason": "" if not missing else
                           f"the {key!r} improver needs {', '.join(missing)}"}
 
+    # **A CLI this repository drives itself, resolved from its declaration.** Everything
+    # below this line is the codex search: three install globs, a native binary beside a
+    # wrapper, and a `--version` probe. That is the right shape for a tool that could be
+    # anywhere and whose version is the only thing that identifies it, and the wrong shape
+    # for one that lives in a known checkout: the search would have to choose between a
+    # source tree and a build output, and a guess here would be worse than the globs.
+    #
+    # An entry that declares `launcher` is therefore resolved from the declaration and never
+    # goes looking. It declares three more things the path cannot imply:
+    #
+    #   * `argv_style` -- the CLI's own vocabulary, which `methods/cli_improver.py` needs and
+    #     cannot infer (codex wants `exec --sandbox ... -C`, dsh wants `--profile`);
+    #   * `runtime` -- the trees the method sandbox must bind. `runtime_trees(path)` cannot
+    #     work this out from a launcher script: it would bind `improvers/` (inside the
+    #     platform, so dropped by the plan's own guard) and `~/.codex`, and the run would die
+    #     in round 1 exactly as the docstring at `harnessgrad/methods.py:74` records;
+    #   * `build_command` -- what must not drift. codex's `sha256` is its binary and the
+    #     binary is the tool; here the tool is a *checkout*, the launcher is a stable 2 KB
+    #     script, and `apps/cli/lib/bin.js` underneath it is rebuilt whenever someone works
+    #     in that repository. Without this the curve would record an identity that cannot
+    #     change while the improver behind it does.
+    launcher = str(entry.get("launcher") or "")
+    if launcher:
+        path = (ROOT / launcher).expanduser()
+        if not path.is_file():
+            return {"ok": False, "name": entry.get("name") or key, "kind": entry.get("kind"),
+                    "requested": requested or key,
+                    "reason": f"the {key!r} improver's launcher is missing: {path}"}
+        ok, ver, reason = _run_version(path)
+        version = ver
+        command = entry.get("build_command") or []
+        if command:
+            try:
+                built = subprocess.run([str(part) for part in command], capture_output=True,
+                                       text=True, timeout=60)
+                if built.returncode == 0 and built.stdout.strip():
+                    version = f"{ver}+{built.stdout.strip().splitlines()[0][:40]}"
+            except (OSError, subprocess.TimeoutExpired) as exc:
+                # Recorded as a version that says it could not check, rather than silently
+                # dropping the field: a point whose improver identity is `0.1.5+unknown` is
+                # still comparable to another one that says the same thing.
+                version = f"{ver}+unidentified({type(exc).__name__})"
+        trees: list[str] = []
+        for declared in (entry.get("runtime") or []):
+            tree = Path(str(declared)).expanduser()
+            if tree.is_dir() and str(tree) not in trees:
+                trees.append(str(tree))
+        # **A bash launcher does not reveal where its interpreter is.** `runtime_trees`
+        # follows the shebang, so codex's `codex.js` hands back node's installation for
+        # free -- but this launcher's shebang is `bash`, and `sh`/`bash`/`env` are
+        # deliberately skipped as interpreters because they live in `/usr`, which the
+        # namespace already binds. Node here is an nvm install under `$HOME`: without this
+        # tree the method sandbox would hold the CLI's files and no program able to run
+        # them, and the failure would read as a broken improver rather than a missing bind.
+        interpreter = str(entry.get("interpreter") or "")
+        if interpreter:
+            found = shutil.which(interpreter)
+            if found:
+                prefix = _interpreter_prefix(Path(found))
+                if prefix is not None and str(prefix) not in trees:
+                    trees.append(str(prefix))
+        for implied in runtime_trees(path):
+            if implied not in trees:
+                trees.append(implied)
+        return {"ok": bool(ok), "path": str(path), "version": version,
+                "sha256": Candidate(path).sha256(), "requested": requested or key,
+                "modified": bool(entry.get("modified")),
+                "kind": str(entry.get("kind") or ""),
+                "name": entry.get("name") or key,
+                "argv_style": str(entry.get("argv_style") or ""),
+                "model": (model_override
+                          or declared_model(config, source=config_home(), entry=entry)),
+                "runtime": trees,
+                "reason": "" if ok else reason}
+
     # Two different things, and conflating them was a bug: `requested` is what the
     # operator asked for (a name, a path, or a version string), `version_request` is what
     # the chosen entry pins. Overwriting the first with the second made

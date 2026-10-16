@@ -91,7 +91,18 @@ def _cli_provider(improver: dict) -> dict:
     not accept, gets 401, and reports "this endpoint cannot emit tool calls" -- a refusal
     about the wrong fact. Measured 2026-10-06: it passed only because this deployment
     happens to set `HG_AGENT_API_KEY` and `DEEPSEEK_API_KEY` to the same value.
+
+    **`~/.codex/config.toml` is codex's file, so only a codex improver may be read for it.**
+    Any `kind == "cli"` improver used to come through here, and with the `dsh` entry resolved
+    this returned the custom provider out of the operator's codex config
+    (`https://naiccc.com/v1`) -- so the gate below would have probed *that* endpoint, one
+    belonging to someone else, and written its answer onto the curve as a fact about
+    `deepseek-flash`. An improver that declares its own `provider` (dsh declares
+    `deepseek-official`) uses that CLI's built-in endpoint, which is exactly the
+    "cannot be probed from here" case the caller already records as *unprobed*.
     """
+    if improver.get("provider") or improver.get("argv_style", "codex") != "codex":
+        return {}
     home = os.environ.get("CODEX_HOME") or str(Path.home() / ".codex")
     cfg = Path(home) / "config.toml"
     if not cfg.is_file():

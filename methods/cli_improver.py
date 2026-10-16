@@ -246,6 +246,84 @@ def _improver_command(req: dict) -> list[str]:
     return [resolved]
 
 
+def _cli_argv(req: dict, candidate: Path, task: str) -> list[str]:
+    """Build the CLI's own argv: its vocabulary, then the task.
+
+    codex is the shipped improver, so it is the default when an entry declares no style --
+    but the styles are **named**, not guessed from the command's name, because the two are
+    not variations of one command line. codex takes a subcommand, a sandbox mode, a working
+    directory and a model override; dsh takes a profile, an optional patch overlay and the
+    task, and reads its working directory from the process -- which is why `propose` runs it
+    with `cwd=candidate`. Passing codex's flags to dsh is not a degraded round, it is a
+    failure to start, reported as a method bug.
+    """
+    style = str((req.get("improver") or {}).get("argv_style") or "codex")
+    command = _improver_command(req)
+    extra = shlex.split(os.environ.get("HG_IMPROVER_ARGS", ""))
+    if style == "codex":
+        argv = command + ["exec", "--skip-git-repo-check",
+                          "--sandbox", "danger-full-access",
+                          "-C", str(candidate)]
+        if model := os.environ.get("HG_IMPROVER_MODEL"):
+            argv += ["-c", f'model="{model}"']
+        if effort := os.environ.get("HG_IMPROVER_EFFORT"):
+            argv += ["-c", f'model_reasoning_effort="{effort}"']
+        return argv + extra + [task]
+    if style == "dsh":
+        return command + extra + [task]
+    raise SystemExit(
+        f"the resolved improver {(req.get('improver') or {}).get('name')!r} declares "
+        f"argv_style {style!r} and this method has no argument builder for it. A CLI's argv "
+        f"is not guessable -- add a branch here rather than passing flags it may ignore.")
+
+
+def _seed_codex_home(workspace: Path, env: dict) -> Path:
+    """Copy codex's own state into the workspace and point `CODEX_HOME` at it."""
+    home = workspace / ".codex-home"
+    home.mkdir(exist_ok=True)
+    source_home = Path(os.environ.get("HG_CODEX_HOME_SOURCE", Path.home() / ".codex"))
+    for name in ("config.toml", "auth.json"):
+        if (source_home / name).is_file():
+            shutil.copy2(source_home / name, home / name)
+    cfg = home / "config.toml"
+    text = cfg.read_text() if cfg.exists() else ""
+    if "responses_experimental_transport" not in text:
+        cfg.write_text(text + '\nresponses_experimental_transport = "https"\n')
+    env["CODEX_HOME"] = str(home)
+    return home
+
+
+def _seed_dsh_home(workspace: Path, env: dict) -> Path:
+    """Give dsh a home of its own, inside the workspace.
+
+    Two reasons, and the second is the one that bites. The method sandbox binds the
+    improver's trees **read-only** -- a tool a method runs is not state it may write -- and
+    dsh writes sessions, caches and storages under its home, so pointing `DSH_HOME` at the
+    real `~/.dsh` would have every one of those writes fail. And inside the namespace there
+    is nothing under `$HOME` to fall back on, which is the same failure `_seed_codex_home`
+    already exists for.
+
+    What has to come along: `profiles/`, because without a bundle layer `--profile headless`
+    has nothing to boot, and the credentials. Measured: `profiles/` is 1.3 MB, so a copy per
+    round is cheaper than making the sandbox's read-only bind conditional.
+
+    `settings.yaml` comes too, so the improver runs in the operator's environment -- but the
+    model it uses is not read from there: the launcher pins `agent-default-model` with
+    `--patch`, which is applied after the profile's user layer, so the recorded model cannot
+    be overridden by ambient state.
+    """
+    home = workspace / ".dsh-home"
+    home.mkdir(exist_ok=True)
+    source = Path(os.environ.get("DSH_HOME") or (Path.home() / ".dsh")).expanduser()
+    for name in ("settings.yaml", ".credentials.yaml"):
+        if (source / name).is_file():
+            shutil.copy2(source / name, home / name)
+    if (source / "profiles").is_dir():
+        shutil.copytree(source / "profiles", home / "profiles", dirs_exist_ok=True)
+    env["DSH_HOME"] = str(home)
+    return home
+
+
 def _stage_evidence(workspace: Path, req: dict) -> Path:
     """Put the platform's channel where the improver will look for it.
 
@@ -379,33 +457,25 @@ def propose(req: dict, parent: Path, *, prompt: str | None = None,
 
     _stage_evidence(candidate, req)
 
-    # The shipped CLI improver is codex, so the argv is codex's. A different CLI needs its
-    # own argv, which is what `HG_IMPROVER_ARGS` is for; a second CLI would earn a proper
-    # argument builder here rather than a guess.
-    argv = _improver_command(req) + ["exec", "--skip-git-repo-check",
-                                     "--sandbox", "danger-full-access",
-                                     "-C", str(candidate)]
-    if model := os.environ.get("HG_IMPROVER_MODEL"):
-        argv += ["-c", f'model="{model}"']
-    if effort := os.environ.get("HG_IMPROVER_EFFORT"):
-        argv += ["-c", f'model_reasoning_effort="{effort}"']
-    argv += shlex.split(os.environ.get("HG_IMPROVER_ARGS", ""))
-    argv += [instruction(prompt, evidence=evidence, facts=facts)]
+    # **Which CLI this is, is declared, not assumed.** This used to append codex's argv
+    # unconditionally, with a comment saying a second CLI would earn a proper argument
+    # builder "rather than a guess". `dsh` is that second CLI, and it is not a variation of
+    # codex's command line: it takes a profile and a patch overlay, and reads its working
+    # directory from the process. `_cli_argv` builds both vocabularies and refuses an
+    # unknown one, because a CLI handed flags it does not know either ignores them or dies
+    # -- and both look like a method bug rather than a wrong argv.
+    argv = _cli_argv(req, candidate, instruction(prompt, evidence=evidence, facts=facts))
 
     timeout = int(os.environ.get("HG_IMPROVER_TIMEOUT_S", "1800"))
     started = time.time()
     env = dict(os.environ)
-    home = workspace / ".codex-home"
-    home.mkdir(exist_ok=True)
-    source_home = Path(os.environ.get("HG_CODEX_HOME_SOURCE", Path.home() / ".codex"))
-    for name in ("config.toml", "auth.json"):
-        if (source_home / name).is_file():
-            shutil.copy2(source_home / name, home / name)
-    cfg = home / "config.toml"
-    text = cfg.read_text() if cfg.exists() else ""
-    if "responses_experimental_transport" not in text:
-        cfg.write_text(text + '\nresponses_experimental_transport = "https"\n')
-    env["CODEX_HOME"] = str(home)
+    # The CLI's own state, seeded into the workspace because the sandbox binds the
+    # improver's trees read-only and nothing under `$HOME` is reachable from inside it.
+    style = str((req.get("improver") or {}).get("argv_style") or "codex")
+    if style == "dsh":
+        _seed_dsh_home(workspace, env)
+    else:
+        _seed_codex_home(workspace, env)
 
     transcript = ""
     try:
