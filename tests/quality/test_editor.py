@@ -458,6 +458,52 @@ def test_a_cli_improver_that_declines_is_still_a_no_change(tmp_path, monkeypatch
     assert "retry cap" in str(reply["no_change"]), reply
 
 
+def test_a_file_the_cli_improver_deleted_is_carried_as_a_deletion(tmp_path, monkeypatch):
+    """**删除是编辑,不是读取失败。** `_changed_files` 会遍历 pristine 侧、点名候选里已经不在
+    的文件,所以删除会送到 `_ask_cli` —— 而它曾用 `except OSError: continue` 把删除吞掉。
+    后果是静默的:一轮里删一个文件又改了另一个,被测的树里那个删掉的文件**还在**。
+
+    这个 stub 用 candidate 里不存在的路径来表示"被删掉"`——`正是 `_changed_files` 报出来的
+    形状。
+    """
+    import editor
+    monkeypatch.delenv("HG_IMPROVER", raising=False)
+    base = _cli_harness(tmp_path, monkeypatch)
+    candidate = tmp_path / "cand"
+    candidate.mkdir()
+    (candidate / "agent.py").write_text("x = 1\n", encoding="utf-8")
+    _stub_cli(monkeypatch, exit_code=0, note="removed the dead module",
+              files=["agent.py", "dead.py"], tmp_path=candidate)
+
+    reply = editor._ask_cli("prompt", base, base,
+                            {"name": "dsh", "argv_style": "dsh"})
+
+    by_path = {edit["path"]: edit for edit in reply["files"]}
+    assert by_path["dead.py"] == {"path": "dead.py", "delete": True}, reply
+    assert by_path["agent.py"]["content"] == "x = 1\n", reply
+
+
+def test_a_deletion_only_round_is_not_recorded_as_no_change(tmp_path, monkeypatch):
+    """只删了一个文件的轮次曾经变成 `{"no_change": ...}`。
+
+    那是 `UnparseableReply` 的 docstring 禁止的那个 collapse,低一层再犯一次:一次真的做出来
+    的改动被记成"improver 决定不改",而记录里分不出它和一个真的什么都没找到的轮次。
+    """
+    import editor
+    monkeypatch.delenv("HG_IMPROVER", raising=False)
+    base = _cli_harness(tmp_path, monkeypatch)
+    candidate = tmp_path / "cand"
+    candidate.mkdir()
+    _stub_cli(monkeypatch, exit_code=0, note="deleted the dead module",
+              files=["dead.py"], tmp_path=candidate)
+
+    reply = editor._ask_cli("prompt", base, base,
+                            {"name": "dsh", "argv_style": "dsh"})
+
+    assert "no_change" not in reply, reply
+    assert reply["files"] == [{"path": "dead.py", "delete": True}], reply
+
+
 def test_the_hypothesis_is_found_wherever_the_model_put_it():
     """实测:要的是顶层 `hypothesis`,模型塞进了 file 对象里,于是标签是空的 ——
     一次真实的 8 KB 编辑被记成了"没有理由"。两处都读。"""

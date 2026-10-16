@@ -807,3 +807,43 @@ def test_the_candidate_preflight_never_executes_the_candidate(tmp_path):
     assert marker.exists(), (
         "the negative control did not execute the entrypoint, so the preflight's silence "
         "proves nothing about whether it would have")
+
+
+# --------------------------------------------------------------- 删除是编辑 ---
+
+def test_a_deletion_edit_removes_the_file(tmp_path):
+    """**删除需要一个自己的形式。** CLI improver 编辑的是一棵树,所以它产出的是 *diff*,而
+    diff 里有它删掉的文件 —— 删死代码是结构性改动,不是"什么都没做"。没有删除形式时,那份
+    diff 翻译进这个词汇表就无处安放,`methods/editor.py:_ask_cli` 只能把它丢在一个
+    `continue` 里。"""
+    base = _harness(tmp_path / "base")
+    (base / "dead.py").write_text("gone\n", encoding="utf-8")
+    applied, problems = apply(base, tmp_path / "dest", [{"path": "dead.py", "delete": True}])
+    assert problems == [], problems
+    assert applied == ["dead.py"]
+    assert not (tmp_path / "dest" / "dead.py").exists()
+    assert (base / "dead.py").is_file(), "base 被改动了"
+
+
+def test_deleting_a_file_that_is_not_there_is_reported(tmp_path):
+    """像其它每一种拒绝一样被**报出来**,而不是当成"没有这个编辑"。"""
+    base = _harness(tmp_path / "base")
+    applied, problems = apply(base, tmp_path / "dest", [{"path": "ghost.py", "delete": True}])
+    assert applied == []
+    assert problems and "no such file" in problems[0], problems
+
+
+def test_a_deletion_and_a_rewrite_together_both_land(tmp_path):
+    """混合序列里删除不能被跳过 —— 只测删除一种形式会漏掉这条路径。"""
+    base = _harness(tmp_path / "base")
+    (base / "dead.py").write_text("gone\n", encoding="utf-8")
+    applied, problems = apply(base, tmp_path / "dest", [
+        {"path": "dead.py", "delete": True},
+        {"path": "agent.py", "find": "print('hi')", "replace": "print('new')"},
+    ])
+    assert problems == [], problems
+    assert sorted(applied) == ["agent.py", "dead.py"]
+    dest = tmp_path / "dest"
+    assert not (dest / "dead.py").exists()
+    assert (dest / "agent.py").read_text() == "print('new')\n"
+
