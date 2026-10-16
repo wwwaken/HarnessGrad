@@ -237,7 +237,14 @@ def test_registry_closes_only_the_saved_writer_blocker():
     registry = json.loads((ROOT / "registry/dataset-blockers.json").read_text())
     appworld = next(row for row in registry["datasets"] if row["dataset"] == "appworld")
     assert "trusted-trial-evidence-writer" not in {b["id"] for b in appworld["blockers"]}
-    assert "successful-task-evidence" in {b["id"] for b in appworld["blockers"]}
+    # `successful-task-evidence` was withdrawn by operator scope decision on 2026-10-16
+    # (`docs/evidence-status-decision.md`). Asserting that it *stays* would pin a decision the
+    # operator has reversed - the identical failure this function already records for the
+    # shared_blockers assertion below. What must be checked instead is that the withdrawal is
+    # recorded with the limits a reader has to carry, and that nothing about it authorizes a run.
+    assert "successful-task-evidence" not in {b["id"] for b in appworld["blockers"]}, (
+        "the operator withdrew this gate on 2026-10-16; it must not reappear without a new "
+        "operator decision")
     # w-shared completed pristine-verifier and w-obs completed runtime-observations; the
     # operator then withdrew the remaining shared requirements as recorded limits
     # (registry/withdrawn-requirements.md, commit 73a5ab22), so NO dataset, appworld included,
@@ -249,4 +256,15 @@ def test_registry_closes_only_the_saved_writer_blocker():
         assert f"## Shared requirement withdrawn: `{blocker_id}`" in withdrawal
     assert not {"official-scorer-identity", "snapshot-owned-cleanup"} & \
         set(appworld["shared_blockers"])
+    # The appworld withdrawal carries its own limits, and they are the part a later reader must
+    # not lose: one task attempted, no success, and any usable measurement requiring a fresh
+    # separately authorized run. Whitespace-normalised because the record is wrapped prose.
+    flat = " ".join(withdrawal.split())
+    assert "`appworld / successful-task-evidence`" in flat, "the withdrawal record is gone"
+    for carried in ("Withdrawn by operator scope decision on 2026-10-16",
+                    "Limits a reader must carry forward",
+                    "No successful measured actor task exists",
+                    "fresh, separately authorized multi-task run",
+                    "no step/token budget increase is"):
+        assert carried in flat, f"withdrawal record dropped: {carried!r}"
     assert registry["review"]["production_authorized"] is False
