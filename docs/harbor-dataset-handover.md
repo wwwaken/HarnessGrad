@@ -78,31 +78,52 @@ so today that question has no answer in the data.
 `cost` across all 28 datasets, and `demand: memory` has no dataset at all. A new dataset that fills
 one of those is worth more than one that duplicates an existing cell.
 
-## 2. What a Harbor adapter is made of
+## 2. What a Harbor adapter is made of, and where the data is
 
-```
-adapters/<name>/
-  README.md                    what it adapts, the metric, the upstream link
-  adapter_metadata.json        upstream split/size/harness + the Harbor side + parity record
-  parity_experiment.json       the adapter-vs-upstream comparison, with agents and cost
-  <name>.yaml                  the run config (agents:, datasets:, environment: type: docker)
-  src/<name>/
-    adapter.py                 download + task generation
-    main.py                    CLI entry
-    metric.py                  ★ the metric implementation
-    task-template/             the task the agent receives
-```
+**The layout is not uniform, and an earlier version of this file got it wrong by describing one
+adapter's layout as if it were the convention.** `locomo` uses `src/<name>/{adapter,main,metric}.py`
+plus `src/<name>/task-template/`; `gpqa-diamond` has no `src/` at all and puts its files at the
+adapter root (`adapter.py`, `template/`, `run_adapter.py`); `aime` uses `src/aime/{adapter,main}.py`
+plus `src/aime/task-template/`. **There is no guaranteed `metric.py`** — `locomo` has one,
+`gpqa-diamond` and `aime` do not.
 
-**`metric.py` is the artifact gate 3 is about.** It is Harbor's own implementation of the
-benchmark's number, and `adapter_metadata.json` states which upstream file it mirrors (for
-`locomo`: *"mirrors upstream `task_eval/evaluation.py`"*). Reading it replaces digging through the
-upstream repository.
+Where the metric actually lives, in the two shapes seen so far:
 
-**`parity_experiment.json` is the equivalence evidence.** It records the comparison against the
-upstream implementation, including the matched agents and the cost of the run. Where it exists,
-"is our number the benchmark's number?" has a recorded answer rather than an assertion.
+* **in the task template's verifier**, which is the Terminal-Bench heritage.
+  `gpqa-diamond/template/tests/test.sh` is the scorer, and the adapter bakes the gold in by
+  substituting it into the script:
+  `test_sh.replace("{answer}", task.correct_letter)`. The generated task under
+  `harbor-datasets` ships the same script with the answer already in it;
+* **in `src/<name>/metric.py`**, for adapters written that way (`locomo`), where
+  `adapter_metadata.json` states which upstream file it mirrors.
 
-Neither is guaranteed to exist for all 85 adapters. Check per adapter.
+So the first move is always the same — **find the scorer** — but do not assume the filename.
+
+### The data source is `harbor-framework/harbor-datasets`
+
+This is the piece that makes a port practical, and it is easy to miss because the adapter's own
+runner points somewhere else. `gpqa-diamond/run_adapter.py` loads
+`load_dataset("Idavidrein/gpqa", "gpqa_diamond")` and fails with *"GPQA is a gated dataset"* when
+the terms have not been accepted. That upstream is **gated**, which our `downloads()` contract
+cannot pin.
+
+`harbor-framework/harbor-datasets` publishes the **generated tasks** for 100+ benchmarks in a
+public repository: `datasets/<name>/<task index>/` with `instruction.md`, `environment/`,
+`solution/`, `task.toml` and `tests/` (the scorer, with the gold already substituted). For
+`gpqa-diamond` that is 198 task directories. Its `.gitignore` excludes only large venvs, so the
+data is committed.
+
+**Pin that repository at a commit and digest, not the gated upstream.** Record the provenance
+chain in the module docstring — generated tasks come from `harbor-datasets`, which came from the
+upstream — and cite `parity_experiment.json` for the equivalence.
+
+### `parity_experiment.json` is the equivalence evidence
+
+Where it exists. For `gpqa-diamond` it records three trials on both sides —
+original `87.88 +/- 0.58`, Harbor `87.21 +/- 0.34` — and names the upstream repository and the
+pull requests. That is a recorded answer to "is our number the benchmark's number?", which is what
+gate 3 needs. `locomo` has one too; `aime` does not, so check per adapter rather than assuming.
+
 
 ## 3. The flow
 
@@ -112,10 +133,10 @@ Harbor-specific changes.
 | step | what changes for Harbor |
 | --- | --- |
 | **0. triage** | Answer the four questions in §0. Container + environment-shaped → **stop**, it is blocked. Also check for `parity_experiment.json`. |
-| **1. read the source, not the README** | Read **`src/<name>/metric.py`** and **`parity_experiment.json`**. You do not need the upstream repository. Also settle the **delivery shape** (§1) — it decides the label. |
-| **2. choose the gate-3 form** | Call Harbor's `metric.py` and pin the commit; or transcribe a published table column; or refuse. Where a parity record exists, cite it as the equivalence evidence. |
-| **3. `downloads()`** | Pin the Harbor commit and, where the adapter fetches upstream data at run time (as `locomo` does), pin the upstream URL and digest too. |
-| **6. scorer into a test + drift test** | **Pin the Harbor commit, quote `metric.py` line numbers, cite the parity record, and add the drift test** so a Harbor change breaks our test rather than our number. |
+| **1. read the source, not the README** | **Find the scorer**, wherever this adapter keeps it — a task-template verifier, or a `metric.py` (§2). Read **`parity_experiment.json`** if it exists. Also settle the **delivery shape** (§1) — it decides the label. |
+| **2. choose the gate-3 form** | Transcribe the scorer's rule verbatim and pin its source; or report a published table column under its own name; or refuse. Where a parity record exists, cite it as the equivalence evidence. |
+| **3. `downloads()`** | Pin **`harbor-framework/harbor-datasets`** at a commit and digest — *not* the adapter's own upstream, which is often gated (GPQA's is). Record the provenance chain in the docstring. |
+| **6. scorer into a test + drift test** | Quote the scorer's lines, **pin `harbor-datasets`**, cite the parity record, and add the drift test so a change upstream breaks our test rather than our number. |
 | **7. label and register** | As in the base doc, **plus** a `source` field pointing at Harbor — which needs the schema change listed under prerequisites. The registry row is an exact set of seven fields today and is drift-checked against `tools/dataset_classes.py`. |
 
 The three hard gates are unchanged: **step 0** (can it be done at all), **step 5** (oracle → 1 and
