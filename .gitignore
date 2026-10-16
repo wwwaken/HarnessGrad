@@ -356,6 +356,13 @@ harnessgrad_work/
 # is cited by the container-dataset refusals it explains.
 !/docs/runtime-observation-brief.md
 
+# The handover for onboarding a Harbor dataset: the port-or-wrap decision, the adapter anatomy
+# (`metric.py` is the gate-3 artifact, `parity_experiment.json` its equivalence evidence), and the
+# delivery-shape rule that decides the `demand` label. It is handed to the dataset side, so it has
+# to survive a clone; `docs/dataset-onboarding.md` stays the single source for the five gates and
+# this file only records what changes when the dataset comes from Harbor.
+!/docs/harbor-dataset-handover.md
+
 # A `git bundle` of this repository contains **all** of its history, including the
 # local notes above if they were ever tracked. Never committable.
 *.bundle
