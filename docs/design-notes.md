@@ -15,9 +15,9 @@ HarnessGrad defines one: a base harness, a fixed task set, a sampling loop, and
 a curve point that records the harness state, the two models involved, the score
 with an interval, and the compute spent to get there.
 
-This repository does not propose an RSI method. It builds the instrument that makes
-RSI methods comparable — and it is therefore not competing with the methods it
-measures.
+This repository does not propose an RSI method. It ships runnable reference methods, but the
+contribution is the instrument that decides whether any of them worked — so it is not
+competing with the methods it measures.
 
 ## The division of labour
 

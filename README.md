@@ -1,6 +1,6 @@
 <h1 align="center">HarnessGrad</h1>
 
-<p align="center"><strong>A platform for running and comparing harness self-improvement methods.</strong></p>
+<p align="center"><strong>The gradient for harness self-improvement — measurable, attributable, comparable.</strong></p>
 
 <p align="center">
   <a href="https://zjunlp.github.io/HarnessGrad/"><img src="https://img.shields.io/badge/website-live-brightgreen.svg" alt="Website"></a>
@@ -19,6 +19,10 @@
 
 ---
 
+**Why the name.** A *gradient* is the signal you need before you can improve anything, and it
+is only worth having if it can be trusted. That is what this is: the training signal for
+harness self-improvement, built so the number can be checked rather than asserted.
+
 Every harness-evolution method reports a final score delta. None of them can say what that
 delta is *made of*, and none report it on a curve a reader can compare against another
 method's — the field has no shared training signal. HarnessGrad defines one: a base
@@ -30,8 +34,9 @@ comparison meaningless, so the platform owns every score and every curve point. 
 *method* lives outside the harness: it is handed a pristine copy and returns candidate
 harnesses, which the platform then measures itself, on its own tasks, with its own scorer.
 
-This repository does not propose an RSI method. It builds the instrument that makes RSI
-methods comparable — and it is therefore not competing with the methods it measures.
+**What this is not.** It does not propose an RSI method. It ships runnable reference methods
+so there is something to run on day one, but the contribution is the instrument that decides
+whether any of them worked — so it is not competing with the methods it measures.
 
 ## 📦 Install
 
