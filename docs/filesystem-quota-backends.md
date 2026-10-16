@@ -47,9 +47,9 @@ The historical source audit at revision
 `10e983fc5fcb006c5afdbce1ef851dad71e953f2` found no complete, connected byte-and-inode
 backend for native bwrap/files tasks, Docker exec or harness/method workspaces.
 Its evidence is retained in the appendix; it is not a current host capability
-report. This conversion also checks the source contract in
-[runner admission](runner-admission-contract.md): it validates supplied facts,
-does not install quotas, and requires a read-only actor root. A supported writable
+report. This conversion also checks the runner admission contract in
+`eval/admission/runner_admission.py`: it inspects supplied facts only, installs
+no quotas, and requires a read-only actor root. A supported writable
 Docker upper layer would still need a separately reviewed admission extension.
 
 | Owner | Deliverable | Completion evidence required later |

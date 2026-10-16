@@ -343,6 +343,12 @@ harnessgrad_work/
 # and `tests/quality/test_appworld_trusted_trial_writer_codex183.py`.
 !/docs/evidence-status-decision.md
 
+# The long-form companion to the front page: the reasoning behind the platform's shape,
+# the defects building it caught, and the operating rules a user must not get wrong.
+# Without it `README.md`'s "Documentation" table and its rationale pointer both dangle,
+# and the detailed design record would exist only in this machine's working tree.
+!/docs/design-notes.md
+
 # A `git bundle` of this repository contains **all** of its history, including the
 # local notes above if they were ever tracked. Never committable.
 *.bundle

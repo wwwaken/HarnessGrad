@@ -53,7 +53,7 @@ def test_help_explains_local_prerequisites_and_preserves_authorization_boundary(
 
 def test_readme_demo_commands_parse_without_entering_staged_or_runtime_paths(monkeypatch):
     readme = (ROOT / "README.md").read_text()
-    section = readme.split("## Run it\n", 1)[1].split("## Layout\n", 1)[0]
+    section = readme.split("## Run it\n", 1)[1].split("\n## ", 1)[0]
     assert "export HG_AGENT_BACKEND=mock" in section
     assert "grants no production/H0 authorization" in section
     commands = [shlex.split(line) for line in section.replace("\\\n", " ").splitlines()
