@@ -102,6 +102,47 @@ Rules the checker enforces and the observer must therefore satisfy:
    alternative to refusing; it needs a second alternative that is *evidence*, not permission —
    an admitted runtime observation for that task and trial.
 
+## One more gate, which observation cannot open: the network policy
+
+A container task that needs to reach its own service must not assume the observation is the only
+obstacle. It is not, and the second gate is the harder one because it is a **policy precondition
+rather than a missing fact**:
+
+```python
+# eval/admission/runner_admission.py:151
+_require(policy["network"] == "none", "network_policy_not_supported")
+# eval/policy/runtime_policy.py:17
+if network not in (None, "none"):
+    raise ValueError(f"unsupported native sandbox network policy: {network!r}")
+```
+
+Both are evaluated before any observation is consulted, so **a perfect observer still refuses a
+task that declares a `services` network**. Widening this is not part of producing the
+observation; it is a change to the contract, and it means admitting tasks whose network
+enforcement is not `none` — a different decision with a different owner.
+
+**The platform already has the pattern for reaching a platform-side service with the network
+off, twice.** `eval/service/unix_model_relay.py` is documented as *"Agent-only HTTP over
+AF_UNIX, with a fixed localhost:8002 model route"*, and `eval/service/unix_stepwise_relay.py`
+hands a harness `HG_STEPWISE_SOCKET` for the same purpose. In both, the service lives on the
+platform side, is published as an **AF_UNIX socket**, and the harness is told the path through an
+environment variable — inside `unshare-net`, with `network: "none"` intact.
+
+So the shape to reach for is a third instance of that pattern, not a new network policy:
+
+* the service stays a separate process; it simply does not need a container network identity;
+* it is published as a unix socket, and the harness receives the path in an env var;
+* `policy["network"]` stays `"none"`, so the gate above is satisfied rather than widened;
+* the resource observation from the rest of this file is then the only remaining gap.
+
+The two existing relays are written against a *fixed* route, so a general-purpose service relay
+is new code — but of a shape that already exists twice in this tree.
+
+A workdir that is an ordinary bind mount also cannot be admitted: each declared surface must
+report `backend` in `("tmpfs", "project-quota")` with matching `bytes`/`inodes` and a unique
+`scope_id`. `tmpfs` gives both trivially; `project-quota` needs the host provisioning named in
+`docs/filesystem-quota-backends.md`.
+
 ## Prerequisite: decide this on the machine that will run the dataset
 
 **This is the go / no-go, and it is not a code question.** cgroup limits exist only where the
