@@ -75,7 +75,25 @@ Quotes below are verbatim substrings from the cited ledger line. A grouped row c
 | “three” ([known-red-tests.md:113](known-red-tests.md:113)) | REPRODUCES | The three security-property tests named in registry/w-vfix-validation.txt:41–43 remain in test_verifier.py at :34, :56, :135 and explicitly assert score is None at :51, :72, :151. Count/assertion content inspected, not executed. [E12](w-knownred-validation.txt:566) |
 | “Two `tests/quality/test_isolation.py` tests” ([known-red-tests.md:100](known-red-tests.md:100)) | REPRODUCES | Both named functions remain in source at test_isolation.py:145 and :630 and the file collects 16 nodes. Their main-versus-worktree behavior is UNKNOWN; main not inspected. [E07](w-knownred-validation.txt:299) [E08](w-knownred-validation.txt:386) |
 | “passes on `main` and fails” ([known-red-tests.md:104](known-red-tests.md:104)) | UNVERIFIABLE | No main run or file inspection, no test execution. Local .env ABSENT is an observation, not a result of the snapshot assertion. [E08](w-knownred-validation.txt:386) |
-| “23 whitelisted paths” ([known-red-tests.md:124](known-red-tests.md:124)) | REPRODUCES | 24 matching whitelist lines but 23 DISTINCT paths: eval-split-design.md is repeated. Exactly reproduces with path deduplication; line count would be a proxy. [E09](w-knownred-validation.txt:436) [E11](w-knownred-validation.txt:510) |
+| “23 whitelisted paths” ([known-red-tests.md:124](known-red-tests.md:124)) | **SUPERSEDED** — see the parent correction below | At this audit's base: 24 whitelist lines, 23 DISTINCT paths (`eval-split-design.md` repeated). The `REPRODUCES` result was correct then and was correct only by reference to that revision. [E09](w-knownred-validation.txt:436) [E11](w-knownred-validation.txt:510) |
+
+**Parent correction, 2026-10-16.** The row above audited the whitelist count at this worker's base and
+certified it `REPRODUCES`; it no longer does, and the reason is that the count is a *moving* number, not a
+measurement of the ledger. Two published documents were added to `.gitignore`'s `/docs/*` allowlist after
+that base, so the current state is **26 lines / 25 distinct** (still `eval-split-design.md` that repeats):
+
+* `docs/local-model-endpoints.md` — added by the A2 endpoint fix (`registry/w-endpointfix-validation.txt`),
+  merged after this audit ran; I did not notice at merge time that it invalidated this row.
+* `docs/evidence-status-decision.md` — added by the withdrawal decision (`9cbd9a94`), which force-added the
+  document and left the file relied upon by `registry/withdrawn-requirements.md`,
+  `registry/blocker-closure-assessment.md` and `tests/quality/test_appworld_trusted_trial_writer_codex183.py`
+  unnamed in the allowlist that is supposed to decide what under `docs/` is public.
+
+So the honest class for this claim is not `REPRODUCES` and not `DIFFERS`: **a count that any legitimate
+publication changes is a proxy, and auditing it as a fact was the same error this file warns about
+elsewhere.** The claim worth pinning is the *mechanism* — every allowlisted page is named with its reason
+and what cites it — not the cardinality. The historical narrative at `known-red-tests.md:126` is left as
+written: it is a dated sweep record, and it is not a standing claim.
 | “11 passed” ([known-red-tests.md:126](known-red-tests.md:126)) | UNVERIFIABLE | No test rerun authorized. Collection establishes inventory only; an original post-fix result/command or authorized offline rerun would settle this. 11 nodes collect today. [E07](w-knownred-validation.txt:299) |
 | “106 passed” ([known-red-tests.md:130](known-red-tests.md:130)) | UNVERIFIABLE | No test rerun authorized. Collection establishes inventory only; an original post-fix result/command or authorized offline rerun would settle this. 106 nodes collect; the cited docs2 note repeats the old result but is not a new execution. [E07](w-knownred-validation.txt:299) [E09](w-knownred-validation.txt:436) |
 | “12 passed” ([known-red-tests.md:134](known-red-tests.md:134)) | UNVERIFIABLE | No test rerun authorized. Collection establishes inventory only; an original post-fix result/command or authorized offline rerun would settle this. 12 nodes collect; source copy list includes scorer_isolation.py at test_parallel_tasks.py:256. [E07](w-knownred-validation.txt:299) [E08](w-knownred-validation.txt:386) |

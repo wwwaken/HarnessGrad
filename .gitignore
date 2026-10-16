@@ -336,6 +336,13 @@ harnessgrad_work/
 # at it as the evidence behind that entry's `observed`.
 !/docs/terminal-bench-runtime-admission.md
 
+# The decision record for withdrawing the last three evidence blockers, and the scope note
+# that separates a `LIMIT` withdrawal from a finding of unobtainability. Without it the three
+# removals read as "not needed" rather than "withdrawn on purpose, with named limits".
+# Cited from `registry/withdrawn-requirements.md`, `registry/blocker-closure-assessment.md`
+# and `tests/quality/test_appworld_trusted_trial_writer_codex183.py`.
+!/docs/evidence-status-decision.md
+
 # A `git bundle` of this repository contains **all** of its history, including the
 # local notes above if they were ever tracked. Never committable.
 *.bundle
