@@ -27,6 +27,7 @@ from eval.observe.console import CONSOLE as console
 from eval.run.runner import evaluate
 from harnessgrad import PLATFORM_API_VERSION
 from harnessgrad import code_metrics
+from harnessgrad import components
 from harnessgrad import config as platform_config
 from harnessgrad import policies
 from harnessgrad.channel import _stage_for_method
@@ -566,6 +567,27 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
         # the method-facing page quotes as "what moved this round".
         point["editable_surface_touched"] = _touched_paths(
             work, curve[-1]["identity"]["harness_sha"], sha)
+        # **Which component moved, when the harness says which is which.** `components` in
+        # `harness.json` is a map for reading, never a fence: the platform's design is that a
+        # harness is *entirely* editable -- `INTERFACE.md` §4.1-4.3 draws the boundary around
+        # a harness's `method/` directory and its `accept` rule and nowhere else -- so a path
+        # the map does not name is recorded as `unattributed` rather than refused. Without
+        # this, "the harness evolved" has no referent: `editable_surface_touched: ["agent.py"]`
+        # says a file moved but not which of the ten components improved.
+        #
+        # Read from `work`. `harness.json` is a protected file (`cli_improver.propose` reports
+        # it, and every method prompt forbids editing it), so the map cannot legitimately
+        # change under a round's feet; if a method changes it anyway, the path appears in
+        # `editable_surface_touched` and in `unattributed` where a reader can see it.
+        try:
+            point["editable_surface_components"] = components.attribute(
+                point["editable_surface_touched"], components.declared_components(work))
+        except components.ComponentDeclarationError as exc:
+            # A malformed declaration is a fact about the harness, not a reason to lose the
+            # round's measurement. The raw paths are already on the point above.
+            point["editable_surface_components"] = {
+                "components": [], "unattributed": point["editable_surface_touched"],
+                "declaration_error": str(exc)}
         # ------------------------------------------------------------------
         # Anthropic's two evaluator-side policies, **recorded rather than enforced**
         # (`harnessgrad/policies.py` states why): a geometric mean whose lowest term binds,
