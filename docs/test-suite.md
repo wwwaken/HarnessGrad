@@ -85,8 +85,11 @@ in `EXTRA`; each entry is a decision, not a guess.
 `tests/quality/test_test_scope.py` guards the rule: it fails if a dataset is added
 with no test file, if an `EXTRA` entry points at a file that no longer exists, or if
 a registry-wide file starts being scoped to individual datasets. It also pins a real
-coverage gap it found: **10 of 28 datasets have no dedicated adapter test file** and
+coverage gap it found: **8 of 29 datasets have no dedicated adapter test file** and
 are reached only through the cross-dataset tests. The list can shrink, not grow.
+(Both numbers here were stale until `aime` was registered: the tuple had already
+shrunk to 8 when the 2026-10-16 fidelity phase gave `fever` and `tau_bench` their
+own test files, and the total went 28 → 29 with the port.)
 
 ## If you add a dataset
 

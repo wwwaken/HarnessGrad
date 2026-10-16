@@ -17,7 +17,7 @@ Three kinds of file, decided by evidence rather than by a hand-kept list:
   what the author chose to say the file is about, and it does not drift when the
   body happens to use another dataset as a fixture.
 * **registry-wide** -- a small, explicitly listed set that verifies the *contract
-  across all datasets* (`test_dataset_controls.py` checks all 28). These are not
+  across all datasets* (`test_dataset_controls.py` checks all 29). These are not
   per-dataset work; they belong to "I changed the dataset layer".
 * **core** -- everything else: platform tests. A few of them use one dataset as an
   example fixture (terminal_bench is a common one). They are *not* dataset-scoped,
@@ -107,7 +107,7 @@ def select(names: list[str], datasets: list[str] | None = None, *,
     """The file names to run for `datasets`.
 
     Defaults are deliberate: core is included (a platform regression still matters
-    while you work on an adapter) and registry-wide is not (it checks all 28 and is
+    while you work on an adapter) and registry-wide is not (it checks all 29 and is
     the slowest thing in the suite; run it when you touch the dataset layer).
     """
     mapping = scope_map(names)

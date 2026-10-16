@@ -52,6 +52,15 @@ ROWS: dict[str, dict] = {
         "control": ["data/datasets/alfworld/control.py"],
         "metric_tests": ["test_alfworld_official_scorer.py", "test_alfworld_dataset.py"],
     },
+    # The first adapter ported from Harbor rather than written against an upstream release
+    # directly. Its scorer is a container script (`tests/test_outputs.py` under
+    # `task-template/`), so `test_aime_official_scorer.py` runs Harbor's own code against a
+    # real answer file and diffs our transcription against it, instead of comparing to a
+    # package import the way the other QA scorers do.
+    "aime": {
+        "control": ["data/scaffolds/qa/control.py", "--dataset", "aime"],
+        "metric_tests": ["test_aime_official_scorer.py", "test_qa_dataset_contract.py"],
+    },
     "bfcl_v3": {
         "control": ["data/scaffolds/qa/control.py", "--dataset", "bfcl_v3"],
         "metric_tests": ["test_bfcl_v3_dataset.py", "test_qa_dataset_contract.py"],

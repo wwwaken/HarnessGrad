@@ -24,6 +24,10 @@ from tools import dataset_lint, datasets  # noqa: E402
 # Membership changes need a reviewed expectation update, not another sorted(...).
 EXPECTED_DATASETS = (
     "agentdojo",
+    # `aime` (2026-10-16) is the first dataset added since this catalog was pinned, so it is
+    # the first membership change this tuple's own comment asks to be reviewed rather than
+    # sorted in. It sorts second, between `agentdojo` and `alfworld`.
+    "aime",
     "alfworld",
     "api_bank",
     "appworld",

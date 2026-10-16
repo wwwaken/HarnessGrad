@@ -34,7 +34,7 @@ sys.path.insert(0, str(ROOT))
 #: does not import a module whose data is absent in order to find that out.
 QA_DATASETS = ["gsm8k", "triviaqa", "strategyqa", "sportsunderstanding",
                "physicsquestions", "bfcl_v3", "chessbench_puzzles", "musique",
-               "reasoning_gym", "twowikimultihopqa", "fever", "hotpotqa"]
+               "reasoning_gym", "twowikimultihopqa", "fever", "hotpotqa", "aime"]
 
 
 def _adapter(name: str):

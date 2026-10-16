@@ -167,6 +167,12 @@ EXERCISES: dict[str, tuple[str, ...]] = {
     "chessbench_puzzles": ("context", "control"),
     "ds1000": ("tools", "verification"),
     "gsm8k": ("context", "verification"),
+    # `aime` arrives from Harbor's adapter rather than from a fresh survey, and it stresses the
+    # same two components as the other single-shot exact-match sets: the problem and the answer
+    # format both have to survive the context, and the final answer has to be checked against
+    # the stated shape. It adds no new function coverage, which is the expected result of a
+    # port -- the point of this one is a second source family over a metric already in use.
+    "aime": ("context", "verification"),
     "reasoning_gym": ("context", "verification"),
     "jericho": ("context", "tools", "control", "memory"),
     "musique": ("context",),
@@ -238,6 +244,11 @@ CAPABILITY: dict[str, tuple[str, str]] = {
     "chessbench_puzzles": ("reasoning", "planning_and_search"),
     "ds1000": ("artifact", "code_generation"),
     "gsm8k": ("reasoning", "reasoning"),
+    # Same `(demand, surface)` as `gsm8k`, `physicsquestions` and `strategyqa`: competition
+    # mathematics answered by a single integer, so the demand is reasoning and the surface it
+    # is exercised on is reasoning rather than a tool or an artefact. The surface stays a leaf
+    # because it belongs to `reasoning` alone.
+    "aime": ("reasoning", "reasoning"),
     "reasoning_gym": ("reasoning", "reasoning"),
     "jericho": ("environment", "interactive_fiction"),
     "musique": ("evidence", "information_seeking"),
@@ -297,6 +308,9 @@ EXPECTED_INTERACTION = {
     "fever": "single_shot",
     "hotpotqa": "single_shot",
     "gsm8k": "single_shot",
+    # Derived, not declared: the QA scaffold's shipped CLI exposes only answer submission, so
+    # `classify()` reads `single_shot` off the program and this entry has to agree with it.
+    "aime": "single_shot",
     "jericho": "closed_loop",
     "musique": "single_shot",
     "reasoning_gym": "single_shot",
