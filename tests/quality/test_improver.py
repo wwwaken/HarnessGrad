@@ -445,3 +445,168 @@ def test_the_gate_refuses_a_cli_improver_whose_model_cannot_emit_tool_calls(tmp_
     assert proc.returncode == 2, out[-900:]
     assert "structured tool_calls" in out, out[-900:]
     assert "HG_IMPROVER_SKIP_TOOL_GATE" in out, out[-900:]
+
+
+# ------------------------------------------- 第二个 CLI:声明而不是搜索 ---
+
+def _stub_launcher(tmp_path: Path, body: str = "#!/bin/sh\necho 'dsh 9.9.9'\n") -> Path:
+    path = tmp_path / "dsh-improver"
+    path.write_text(body)
+    path.chmod(0o755)
+    return path
+
+
+def test_a_declared_launcher_is_resolved_without_searching_for_codex(tmp_path, monkeypatch):
+    """`launcher` 的条目按声明解析,一次都不去搜。
+
+    codex 那套 globs 对 dsh 是错的形状:它得在 source tree 和 build 产物之间二选一,而
+    猜错了不会报错,只会跑起另一个东西。这条同时钉住"没走 `candidates()`"—— 把它换成
+    会抛异常的桩,解析仍然必须成功。
+    """
+    def boom(extra=None):
+        raise AssertionError("a declared launcher must not go through the codex search")
+
+    monkeypatch.setattr(improver, "candidates", boom)
+    script = _stub_launcher(tmp_path)
+    config = {"default": "dsh", "improvers": {"dsh": {
+        "name": "dsh", "kind": "cli", "argv_style": "dsh", "launcher": str(script),
+        "model": "deepseek-flash"}}}
+    resolved = improver.resolve(config, requested="dsh")
+    assert resolved["ok"] and resolved["path"] == str(script)
+    # 这两件是 `methods/cli_improver.py` 拼 argv 时要用的,而路径推不出来
+    assert resolved["argv_style"] == "dsh"
+    assert resolved["model"] == "deepseek-flash"
+    assert resolved["sha256"], "launcher 的字节也要记"
+
+
+def test_the_declared_runtime_trees_are_what_the_method_sandbox_will_bind(tmp_path):
+    """绑定树不能从 launcher 路径推出来,所以条目必须自己说。
+
+    `runtime_trees(launcher)` 只会给出 `improvers/`(在平台内,会被 plan 自己的守卫丢掉)
+    和 `~/.codex`。dsh 需要的是它的 checkout 和 `~/.dsh`;少了这些,round 1 会死于
+    module-not-found,和 `harnessgrad/methods.py` 里记过的那次一模一样。
+    """
+    checkout = tmp_path / "deepseek-harness"
+    checkout.mkdir()
+    home = tmp_path / "dsh-home"
+    home.mkdir()
+    script = _stub_launcher(tmp_path)
+    config = {"default": "dsh", "improvers": {"dsh": {
+        "name": "dsh", "kind": "cli", "launcher": str(script),
+        "runtime": [str(checkout), str(home), str(tmp_path / "not-here")]}}}
+    resolved = improver.resolve(config, requested="dsh")
+    assert str(checkout) in resolved["runtime"]
+    assert str(home) in resolved["runtime"]
+    # 声明了一个不存在的树不能被绑:一个失败的 bind 会让整个 sandbox plan 起不来
+    assert not [t for t in resolved["runtime"] if "not-here" in t]
+
+
+def test_a_declared_interpreter_supplies_the_tree_a_shebang_cannot(tmp_path, monkeypatch):
+    """bash 的 launcher 不会透露 node 在哪 —— 而 node 装在 `$HOME` 下的一个 nvm 里。
+
+    `runtime_trees` 靠 shebang 找解释器,所以 codex 的 `codex.js` 白拿 node 的安装树;
+    dsh 的 launcher 是 bash,而 `sh`/`bash`/`env` 被**故意**跳过(它们在 `/usr`,namespace
+    本来就绑)。少了这一条,沙箱里会有 CLI 的文件,却没有能跑它的程序 —— 而且失败会写成
+    "improver 坏了",不是"少绑了一棵树"。
+    """
+    install = tmp_path / "nvm" / "versions" / "node" / "v22.19.0"
+    (install / "bin").mkdir(parents=True)
+    (install / "bin" / "node").write_text("")
+    monkeypatch.setattr(improver.shutil, "which",
+                        lambda name: str(install / "bin" / "node") if name == "node" else None)
+    script = _stub_launcher(tmp_path)
+    config = {"default": "dsh", "improvers": {"dsh": {
+        "name": "dsh", "kind": "cli", "launcher": str(script), "interpreter": "node"}}}
+    resolved = improver.resolve(config, requested="dsh")
+    assert str(install) in resolved["runtime"], resolved["runtime"]
+
+
+def test_a_build_command_is_what_identifies_the_improver(tmp_path):
+    """launcher 的 sha256 是那 2KB 脚本,而那**不是** improver 的身份。
+
+    codex 的 sha256 是它的二进制,二进制就是工具。这里的工具是一个 checkout:launcher 很
+    稳定,底下的 `apps/cli/lib/bin.js` 却会在任何人动那个仓库时被重新构建 —— 那个仓库是
+    活的。没有这一条,曲线会记下一个永远不会变的身份,而它背后的 improver 在变。
+    """
+    script = _stub_launcher(tmp_path)
+    stamp = tmp_path / "revision"
+    stamp.write_text("c291e7961a\n")
+    config = {"default": "dsh", "improvers": {"dsh": {
+        "name": "dsh", "kind": "cli", "launcher": str(script),
+        "build_command": ["cat", str(stamp)]}}}
+    resolved = improver.resolve(config, requested="dsh")
+    assert resolved["version"] == "9.9.9+c291e7961a", resolved["version"]
+
+
+def test_a_build_command_that_cannot_run_says_so_instead_of_dropping_the_field(tmp_path):
+    """问不出 build 就写成 `unidentified`,而不是悄悄少一个字段。
+
+    `0.1.5+unidentified(FileNotFoundError)` 和另一个一样的字符串仍然可比;空字符串会
+    让"这次没测到"和"这次没这个字段"长得一样。
+    """
+    script = _stub_launcher(tmp_path)
+    config = {"default": "dsh", "improvers": {"dsh": {
+        "name": "dsh", "kind": "cli", "launcher": str(script),
+        "build_command": [str(tmp_path / "no-such-program")]}}}
+    resolved = improver.resolve(config, requested="dsh")
+    assert resolved["version"].startswith("9.9.9+unidentified("), resolved["version"]
+
+
+def test_a_missing_launcher_is_a_refusal_not_a_fallback_to_codex(tmp_path, monkeypatch):
+    """"我要 dsh 却拿到 codex" 正是让两个实验不可比的那种替换。"""
+    monkeypatch.setattr(improver, "candidates",
+                        lambda extra=None: (_ for _ in ()).throw(
+                            AssertionError("no fallback may be attempted")))
+    config = {"default": "dsh", "improvers": {"dsh": {
+        "name": "dsh", "kind": "cli", "launcher": str(tmp_path / "gone")}}}
+    resolved = improver.resolve(config, requested="dsh")
+    assert resolved["ok"] is False
+    assert "missing" in resolved["reason"], resolved
+
+
+def test_the_shipped_dsh_entry_declares_what_the_code_branches_on():
+    """注册表条目是**代码分支的依据**,所以它自己的形状要有一条测试。
+
+    四个字段各有各的失败方式,而且都不在 `resolve()` 里报错:`argv_style` 拼错会在 method
+    里变成一次 argv 拒绝,`launcher` 写错会在 round 1 变成 "launcher is missing",
+    `runtime` 忘了声明会变成 module-not-found,`build_command` 忘了声明会让曲线记下一个
+    假的稳定身份。所以在这里一次把四个都钉住。
+    """
+    config = improver.load_config()
+    entry = config["improvers"]["dsh"]
+    assert entry["kind"] == "cli"
+    assert entry["argv_style"] == "dsh"
+    launcher = ROOT / entry["launcher"]
+    assert launcher.is_file(), f"launcher 不存在: {launcher}"
+    assert launcher.stat().st_mode & 0o111, "launcher 必须可执行"
+    assert entry["runtime"], "必须声明 method sandbox 要绑的树"
+    assert entry["build_command"], "必须声明怎么识别 checkout"
+    assert entry["model"], "必须声明模型,否则记录里说不出它用的是什么"
+    assert improver.forbidden_reason(config, entry["model"]) == ""
+
+
+def test_the_launcher_lives_where_the_method_sandbox_already_looks():
+    """**这条是实测出来的**:launcher 放在 `improvers/` 下时,round 1 直接死。
+
+    `_method_sandbox_plan` 把 `PLATFORM_ROOT/methods` 绑进方法的 namespace —— 方法自己的
+    程序在那儿 —— 而它**故意**丢掉每一个位于平台内部的 `runtime` 树,那正是"平台对方法不
+    可见"这条性质的守卫。所以一个放在 `improvers/` 下的 launcher,对必须执行它的方法是
+    不可见的:
+
+        round 1: method entrypoint failed: exit 1 -- the platform named an improver at
+        '.../improvers/dsh-improver', which does not exist inside this sandbox.
+
+    放宽那个守卫的代价是一个操作者可写的注册表能点名平台下的**任意**目录,而 `data/` 里
+    放着每道题的期望答案。所以 launcher 和 `cli_improver.py` 放在一起 —— `methods/` 本来
+    就是为这个绑定的 —— 而这条测试把那个位置约束写下来,免得以后有人"整理"回 `improvers/`。
+    """
+    from harnessgrad.methods import PLATFORM_ROOT as HG_ROOT
+
+    config = improver.load_config()
+    launcher = (ROOT / config["improvers"]["dsh"]["launcher"]).resolve()
+    bound = (HG_ROOT / "methods").resolve()
+    assert launcher.parent == bound, (
+        f"launcher 必须待在 {bound}(它被只读绑进每个方法的 namespace),而不是 "
+        f"{launcher.parent} —— 后者在平台内部,sandbox plan 会把它丢掉")
+    assert launcher.is_file()
+

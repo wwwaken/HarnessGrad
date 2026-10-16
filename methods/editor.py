@@ -1020,10 +1020,19 @@ def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:
     edits: list[dict] = []
     for rel in result["files"]:
         path = Path(result["candidate"]) / rel
-        try:
-            edits.append({"path": rel, "content": path.read_text(errors="replace")})
-        except OSError:
+        if not path.is_file():
+            # **A file the improver removed is an edit, not a read failure.** `_changed_files`
+            # walks the pristine side and names what the candidate no longer has, so a
+            # deletion arrives here -- and this loop used to swallow it in `except OSError:
+            # continue`. Two consequences, both silent: a round that deleted one file and
+            # edited another measured a tree that still contained the deleted file, and a
+            # round that *only* deleted files produced an empty `edits`, fell into the
+            # `no_change` return below, and recorded "the improver decided to change nothing"
+            # for a change it had actually made. That is the same collapse `UnparseableReply`
+            # exists to prevent, one layer down.
+            edits.append({"path": rel, "delete": True})
             continue
+        edits.append({"path": rel, "content": path.read_text(errors="replace")})
     if not edits:
         # **A crashed CLI improver is not a decision.** `cli_improver.run` already draws this
         # line (`if code != 0 and not changed:` -> `reported["error"]`), and this path did
@@ -1083,17 +1092,24 @@ def ask(prompt: str, system: str = DEFAULT_SYSTEM, base: Path | None = None,
     """
     from openai import OpenAI
 
-    base_url, api_key, model = model_settings()
     # **One dispatch point for the improver layer.** When this run resolved a *CLI* improver
     # (codex), drive it rather than a chat endpoint -- on the tree the rule chose to build on
     # (`parent`, defaulting to the incumbent) -- and hand the result back as an ordinary edit
     # sequence. A rule thus runs on either layer without knowing which it got, which is what
     # makes "the RSI rule is the rule; codex is the shell" true rather than aspirational.
+    #
+    # **The CLI needs no endpoint, so it must not be made to require one.** `model_settings()`
+    # below demands `HG_METHOD_BASE_URL / _API_KEY / _MODEL` and raises when any is missing,
+    # and a run whose improver is a CLI injects none of them -- `harnessgrad/methods.py` only
+    # writes them for an improver that carries a `base_url`. Called first, as it was, it
+    # refused every CLI run with "a method brings its own credentials": the one layer with no
+    # endpoint would have been the only one that could not start without one.
     cli = None if endpoint_only else cli_improver_identity(base)
     if cli is not None:
         tree = Path(parent) if parent is not None else Path(base)
         return _ask_cli(prompt, Path(base) if base is not None else tree, tree, cli)
 
+    base_url, api_key, model = model_settings()
     client = OpenAI(base_url=base_url, api_key=api_key,
                     timeout=float(os.environ.get("HG_METHOD_TIMEOUT_S", "180")),
                     max_retries=2)

@@ -390,18 +390,19 @@ def test_an_unreadable_reply_raises_instead_of_reporting_no_change(monkeypatch):
 def _cli_harness(tmp_path: Path, monkeypatch) -> Path:
     """A harness whose `round.json` resolved a CLI improver, so `ask` dispatches to it.
 
-    The three `HG_METHOD_*` variables are set even though the CLI branch never reaches the
-    endpoint: `ask` calls `model_settings()` *before* it dispatches (`methods/editor.py:1069`),
-    so a CLI improver is asked for endpoint credentials it does not use. Recorded here rather
-    than worked around silently -- it is the same conflation of the two improver layers that
-    the `no_change` collapse below is.
+    **No `HG_METHOD_*` is set, and that is the point of this helper now.** It used to set all
+    three, because `ask` called `model_settings()` *before* it dispatched
+    (`methods/editor.py:1069`), so a CLI improver was asked for endpoint credentials it does
+    not use -- the same conflation of the two improver layers that the `no_change` collapse
+    below is. The call moved below the dispatch, so the CLI branch no longer touches an
+    endpoint; leaving the variables unset is what keeps that true, and every test using this
+    helper fails with `SystemExit: a method needs HG_METHOD_BASE_URL ...` if it comes back.
     """
     base = _write_harness(tmp_path / "h")
     (base / "_harnessgrad" / "round.json").write_text(json.dumps(
         {"identity": {"improver": {"name": "codex", "kind": "cli", "path": "/x/codex.js"}}}))
-    monkeypatch.setenv("HG_METHOD_BASE_URL", "http://stub/v1")
-    monkeypatch.setenv("HG_METHOD_API_KEY", "stub")
-    monkeypatch.setenv("HG_METHOD_MODEL", "stub")
+    for name in ("HG_METHOD_BASE_URL", "HG_METHOD_API_KEY", "HG_METHOD_MODEL"):
+        monkeypatch.delenv(name, raising=False)
     return base
 
 
@@ -455,6 +456,52 @@ def test_a_cli_improver_that_declines_is_still_a_no_change(tmp_path, monkeypatch
     reply = editor.ask("prompt", base=base, parent=base)
     assert "no_change" in reply, reply
     assert "retry cap" in str(reply["no_change"]), reply
+
+
+def test_a_file_the_cli_improver_deleted_is_carried_as_a_deletion(tmp_path, monkeypatch):
+    """**删除是编辑,不是读取失败。** `_changed_files` 会遍历 pristine 侧、点名候选里已经不在
+    的文件,所以删除会送到 `_ask_cli` —— 而它曾用 `except OSError: continue` 把删除吞掉。
+    后果是静默的:一轮里删一个文件又改了另一个,被测的树里那个删掉的文件**还在**。
+
+    这个 stub 用 candidate 里不存在的路径来表示"被删掉"`——`正是 `_changed_files` 报出来的
+    形状。
+    """
+    import editor
+    monkeypatch.delenv("HG_IMPROVER", raising=False)
+    base = _cli_harness(tmp_path, monkeypatch)
+    candidate = tmp_path / "cand"
+    candidate.mkdir()
+    (candidate / "agent.py").write_text("x = 1\n", encoding="utf-8")
+    _stub_cli(monkeypatch, exit_code=0, note="removed the dead module",
+              files=["agent.py", "dead.py"], tmp_path=candidate)
+
+    reply = editor._ask_cli("prompt", base, base,
+                            {"name": "dsh", "argv_style": "dsh"})
+
+    by_path = {edit["path"]: edit for edit in reply["files"]}
+    assert by_path["dead.py"] == {"path": "dead.py", "delete": True}, reply
+    assert by_path["agent.py"]["content"] == "x = 1\n", reply
+
+
+def test_a_deletion_only_round_is_not_recorded_as_no_change(tmp_path, monkeypatch):
+    """只删了一个文件的轮次曾经变成 `{"no_change": ...}`。
+
+    那是 `UnparseableReply` 的 docstring 禁止的那个 collapse,低一层再犯一次:一次真的做出来
+    的改动被记成"improver 决定不改",而记录里分不出它和一个真的什么都没找到的轮次。
+    """
+    import editor
+    monkeypatch.delenv("HG_IMPROVER", raising=False)
+    base = _cli_harness(tmp_path, monkeypatch)
+    candidate = tmp_path / "cand"
+    candidate.mkdir()
+    _stub_cli(monkeypatch, exit_code=0, note="deleted the dead module",
+              files=["dead.py"], tmp_path=candidate)
+
+    reply = editor._ask_cli("prompt", base, base,
+                            {"name": "dsh", "argv_style": "dsh"})
+
+    assert "no_change" not in reply, reply
+    assert reply["files"] == [{"path": "dead.py", "delete": True}], reply
 
 
 def test_the_hypothesis_is_found_wherever_the_model_put_it():
