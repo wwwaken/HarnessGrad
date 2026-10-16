@@ -5624,3 +5624,71 @@ phase's actual finding: **the number is easy to get; the reason it is the right 
 
 Commits: `adc24a7b` (the extended measurement, the rewritten harness and the three updated landing notes).
 Checker valid.
+
+## 2026-10-16 (goal wrap-up) — Reviewing the operator's withdrawal, and two asks that turned out to be one
+
+**The operator's `9cbd9a94` is sound, and reviewing it found one guard it missed.** All three evidence
+blockers are withdrawn with the two reasons recorded separately rather than flattened - `bfcl_v3` and
+`triviaqa` as **scope** limits (the missing observations are still missing and are *not* claimed
+unobtainable; a producer manifest or upstream receipt would supersede each entry), `appworld` because the
+question its gate existed to answer was answered by measurement, with the sharpest limit named: *a gate that
+admits only success can never be closed by a correctly executed failure*. Evidence is preserved rather than
+deleted (three substantial `withdrawn-requirements.md` entries; the bfcl containment boundary explicitly
+"revives with the work it guards"; `runtime-gaps-*.jsonl` and the 885-line custody file intact), the four
+permanent refusals are untouched, and the new bfcl guard is **stronger** than the one it replaced - it pins
+eight carried-forward limits plus `production_authorized is False` instead of pinning the disposition the
+operator reversed. The synthetic-blocker fixture is a robustness fix, not a weakening.
+
+**What it missed, and I fixed (`7442957f`):** `test_appworld_trusted_trial_writer_codex183.py:240` still
+asserted the gate *stays*, leaving main red. The same function's comment three lines below already recorded
+the identical failure mode for the `shared_blockers` assertion, so the lesson was in the file and the line
+above it was left behind. Replaced with the new bfcl pattern. The full registry-reading set is **172
+passed / 17 skipped / 0 failed** across 13 files, against the 156/17/0 claimed for twelve - this file was
+not in that list.
+
+**Also fixed (`82589996`):** the new decision doc was force-added but left unnamed in `.gitignore`'s
+`/docs/*` allowlist, the mechanism whose own comment says a note under `docs/` is private until someone
+names it publicly. It is cited from the registry and from a test, so it *is* published. Allowlisted in the
+established style - and correcting the commit message's rationale, the precedent
+(`docs/enforcement-proof-decision.md`) is an allowlist entry, not a force-add. That moved a count
+`w-knownred` had audited; the row was **already stale** because my own earlier `w-endpointfix` merge added
+another allowlist entry, so it is reclassified `SUPERSEDED` with a correction. A count that any legitimate
+publication changes is a proxy, and auditing it as a fact is the error that file warns about elsewhere.
+
+**Two errors of my own in that review, both recorded:** I first read `git check-ignore` on a *tracked* file
+as proof it was not ignored - it does not report tracked files at all; `--no-index` is needed. And my commit
+message lost three back-quoted commands to shell substitution, which I amended on my own tip commit.
+
+**Then the two asks. They turned out to be one question, and I had it backwards.**
+`.gitignore:361-375` is an explicit policy with a stated rationale: *"the EVIDENCE is the recomputed digest
+list, not the payload ... keep the payloads on disk (they are reproducible from the recorded URLs+hashes)"*,
+adopted because 516 MB of binaries had entered the object store for no reason. The 47 untracked B5 bodies
+total **642 KB**, so size is not the objection - the objection is categorical. **The 47 are correctly
+untracked; the anomaly is the 159 that *are* tracked**, force-added by `c52c19ee` after the rule landed with
+no recorded justification. Flagged, not acted on: un-tracking 159 files is custody, not cleanup. The same
+reading explains why the naked `FileNotFoundError` was the real bug - this repository's convention is that a
+test needing an uncommitted payload **skips explicitly**, naming the file and the reason
+(`test_w_ujson_receipts.py:38-40`, `test_quiesce_evidence.py:54-58`).
+
+**So item 4 became the fix and item 2 became a correction (`ac96caf3`).** The B5 inventory test now
+**derives** every absence from the packet's own receipts plus the committed replay report -
+`pinned_error_payload` (status 403 and the pin equals the shared rate-limit digest), `upstream_404`,
+`live_or_changed_resource` - asserts the tally is exactly **23 / 1 / 3**, and **fails** for any body whose
+receipt says 200, i.e. anything still fetchable. It cannot drift, because nothing is hand-listed. The
+`inventory.json` loop now verifies each structurally absent entry's recorded status and digest rather than
+reading bytes that do not exist, so the 23 error-page pins stay pinned *as error pages*. The triviaqa
+history test skips explicitly. And one GET restored `responses/bfcl-web-bitagent.body` - the single entry
+with recorded 200 and no body - at exactly its pinned SHA-256 `75066749a840…`, 2,642 bytes; the writer
+refuses on mismatch and it matched. **`test_external_provenance_b5.py` is now 5 passed, 1 skipped, 0 failed**
+(was 5 failed/1 passed at the sweeps), and the residue is **207 present / 27 absent of 234** with every
+absence accounted for. The 23 can only move by *re-pinning*, which changes the evidence rather than
+restoring it. The restored body is deliberately **not** committed - the policy keeps payloads out of git,
+and committing it would have deepened the anomaly rather than fixing it.
+
+**Corrections to my own records:** `registry/known-red-tests.md` (numbers, and the payload-policy
+correction in place of my durability framing) plus the two places that repeated that framing
+(`fidelity-acceptance.md`, `fold-verdicts-retention.md`). The real `docs/*` gitignore trap is the handoff
+and the decision documents, not the payloads.
+
+**Verified:** 115 passed / 1 skipped across the B5, registry, docs, boundary, import-direction and lint
+files; 172 passed / 17 skipped across the registry-reading set; checker `valid` on every commit.
