@@ -3,6 +3,7 @@
 <p align="center"><strong>A platform for running and comparing harness self-improvement methods.</strong></p>
 
 <p align="center">
+  <a href="https://zjunlp.github.io/HarnessGrad/"><img src="https://img.shields.io/badge/website-live-brightgreen.svg" alt="Website"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10 or newer">
   <img src="https://img.shields.io/badge/runtime%20dependencies-none-brightgreen.svg" alt="No third-party runtime dependencies">
@@ -102,6 +103,7 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q 
 
 | | |
 | --- | --- |
+| **[Introduction site](https://zjunlp.github.io/HarnessGrad/)** | what the platform is, with news and blog; source in [`website/`](website/README.md) |
 | [`INTERFACE.md`](INTERFACE.md) | the measurement contract: what a harness may declare, and what the platform guarantees |
 | [`docs/writing_a_harness.md`](docs/writing_a_harness.md) | the harness contribution contract |
 | [`docs/architecture.md`](docs/architecture.md) | repository map: every top-level area, dependency direction, known structural problems |
