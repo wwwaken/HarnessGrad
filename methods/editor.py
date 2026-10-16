@@ -1083,17 +1083,24 @@ def ask(prompt: str, system: str = DEFAULT_SYSTEM, base: Path | None = None,
     """
     from openai import OpenAI
 
-    base_url, api_key, model = model_settings()
     # **One dispatch point for the improver layer.** When this run resolved a *CLI* improver
     # (codex), drive it rather than a chat endpoint -- on the tree the rule chose to build on
     # (`parent`, defaulting to the incumbent) -- and hand the result back as an ordinary edit
     # sequence. A rule thus runs on either layer without knowing which it got, which is what
     # makes "the RSI rule is the rule; codex is the shell" true rather than aspirational.
+    #
+    # **The CLI needs no endpoint, so it must not be made to require one.** `model_settings()`
+    # below demands `HG_METHOD_BASE_URL / _API_KEY / _MODEL` and raises when any is missing,
+    # and a run whose improver is a CLI injects none of them -- `harnessgrad/methods.py` only
+    # writes them for an improver that carries a `base_url`. Called first, as it was, it
+    # refused every CLI run with "a method brings its own credentials": the one layer with no
+    # endpoint would have been the only one that could not start without one.
     cli = None if endpoint_only else cli_improver_identity(base)
     if cli is not None:
         tree = Path(parent) if parent is not None else Path(base)
         return _ask_cli(prompt, Path(base) if base is not None else tree, tree, cli)
 
+    base_url, api_key, model = model_settings()
     client = OpenAI(base_url=base_url, api_key=api_key,
                     timeout=float(os.environ.get("HG_METHOD_TIMEOUT_S", "180")),
                     max_retries=2)

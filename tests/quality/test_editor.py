@@ -390,18 +390,19 @@ def test_an_unreadable_reply_raises_instead_of_reporting_no_change(monkeypatch):
 def _cli_harness(tmp_path: Path, monkeypatch) -> Path:
     """A harness whose `round.json` resolved a CLI improver, so `ask` dispatches to it.
 
-    The three `HG_METHOD_*` variables are set even though the CLI branch never reaches the
-    endpoint: `ask` calls `model_settings()` *before* it dispatches (`methods/editor.py:1069`),
-    so a CLI improver is asked for endpoint credentials it does not use. Recorded here rather
-    than worked around silently -- it is the same conflation of the two improver layers that
-    the `no_change` collapse below is.
+    **No `HG_METHOD_*` is set, and that is the point of this helper now.** It used to set all
+    three, because `ask` called `model_settings()` *before* it dispatched
+    (`methods/editor.py:1069`), so a CLI improver was asked for endpoint credentials it does
+    not use -- the same conflation of the two improver layers that the `no_change` collapse
+    below is. The call moved below the dispatch, so the CLI branch no longer touches an
+    endpoint; leaving the variables unset is what keeps that true, and every test using this
+    helper fails with `SystemExit: a method needs HG_METHOD_BASE_URL ...` if it comes back.
     """
     base = _write_harness(tmp_path / "h")
     (base / "_harnessgrad" / "round.json").write_text(json.dumps(
         {"identity": {"improver": {"name": "codex", "kind": "cli", "path": "/x/codex.js"}}}))
-    monkeypatch.setenv("HG_METHOD_BASE_URL", "http://stub/v1")
-    monkeypatch.setenv("HG_METHOD_API_KEY", "stub")
-    monkeypatch.setenv("HG_METHOD_MODEL", "stub")
+    for name in ("HG_METHOD_BASE_URL", "HG_METHOD_API_KEY", "HG_METHOD_MODEL"):
+        monkeypatch.delenv(name, raising=False)
     return base
 
 
