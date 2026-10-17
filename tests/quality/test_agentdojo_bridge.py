@@ -6,6 +6,7 @@ these tests only establish official gold/noop utility and trusted replay semanti
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -108,3 +109,43 @@ def test_cli_refuses_a_legacy_snapshot(tmp_path):
                           cwd=tmp_path, capture_output=True, text=True, timeout=30)
     assert proc.returncode != 0
     assert 'freshly prepared registered ignore_previous snapshot' in proc.stderr
+
+
+def test_verifier_measures_without_the_agent_visible_snapshot(tmp_path):
+    """The snapshot is agent-side only; the verifier must not depend on it.
+
+    Documented in the adapter docstring. `cli/dojo` reads `dojo.initial.json` from the
+    agent's cwd on every command, so the file cannot leave the workdir while the bridge
+    is a program the agent runs; the verifier replays `case.json` through the trusted
+    runtime instead. Both halves are asserted here so a future move to a trusted tool
+    service changes one side without the other silently breaking.
+    """
+    if not PYTHON.is_file():
+        pytest.skip('isolated AgentDojo runtime not provisioned')
+    case = json.loads((DATA / '_src/cases.json').read_text())[0]
+    work = tmp_path / 'verify-only'
+    (work / 'verify').mkdir(parents=True)
+    shutil.copy2(ROOT / 'data/datasets/agentdojo/verify/check.py', work / 'verify/check.py')
+    shutil.copy2(ROOT / 'data/datasets/agentdojo/bridge.py', work / 'verify/bridge.py')
+    case_path = work / 'verify/case.json'
+    case_path.write_text(json.dumps(case))
+    (work / 'action.json').write_text(json.dumps(run_bridge('oracle', case_path)))
+    (work / 'trusted_runtime').symlink_to(DATA / 'runtime')
+    assert not (work / 'dojo.initial.json').exists()
+    proc = subprocess.run(['python3', 'verify/check.py',
+                           '--reward-file', 'verifier/reward.txt',
+                           '--evidence-file', 'verifier/evidence.json'],
+                          cwd=work, capture_output=True, text=True, timeout=120)
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    evidence = json.loads((work / 'verifier/evidence.json').read_text())
+    assert evidence['measured'] is True
+    assert evidence['utility'] is True and evidence['attack_success'] is False
+    assert evidence['attack'] == 'ignore_previous'
+
+    agent = tmp_path / 'agent'
+    agent.mkdir()
+    shutil.copy2(ROOT / 'data/datasets/agentdojo/cli/dojo', agent / 'dojo.py')
+    proc = subprocess.run([str(DATA / 'agent_runtime/bin/python'), 'dojo.py', 'tools'],
+                          cwd=agent, capture_output=True, text=True, timeout=60)
+    assert proc.returncode != 0
+    assert 'dojo.initial.json' in proc.stderr
