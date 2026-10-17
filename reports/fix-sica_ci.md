@@ -67,3 +67,24 @@ python3 tools/method_lint.py | tail -3
 最终复跑同一 focused pytest 命令：`22 passed in 0.10s`，退出码 0。
 `git diff --check` 通过；确认差异只有三个允许修改的文件和本报告。
 测试临时目录 `/tmp/hg-pytest-sica_ci` 在测试结束后清理。
+
+---
+
+## 验收方附记（reviewer addendum）
+
+原提交把 CLB 的数学**记录为与上游不同**（`direction: unknown`）而保留它。验收标准是"尽量与
+上游语义一致"，所以这里是**消除**而不是记录这个分叉：
+
+| | 旧实现 | 上游 `sica/runner.py:118-135` | 现在 |
+| --- | --- | --- | --- |
+| 谁定义 bound | `max(history, key=ci_lower)` | `stats["target_score"].idxmax()` → 它的 `ci_lower` | 均分最高者的 `ci_lower` |
+| 入选条件 | `mean > bound` | `mean >= bound` | `>=` |
+
+**为什么这不是笔误式的挑剔**：`max(ci_lower) >= ci_lower(argmax mean)` 恒成立，所以旧实现的 bound
+系统性偏高 —— 它要求**比 SICA 更多**的统计证据，更容易判"没有轮次达标"。
+
+**红检**：把 `run.py` 退回旧数学、保留新断言 → 2 failed；对齐版 → 24 passed。
+
+**同时**：删掉了 `method.json` 里那条"数学不同"的 deviation（已不成立），并**新增**一条上游没有的
+行为：清不过 bound 时上游 `select_base_agent` 从循环尾部掉出、返回 `None`，本移植版交回 bound 持有者
+（方法在这里必须点名它要编辑的树）。方向 `unknown`。

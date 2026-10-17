@@ -2,9 +2,11 @@
 """SICA's base-selection port and its recorded incumbent.
 
 Upstream `sica/runner.py:118-135` takes the highest mean's confidence lower bound,
-then returns the newest iteration whose mean is at least that bound. This port's
-existing math differs: it takes the highest lower bound and uses a strict comparison
-(see method.json). The incumbent-recording fix deliberately preserves that math.
+then returns the newest iteration whose mean is at least that bound. This port now
+does exactly that: `_select_base` ranks by mean, takes that iteration's `ci_lower`
+as the bound, and accepts `mean >= bound`. An earlier version ranked by `ci_lower`
+and used `>`, which demanded strictly more evidence than SICA does -- a conservative
+divergence, corrected rather than merely recorded.
 
 The chosen historical round is recorded as a step's `incumbent_round` when the
 comparison has an available CI. Without that evidence, the record explains why no
@@ -40,30 +42,53 @@ def _ci_lower(point: dict) -> float:
     return float(point.get("score") or 0.0)
 
 
-def _select_base(history: list[dict]) -> tuple[dict, str]:
-    """SICA's rule: the newest round whose mean clears the best lower bound.
+def _score(point: dict) -> float:
+    """The point's mean score -- the quantity upstream ranks iterations by."""
+    return float(point.get("score") or 0.0)
 
-    Returns (chosen_round, why). The reasoning string is emitted so a reader can see
-    which branch fired, rather than having to reconstruct it from the curve.
+
+def _select_base(history: list[dict]) -> tuple[dict, str]:
+    """SICA's rule: the newest round whose mean clears **the best mean's** lower bound.
+
+    Upstream `sica/runner.py:118-135`, in its own order:
+
+        best_idx = stats["target_score"].idxmax()      # the highest MEAN
+        best_lower_bound = best_stats["ci_lower"]      # that iteration's lower bound
+        for i in range(current_iteration, -1, -1):     # newest first
+            if stats.loc[i, "target_score"] >= best_lower_bound:
+                return i
+
+    **Two details here are easy to get wrong, and both were wrong once.** The bound is
+    the lower bound of the *highest-mean* iteration, not the highest lower bound in the
+    set: `max(history, key=_ci_lower)` returns a different iteration as soon as the
+    intervals have different widths, and because a maximum over lower bounds is never
+    smaller than one particular lower bound, that version demanded strictly more
+    evidence than SICA does -- a conservative divergence, but not SICA's rule. And the
+    comparison is `>=`: the best iteration always clears its own bound, so a strict `>`
+    can report "nothing clears" for a set SICA resolves.
+
+    Returns (chosen_round, why). The reasoning string names both rounds, so a reader
+    can see which branch fired instead of reconstructing it from the curve.
     """
     if not history:
         return {}, "no history yet"
 
-    best = max(history, key=_ci_lower)
+    best = max(history, key=_score)
     bound = _ci_lower(best)
+    # `>=`, because SICA's own best iteration qualifies by construction; a NaN bound
+    # would make this empty, and an empty set must fall back rather than crash.
+    clearing = [p for p in history if _score(p) >= bound]
+    if not clearing:
+        return best, (f"no round clears the best mean's lower bound {bound:.3f} "
+                      f"(round {best.get('round')} holds the best mean)")
 
     # "Newest whose mean clears the bound" -- SICA's tie-break, and the reason its
     # selection prefers recent work among statistical equals: an older iteration is a
     # longer walk from whatever the current state is.
-    clearing = [p for p in history if float(p.get("score") or 0.0) > bound]
-    if not clearing:
-        return best, (f"no round clears the best lower bound {bound:.3f} "
-                      f"(round {best.get('round')} holds it)")
-
     newest = max(clearing, key=lambda p: p.get("round", -1))
-    return newest, (f"round {newest.get('round')} has mean "
-                    f"{float(newest.get('score') or 0):.3f} > best lower bound "
-                    f"{bound:.3f}")
+    return newest, (f"round {newest.get('round')} has mean {_score(newest):.3f} >= lower "
+                    f"bound {bound:.3f} of the best mean "
+                    f"(round {best.get('round')}, {_score(best):.3f})")
 
 
 def _worth_continuing(history: list[dict]) -> tuple[bool, str]:

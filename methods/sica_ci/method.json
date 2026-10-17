@@ -9,11 +9,6 @@
    "direction": "neutral"
   },
   {
-   "what": "The existing CLB math is preserved and differs from upstream.",
-   "why": "sica/runner.py:118-135 uses the highest target_score iteration's ci_lower and accepts means >= that bound. _select_base instead maximizes ci_lower, uses >, and returns the bound holder if nothing clears it. _ci_lower falls back to the score when no numeric lower interval endpoint exists. This fix records that selector's result without changing its math.",
-   "direction": "unknown"
-  },
-  {
    "what": "An unavailable comparison CI leaves incumbent_round unspecified rather than asserting a fallback kept round.",
    "why": "_incumbent_fields requires a finite, ordered two-endpoint score_ci95 on the bound holder and a valid selected round. Missing history, unavailable CI, or an invalid round is explained in method_reported.sica_rule.incumbent_reason. Upstream sica/runner.py:107-114 instead defaults to iteration 0 when score tables or statistics are empty. The existing selector and its prompt fallback remain unchanged.",
    "direction": "unknown"
@@ -21,6 +16,11 @@
   {
    "what": "The selected historical round is recorded and named in the prompt, but its source snapshot is not restored for editing.",
    "why": "main() continues to pass request.base_harness to editor.ask and editor.apply_edits. The edit uses the shared platform editor rather than SICA's full per-iteration improvement machinery; incumbent_round records the choice but does not itself switch the tree being edited.",
+   "direction": "unknown"
+  },
+  {
+   "what": "When no iteration clears the bound, this port keeps the bound holder; upstream `select_base_agent` falls off the end of its loop and returns None.",
+   "why": "sica/runner.py:126-135 returns `i` on the first clearing iteration and has no `else` branch, so its caller must handle None. Handing back a round is a platform adaptation: a method here has to name the tree it edits. The rule is unchanged otherwise -- the bound is the highest-mean iteration's `ci_lower` and the comparison is `>=`.",
    "direction": "unknown"
   }
  ]

@@ -59,7 +59,10 @@ def test_a_point_without_an_interval_falls_back_to_its_score():
     assert SICA._ci_lower(_point(0, None)) == 0.0
     chosen, why = SICA._select_base([bare])
     assert chosen["round"] == 0
-    assert "no round clears" in why
+    # 对齐上游 `runner.py:131` 的 `>=` 之后,零宽的点**能**清过自己那一份 bound,所以走的是
+    # 正常分支(而不是"没有轮次达标")。它仍然清不过**更高的** bound —— 见下面那条测试。
+    assert "no round clears" not in why
+    assert "0.800" in why
 
 
 # --------------------------------------------------------------- 选择 ---
@@ -77,7 +80,10 @@ def test_it_builds_on_a_lower_mean_when_the_higher_one_is_inside_the_noise():
                _point(2, 0.30, [0.20, 0.40])]
     chosen, why = SICA._select_base(history)
     assert chosen["round"] == 1
-    assert "0.550" in why and "0.500" in why
+    # bound 现在是**均分最高那一轮**的下界=r0 的 0.400(上游 `runner.py:118-121`),不是
+    # 全集合里最高的下界 0.500。选中的轮次仍是 r1 —— 这正是 SICA 的本意:r0 均分最高但区间极宽,
+    # r1 的均分落在 r0 的噪声范围内,所以建在 r1 上。
+    assert "0.550" in why and "0.400" in why
 
     highest_mean = max(history, key=lambda p: p["score"])["round"]
     newest = max(history, key=lambda p: p["round"])["round"]
@@ -102,7 +108,10 @@ def test_when_nothing_clears_the_bound_the_bound_holder_is_returned():
     history = [_point(0, 0.80), _point(1, 0.90)]
     chosen, why = SICA._select_base(history)
     assert chosen["round"] == 1
-    assert "no round clears the best lower bound 0.900" in why
+    # `>=` 让最高分那一轮清过自己的 bound(上游 `runner.py:131`),所以这里走正常分支。
+    # 返回的轮次与旧规则相同,变的只是理由 —— 这正是对齐上游时唯一改变的可见行为。
+    assert "no round clears" not in why
+    assert "0.900" in why
 
 
 def test_an_empty_history_says_so():
@@ -247,3 +256,41 @@ def test_main_does_not_publish_a_bound_derived_from_a_missing_ci(tmp_path, monke
         {"no_change": "no edit"})
     assert "incumbent_round" not in step
     assert "CI unavailable" in step["method_reported"]["sica_rule"]["incumbent_reason"]
+
+
+# ------------------------------------------------- 与上游规则逐位对齐 ---
+
+def _pt(round_no: int, score: float, lo: float, hi: float) -> dict:
+    return {"round": round_no, "score": score, "score_ci95": [lo, hi]}
+
+
+def test_the_bound_is_set_by_the_highest_MEAN_not_the_highest_lower_bound():
+    """`sica/runner.py:118-135`:`best_idx = target_score.idxmax()` 然后取**它**的 `ci_lower`。
+
+    这里三轮刻意让"均分最高"和"下界最高"落在**不同**的轮次上:
+      r0 均分 .55,CI [.20,.90]  ← 均分最高,所以上游的 bound = .20
+      r1 均分 .50,CI [.45,.55]  ← 下界最高(.45)
+      r2 均分 .42,CI [.30,.66]  ← 最新(均分低于旧 bound .45)
+
+    上游:bound=.20 → 每一轮都达标 → 取**最新**的 r2。
+    按下界选 bound 的版本:bound=.45 → 达标的是 r0/r1 → 取 r1。**这两者不同,所以这条测试有区分力。**
+    """
+    mod = _load()
+    # r2 的均分 0.42 **低于**旧版本会用的 bound 0.45,所以旧规则会漏掉它、返回 r1;
+    # 上游的 bound 是 r0 的 0.20,于是 r2 达标并因"最新"胜出。这一步是让测试有区分力的关键。
+    chosen, why = mod._select_base([_pt(0, 0.55, 0.20, 0.90),
+                                    _pt(1, 0.50, 0.45, 0.55),
+                                    _pt(2, 0.42, 0.30, 0.66)])
+    assert chosen["round"] == 2, f"上游规则应返回最新的达标轮 r2,得到 r{chosen['round']} —— {why}"
+
+
+def test_a_round_whose_mean_EQUALS_the_bound_clears_it():
+    """比较必须是 `>=`,不是 `>`。
+
+    r1 的 CI 宽度为 0(均分 == 下界 == .50),因此它就是 bound 的持有者之一;
+    r0 均分 .60、下界 .50,同样是 bound 的来源。`>=` 下最新达标轮是 r1;`>` 下 r1 被排除、返回 r0。
+    """
+    mod = _load()
+    chosen, why = mod._select_base([_pt(0, 0.60, 0.50, 0.70),
+                                    _pt(1, 0.50, 0.50, 0.50)])
+    assert chosen["round"] == 1, f"均分等于 bound 的轮次应达标(r1),得到 r{chosen['round']} —— {why}"
