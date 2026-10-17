@@ -1,23 +1,18 @@
-"""SICA's base-selection rule: build on the newest iteration that clears the best *lower bound*.
+"""Pin the existing SICA port's math and its recorded historical incumbent.
 
-From its own runner (`sica/runner.py:88-148`):
+Upstream `sica/runner.py:118-135` reads the highest mean's ci_lower and accepts >=.
+The existing pure-rule tests below pin the port's highest-lower-bound, strict->
+comparison, score fallback, and diagnostic continuation observation. Those existing
+assertions are preserved; the mathematical differences are documented in method.json.
 
-    best_lower_bound = best_stats["ci_lower"]
-    ... the newest iteration whose mean clears it
-
-The rule refuses to chase a point estimate. An iteration that scored high once may have
-scored high by luck, and building on it propagates the luck rather than the improvement, so
-the comparison is against the *lower* end of the best interval -- and the tie-break among
-statistical equals is the newest, because an older iteration is a longer walk from the current
-state.
-
-This was the second of the two published ports with no rule test. The claims pinned here are
-the comparison (bound, not best mean), the newest-wins tie-break, the stop condition, and the
-fact that a point with no interval cannot clear a real bound by accident.
+The main() tests verify that the selected historical round reaches the real trajectory
+step, and that an unavailable comparison CI never becomes an invented kept decision.
 """
 from __future__ import annotations
 
 import importlib.util
+import io
+import json
 import sys
 from pathlib import Path
 
@@ -160,3 +155,95 @@ def test_a_missing_interval_is_not_read_as_a_strong_bound():
     history = [_point(0, 0.60), _point(1, 0.70)]
     assert SICA._ci_lower(history[0]) == 0.60
     assert SICA._worth_continuing(history)[0] is True
+
+
+# ------------------------------------------------------ 选择写入 trajectory ---
+
+
+def _invoke_main(tmp_path, monkeypatch, history, reply):
+    """Exercise real edit/report serialization with a local, deterministic proposer."""
+    base = tmp_path / "base"
+    history_dir = base / "_harnessgrad" / "history"
+    history_dir.mkdir(parents=True)
+    (base / "harness.json").write_text(json.dumps(
+        {"name": "probe", "version": "1.0", "entrypoint": "agent.py"}))
+    (base / "agent.py").write_text("print('hello')\n")
+    for point in history:
+        (history_dir / f"round-{point['round']}.json").write_text(json.dumps(point))
+    trajectory_out = tmp_path / "trajectory.json"
+    request = {
+        "platform_api_version": "0.1.0", "mode": "A",
+        "base_harness": str(base), "workspace": str(tmp_path / "workspace"),
+        "round_index": max((p["round"] for p in history), default=-1) + 1,
+        "trajectory_out": str(trajectory_out),
+    }
+    monkeypatch.setattr(SICA.editor, "ask", lambda *args, **kwargs: reply)
+    monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps(request)))
+    output = io.StringIO()
+    monkeypatch.setattr(sys, "stdout", output)
+    assert SICA.main() == 0
+    trajectory = json.loads(trajectory_out.read_text())
+    assert len(trajectory["steps"]) == 1
+    return trajectory["steps"][0], json.loads(output.getvalue())
+
+
+@pytest.mark.parametrize("reply,changed", [
+    ({"files": [{"path": "agent.py", "content": "print('hello world')\n"}],
+      "hypothesis": "change the greeting"}, True),
+    ({"no_change": "no supported edit"}, False),
+    ({"files": []}, False),
+], ids=["edited", "no-change", "unusable"])
+def test_main_reports_the_selected_historical_round_not_the_latest(
+        tmp_path, monkeypatch, reply, changed):
+    """sica/runner.py:124-135 returns a historical iteration; the step must name it."""
+    history = [_point(2, 0.90, [0.40, 1.40]),
+               _point(5, 0.55, [0.50, 0.60]),
+               _point(9, 0.30, [0.20, 0.40])]
+    step, response = _invoke_main(tmp_path, monkeypatch, history, reply)
+    assert step["method_reported"]["sica_rule"]["selected_base_round"] == 5
+    assert step.get("incumbent_round") == 5
+    assert response["changed"] is changed
+    assert response["stop"] is False
+
+
+@pytest.mark.parametrize("ci", [
+    None, [None, None], [float("nan"), float("nan")],
+    [0.4, float("inf")], [0.8, 0.2],
+], ids=["missing", "unavailable", "nan", "infinite", "reversed"])
+def test_main_omits_incumbent_round_when_the_ci_is_unavailable(
+        tmp_path, monkeypatch, ci):
+    """A score fallback is not an observed confidence interval or a kept decision."""
+    step, _ = _invoke_main(
+        tmp_path, monkeypatch, [_point(4, 0.6, ci)], {"no_change": "no edit"})
+    assert "incumbent_round" not in step
+    reason = step["method_reported"]["sica_rule"]["incumbent_reason"]
+    assert "CI unavailable" in reason
+    assert "no kept round specified" in reason
+
+
+def test_main_omits_incumbent_round_without_history(tmp_path, monkeypatch):
+    step, _ = _invoke_main(tmp_path, monkeypatch, [], {"no_change": "no edit"})
+    assert "incumbent_round" not in step
+    rule = step["method_reported"]["sica_rule"]
+    assert rule["selected_base_round"] is None
+    assert "no history" in rule["incumbent_reason"]
+    assert "no kept round specified" in rule["incumbent_reason"]
+
+
+def test_main_records_round_zero_without_treating_it_as_missing(tmp_path, monkeypatch):
+    step, _ = _invoke_main(
+        tmp_path, monkeypatch,
+        [_point(0, 0.8, [0.7, 0.9]), _point(3, 0.2, [0.1, 0.3])],
+        {"no_change": "no edit"})
+    assert step.get("incumbent_round") == 0
+
+
+def test_main_does_not_publish_a_bound_derived_from_a_missing_ci(tmp_path, monkeypatch):
+    # The existing selector can let a bare score dominate an available lower bound.
+    # Preserve that math, but do not advertise the fallback as a CI-based kept choice.
+    step, _ = _invoke_main(
+        tmp_path, monkeypatch,
+        [_point(0, 0.8), _point(3, 0.6, [0.5, 0.7])],
+        {"no_change": "no edit"})
+    assert "incumbent_round" not in step
+    assert "CI unavailable" in step["method_reported"]["sica_rule"]["incumbent_reason"]

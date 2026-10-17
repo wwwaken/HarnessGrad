@@ -1,43 +1,22 @@
 #!/usr/bin/env python3
-"""SICA's selection rule, as a HarnessGrad method.
+"""SICA's base-selection port and its recorded incumbent.
 
-Why this file exists
---------------------
-SICA's contribution is not the edit it makes -- it is **how it decides which previous
-iteration to build on**. From its own runner (`sica/runner.py:88-148`):
+Upstream `sica/runner.py:118-135` takes the highest mean's confidence lower bound,
+then returns the newest iteration whose mean is at least that bound. This port's
+existing math differs: it takes the highest lower bound and uses a strict comparison
+(see method.json). The incumbent-recording fix deliberately preserves that math.
 
-    best_lower_bound = best_stats["ci_lower"]      # the best *confidence lower bound*
-    ...take the newest iteration whose mean clears it
+The chosen historical round is recorded as a step's `incumbent_round` when the
+comparison has an available CI. Without that evidence, the record explains why no
+kept round is specified. The platform owns measurement and stopping; the local
+`_worth_continuing` result is diagnostic only.
 
-It compares a candidate against the lower bound of the best one, not against the best
-mean. That is a deliberate refusal to chase a point estimate: an iteration that scored
-high once may have scored high by luck, and building on it propagates the luck rather
-than the improvement.
-
-What is and is not transplanted
--------------------------------
-**Transplanted:** the decision rule, and the statistic it reads. `_ci_lower()` and
-`_select_base()` below are SICA's rule expressed against this platform's curve points
-instead of its `ArchiveAnalyzer` -- same comparison, same "newest that clears the bound"
-tie-break.
-
-**Not transplanted:** SICA's scaffoling (its experiment harness, its per-iteration
-source copies, its `agent_code/` layout). None of it is the method; the platform
-already supplies what it does -- a task set, execution, scoring, and a record of every
-round. Reimplementing it here would have been reimplementing the platform.
-
-**Not reproduced:** SICA runs a full improvement step per iteration. This method has to
-fit mode A, where the platform owns the schedule, so it uses the rule for what mode A
-can express: whether this round is worth spending on at all, and which prior round is
-the fairest comparison. When the rule says no round has cleared the bound, it stops
-(`changed: false`) rather than spending a model call to stand still.
-
-The honest summary: **the selection rule is SICA's, the loop around it is the
-platform's.** A run of this method is evidence about SICA's rule, not a reproduction of
-SICA's results.
+Selection guides the editor prompt, but the supplied harness tree is still the
+platform's base: this port does not restore a chosen historical source snapshot.
 """
 from __future__ import annotations
 
+import math
 import sys
 from pathlib import Path
 
@@ -147,6 +126,40 @@ def build_prompt(base, request, chosen, why):
     )
 
 
+def _incumbent_fields(history: list[dict], chosen: dict) -> tuple[dict, str]:
+    """Publish the existing choice only when its bound comes from an available CI."""
+    # Upstream /mnt/20t/xubuqiang/Study/methods_src/sica/runner.py:118-135
+    # returns the selected iteration index. Map that result to the platform's round
+    # number, without changing this port's _select_base comparison or its fallback.
+    # Upstream runner.py:107-114 defaults to 0 without statistics; here an absent CI
+    # must instead leave incumbent_round unspecified, as required by this port's task.
+    if not chosen:
+        return {}, "no history; no kept round specified"
+
+    bound_point = max(history, key=_ci_lower)
+    ci = bound_point.get("score_ci95")
+    if not (isinstance(ci, list) and len(ci) == 2
+            and all(isinstance(v, (int, float)) and math.isfinite(v) for v in ci)
+            and ci[0] <= ci[1]):
+        return {}, "CI unavailable for the selection bound; no kept round specified"
+
+    round_no = chosen.get("round")
+    if isinstance(round_no, bool) or not isinstance(round_no, int) or round_no < 0:
+        return {}, "selected history point has no valid round; no kept round specified"
+    return {"incumbent_round": round_no}, f"selected historical round {round_no}"
+
+
+def _report(request, *, method, acceptance_rule, extra=None, stop=False, **step):
+    """Use the single-step form of the editor API that supports incumbent_round.
+
+    editor.report has no incumbent_round parameter; editor.report_many serializes
+    it through _step_payload. Keep one measured candidate and continue the loop.
+    """
+    return editor.report_many(
+        request, method=method, steps=[step], acceptance_rule=acceptance_rule,
+        extra=extra, stop=stop, hypothesis=step.get("hypothesis", ""))
+
+
 def main() -> int:
     request = editor.read_request()
     editor.require_api(request)
@@ -156,6 +169,7 @@ def main() -> int:
 
     chosen, why = _select_base(history)
     cont, cont_why = _worth_continuing(history)
+    incumbent_fields, incumbent_reason = _incumbent_fields(history, chosen)
 
     rule_report = {
         "rule": "SICA: newest round whose mean clears the best confidence lower bound",
@@ -163,23 +177,13 @@ def main() -> int:
         "bounds": {str(p.get("round")): round(_ci_lower(p), 4) for p in history},
         "selected_base_round": chosen.get("round"),
         "selection_reason": why,
+        "incumbent_reason": incumbent_reason,
         "continue": cont,
         "continue_reason": cont_why,
     }
 
-    # The platform reads `changed`; a stop costs nothing and is a real answer about
-    # this method's rule. Spending a model call to make an edit the rule does not
-    # believe in would be the wrong trade.
-    # SICA 的规则是**选哪一个前代**继续,不是"要不要继续"。它的 runner 跑固定轮数,
-    # 没有因为这个比较不成立就提前收工的分支。
-    #
-    # 这里原本 `return` 了(还把它写成 `changed: false`),那是我当初加进去的一条发明
-    # 出来的停止条件。而 `changed: false` 在 mode A 里会结束整条 run,后果是 SICA 在一条
-    # 全 0 的基线上只拿到 1 个方法轮,别的方法拿到 3 个 —— 一种"因为谨慎所以少跑几轮"的
-    # 折算。现在这个判断只作为 `sica_rule.continue` 留在记录里,轮次照跑。
-    #
-    # 保留 `_worth_continuing` 本身,是因为它读的是 SICA 的同一个统计量,写进记录比删掉
-    # 更有信息量 —— 但它是观察,不是闸门。
+    # _worth_continuing is an observation, not a gate: every admitted call still
+    # asks for an edit, and no-change/unusable proposals keep stop=False.
     dest = editor.candidate_path(request)
     try:
         reply = editor.ask(build_prompt(base, request, chosen, why), system=SICA_SYSTEM, base=base)
@@ -191,9 +195,9 @@ def main() -> int:
 
     if "no_change" in reply:
         editor.apply_edits(base, dest, [])
-        return editor.report(
+        return _report(
             request, method="sica_ci", harness_dir=dest, changed=False,
-                                                         stop=False,
+            stop=False, **incumbent_fields,
             hypothesis=str(reply["no_change"])[:200], edit_kind="sica_rule",
             method_reported={"sica_rule": rule_report},
             acceptance_rule="SICA's rule admitted the round; the model found no edit",
@@ -201,23 +205,24 @@ def main() -> int:
 
     changed, files, note = editor.apply_edits(base, dest, reply.get("files"))
     if not changed:
-        return editor.report(
+        return _report(
             request, method="sica_ci", harness_dir=dest, changed=False,
-                                                         stop=False,
+            stop=False, **incumbent_fields,
             hypothesis=f"unusable proposal: {note}", edit_kind="sica_rule",
             method_reported={"sica_rule": rule_report, "rejected": note},
             acceptance_rule="SICA's rule admitted the round; the proposal was unusable",
             label=f"SICA rule: base round {chosen.get('round')}, unusable proposal")
 
-    return editor.report(
+    return _report(
         request, method="sica_ci", harness_dir=dest, changed=True, files=files,
+        **incumbent_fields,
         hypothesis=(f"[SICA base r{chosen.get('round')}] "
                     + str(reply.get("hypothesis", "")))[:300],
         edit_kind="sica_rule",
         method_reported={"sica_rule": rule_report},
-        acceptance_rule="SICA's confidence-lower-bound comparison decides whether a "
-                        "round is worth spending on; the platform's measurement "
-                        "decides the score",
+        acceptance_rule="The port's confidence-lower-bound comparison selects a "
+                        "historical incumbent when its CI is available; the platform "
+                        "measures candidates and controls the stopping budget",
         extra={"selection_rule": rule_report["rule"]},
         label=f"[SICA base r{chosen.get('round')}] "
               + str(reply.get("hypothesis", ""))[:50])
