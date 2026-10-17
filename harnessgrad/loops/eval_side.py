@@ -150,7 +150,8 @@ def _run_eval_side(*, work: Path, man: dict, run_id: str, run_dir: Path, tasks: 
     point = _curve_point(
         run_id=run_id, round_index=0,
         identity=_identity(man, sha, args.mode, improver=improver,
-                           declared=res.get("identity_declared")),
+                           declared=res.get("identity_declared"),
+                           jobs=args.jobs, trials=args.trials),
         sampling={"dataset": args.dataset, "policy": "all", "task_ids": list(scored),
                   "selection_basis_round": 0, "selected_within": "eval"},
         scores=[res["per_task"][t] for t in scored], task_ids=scored,
