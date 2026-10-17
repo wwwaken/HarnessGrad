@@ -64,6 +64,37 @@ container-only before this dataset (`eval/verification/verifier.py::_verify` now
 host check as well -- the smallest change that let a no-Docker dataset keep the
 contract's evidence channel).
 
+What the agent can read, and what that costs
+--------------------------------------------
+`SETUP` hands the agent `game.tw-pddl` with the reference solution removed, and what is
+left is the **whole initial state**: `pddl_domain`, `pddl_problem` and `grammar`
+(`_stripped_game`). `pddl_problem` is ALFWorld's own `:init` -- 306 facts on one
+measured `valid_unseen` game -- and it states which object is inside which receptacle
+(`inReceptacle AlarmClock_... Desk_...`) and which object or receptacle is at which
+location (`objectAtLocation`, `receptacleAtLocation`). The object and receptacle ids are
+exactly the ids `alfworld`'s own `Demangler` turns into the names the agent sees, and
+that demangler reads nothing but the ids. So an agent that opens the file can read the
+object layout instead of exploring for it.
+
+That is strictly easier than ALFWorld as published: the paper's agent learns the scene by
+interacting, and finding an object it has not seen is part of the task. A score from this
+adapter is therefore taken with the layout available, and it is not comparable with the
+paper's ALFWorld number.
+
+Leaving it there is the platform's shape, not a judgement about ALFWorld. The agent acts
+through its own CLI and that CLI builds the TextWorld environment, so the game file it
+builds from has to be in the agent's working directory; measured, TextWorld raises
+`KeyError` for a game file missing `pddl_problem`, `grammar` or `pddl_domain`, so no
+reduced copy is buildable. There is also nowhere outside that directory to load it from:
+on the default `files` sandbox `bwrap` starts from an empty root and binds the runtime
+trees, the interpreter prefix, the work root and the task directory, which leaves the
+data root (`DATASET_ROOT`) absent, and any path the CLI could read the harness could read
+too -- same user, same namespace. Closing the exposure needs the environment to run
+outside the agent's namespace (a platform-side environment service, the way the model
+route already works); until one exists this paragraph is the record. `walkthrough` stays
+stripped, and `VERIFY` grades from the same stripped copy, so the check and the oracle
+control are unaffected.
+
 The metric, and what is deliberately not added
 ----------------------------------------------
 `reward = 1` iff the replayed episode reports `won` at some step inside `STEP_BUDGET`
@@ -208,10 +239,14 @@ _GOAL_RE = re.compile(r'"task"\s*:\s*\[\s*\{\s*"rhs"\s*:\s*"((?:[^"\\]|\\.)*)"')
 
 #: The one field of a game file that must never reach the agent. `walkthrough` is
 #: ALFWorld's own reference solution for the game -- a list of the exact commands that
-#: solve it. The game file is the task's initial state, so it is handed to the agent;
-#: handing over the walkthrough would hand over the answer. `SETUP` and every verifier
-#: input therefore carry `_stripped_game()` rather than the file on disk, and the
-#: oracle control reads the original from the data root.
+#: solve it -- and handing it over would hand over the answer. What is **not** stripped
+#: is the initial state itself (`pddl_problem`, `pddl_domain`, `grammar`): the agent's
+#: CLI has to build the TextWorld environment from this copy and TextWorld refuses a game
+#: file missing any of the three, so there is no smaller buildable copy. That exposure,
+#: and why it cannot be closed from this layer, is measured and written down in the
+#: module docstring ("What the agent can read, and what that costs"). `SETUP` and every
+#: verifier input therefore carry `_stripped_game()` rather than the file on disk, and
+#: the oracle control reads the original from the data root.
 _LEAKED_FIELD = "walkthrough"
 
 
@@ -316,6 +351,10 @@ def _collect(roots: list[tuple[Path, set[str] | None]] | None = None) -> list[di
 
 def _stripped_game(gamedata: dict) -> str:
     """The game file without the reference solution, as JSON text.
+
+    Only `_LEAKED_FIELD` is removed; everything else -- including the initial state --
+    stays, because TextWorld cannot build the environment without it (see the module
+    docstring, "What the agent can read, and what that costs").
 
     Kept as a string because that is the shape `SETUP`/`VERIFY.inputs` take for inline
     content, and because it means the stripped copy is built once at import instead of
