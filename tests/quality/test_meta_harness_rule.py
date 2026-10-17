@@ -287,3 +287,138 @@ def test_a_method_that_declines_keeps_its_budget(tmp_path, monkeypatch):
     got = _invoke(MH, _request(base, tmp_path / "ws", tmp_path / "traj.json", history),
                   monkeypatch, {"no_change": "all green"})
     assert got["stdout"].get("stop") is False
+
+
+# Upstream reference_examples/terminal_bench_2/.claude/skills/
+# meta-harness-terminal-bench-2/SKILL.md:65,70-98: design one mechanism,
+# then hand that candidate's name and specific changes to the implementer.
+DESIGNS = [
+    {"name": "bounded_retry", "hypothesis": "Retrying transient errors avoids early exits",
+     "changes": "Retry transient tool errors once"},
+    {"name": "trim_observations", "hypothesis": "Shorter observations preserve context",
+     "changes": "Trim long tool observations before storing them"},
+    {"name": "verify_completion", "hypothesis": "Checking outputs catches unfinished work",
+     "changes": "Check expected output artifacts before finishing"},
+]
+
+
+def _batch(tmp_path, monkeypatch, design_reply, *, count=2, remaining=None,
+           no_change=False, design_error=None):
+    """Real edit/report paths; only the design and implementation model calls are faked."""
+    history = [_training(0, {"probe": 0.0})]
+    base = _harness(tmp_path, history)
+    req = _request(base, tmp_path / "ws", tmp_path / "traj.json", history)
+    if count is None:
+        monkeypatch.delenv("HG_META_HARNESS_CANDIDATES", raising=False)
+    else:
+        monkeypatch.setenv("HG_META_HARNESS_CANDIDATES", str(count))
+    if remaining is not None:
+        req["epochs_remaining"] = remaining
+    calls, design_calls = [], []
+
+    def design(prompt, **kwargs):
+        design_calls.append((prompt, kwargs))
+        if design_error is not None:
+            raise design_error
+        return design_reply
+
+    def implement(edit_base, request, system, prompt_for, *, parent):
+        calls.append({"prompt": prompt_for(""), "repair_prompt": prompt_for("repair needed"),
+                      "base": edit_base, "parent": parent})
+        reply = ({"no_change": "nothing useful"} if no_change else {
+            "files": [{"path": "agent.py", "find": "print('hello')",
+                       "replace": f"print('variant {len(calls)}')"}],
+            "hypothesis": f"implementation {len(calls)}"})
+        # Match editor.propose_and_apply's actual default destination. Sharing this
+        # path across implementations would overwrite earlier submitted trees.
+        return reply, MH.editor.candidate_path(request), ""
+
+    monkeypatch.setattr(MH.editor, "read_request", lambda: req)
+    monkeypatch.setattr(MH.editor, "ask", design)
+    monkeypatch.setattr(MH.editor, "propose_and_apply", implement)
+    output = io.StringIO()
+    monkeypatch.setattr(sys, "stdout", output)
+    assert MH.main() == 0
+    trajectory = json.loads(Path(req["trajectory_out"]).read_text())
+    return calls, design_calls, trajectory["steps"], json.loads(output.getvalue()), base
+
+
+def test_batch_implements_different_designed_mechanisms_from_the_same_base(tmp_path, monkeypatch):
+    calls, designs, steps, _, base = _batch(
+        tmp_path, monkeypatch, {"candidates": DESIGNS[:2]})
+    assert len(calls) == 2
+    assert len({call["prompt"] for call in calls}) == 2, "children received identical prompts"
+    assert len(designs) == 1, "design the whole batch in one editor.ask"
+    assert "2" in designs[0][0] and "mechanism" in designs[0][0]
+    assert "failed" in designs[0][0] and "successful" in designs[0][0]
+    assert designs[0][1]["endpoint_only"] is True
+    assert designs[0][1]["base"] == base and designs[0][1]["parent"] == base
+    for call, candidate, step in zip(calls, DESIGNS, steps):
+        assert call["base"] == base and call["parent"] == base
+        for field in ("name", "hypothesis", "changes"):
+            assert candidate[field] in call["prompt"]
+            assert candidate[field] in call["repair_prompt"]
+        assert step["method_reported"]["meta_harness_candidate"] == candidate
+        assert step["method_reported"]["meta_harness_design"]["mode"] == "designed"
+    paths = [Path(step["harness_dir"]) for step in steps]
+    assert len(set(paths)) == 2
+    assert [path.joinpath("agent.py").read_text() for path in paths] == [
+        "print('variant 1')\n", "print('variant 2')\n"]
+    assert base.joinpath("agent.py").read_text() == "print('hello')\n"
+
+
+@pytest.mark.parametrize("count,remaining", [(1, None), (3, 1)])
+def test_single_candidate_skips_design(tmp_path, monkeypatch, count, remaining):
+    calls, designs, steps, _, _ = _batch(
+        tmp_path, monkeypatch, None, count=count, remaining=remaining)
+    assert len(calls) == 1 and designs == []
+    assert steps[0]["method_reported"]["meta_harness_design"]["mode"] == "direct_single"
+
+
+@pytest.mark.parametrize("design_reply", [
+    None, [], {}, {"candidates": "invalid"}, {"candidates": [None, "invalid", {}]},
+    {"candidates": DESIGNS[:1]},
+    {"candidates": [DESIGNS[0], {**DESIGNS[1], "changes": "  RETRY transient  tool errors once  "}]},
+    {"candidates": [DESIGNS[0], {**DESIGNS[1], "hypothesis": []}]},
+])
+def test_unusable_or_repeated_designs_fall_back_to_one_and_report_it(
+        tmp_path, monkeypatch, design_reply):
+    calls, designs, steps, _, _ = _batch(tmp_path, monkeypatch, design_reply)
+    assert len(calls) == len(designs) == len(steps) == 1
+    record = steps[0]["method_reported"]["meta_harness_design"]
+    assert record["requested"] == 2 and record["mode"] == "single_fallback"
+    assert record["fallback_reason"]
+    if isinstance(design_reply, dict) and isinstance(design_reply.get("candidates"), list):
+        if DESIGNS[0] in design_reply["candidates"]:
+            assert DESIGNS[0]["changes"] in calls[0]["prompt"]
+
+
+def test_batch_deduplicates_changes_before_implementing(tmp_path, monkeypatch):
+    reply = {"candidates": [DESIGNS[0], {**DESIGNS[0], "name": "same_mechanism"}, DESIGNS[1]]}
+    calls, _, steps, _, _ = _batch(tmp_path, monkeypatch, reply, count=3)
+    assert len(calls) == len(steps) == 2
+    assert [step["method_reported"]["meta_harness_candidate"] for step in steps] == DESIGNS[:2]
+    assert all(step["method_reported"]["meta_harness_children"] == 2 for step in steps)
+
+
+@pytest.mark.parametrize("remaining,expected", [(None, 3), (2, 2)])
+def test_default_batch_size_and_remaining_budget_bound_designs(tmp_path, monkeypatch, remaining, expected):
+    calls, designs, steps, _, _ = _batch(
+        tmp_path, monkeypatch, {"candidates": DESIGNS}, count=None, remaining=remaining)
+    assert len(calls) == len(steps) == expected and len(designs) == 1
+    assert str(expected) in designs[0][0]
+
+
+def test_unparseable_design_is_a_recorded_single_fallback(tmp_path, monkeypatch):
+    calls, designs, steps, _, _ = _batch(
+        tmp_path, monkeypatch, None, design_error=MH.editor.UnparseableReply("bad JSON"))
+    assert len(calls) == len(designs) == len(steps) == 1
+    record = steps[0]["method_reported"]["meta_harness_design"]
+    assert record["mode"] == "single_fallback" and "bad JSON" in record["fallback_reason"]
+
+
+def test_design_fallback_survives_a_no_change_implementation(tmp_path, monkeypatch):
+    calls, _, steps, output, _ = _batch(tmp_path, monkeypatch, {}, no_change=True)
+    assert len(calls) == 1 and output["changed"] is False
+    record = steps[0]["method_reported"]["meta_harness_design"]
+    assert record["mode"] == "single_fallback" and record["fallback_reason"]
