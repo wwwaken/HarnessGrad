@@ -32,9 +32,10 @@ from __future__ import annotations
 import json
 import os
 import shutil
+import stat
 import sys
 import tempfile
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -105,6 +106,10 @@ SOURCE_TOTAL_LIMIT = int(os.environ.get("HG_METHOD_SOURCE_TOTAL", "60000"))
 #: at character 5595. Truncation is never silent; a prompt that quietly drops its own
 #: guidance is worse than no guidance, because the round is spent and nothing says why.
 SKILL_LIMIT = int(os.environ.get("HG_METHOD_SKILL_LIMIT", "24000"))
+
+# Artifact transport is bounded in bytes and never truncates a method's card.
+CLI_ARTIFACT_FILE_LIMIT = 256 * 1024
+CLI_ARTIFACT_TOTAL_LIMIT = 1024 * 1024
 
 
 # --------------------------------------------------------------- the channel ---
@@ -1050,6 +1055,81 @@ def _keep_improver_transcript(result: dict, improver_ws: Path) -> list[str]:
     return written
 
 
+def artifact_path_error(name) -> str | None:
+    """Artifact keys are relative to artifacts/, with no parent traversal."""
+    if (not isinstance(name, str) or not name or "\x00" in name
+            or Path(name).is_absolute() or PureWindowsPath(name).anchor
+            or ".." in Path(name).parts or ".." in PureWindowsPath(name).parts
+            or "\\" in name or name == "."):
+        return f"unsafe artifact path: {name!r}"
+    return None
+
+
+def _read_cli_artifacts(workspace: Path) -> dict[str, str]:
+    """Read only artifacts/, without following links, under byte limits.
+
+    TTHE text_to_sql/proposer.py:150-164,372-388 writes and reads a JSON
+    proposal card on disk. This bridge transports that file unchanged instead
+    of requiring a CLI's prose response to contain structured method fields.
+    Directory-relative opens with O_NOFOLLOW keep even replaced links from
+    redirecting a read outside the artifact directory. Non-text files fail
+    explicitly: replacing bad bytes or truncating would alter a method's card.
+    """
+    artifacts: dict[str, str] = {}
+    total = 0
+    directory_flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+
+    def collect(directory: int, prefix: str = "") -> None:
+        nonlocal total
+        for name in sorted(os.listdir(directory)):
+            rel = f"{prefix}{name}"
+            problem = artifact_path_error(rel)
+            if problem:
+                raise UnparseableReply(problem)
+            info = os.stat(name, dir_fd=directory, follow_symlinks=False)
+            if stat.S_ISLNK(info.st_mode):
+                raise UnparseableReply(f"artifact symlink is forbidden: {rel!r}")
+            if stat.S_ISDIR(info.st_mode):
+                child = os.open(name, directory_flags, dir_fd=directory)
+                try:
+                    collect(child, rel + "/")
+                finally:
+                    os.close(child)
+                continue
+            if not stat.S_ISREG(info.st_mode):
+                raise UnparseableReply(f"artifact is not a regular file: {rel!r}")
+            descriptor = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
+                                 dir_fd=directory)
+            with os.fdopen(descriptor, "rb") as stream:
+                if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+                    raise UnparseableReply(f"artifact is not a regular file: {rel!r}")
+                remaining = CLI_ARTIFACT_TOTAL_LIMIT - total
+                data = stream.read(min(CLI_ARTIFACT_FILE_LIMIT, remaining) + 1)
+            if len(data) > CLI_ARTIFACT_FILE_LIMIT:
+                raise UnparseableReply(f"artifact {rel!r} exceeds per-file limit "
+                                       f"({CLI_ARTIFACT_FILE_LIMIT} bytes)")
+            if len(data) > remaining:
+                raise UnparseableReply(f"artifact {rel!r} exceeds total limit "
+                                       f"({CLI_ARTIFACT_TOTAL_LIMIT} bytes)")
+            try:
+                artifacts[rel] = data.decode("utf-8")
+            except UnicodeDecodeError as exc:
+                raise UnparseableReply(f"artifact {rel!r} must be UTF-8 text") from exc
+            total += len(data)
+
+    try:
+        if (workspace / "artifacts").is_symlink():
+            raise UnparseableReply("artifact directory symlink is forbidden: 'artifacts'")
+        root = os.open(workspace / "artifacts", directory_flags)
+        try:
+            collect(root)
+        finally:
+            os.close(root)
+    except OSError as exc:
+        raise UnparseableReply(f"artifact read failed: {exc}") from exc
+    return artifacts
+
+
 def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:
     """Propose through a **CLI** improver and return the result as an edit sequence.
 
@@ -1074,6 +1154,16 @@ def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:
     # `evidence/` beside the tree the improver edits, so the paths are enough and the prompt
     # stops growing with the dataset (`evidence_pointer` states the ceiling this removes).
     workspace = Path(tempfile.mkdtemp(prefix="hg-cli-ask-"))
+    artifact_dir = workspace / "artifacts"
+    artifact_dir.mkdir()
+    prompt += (
+        "\n\n## Method artifacts\n"
+        f"If this method requests artifacts/<path>, write it under `{artifact_dir}` "
+        "(relative to your harness working directory: `../artifacts/<path>`). "
+        "Artifacts are separate from harness edits. Only UTF-8 files in that directory "
+        f"are returned, unchanged, with relative keys; limits: {CLI_ARTIFACT_FILE_LIMIT} "
+        f"bytes per file, {CLI_ARTIFACT_TOTAL_LIMIT} bytes total. "
+        "Absolute artifact keys, parent traversal and symlinks are forbidden.\n")
     req = {"platform_api_version": "0.1.0", "workspace": str(workspace),
            "base_harness": str(parent), "candidate": str(workspace / "candidate"),
            "improver": improver, "channel": str(channel(base)),
@@ -1081,6 +1171,7 @@ def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:
     result = cli_improver.propose(req, parent, prompt=prompt, facts=facts,
                                    evidence=evidence_pointer(base))
     _keep_improver_transcript(result, workspace)
+    artifacts = _read_cli_artifacts(workspace)
     edits: list[dict] = []
     for rel in result["files"]:
         path = Path(result["candidate"]) / rel
@@ -1116,9 +1207,10 @@ def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:
         # Exit 0 with no files is a genuine decline, and `cli_improver`'s prompt makes it name
         # a mechanism, so the note *is* the reason. Kept as `no_change` on purpose.
         return {"no_change": result["note"] or (
-            "the CLI improver exited 0 and changed nothing")}
+            "the CLI improver exited 0 and changed nothing"), "artifacts": artifacts}
     return {"files": edits,
-            "hypothesis": result["note"] or f"{len(edits)} file(s) edited by the CLI"}
+            "hypothesis": result["note"] or f"{len(edits)} file(s) edited by the CLI",
+            "artifacts": artifacts}
 
 
 def ask(prompt: str, system: str = DEFAULT_SYSTEM, base: Path | None = None,
