@@ -684,14 +684,19 @@ def _main(attempt: dict) -> int:
         budget_binding.record("rounds", args.rounds)
         budget_binding.record("trials", args.trials)
         budget_binding.record("jobs", args.jobs)
-        # Configured here, before any measurement and before the run files exist: the budget
-        # is a property of the machine, and every point written by this run must have been
-        # produced under it.
-        slots.configure(args.gpu_budget, args.gpu_budget_dir)
         args.budget_profile = str(budget_profile_source)
         args.budget_ledger = str(budget_binding.ledger_path)
         args.budget_arm = budget_binding.arm_id
         args.budget_profile_hash = budget_binding.profile_hash
+
+    # **The machine-wide measurement budget, armed here and not only for budget-profile
+    # runs.** It sat inside the `if budget_profile_source:` block above for a while, so a run
+    # without `--budget-profile` -- which is every run we launch -- silently measured with no
+    # ceiling at all: `--gpu-budget 40` was accepted, recorded on the point, and enforced
+    # nowhere. Measured 2026-10-17: the slot directory was never created, so a nine-method
+    # batch at `--jobs 24` each would have offered the endpoint 216 concurrent tasks instead
+    # of 40.
+    slots.configure(args.gpu_budget, args.gpu_budget_dir)
 
     # From here on the run narrates itself through the console, which writes the
     # human text and `events.jsonl` together.
