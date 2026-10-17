@@ -11,6 +11,7 @@
 from __future__ import annotations
 
 import json
+import pathlib
 import sys
 from pathlib import Path
 
@@ -106,3 +107,60 @@ def test_report_many_puts_the_methods_record_where_the_platform_reads_it(tmp_pat
                        acceptance_rule="t")
     envelope = json.loads(capsys.readouterr().out)
     assert envelope["method_reported"]["sica_rule"] == {"a": 1}
+
+
+# ---------------------------------------------------------------- CLI 自报的 token ---
+
+DASH = "dsh-usage "
+
+
+def test_usage_lines_are_summed_across_a_round():
+    """一轮里 CLI 会打很多次 usage（每次模型调用一次），所以一轮的花费是它们的和。"""
+    transcript = "\n".join([
+        DASH + '{"input_tokens": 1200, "output_tokens": 80, "cache_read_tokens": 300}',
+        "some prose the agent printed",
+        DASH + '{"input_tokens": 900, "output_tokens": 40, "cache_read_tokens": 120}',
+    ])
+    got = editor.parse_usage_lines(transcript)
+    assert got == {"input": 2100, "output": 120, "cache_read": 420, "calls": 2}
+
+
+def test_no_usage_line_is_unknown_not_zero():
+    """老 CLI / 别的 improver 不打这行时，必须是 None，不能求和成 0。"""
+    assert editor.parse_usage_lines("just prose\n") is None
+
+
+def test_a_malformed_usage_line_is_ignored_rather_than_crashing_the_round():
+    transcript = DASH + '{"input_tokens": oops}\n' + DASH + '{"input_tokens": 10, "output_tokens": 1}'
+    got = editor.parse_usage_lines(transcript)
+    assert got == {"input": 10, "output": 1, "cache_read": 0, "calls": 1}
+
+
+def test_a_reported_cli_round_records_tokens_and_cache_read(monkeypatch, tmp_path):
+    """端到端：`_ask_cli` 把 transcript 里的 usage 变成 `_SPENT` 和 `method_spend_source`。"""
+    base = tmp_path / "base"; base.mkdir()
+    parent = tmp_path / "parent"; parent.mkdir()
+    transcript = (DASH + '{"input_tokens": 5000, "output_tokens": 200, '
+                         '"cache_read_tokens": 4000}')
+
+    def fake_propose(req, parent_path, **kwargs):
+        ws = pathlib.Path(req["workspace"])
+        return {"candidate": str(ws / "candidate"), "files": [], "changed": [],
+                "exit_code": 0, "seconds": 12.5, "note": "no change",
+                "transcript": transcript,
+                "reported": {"exit_code": 0, "seconds": 12.5, "files_changed": [],
+                             "env_withheld": []}}
+
+    # `_ask_cli` imports the module by its bare name (it puts `methods/` on the path), and
+    # `methods.cli_improver` is a *different* module object for the same file -- patching
+    # that one would leave the real `propose` in place.
+    sys.path.insert(0, str(ROOT / "methods"))
+    import cli_improver
+    monkeypatch.setattr(cli_improver, "propose", fake_propose)
+    reply = editor._ask_cli("do something", base, parent, {"name": "dsh"})
+    assert reply.get("no_change")
+    assert editor.spend_source() == "cli_reported"
+    assert editor.spent_tokens() == 5200          # input 已不含 cache read
+    assert editor.cache_read_tokens() == 4000
+    run = editor.improver_run()
+    assert run["spend_reported"] is True and run["usage"]["calls"] == 1

@@ -882,6 +882,11 @@ def parse_reply(text: str) -> dict:
 #: over a 24 KB prompt. A cost-aware acceptance rule was therefore reading a constant, and
 #: a constant is a rule that permits everything.
 _SPENT: dict = {"input": 0, "output": 0, "calls": 0, "model": None,
+                # Prompt tokens the provider served from its cache. Kept beside `input`
+                # because the provider reports them as disjoint counts: `input` already
+                # excludes them, so adding this into the total would double-bill the cheap
+                # half and make the expensive half look smaller than it is.
+                "cache_read": 0,
                 # **Whether the spend is known at all.** A CLI improver is an agent
                 # process whose provider is built in: it prints prose, not a usage
                 # record, so nothing reports tokens. Before this field the sum stayed 0
@@ -895,6 +900,42 @@ _SPENT: dict = {"input": 0, "output": 0, "calls": 0, "model": None,
 #: reports next. Module-level for the same reason `_SPENT` is: one process is one method
 #: invocation, so there is exactly one improver run to describe.
 _LAST_IMPROVER: dict = {}
+
+
+#: The line a usage-reporting improver CLI prints. `dsh` was patched to emit it on stderr:
+#: `packages/bundle/headless/src/index.ts` used to receive the provider's usage chunk and
+#: `return` without printing it, so a CLI-driven round had no token count to report at all.
+DASH_USAGE_PREFIX = "dsh-usage "
+
+
+def parse_usage_lines(transcript: str) -> dict | None:
+    """Sum every `dsh-usage {json}` line a CLI wrote, or `None` if it wrote none.
+
+    A CLI round makes many model calls, and the CLI prints one line per call, so the round's
+    spend is the sum. `None` -- not a zero dict -- because "this CLI does not report usage"
+    and "this CLI spent nothing" are different facts, and only one of them is plausible.
+    """
+    total = {"input": 0, "output": 0, "cache_read": 0, "calls": 0}
+    found = False
+    for line in (transcript or "").splitlines():
+        line = line.strip()
+        if not line.startswith(DASH_USAGE_PREFIX):
+            continue
+        try:
+            payload = json.loads(line[len(DASH_USAGE_PREFIX):])
+        except (ValueError, TypeError):
+            continue
+        if not isinstance(payload, dict):
+            continue
+        for key, field in (("input_tokens", "input"), ("output_tokens", "output"),
+                           ("cache_read_tokens", "cache_read")):
+            value = payload.get(key)
+            if isinstance(value, bool) or not isinstance(value, int):
+                continue
+            total[field] += value
+        total["calls"] += 1
+        found = True
+    return total if found else None
 
 
 def improver_run() -> dict:
@@ -921,6 +962,13 @@ def spent() -> dict:
     reported".
     """
     return {k: _SPENT[k] for k in ("input", "output", "calls", "model")}
+
+
+def cache_read_tokens() -> int | None:
+    """Prompt tokens the provider served from cache, or `None` when nobody reported any."""
+    if _SPENT.get("source") == "cli_unreported":
+        return None
+    return _SPENT["cache_read"]
 
 
 def spent_tokens() -> int | None:
@@ -1220,6 +1268,14 @@ def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:
     # Tokens are *not* in it: the CLI's provider is built in, so the honest record is the
     # wall clock plus the prompt size we constructed ourselves.
     reported = result.get("reported") or {}
+    # What the provider said it spent, if this CLI reports it at all.
+    usage = parse_usage_lines(result.get("transcript") or "")
+    if usage:
+        _SPENT["source"] = "cli_reported"
+        _SPENT["input"] += usage["input"]
+        _SPENT["output"] += usage["output"]
+        _SPENT["cache_read"] += usage["cache_read"]
+        _SPENT["calls"] += usage["calls"]
     _LAST_IMPROVER.clear()
     _LAST_IMPROVER.update({
         "exit_code": reported.get("exit_code"),
@@ -1231,9 +1287,11 @@ def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:
         # the usual characters-per-token ratio makes the estimate reproducible. Label
         # it as an estimate in the name, not in a comment nobody reads.
         "prompt_tokens_estimate": round(len(prompt) / 4),
-        "spend_reported": False,
+        "spend_reported": bool(usage),
+        **({"usage": usage} if usage else {}),
     })
-    _SPENT["source"] = "cli_unreported"
+    if not usage:
+        _SPENT["source"] = "cli_unreported"
     edits: list[dict] = []
     for rel in result["files"]:
         path = Path(result["candidate"]) / rel
@@ -1567,7 +1625,8 @@ def report(req: dict, *, method: str, harness_dir: Path, changed: bool,
                              # Null tokens above mean "nobody counted" only if this says
                              # so; without it a reader cannot tell a free round from an
                              # invisible one.
-                             "method_spend_source": spend_source()},
+                             "method_spend_source": spend_source(),
+                             "method_cache_read_tokens": cache_read_tokens()},
             "method_reported": {"score": None, **_reported_with_improver(method_reported)},
         }],
         "trajectory_shape": "sequence",

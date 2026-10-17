@@ -80,6 +80,9 @@ def _cost_of(res: dict | None, n_tasks: int, wall_s: float,
         # CLI did the work and nobody counted; it is the reason a null is null rather
         # than a zero, and it is what makes a per-round efficiency number interpretable.
         "method_spend_source": claimed.get("method_spend_source"),
+        # Prompt tokens the improver's provider served from cache. Disjoint from the input
+        # count, so it is reported beside it rather than added into it.
+        "method_cache_read_tokens": claimed.get("method_cache_read_tokens"),
         "harness_tokens": harness_tokens,
         "harness_tokens_reported_by_tasks": tokens.get("tasks_reported", 0),
         "harness_model_calls": tokens.get("calls"),
