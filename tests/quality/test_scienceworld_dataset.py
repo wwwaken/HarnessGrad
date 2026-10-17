@@ -410,3 +410,125 @@ def test_the_check_re_materializes_the_task(scienceworld, live):
     assert evidence["task_file"].endswith(scienceworld.TASK_IN_WORKDIR)
     # The check read the re-materialized task, not the planted one.
     assert evidence["actions_in_log"] == 0
+
+
+# ------------------------------------------------------------- what `look` prints ---
+#
+# The defect these two tests pin: `_replay` rebuilds the world by applying the logged
+# actions, so when it returns the environment is *already* at the current state -- but the
+# status printer took its text from `step[0]`, the previous action's feedback ("You open the
+# door."), whenever the log held any action. `look` therefore showed the result of the last
+# move instead of the room -- and it was used in 271 of the 311 archived traces, so those
+# numbers were measured under that interface. The room must come from `env.look()`; the
+# feedback may stay, but labelled, and `look` must stay free.
+
+
+def _load_cli(name: str = "scw_cli_under_test"):
+    """The CLI, loaded by path.
+
+    It travels as a file called `scw` -- no `.py` suffix -- so `import scw` is not
+    available and `SourceFileLoader` is the loader. The CLI puts its own directory on
+    `sys.path` and imports `scw_env`, which is the module it ships beside in a workdir, so
+    the library directory goes on `sys.path` here for the same import a workdir resolves.
+    """
+    import importlib.machinery
+    import importlib.util
+
+    lib = ROOT / "data" / "datasets" / "scienceworld" / "lib"
+    if str(lib) not in sys.path:
+        sys.path.insert(0, str(lib))
+    path = ROOT / "data" / "datasets" / "scienceworld" / "cli" / "scw"
+    loader = importlib.machinery.SourceFileLoader(name, str(path))
+    spec = importlib.util.spec_from_loader(name, loader)
+    module = importlib.util.module_from_spec(spec)
+    loader.exec_module(module)
+    return module
+
+
+def test_scw_look_prints_the_room_not_the_last_action_s_feedback(tmp_path, monkeypatch,
+                                                                 capsys):
+    """No JVM: a fabricated replay whose step and room are clearly different strings.
+
+    The replayed step's observation is what the CLI used to print; `env.look()` is what the
+    agent is standing in. Only one of those is `look`.
+    """
+    from types import SimpleNamespace
+
+    cli = _load_cli()
+    log = tmp_path / "scw_actions.jsonl"
+    log.write_text(json.dumps({"kind": "action", "step": 0, "action": "open door"}) + "\n")
+
+    class FakeEnv:
+        def __init__(self):
+            self.looks = 0
+
+        def look(self):
+            self.looks += 1
+            return "This laboratory is called the lab.\n\tYou see a thermometer."
+
+    env = FakeEnv()
+    monkeypatch.setattr(
+        cli, "_replay",
+        lambda workdir, actions, budget: (
+            env, ("You open the door.", 0, False, {"score": 40, "moves": 1})))
+
+    args = SimpleNamespace(workdir=tmp_path, log=log, budget=100)
+    assert cli.cmd_look(args) == 0
+    out = capsys.readouterr().out
+
+    assert "This laboratory is called the lab." in out, out
+    assert env.looks == 1, "the current observation has to come from env.look()"
+    # The room is printed as the observation, before (not instead of) the action feedback.
+    assert out.index("This laboratory is called the lab.") < out.index("You open the door.")
+    # The score/move readout is untouched: score from the replayed step, moves from the log.
+    assert "[scw] move 1/100; score 40/100" in out
+    # The feedback may stay, but a reader has to be able to tell it from the room.
+    feedback = [line for line in out.splitlines() if "You open the door." in line]
+    assert feedback and "last action" in feedback[0], out
+
+
+def test_scw_look_shows_the_live_room_and_costs_no_move(scienceworld, live):
+    """The end-to-end version, through the real CLI, JVM and workdir an agent gets.
+
+    Three claims: the printed room is `env.look()`'s text, `look` writes nothing to the
+    log, and it does not advance the episode -- two consecutive calls are byte-identical.
+    """
+    workdir, record = live
+    log = workdir / scienceworld.LOG_IN_WORKDIR
+    log.unlink(missing_ok=True)
+    _write_task(workdir, record)
+    lib = scienceworld._LIB
+    env = lib.load_task(workdir, generate_gold=True, step_budget=scienceworld.STEP_BUDGET)
+    action = [str(a) for a in env.get_gold_action_sequence()][0]
+    env.close()
+
+    def run(*argv):
+        proc = subprocess.run([sys.executable, "scw", *argv], cwd=workdir,
+                              capture_output=True, text=True)
+        assert proc.returncode == 0, proc.stderr
+        return proc.stdout
+
+    run("do", action)
+    before = log.read_bytes()
+    first = run("look")
+    assert log.read_bytes() == before, "`look` must not append to the action log"
+    second = run("look")
+    assert second == first, "`look` must not advance the episode"
+
+    # Replay the logged action through the library, not through the CLI's own `_replay`, so
+    # "what the room is now" is an independent fact and not the answer the CLI just gave.
+    env = lib.load_task(workdir, step_budget=scienceworld.STEP_BUDGET)
+    feedback, _reward, _done, _info = env.step(action)
+    current = str(env.look()).strip()
+    moves = env.get_num_moves()
+    env.close()
+    assert moves == 1, "one logged action is one move"
+    # The printed observation *is* the room the agent is standing in, byte for byte...
+    assert first.startswith(current), (first, current)
+    assert second.startswith(current), (second, current)
+    assert f"[scw] move 1/{scienceworld.STEP_BUDGET}" in first
+    # ...and the step's own feedback is still there, labelled as such and not mistaken for
+    # the room: `focus on ...` is not a place.
+    assert "[scw] last action" in first
+    assert str(feedback).strip() in first, (first, feedback)
+    assert not current.startswith(str(feedback).strip())

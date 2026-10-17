@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 r"""`scw` -- the command line the agent uses to act inside a ScienceWorld episode.
 
-    python3 scw look                 print the current observation and the score
+    python3 scw look                 where you are now (free: no move) and the score
     python3 scw do "<action>"        apply one action; it costs one budgeted step
     python3 scw inventory            what the agent is carrying
     python3 scw task                 the task description
@@ -29,6 +29,20 @@ Where things live (override with the matching flag):
     <workdir>/scw_task.json       the task and variation, written by the platform's SETUP
     <workdir>/scw_actions.jsonl   this program's append-only output
     <workdir>/jre/                the pinned JVM, unpacked on first use
+
+What `look` prints, and why it is not the last step's observation
+-----------------------------------------------------------------
+`look` prints the room the agent is standing in now: `env.look()` after the replay, which
+is ScienceWorld's own free action (`AgentInterface.freeActionLook`; the Python wrapper's
+docstring is "This is a 'free' action in that it consumes no time"). Measured, repeated
+calls leave the move counter and the score untouched, and this command writes nothing to
+the log, so looking is free in every sense the episode can observe.
+
+The last action's feedback is a **different** string -- `"You open the door."`, not the
+room -- and it used to be printed *instead of* the room whenever the log held any action.
+The agent ran `look` in 271 of the 311 archived traces, so those numbers were measured
+under that degraded interface. The feedback is still printed, one labelled line at the end,
+so a reader gets both and can tell them apart.
 """
 from __future__ import annotations
 
@@ -63,17 +77,30 @@ def _replay(workdir: Path, actions: list[str], budget: int):
 
 
 def _print_status(step, *, moves: int, budget: int, env) -> None:
+    """Print the **current** room, the score readout, and the last action's feedback.
+
+    The room always comes from `env.look()`, never from `step[0]`. `_replay` has already
+    applied every logged action, so `env` is at the current state; `step[0]` is the
+    *previous* action's feedback ("You open the door."), which is a different thing and
+    used to be printed in place of the room. Measured in ScienceWorld 1.2.3: five calls to
+    `look()` leave `get_num_moves()` and `getScore()` unchanged, so reading the room
+    cannot cost a move or move the grade -- and it appends nothing to the log, because
+    only `cmd_do` writes there.
+    """
     if step is None:
-        observation = env.look()
         score = 0
         done = False
     else:
-        observation, _reward, done, info = step
+        _observation, _reward, done, info = step
         score = info.get("score", 0)
-    print(str(observation).strip())
+    print(str(env.look()).strip())
     print()
     print(f"[scw] move {moves}/{budget}; score {score}/100"
           + ("; episode over" if done else "; in progress"))
+    if step is not None:
+        feedback = str(step[0]).strip()
+        if feedback:
+            print(f"[scw] last action (move {moves}): {feedback}")
 
 
 def cmd_look(args) -> int:
@@ -139,7 +166,7 @@ def _parse_global(argv: list) -> tuple[argparse.Namespace, list]:
 
 USAGE = """scw -- act in a ScienceWorld episode
 
-  python3 scw look            show the current observation and the score
+  python3 scw look            the room you are in now (free: costs no move) and the score
   python3 scw do "<action>"   apply one action; it costs one of the {budget} moves
   python3 scw inventory       what you are carrying
   python3 scw task            the task description
