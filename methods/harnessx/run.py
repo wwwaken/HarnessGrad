@@ -1,111 +1,61 @@
 #!/usr/bin/env python3
-"""HarnessX's per-round decision rule, as a HarnessGrad method.
+"""HarnessX's historical-best acceptance gate, as a HarnessGrad method.
 
-What is transplanted
---------------------
-The **acceptance gate** HarnessX applies to the round it has just measured
-(`recipe/gaia_evolver/run.py:1174-1257`, mirrored in
-`recipe/gaia_evolver/run_meta.py:403-431`):
+Source root: /mnt/20t/xubuqiang/Study/methods_src/harnessx/.
+The GAIA kernel in recipe/gaia_evolver/run.py:1174-1257 compares a measured
+candidate with the historical best, adjusts for relative cost increases, keeps
+the earliest best on ties, and restores best_cfg on regression (:813-820).
+The port replays that kernel over platform history and, on rollback, copies the
+complete staged best tree and declares incumbent_round via editor.report_many
+(INTERFACE.md §4.1.1). No editor/model call is made on the rollback path.
 
-    cost_delta_ratio = (round_cost - best_cost) / max(best_cost, 1e-3)  # 0 when best_cost == 0
-    score            = round_pass_rate - cost_weight * max(cost_delta_ratio, 0)
-    revert iff score < best_rate - tolerance
-           and abs(round_passed - best_passed) >= pass_count_noise_threshold
+Policy required by the fix brief
+-------------------------------
+HG_HARNESSX_REGRESSION_TOLERANCE defaults to 0.0: any score drop exceeding the
+tolerance reverts. The local upstream actually defaults to tolerance 0.03
+(recipe/gaia_evolver/run.py:463-475) and a three-pass noise guard (:486-498,
+:1222-1236). This port intentionally defaults the count guard to 0 (disabled),
+so small drops and missing counts cannot silently disable the requested gate.
+A positive HARNESSX_PASS_COUNT_NOISE_THRESHOLD opts into the upstream count
+policy; HARNESSX_TOLERANCE remains a legacy fallback when the HG variable is
+absent. These policy differences are disclosed in method.json.
 
-* It compares against the **historical best, never the last accepted round**
-  (`run.py:1186-1189`), so a loose tolerance cannot drift the baseline downward
-  over many rounds; only a strictly higher score displaces the holder
-  (`run.py:1246-1255` -- "equal-score rounds do not dethrone the earliest holder").
-* A breach the absolute passed-count guard calls noise is **accepted but does not
-  update best** (`run.py:1227-1236`), so the next round still compares against the
-  same historical high.
-* Defaults: GAIA `tolerance 0.03` (`run.py:465`), `pass_count_noise_threshold 3`
-  (`recipe/gaia_evolver/defaults.py:23`), `cost_weight 0.0` (`run.py:479`).
-  tau2 keeps only the score comparison -- `tolerance 0.02`, `cost_weight 0.0`
-  (`recipe/tau2_evolver/defaults.py:36-37`), **no** pass-count guard, an absolute
-  rather than relative cost delta (`recipe/tau2_evolver/run.py:1179`), and the
-  vocabulary `accept`/`reject` -- so this port carries the richer GAIA kernel and
-  says which one it is.
+The gate acts on the last measured round, before proposing another edit. It
+excludes unmeasured or nonfinite scores rather than treating them as zero.
+It cannot grade a newly proposed candidate before the platform measures it; if no
+further method call is made at budget exhaustion, that last proposal is ungated.
+A missing best snapshot still yields an incumbent_round selection record, but
+cannot physically restore that tree. The method stops without another edit in
+that case. An available restore continues even when the tree already equals the
+base, so a no-op restore does not prematurely end the search.
 
-The **pre-registration** is transplanted too: before measurement the meta-agent
-declares `hypothesis_id`, `levers`, `predicted_affected`, `rollback_trigger`,
-`expected_global_gain`, `regression_risk`, `cost_shift`
-(`harnessx/meta_harness/workspace/skills/journal/SKILL.md:40-51`); the orchestrator
-grades `predicted_affected` against what actually flipped afterwards
-(`harnessx/meta_harness/journal.py:605-667`, `recipe/gaia_evolver/run.py:827-905`).
-The lever vocabulary is exactly `{configuration, control, action, instruction}`
-(`journal.py:57`, `skills/analyze/SKILL.md:119-124`), and every candidate owes the
-"why this lever and not the adjacent one" argument (`analyze/SKILL.md:447`), so
-the reply schema asks for it.
+The upstream shipping validator is a separate, partially unported mechanism:
+harnessx/meta_harness/validate_workflow.py:857-869, :909-933 requires YAML
+HarnessConfig canonicalization/structural diffs, processor hook contracts,
+synthetic-task replay in the HarnessX runtime, and journal/memo evidence and
+novelty checks. This method receives generic harness source trees and platform
+measurements, not that engine's configuration/runtime or journal artifacts.
+Selecting incumbent_round expresses version selection; it does not execute or
+claim to pass those preflight checks.
 
-What is not transplanted
-------------------------
-* The **shipping gate** cannot run here at all. Its replay phase *executes* the
-  candidate (`meta_harness/replay.py:64-151`), and running a candidate is the
-  platform's job, not the method's. The other phases are engine-specific too:
-  canonicalize needs `HarnessConfig.from_yaml_file`, the hook-contract check needs
-  `MultiHookProcessor`, and the novelty/evidence policy reads HarnessX's own
-  journal and `candidates.md` (`meta_harness/validate_workflow.py:857-869`).
-* The **edit** itself. HarnessX's contribution is the gate, not the diagnosis, so
-  the diagnosis is delegated to the shared editor (`editor.ask`), exactly as
-  `sica_ci` does.
-* HarnessX's YAML artifact shape and its processor/tool vocabulary. Neither exists
-  in this platform's harness contract (`INTERFACE.md` §1.1).
+Edits remain delegated to editor.ask. The pre-registration fields and four-lever
+vocabulary follow harnessx/meta_harness/workspace/skills/journal/SKILL.md:40-51
+and harnessx/meta_harness/journal.py:57. Cost is platform harness_tokens (falling
+back to method_generation_tokens), not USD; its weight defaults to upstream's
+0.0. Passed counts use n_passed, with score * task count as a legacy binary-score
+fallback. These are platform adaptations, not a reproduction of upstream scores.
 
-**Not reproduced:** HarnessX's own loop. It runs a multi-round experiment with a
-resident meta-agent, its own task sampling, its own scoring and its own rollback;
-none of that is reimplementable here without reimplementing the platform. What runs
-is one platform round at a time, with the gate transplanted onto the platform's
-curve points. **A run of this method is evidence about HarnessX's gate, not a
-reproduction of HarnessX's scores.**
-
-What mode A cannot express -- and the weakening that follows
-------------------------------------------------------------
-Mode A hands a method one pristine incumbent, takes one candidate per round, and
-**accepts it unconditionally**: there is no reject step anywhere in the loop. The
-gate therefore cannot actually revert anything, and this is a real weakening, not a
-faithful revert. All the port can express is:
-
-1. a **record** -- `method_reported["harnessx_gate"]`, carrying the arithmetic
-   (rate, cost delta, adjusted score, count delta), the decision and the reason;
-2. a **directive** -- on a revert the round's candidate is the historically best
-   state copied in verbatim from `_harnessgrad/states/round-<n>/`, and the record
-   names that directory as the base the next round must build on
-   (`method_reported["harnessx_revert_directive"]`).
-
-HarnessX restores `current_config = best_cfg` inside its own loop
-(`recipe/gaia_evolver/run.py:813-820`); here the restore takes effect only because
-the platform happens to measure the directory this method hands back. The platform
-still measures one candidate per round and cannot be told "do not".
-
-If the best round's state was not materialized -- `states/index.json` keeps only the
-newest `STATES_KEPT = 12` points (`driver.py:47`, `driver.py:157-179`) -- the port
-records the directive with `state_available: false` and stops (`changed: false`),
-rather than edit on top of a base the gate just rejected.
-
-Two smaller divergences, both forced by the record rather than chosen:
-
-* **Cost is not USD.** HarnessX's `round_cost` is dollars; a HarnessGrad curve point
-  records trials/tokens/wall-clock (`driver.py:296-306`). The cost term reads
-  `cost.harness_tokens` (the harness's own per-round spend) by default, and the
-  record names the field it read. With the published default `cost_weight 0.0` the
-  term is zero either way.
-* **`passed` means a full pass.** HarnessX counts binary passes against a small task
-  set; here a task counts only when its `per_task` score is `>= 1.0`. On a graded
-  (fractional) task set the absolute count guard would mean something slightly
-  different, so the record carries both the count and the rate for every point.
-
-Tunables (environment variables, defaults from the source above):
-
-    HARNESSX_TOLERANCE                  0.03   GAIA --regression-tolerance
-    HARNESSX_COST_WEIGHT                0.0    GAIA --cost-weight
-    HARNESSX_PASS_COUNT_NOISE_THRESHOLD 3      GAIA PASS_COUNT_NOISE_THRESHOLD
-    HARNESSX_COST_FIELD                 harness_tokens
+Environment variables:
+    HG_HARNESSX_REGRESSION_TOLERANCE    0.0 (legacy: HARNESSX_TOLERANCE)
+    HARNESSX_COST_WEIGHT               0.0
+    HARNESSX_PASS_COUNT_NOISE_THRESHOLD 0 (disabled; upstream default is 3)
+    HARNESSX_COST_FIELD                harness_tokens
 """
 from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
 import sys
 from pathlib import Path
@@ -124,16 +74,18 @@ LEVERS = ("configuration", "control", "action", "instruction")
 ACCEPTANCE_RULE = (
     "HarnessX best-so-far gate (recipe/gaia_evolver/run.py:1210-1257): "
     "score = pass_rate - cost_weight*max(cost_delta_ratio,0); revert iff "
-    "score < best_rate - tolerance AND |passed_delta| >= pass_count_noise_threshold; "
-    "a noise-level breach is accepted but does not update best. Mode A has no reject "
-    "step, so a revert is handed back as the best state plus a directive"
+    "score < best_rate - tolerance (HG_HARNESSX_REGRESSION_TOLERANCE defaults to 0.0). "
+    "The passed-count guard is disabled by default; when explicitly enabled, a "
+    "noise-level breach is accepted without updating best. A rollback hands back "
+    "the historical best tree and declares incumbent_round; missing snapshots "
+    "record selection only and stop. Upstream shipping preflight is not executed."
 )
 
 
 # ------------------------------------------------------------- tunables ---
 
 def _tunables() -> dict:
-    """The gate's knobs, read from the environment with the source's defaults.
+    """The gate's knobs, with the strict defaults required by the fix brief.
 
     Read per call, not at import time, so a test (or an operator) can change one
     without reloading the module. A malformed value falls back to the default rather
@@ -141,7 +93,8 @@ def _tunables() -> dict:
     """
     def _float(name: str, default: str) -> float:
         try:
-            return float(os.environ.get(name, default))
+            value = float(os.environ.get(name, default))
+            return value if math.isfinite(value) else float(default)
         except (TypeError, ValueError):
             return float(default)
 
@@ -151,10 +104,18 @@ def _tunables() -> dict:
         except (TypeError, ValueError):
             return int(default)
 
+    # recipe/gaia_evolver/run.py:463-475 defines tolerance as an allowed score
+    # drop, but the local source defaults to 0.03. The brief explicitly requires
+    # 0.0; its HG variable wins over the previous port's legacy variable.
+    tolerance_var = ("HG_HARNESSX_REGRESSION_TOLERANCE"
+                     if "HG_HARNESSX_REGRESSION_TOLERANCE" in os.environ
+                     else "HARNESSX_TOLERANCE")
     return {
-        "tolerance": _float("HARNESSX_TOLERANCE", "0.03"),
+        "tolerance": max(0.0, _float(tolerance_var, "0.0")),
         "cost_weight": _float("HARNESSX_COST_WEIGHT", "0.0"),
-        "pass_count_noise_threshold": _int("HARNESSX_PASS_COUNT_NOISE_THRESHOLD", "3"),
+        # Upstream run.py:1222-1236 exempts small passed-count changes. Disable
+        # that exemption by default to implement the brief's any-regression rule.
+        "pass_count_noise_threshold": _int("HARNESSX_PASS_COUNT_NOISE_THRESHOLD", "0"),
         "cost_field": os.environ.get("HARNESSX_COST_FIELD", "harness_tokens"),
     }
 
@@ -223,8 +184,9 @@ def _gate_decision(point: dict, best: dict | None, *, tolerance: float,
 
     `best` is `{rate, cost, round, passed}` or `None`. Returns the gate record plus
     the updated `best` and, on a revert, the round to restore. The two-condition rule
-    is the source's: a score breach alone never reverts, because a 1-2 task flip on a
-    small set is eval stochasticity, not regression (`run.py:1191-1199`).
+    is the source's when a positive count threshold is explicitly requested
+    (`recipe/gaia_evolver/run.py:1222-1236`). By default the brief's strict score
+    comparison applies even if passed counts are unavailable.
     """
     rate = _num(point.get("score"))
     cost = _round_cost(point, cost_field)
@@ -266,8 +228,10 @@ def _gate_decision(point: dict, best: dict | None, *, tolerance: float,
     )
 
     if adjusted < best_rate - tolerance:
-        # The score check failed. The count check decides whether it is signal.
-        if count_delta is None or count_delta < pass_count_noise_threshold:
+        # Upstream's optional count guard distinguishes signal from noise; a
+        # disabled guard must not turn unavailable counts into an exemption.
+        if pass_count_noise_threshold > 0 and (
+                count_delta is None or count_delta < pass_count_noise_threshold):
             why = (f"score {adjusted:.3f} < R{best.get('round')} {best_rate:.3f} - "
                    f"tolerance {tolerance:.3f} but "
                    + ("no passed-task count is available"
@@ -279,9 +243,12 @@ def _gate_decision(point: dict, best: dict | None, *, tolerance: float,
                           updated_best_round=best.get("round"),
                           reverted_to_round=None)
             return {**record, "best": best, "revert_to": None}
-        why = (f"score {adjusted:.3f} < R{best.get('round')} {best_rate:.3f} - "
-               f"tolerance {tolerance:.3f} AND |Δpassed|={count_delta} >= threshold "
-               f"{pass_count_noise_threshold} — revert to R{best.get('round')}")
+        why = (f"reverted: candidate {point.get('round')} score {adjusted:.3f} vs "
+               f"best round {best.get('round')} {best_rate:.3f}, "
+               f"delta {adjusted - best_rate:+.3f}; "
+               f"drop {best_rate - adjusted:.3f} > tolerance {tolerance:.3f} "
+               f"(|Δpassed|={count_delta}, "
+               f"noise threshold={pass_count_noise_threshold})")
         record.update(decision="REVERTED", reason=why, noise_level=False,
                       updated_best_round=best.get("round"),
                       reverted_to_round=best.get("round"))
@@ -331,24 +298,38 @@ def _grade(history: list[dict], tun: dict) -> dict:
     """
     tun = {k: tun[k] for k in ("tolerance", "cost_weight",
                                "pass_count_noise_threshold", "cost_field")}
-    if len(history) < 2:
-        last_round = history[-1].get("round") if history else None
+    # The upstream kernel receives measured pass rates (run.py:802-811).
+    # Platform history can also contain unmeasured candidates; those are not
+    # ordinary zero scores and cannot become the best or trigger a rollback.
+    def measured(point: dict) -> bool:
+        return bool(point.get("measured_by_platform", True)) and math.isfinite(
+            _num(point.get("score"), float("nan")))
+
+    scored = [point for point in history if measured(point)]
+    latest_measured = bool(history) and measured(history[-1])
+    if len(scored) < 2 or not latest_measured:
+        best, steps = _replay_best(scored, **tun)
+        best = best or {}
         return {
             "decision": "NO_GATE",
-            "reason": ("no measured candidate to grade yet — this is the baseline; "
-                       "HarnessX's first round only establishes best"),
+            "reason": (
+                "no finite platform measurement for the latest candidate; gate skipped"
+                if history and not latest_measured else
+                "no measured candidate to grade yet — this is the baseline; "
+                "HarnessX's first round only establishes best"),
             "tunables": dict(tun),
             "graded_round": None, "round_rate": None, "round_passed": None,
-            "round_cost": None, "best_round": last_round,
-            "best_rate": _num(history[-1].get("score")) if history else None,
-            "best_passed": None, "count_delta": None, "cost_delta_ratio": 0.0,
-            "adjusted_score": None, "updated_best_round": last_round,
+            "round_cost": None, "best_round": best.get("round"),
+            "best_rate": best.get("rate"),
+            "best_passed": best.get("passed"), "count_delta": None,
+            "cost_delta_ratio": 0.0,
+            "adjusted_score": None, "updated_best_round": best.get("round"),
             "reverted_to_round": None, "noise_level": False,
-            "pass_count_available": False, "history_steps": [],
+            "pass_count_available": False, "history_steps": steps,
         }
 
-    best, steps = _replay_best(history[:-1], **tun)
-    record = _gate_decision(history[-1], best, **tun)
+    best, steps = _replay_best(scored[:-1], **tun)
+    record = _gate_decision(scored[-1], best, **tun)
     out = {k: v for k, v in record.items() if k not in ("best", "revert_to")}
     out["tunables"] = dict(tun)
     out["history_steps"] = steps
@@ -363,7 +344,7 @@ def _state_dir(base: Path, round_no) -> str | None:
     `states/index.json` is read rather than the directory guessed, because a state
     that could not be materialized is deliberately absent from the index -- a method
     that guessed the path would find an empty directory and report a failure the
-    platform caused (`driver.py:168-172`).
+    platform caused (`harnessgrad/channel.py:435-444`).
     """
     index = editor.channel(base) / "states" / "index.json"
     if not index.exists():
@@ -378,12 +359,7 @@ def _state_dir(base: Path, round_no) -> str | None:
 
 
 def _revert_directive(base: Path, best_round, state_dir: str | None) -> dict:
-    """The revert, expressed as everything mode A can actually say.
-
-    A record plus a named base directory: the platform will not honour a reject, so
-    the only way to "restore best" is to hand the best state back as this round's
-    candidate and tell the next round where it came from.
-    """
+    """The best-tree restore target, accompanying the incumbent_round selection."""
     relative = f"{editor.CHANNEL}/states/round-{best_round}"
     available = bool(state_dir) and Path(state_dir).is_dir()
     return {
@@ -558,36 +534,46 @@ def main() -> int:
     gate = _grade(history, tun)
     graded_prereg = _previous_preregistration(history)
 
-    # ---- the revert branch: the only way mode A can express "reject" ----------
+    # recipe/gaia_evolver/run.py:813-820 restores current_config to best_cfg.
+    # Copy that round's full staged tree and record the chosen version using the
+    # platform's incumbent_round contract (INTERFACE.md §4.1.1). report() has no
+    # such argument; report_many() supports it even for a single step.
     if gate["decision"] == "REVERTED":
         best_round = gate["reverted_to_round"]
         state_dir = _state_dir(base, best_round)
         directive = _revert_directive(base, best_round, state_dir)
         if not directive["state_available"]:
-            return editor.report(
-                request, method="harnessx", harness_dir=base, changed=False,
-                stop=False,
-                hypothesis=(f"HarnessX gate reverted round {gate.get('graded_round')} "
-                            f"to R{best_round}, but that state is not staged; refusing "
+            return editor.report_many(
+                request, method="harnessx", steps=[{
+                    "harness_dir": str(base), "changed": False,
+                    "incumbent_round": best_round,
+                    "edit_kind": "harnessx_revert",
+                    "method_reported": _reported(gate, graded_prereg, directive),
+                    "label": f"HarnessX gate: select R{best_round} (state not staged)",
+                }], stop=True,
+                hypothesis=(f"HarnessX gate selected R{best_round} after rejecting "
+                            f"round {gate.get('graded_round')}, but that state is "
+                            f"not staged; physical restore unavailable, refusing "
                             f"to build on a base the gate rejected"),
-                edit_kind="harnessx_revert",
-                method_reported=_reported(gate, graded_prereg, directive),
                 acceptance_rule=ACCEPTANCE_RULE,
-                label=f"HarnessX gate: revert to R{best_round} (state not staged)")
+            )
 
         dest = editor.candidate_path(request)
         editor.apply_edits(Path(directive["base_harness_dir"]), dest, [])
         same = _same_tree(Path(directive["base_harness_dir"]), base)
-        return editor.report(
-            request, method="harnessx", harness_dir=dest, changed=not same,
+        return editor.report_many(
+            request, method="harnessx", steps=[{
+                "harness_dir": str(dest), "changed": not same,
+                "incumbent_round": best_round,
+                "edit_kind": "harnessx_revert",
+                "method_reported": _reported(
+                    gate, graded_prereg, directive,
+                    candidate_equals_incumbent=same),
+                "label": f"HarnessX gate: revert to R{best_round}",
+            }], stop=False,
             hypothesis=(f"HarnessX gate reverted round {gate.get('graded_round')}: "
                         f"{gate.get('reason')}")[:300],
-            edit_kind="harnessx_revert",
-            method_reported=_reported(
-                gate, graded_prereg, directive,
-                candidate_equals_incumbent=same),
-            acceptance_rule=ACCEPTANCE_RULE,
-            label=f"HarnessX gate: revert to R{best_round}")
+            acceptance_rule=ACCEPTANCE_RULE)
 
     # ---- the accept branch: spend the editor on a new candidate ---------------
     dest = editor.candidate_path(request)
