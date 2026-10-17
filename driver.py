@@ -245,6 +245,77 @@ def _platform_content_sha() -> str:
     return content_sha(PLATFORM_ROOT)
 
 
+class ResumeRefused(RuntimeError):
+    """A resume this run cannot honour, with a sentence a reader can act on."""
+
+
+class ResumeNothingToDo(RuntimeError):
+    """The run already measured every round the budget asks for."""
+
+
+def _resume_train_state(args, run_dir: Path, split, work: Path):
+    """What continuing this run needs: its points, its last state, and the base it began from.
+
+    A resume may not re-measure a state that is already on the curve -- two measurements of
+    one state are two numbers, and picking either is a choice the record cannot defend --
+    so everything the round-0 path would normally produce is rebuilt **from the record**:
+
+      * `base` from the round-0 point plus `round0_traces/` (`_base_from_point`),
+      * `h0_sha` from that point's content address,
+      * the workspace from `state_after_round<last>/`, re-staged and committed.
+
+    `commit_state` returns a content address, so re-staging the same tree reproduces the
+    same `harness_sha` the curve already carries. The caller asserts that, because a
+    different address would mean the saved state is not the state the score belongs to.
+    """
+    curve_path = run_dir / "curve.jsonl"
+    if not curve_path.is_file():
+        raise ResumeRefused(f"{run_dir.name} has no curve.jsonl; there is nothing to continue")
+    existing = [json.loads(line) for line in curve_path.read_text().splitlines() if line.strip()]
+    if not existing:
+        raise ResumeRefused(f"{run_dir.name}/curve.jsonl holds no measured point")
+
+    meta_path = run_dir / "run_meta.json"
+    meta = json.loads(meta_path.read_text()) if meta_path.is_file() else {}
+    recorded_split = meta.get("split_sha")
+    now_split = datasets.split_sha(split) if split else None
+    if recorded_split and now_split and recorded_split != now_split:
+        raise ResumeRefused(
+            f"the run was measured on split_sha {recorded_split[:12]}, this invocation on "
+            f"{now_split[:12]}; the old points are not the same task set")
+    recorded_platform = meta.get("platform_content_sha")
+    if recorded_platform:
+        now_platform = _platform_content_sha()
+        if recorded_platform != now_platform:
+            raise ResumeRefused(
+                f"the platform content changed since this run started "
+                f"({recorded_platform[:12]} -> {now_platform[:12]}); continuing would stitch "
+                f"two code versions into one curve")
+
+    last = max(int(point.get("round") or 0) for point in existing)
+    if last >= args.rounds:
+        raise ResumeNothingToDo(
+            f"round {last} of a {args.rounds}-round budget is already measured")
+    view = run_dir / f"state_after_round{last}"
+    if not view.is_dir():
+        raise ResumeRefused(
+            f"{run_dir.name} has no state_after_round{last}/; the state round {last} scored "
+            f"was not kept, so there is nothing to continue from")
+
+    if work.exists():
+        shutil.rmtree(work)
+    stage_workspace(view, work)
+    staged_sha = commit_state(work, f"resume: round {last}")
+
+    base = _base_from_point(existing[0])
+    traces_dir = run_dir / "round0_traces"
+    base["traces"], base["trial_traces"] = _read_trace_bodies(traces_dir)
+    h0_sha = (existing[0].get("identity") or {}).get("harness_sha") or staged_sha
+    return {"existing": existing, "last": last, "base": base, "h0_sha": h0_sha,
+            "recorded_sha": (existing[last].get("identity") or {}).get("harness_sha"),
+            "staged_sha": staged_sha}
+
+
 def _base_from_point(point: dict) -> dict:
     """Rebuild the measurement dictionary from a curve point.
 
@@ -432,6 +503,12 @@ def _main(attempt: dict) -> int:
                          "comparable only when those agree.")
     ap.add_argument("--from-run", default=None,
                     help="--side eval: the train run whose harness state to measure")
+    ap.add_argument("--reuse-identical", action="store_true",
+                    help="a candidate whose content address equals an already-measured "
+                         "state still gets a curve point, but that point reuses the earlier "
+                         "measurement instead of spending another task-set run. Off by "
+                         "default: it changes what a re-measured state means, and the "
+                         "isolation tests rely on the measurement actually happening")
     ap.add_argument("--resume", action="store_true",
                     help="continue an interrupted run instead of starting clean: the train "
                          "side continues from its last measured round, the eval side scores "
@@ -1246,186 +1323,228 @@ def _main(attempt: dict) -> int:
     # those two numbers a run reports must not depend on whether a cache key happened to
     # match: content-addressed, an unchanged tree has one measurement, and the spread of
     # a measurement is what `--trials` is for.
-    h0_sha = commit_state(work, "H0")
-    t0 = time.time()
-    # **The shared round 0.** This measurement is a method's first input, so if every run
-    # measures its own, batching non-determinism can hand one method a different number and
-    # a different trace set while the record still says they saw the same evidence.
-    # `--h0-from RUN` reuses one run's measurement for all of them.
-    shared_point = None
-    if args.h0_from:
-        donor_dir = Path(args.runs_root) / args.h0_from
-        payload_path = donor_dir / "h0.json"
-        payload = None
-        if payload_path.is_file():
-            payload = json.loads(payload_path.read_text())
-            if payload.get("h0_sha") != h0_sha:
-                print(f"refusing --h0-from {args.h0_from!r}: it measured base "
-                      f"{payload.get('h0_sha')!r}, this run's base is {h0_sha!r}",
-                      file=sys.stderr)
-                return 2
-        donor_point = None
-        donor_curve = donor_dir / "curve.jsonl"
-        if donor_curve.is_file():
-            for line in donor_curve.read_text().splitlines():
-                if line.strip():
-                    donor_point = json.loads(line)
-                    break
-        if donor_point is None:
-            print(f"refusing --h0-from {args.h0_from!r}: it has no curve point", file=sys.stderr)
-            return 2
-        if payload is not None:
-            base = payload["base"]
-        else:
-            # No raw payload: this run predates `h0.json`. Its own base sha is checked
-            # against `h0_sha` below -- through the point's identity -- and the number is
-            # the same number, so re-measuring it would only spend compute to produce a
-            # second value for one measurement.
-            if (donor_point.get("identity") or {}).get("harness_sha") != h0_sha:
-                print(f"refusing --h0-from {args.h0_from!r}: its point measured base "
-                      f"{(donor_point.get('identity') or {}).get('harness_sha')!r}, this "
-                      f"run's base is {h0_sha!r}", file=sys.stderr)
-                return 2
-            base = _base_from_point(donor_point)
-            console.note(f"{args.h0_from} has no h0.json; rebuilt the measurement from its "
-                         f"curve point (same base tree, same number)", level="info")
-        # The traces travel with the measurement: a method that reads a trace channel to
-        # decide what to edit must see the same traces as every other method.
-        donor_traces = donor_dir / "round0_traces"
-        if donor_traces.is_dir() and not (run_dir / "round0_traces").exists():
-            shutil.copytree(donor_traces, run_dir / "round0_traces")
-        # The method's trace channel is staged from the *dict*, not from the directory.
-        base["traces"], base["trial_traces"] = _read_trace_bodies(donor_traces)
-        # **The identity has two kinds of field, and they belong to different runs.** The
-        # measurement facts -- which tree, which agent model, which jobs and budget produced
-        # the number -- are the donor's, and copying them is the point. The *run* facts are
-        # not: `improver`, `skill_sha` and `method_model` describe who is proposing edges in
-        # **this** run, and the platform stages them into the method's `round.json`, which is
-        # how a method learns whether it has a CLI improver at all. Copying the donor's
-        # `improver: None` (the donor ran with `--improver none`) told all nine methods they
-        # had no CLI improver, so each fell back to the chat endpoint with a prompt sized for
-        # a CLI and died on the 16k window -- every method, every round 1, on 2026-10-17.
-        run_identity = _identity(man, h0_sha, mode, improver=improver,
-                                 jobs=args.jobs, trials=args.trials,
-                                 gpu_budget=args.gpu_budget)
-        merged_identity = dict(donor_point.get("identity") or {})
-        for key in ("improver", "skill_sha", "method_model"):
-            if key in run_identity:
-                merged_identity[key] = run_identity[key]
-            else:
-                merged_identity.pop(key, None)
-        shared_point = {**donor_point, "run_id": run_id, "identity": merged_identity,
-                        "shared_from": {"run_id": args.h0_from, "path": str(donor_dir),
-                                        "h0_sha": h0_sha,
-                                        # The donor's own measurement conditions, kept so a
-                                        # reader can tell "measured at jobs=13" from "this
-                                        # run's jobs".
-                                        "measured_with": {
-                                            "jobs": (donor_point.get("identity") or {}).get("jobs"),
-                                            "gpu_budget": (donor_point.get("identity") or {}).get("gpu_budget")}}}
-        console.note(f"round 0 reused from {args.h0_from} — one first score for every method",
-                     level="info")
-    else:
-        base = evaluate(work, tasks_all, scorable, cache, harness_sha=h0_sha,
-                        trials=args.trials, jobs=args.jobs, progress_dir=run_dir,
-                        sandbox=args.sandbox, setups=setups, verifiers=verifiers,
-                        envs=envs, run_id=run_id, run_seed=os.environ["HARNESSGRAD_SEED"],
-                        recordings_root=run_dir / "recordings",
-                        **({"diagnostic_authorization": diagnostic_authorization}
-                           if diagnostic_authorization is not None else {}))
-        # Kept so a later run can share *this* measurement instead of repeating it.
+    # **A resumed run rebuilds round 0 from the record instead of measuring it.**
+    # `--h0-from` shares another run's first score; `--resume` continues *this* run,
+    # so the same rebuild applies to its own curve, and no state is measured twice.
+    resume_state = None
+    if args.resume:
         try:
-            (run_dir / "h0.json").write_text(
-                json.dumps({"base": base, "h0_sha": h0_sha, "run_id": run_id}, default=str))
-        except (TypeError, OSError) as exc:
-            console.note(f"could not write h0.json ({exc}); this run cannot be a --h0-from "
-                         f"donor", level="warn")
-    if enforcement is not None:
-        # Preserve raw execution/scorer facts with their comparison prohibition.
-        # No aggregate score is published and the curve path below cannot run.
-        base["enforcement"] = enforcement
-        with (run_dir / "diagnostic_execution.json").open("x") as stream:
-            json.dump(base, stream, indent=2)
-    complete_measurement = save_policy_receipt(base)
-    _require_untampered(base)
-    _report_invalid(base, args.dataset)
-    _report_harness_failed(base, args.dataset)
-    if not complete_measurement:
-        console.note("refusing staged curve: lifecycle publication gate or measurement incomplete; "
-                     "invalid/unmeasured outcomes are preserved in the receipt",
-                     level="error")
-        return 2
-    if not base["per_task"]:
-        # Nothing was measurable, so there is no curve to draw. Refused rather than
-        # recorded as a point: `mean([])` is 0.0, and a zero here would say "the
-        # harness scored nothing" about a run in which the harness never ran
-        # (INTERFACE.md §2.5.7).
+            resume_state = _resume_train_state(args, run_dir, split, work)
+        except ResumeNothingToDo as exc:
+            console.note(f"--resume: {exc}", level="info")
+            return 0
+        except ResumeRefused as exc:
+            console.note(f"refusing --resume: {exc}", level="error")
+            return 2
         console.note(
-            f"refusing to run: none of the {len(tasks_all)} tasks in "
-            f"{args.dataset!r} produced a scoreable result. The curve would have to "
-            f"report a score for a task set that was never measured.", level="error")
-        return 2
-    cumulative["evaluation_trials"] += len(tasks_all)
-    cumulative["env_generation_tokens"] += (base.get("env_usage") or {}).get(
-        "input", 0) + (base.get("env_usage") or {}).get("output", 0)
-    cumulative["wall_clock_s"] += time.time() - t0
+            f"resuming {run_id} at round {resume_state['last']}"
+            f" ({(resume_state['recorded_sha'] or '')[:12]}); the workspace was re-staged"
+            f" from state_after_round{resume_state['last']}", level="info")
+    if resume_state is None:
+        h0_sha = commit_state(work, "H0")
+        t0 = time.time()
+        # **The shared round 0.** This measurement is a method's first input, so if every run
+        # measures its own, batching non-determinism can hand one method a different number and
+        # a different trace set while the record still says they saw the same evidence.
+        # `--h0-from RUN` reuses one run's measurement for all of them.
+        shared_point = None
+        if args.h0_from:
+            donor_dir = Path(args.runs_root) / args.h0_from
+            payload_path = donor_dir / "h0.json"
+            payload = None
+            if payload_path.is_file():
+                payload = json.loads(payload_path.read_text())
+                if payload.get("h0_sha") != h0_sha:
+                    print(f"refusing --h0-from {args.h0_from!r}: it measured base "
+                          f"{payload.get('h0_sha')!r}, this run's base is {h0_sha!r}",
+                          file=sys.stderr)
+                    return 2
+            donor_point = None
+            donor_curve = donor_dir / "curve.jsonl"
+            if donor_curve.is_file():
+                for line in donor_curve.read_text().splitlines():
+                    if line.strip():
+                        donor_point = json.loads(line)
+                        break
+            if donor_point is None:
+                print(f"refusing --h0-from {args.h0_from!r}: it has no curve point", file=sys.stderr)
+                return 2
+            if payload is not None:
+                base = payload["base"]
+            else:
+                # No raw payload: this run predates `h0.json`. Its own base sha is checked
+                # against `h0_sha` below -- through the point's identity -- and the number is
+                # the same number, so re-measuring it would only spend compute to produce a
+                # second value for one measurement.
+                if (donor_point.get("identity") or {}).get("harness_sha") != h0_sha:
+                    print(f"refusing --h0-from {args.h0_from!r}: its point measured base "
+                          f"{(donor_point.get('identity') or {}).get('harness_sha')!r}, this "
+                          f"run's base is {h0_sha!r}", file=sys.stderr)
+                    return 2
+                base = _base_from_point(donor_point)
+                console.note(f"{args.h0_from} has no h0.json; rebuilt the measurement from its "
+                             f"curve point (same base tree, same number)", level="info")
+            # The traces travel with the measurement: a method that reads a trace channel to
+            # decide what to edit must see the same traces as every other method.
+            donor_traces = donor_dir / "round0_traces"
+            if donor_traces.is_dir() and not (run_dir / "round0_traces").exists():
+                shutil.copytree(donor_traces, run_dir / "round0_traces")
+            # The method's trace channel is staged from the *dict*, not from the directory.
+            base["traces"], base["trial_traces"] = _read_trace_bodies(donor_traces)
+            # **The identity has two kinds of field, and they belong to different runs.** The
+            # measurement facts -- which tree, which agent model, which jobs and budget produced
+            # the number -- are the donor's, and copying them is the point. The *run* facts are
+            # not: `improver`, `skill_sha` and `method_model` describe who is proposing edges in
+            # **this** run, and the platform stages them into the method's `round.json`, which is
+            # how a method learns whether it has a CLI improver at all. Copying the donor's
+            # `improver: None` (the donor ran with `--improver none`) told all nine methods they
+            # had no CLI improver, so each fell back to the chat endpoint with a prompt sized for
+            # a CLI and died on the 16k window -- every method, every round 1, on 2026-10-17.
+            run_identity = _identity(man, h0_sha, mode, improver=improver,
+                                     jobs=args.jobs, trials=args.trials,
+                                     gpu_budget=args.gpu_budget)
+            merged_identity = dict(donor_point.get("identity") or {})
+            for key in ("improver", "skill_sha", "method_model"):
+                if key in run_identity:
+                    merged_identity[key] = run_identity[key]
+                else:
+                    merged_identity.pop(key, None)
+            shared_point = {**donor_point, "run_id": run_id, "identity": merged_identity,
+                            "shared_from": {"run_id": args.h0_from, "path": str(donor_dir),
+                                            "h0_sha": h0_sha,
+                                            # The donor's own measurement conditions, kept so a
+                                            # reader can tell "measured at jobs=13" from "this
+                                            # run's jobs".
+                                            "measured_with": {
+                                                "jobs": (donor_point.get("identity") or {}).get("jobs"),
+                                                "gpu_budget": (donor_point.get("identity") or {}).get("gpu_budget")}}}
+            console.note(f"round 0 reused from {args.h0_from} — one first score for every method",
+                         level="info")
+        else:
+            base = evaluate(work, tasks_all, scorable, cache, harness_sha=h0_sha,
+                            trials=args.trials, jobs=args.jobs, progress_dir=run_dir,
+                            sandbox=args.sandbox, setups=setups, verifiers=verifiers,
+                            envs=envs, run_id=run_id, run_seed=os.environ["HARNESSGRAD_SEED"],
+                            recordings_root=run_dir / "recordings",
+                            **({"diagnostic_authorization": diagnostic_authorization}
+                               if diagnostic_authorization is not None else {}))
+            # Kept so a later run can share *this* measurement instead of repeating it.
+            try:
+                (run_dir / "h0.json").write_text(
+                    json.dumps({"base": base, "h0_sha": h0_sha, "run_id": run_id}, default=str))
+            except (TypeError, OSError) as exc:
+                console.note(f"could not write h0.json ({exc}); this run cannot be a --h0-from "
+                             f"donor", level="warn")
+        if enforcement is not None:
+            # Preserve raw execution/scorer facts with their comparison prohibition.
+            # No aggregate score is published and the curve path below cannot run.
+            base["enforcement"] = enforcement
+            with (run_dir / "diagnostic_execution.json").open("x") as stream:
+                json.dump(base, stream, indent=2)
+        complete_measurement = save_policy_receipt(base)
+        _require_untampered(base)
+        _report_invalid(base, args.dataset)
+        _report_harness_failed(base, args.dataset)
+        if not complete_measurement:
+            console.note("refusing staged curve: lifecycle publication gate or measurement incomplete; "
+                         "invalid/unmeasured outcomes are preserved in the receipt",
+                         level="error")
+            return 2
+        if not base["per_task"]:
+            # Nothing was measurable, so there is no curve to draw. Refused rather than
+            # recorded as a point: `mean([])` is 0.0, and a zero here would say "the
+            # harness scored nothing" about a run in which the harness never ran
+            # (INTERFACE.md §2.5.7).
+            console.note(
+                f"refusing to run: none of the {len(tasks_all)} tasks in "
+                f"{args.dataset!r} produced a scoreable result. The curve would have to "
+                f"report a score for a task set that was never measured.", level="error")
+            return 2
+        cumulative["evaluation_trials"] += len(tasks_all)
+        cumulative["env_generation_tokens"] += (base.get("env_usage") or {}).get(
+            "input", 0) + (base.get("env_usage") or {}).get("output", 0)
+        cumulative["wall_clock_s"] += time.time() - t0
 
-    # The sampling policy chooses what the run is *scored* on, within the run's own side.
-    # Two things about the cost, and the first one is a whole-side sweep:
-    #
-    # * Score-based policies measure the whole eligible side at round 0. They need scores
-    #   to select on, and §2.1 fixes
-    #   the selection at H0, so the whole side is paid for exactly once, at round 0.
-    # * from round 1 the method is shown only the selected subset (`train_ids` below). To
-    #   fix a subset for the *whole* run -- including round 0, which is what a study of "how
-    #   many study tasks does a capability need" wants -- pass `--tasks` or a `--split` file;
-    #   `--sampling random_N` does not narrow round 0.
-    #
-    # The comment here used to claim the policy "does not reach into the train side" and that
-    # the cost was "all of train, every round". That described the eval-side-only version of
-    # this call; both sentences had been false since `within` became the run's own side, and
-    # the second one sent a reader looking for a cost that is not paid.
-    #
-    # `tasks_all` was narrowed to the side before round 0, so the policy selects within it and
-    # `within` can never reach across -- the cross-side leak this guards against is not a rule
-    # here, it is an absence of the other side.
-    if args.sampling in ("diagnostic", "pilot_10pct"):
-        task_ids = list(side_ids)
-    else:
-        task_ids = select_task_set(base["per_task"], args.sampling,
-                                   within=(side_ids or None))
-    if not task_ids:
-        console.note(f"sampling policy {args.sampling!r} selected no tasks on H0",
-                     level="error")
-        return 2
-    # A train run's scored set **is** its diagnostics set: the method is shown the tasks
-    # it is scored on, which is what training means and is exactly why the exam has to be
-    # a different run. An eval run has no method at all (see the `--side eval` path), so
-    # this is only ever populated for `train`.
-    train_ids = list(task_ids) if args.side == "train" else []
-    tasks = [t for t in tasks_all if t["task_id"] in set(task_ids + train_ids)]
-    sampling = {"dataset": args.dataset, "policy": args.sampling, "task_ids": task_ids,
-                "selection_basis_round": 0,
-                "selected_within": args.side if split else "all"}
-    if split and len(task_ids) < 8:
-        # Not a warning about the platform, a warning about the number the reader is
-        # about to see. `task_ids` is what *this run* scores -- on a train run that is
-        # the train side, on an eval run the exam -- so the wording has to stay
-        # side-neutral. It used to say "eval side is N tasks" while printing the run's
-        # own task count: a one-task train run announced "eval side is 1 tasks" about a
-        # 37-task exam, which reads as a measurement of the wrong thing.
+        # The sampling policy chooses what the run is *scored* on, within the run's own side.
+        # Two things about the cost, and the first one is a whole-side sweep:
         #
-        # A 2-task run moves in steps of 0.5, and a 0.5 step read as a result is the
-        # most expensive mistake this console can help someone avoid.
-        console.note(
-            f"this run scores {len(task_ids)} tasks — the score moves in steps of "
-            f"{1.0 / len(task_ids):.3f}", level="warn")
-
+        # * Score-based policies measure the whole eligible side at round 0. They need scores
+        #   to select on, and §2.1 fixes
+        #   the selection at H0, so the whole side is paid for exactly once, at round 0.
+        # * from round 1 the method is shown only the selected subset (`train_ids` below). To
+        #   fix a subset for the *whole* run -- including round 0, which is what a study of "how
+        #   many study tasks does a capability need" wants -- pass `--tasks` or a `--split` file;
+        #   `--sampling random_N` does not narrow round 0.
+        #
+        # The comment here used to claim the policy "does not reach into the train side" and that
+        # the cost was "all of train, every round". That described the eval-side-only version of
+        # this call; both sentences had been false since `within` became the run's own side, and
+        # the second one sent a reader looking for a cost that is not paid.
+        #
+        # `tasks_all` was narrowed to the side before round 0, so the policy selects within it and
+        # `within` can never reach across -- the cross-side leak this guards against is not a rule
+        # here, it is an absence of the other side.
+        if args.sampling in ("diagnostic", "pilot_10pct"):
+            task_ids = list(side_ids)
+        else:
+            task_ids = select_task_set(base["per_task"], args.sampling,
+                                       within=(side_ids or None))
+        if not task_ids:
+            console.note(f"sampling policy {args.sampling!r} selected no tasks on H0",
+                         level="error")
+            return 2
+        # A train run's scored set **is** its diagnostics set: the method is shown the tasks
+        # it is scored on, which is what training means and is exactly why the exam has to be
+        # a different run. An eval run has no method at all (see the `--side eval` path), so
+        # this is only ever populated for `train`.
+        train_ids = list(task_ids) if args.side == "train" else []
+        tasks = [t for t in tasks_all if t["task_id"] in set(task_ids + train_ids)]
+        sampling = {"dataset": args.dataset, "policy": args.sampling, "task_ids": task_ids,
+                    "selection_basis_round": 0,
+                    "selected_within": args.side if split else "all"}
+        if split and len(task_ids) < 8:
+            # Not a warning about the platform, a warning about the number the reader is
+            # about to see. `task_ids` is what *this run* scores -- on a train run that is
+            # the train side, on an eval run the exam -- so the wording has to stay
+            # side-neutral. It used to say "eval side is N tasks" while printing the run's
+            # own task count: a one-task train run announced "eval side is 1 tasks" about a
+            # 37-task exam, which reads as a measurement of the wrong thing.
+            #
+            # A 2-task run moves in steps of 0.5, and a 0.5 step read as a result is the
+            # most expensive mistake this console can help someone avoid.
+            console.note(
+                f"this run scores {len(task_ids)} tasks — the score moves in steps of "
+                f"{1.0 / len(task_ids):.3f}", level="warn")
+    else:
+        base = resume_state["base"]
+        h0_sha = resume_state["h0_sha"]
+        shared_point = None
+        # **The task set is the one this run already used.** Re-selecting would let a resume
+        # quietly measure a different set of tasks under the same curve -- and the original
+        # selection is on the record (`sampling.task_ids` of round 0), so there is nothing
+        # to re-derive.
+        task_ids = list((resume_state["existing"][0].get("sampling") or {}).get("task_ids") or [])
+        if not task_ids:
+            task_ids = select_task_set(base["per_task"], args.sampling,
+                                       within=(side_ids or None))
+        if not task_ids:
+            console.note("refusing --resume: the run's round 0 recorded no task set",
+                         level="error")
+            return 2
+        train_ids = list(task_ids) if args.side == "train" else []
+        tasks = [t for t in tasks_all if t["task_id"] in set(task_ids + train_ids)]
+        sampling = {"dataset": args.dataset, "policy": args.sampling, "task_ids": task_ids,
+                    "selection_basis_round": 0,
+                    "selected_within": args.side if split else "all"}
     # Round 0's state too: "measure H0 on the exam" is the baseline every later eval is
     # read against, and it needs a state to measure exactly like any other round.
     # (`h0_sha` was committed before the measurement, above.)
-    _save_round_state(run_dir, 0, work)
-    if shared_point is not None:
+    if resume_state is None:
+        _save_round_state(run_dir, 0, work)
+    if resume_state is not None:
+        # The points already on disk are the record; a resumed run appends to them.
+        curve = list(resume_state["existing"])
+    elif shared_point is not None:
         # The donor's point verbatim except for the id: its `identity` describes *how that
         # number was produced* (jobs, budget, model), which is the honest record, and
         # `shared_from` says which run produced it.
@@ -1494,7 +1613,22 @@ def _main(attempt: dict) -> int:
     curve = _run_mode_a(args, work, man, run_id, mode, curve, h0_sha,
                         base, tasks, task_ids, scorable, sampling, cache,
                         cumulative, train_ids, split, setups, verifiers,
-                        verifier_kinds, envs, improver=improver)
+                        verifier_kinds, envs, improver=improver,
+                        start_steps=(resume_state["last"] if resume_state else 0),
+                        resumed_from=(resume_state["last"] if resume_state else None))
+
+    # **A resumed curve says how it was stitched.** `from_round` and the two content
+    # addresses are the whole claim: the state re-staged from the record reproduced the
+    # address the earlier points already named, and the platform content matched, so no
+    # second platform version entered this curve.
+    if resume_state is not None:
+        _write_run_meta(run_dir, resumed=[{
+            "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "from_round": resume_state["last"],
+            "recorded_sha": resume_state["recorded_sha"],
+            "staged_sha": resume_state["staged_sha"],
+            "platform_content_sha": _platform_content_sha(),
+        }])
 
     if budget_binding is not None:
         _write_run_meta(run_dir, budget=budget_binding.metadata())
