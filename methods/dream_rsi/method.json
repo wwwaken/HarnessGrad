@@ -1,22 +1,63 @@
 {
  "kind": "published",
- "title": "Dream-RSI：把“部署哪个版本”变成 argmax V",
- "note": "移植的是它的选择规则：V = quality − b1·成本(kilo-token) + b2·成本/k，在**包含 incumbent 在内**的全部已测版本上取 argmax，所以它自带不退化保证（V* ≥ V^0）。这是我们手上唯一一个**不需要 mode A 的拒绝步**就能完整表达的方法 —— 因为它的接受/拒绝作用在“部署哪个版本”上，不作用在“已交出的候选”上；平台本来就把每一轮留在曲线上、最后一个是 incumbent，所以保证在这里是**核对出来的事实**（`guarantee_holds`）而不是声明。带不过来的是它的 replay simulator（`max_{v∈T} s_v` 需要对已记录的 discovery tree 取最大，我们每轮只有一个分数），以及它“离线评分、零执行成本”的那一半；并行奖励项在 mode A 里 k 恒定（=--trials），所以 b2 默认 0 并记录。见 docs/methods_we_port.md。",
+ "title": "Dream-RSI：基于各轮代理值的 argmax 选择",
+ "note": "依据本机 Dream-RSI/papers/Dream-RSI.pdf 第 5–6 页 §3、公式 (1) 核对，未取得上游实现（README.md:64–65,126–135）。论文的 V 是固定历史上跨回放世界的平均值，含最佳节点质量、生成—评估请求数惩罚及每决策轮请求数奖励。此处实际用各轮 studied score、harness token/1000 和 n_trials 作代理，默认 b1=0.001、b2=0.0 均为移植版选择。保留 argmax 结构，但 guarantee_holds 只核对记录中代理值的大小关系；它不保证论文回放目标、质量、部署或下一候选不退化。选中的 staged state 仅作为后续编辑起点。附录 B.2 的 AUC/并行惩罚目标与正文公式的关系仍无法核实。",
  "deviations": [
   {
+   "id": "replay_simulator",
    "what": "The replay simulator is absent.",
-   "why": "`max_{v in T} s_v` needs a recorded discovery tree; one score per round makes it a fixed-test-set best-of.",
-   "direction": "weaker"
+   "why": "The paper deterministically reveals recorded children in a fixed discovery tree with prefix-only observations. run.py reads round summaries and builds no tree or replay transitions; it cannot perform zero-new-execution off-policy replay. This is missing machinery, not an exact reduction of replay to best-of rounds.",
+   "direction": "weaker",
+   "source": "Dream-RSI/papers/Dream-RSI.pdf p.5–6, §3 Offline evaluation; README.md:91–104"
   },
   {
-   "what": "The cost coefficient defaults to 0.001, not 0.05.",
-   "why": "At 0.05 per kilo-token a 100k-token round costs 5.0 -- five times the whole quality range -- so `argmax V` silently becomes 'use the fewest tokens'. The change alters what the objective optimises, so this is not the published method's optimum.",
-   "direction": "unknown"
+   "id": "fixed_history",
+   "what": "Each round's studied score replaces max node quality and the average over common replay worlds.",
+   "why": "version_row() calls studied_score(point), with no max over a revealed subtree or per-world V_i calculation. select() compares these stored values without re-evaluating each version on the same history. The paper's t counts accumulated world trees, not tasks already averaged into one score. Even a fixed task set does not establish equality to that average; the effect on rankings is unknown.",
+   "direction": "unknown",
+   "source": "Dream-RSI/papers/Dream-RSI.pdf p.6, §3 Replay objective Eq. (1), Policy improvement and selection"
   },
   {
+   "id": "execution_cost",
+   "what": "Request count N is replaced by harness_tokens / 1000 with port-specific coefficients and a missing-cost fallback.",
+   "why": "The paper counts revealed non-root nodes, representing generation–evaluation requests, and requires fixed beta1,beta2 >= 0; numerical values are unspecified. config() keeps b1=0.001 and b2=0.0, not published defaults, and accepts float overrides without sign or finiteness validation. The former port value 0.05 is not a paper baseline. version_row() uses total harness_tokens, and when tokens are absent, nonnumeric or <=0 it omits both cost terms and uses quality alone. Neither a token/request conversion nor mixed cost-availability comparison is justified by Eq. (1); ranking effects are unknown.",
+   "direction": "unknown",
+   "source": "Dream-RSI/papers/Dream-RSI.pdf p.6, §3 Replay objective Eq. (1); p.7, §4 discovery cost in agent calls"
+  },
+  {
+   "id": "parallelism",
+   "what": "The denominator k is n_trials rather than completed replay decision rounds; the bonus is disabled by default.",
+   "why": "The paper's N/max(1,k) rewards average requests per decision round, not requests divided by worker count or trial repetitions. version_row() sets k=int(n_trials or 1) and uses kilo-tokens in the numerator. b2 defaults to 0.0, so no parallelism signal is used by default; nonzero overrides do not recover the published bonus. The effect on rankings is unknown; fixed trials does not mean the paper's k is fixed.",
+   "direction": "unknown",
+   "source": "Dream-RSI/papers/Dream-RSI.pdf p.5–6, §3 replay termination and Replay objective Eq. (1)"
+  },
+  {
+   "id": "offline_revisions",
    "what": "The offline M-revision phase is absent: every revision is paid for.",
-   "why": "One revision per round here.",
-   "direction": "weaker"
+   "why": "The paper holds history fixed for M evaluated versions including the current policy, with replay feedback between revisions and no new discovery execution for replay. main() calls the shared proposer once per invocation (with possible repair retries) and submits one candidate for platform measurement. Historical round count is not M on a common fixed simulator pool.",
+   "direction": "weaker",
+   "source": "Dream-RSI/papers/Dream-RSI.pdf p.5–6, §3 Offline evaluation, Policy improvement and selection"
+  },
+  {
+   "id": "policy_surface",
+   "what": "The proposer edits a harness rather than a dedicated executable exploration policy with the shared online/replay batch interface.",
+   "why": "The paper fixes the discovery agent, evaluator and interfaces and changes exploration-policy code governing branching, batching and stopping. main() instead sends harness sources through the common editor with no policy-only restriction or discovery-tree action API. The method cannot enforce that only exploration changes; the comparative effect is unknown.",
+   "direction": "unknown",
+   "source": "Dream-RSI/papers/Dream-RSI.pdf p.4–5, §3; p.19, Appendix B.2 Listing 2 lines 1–3"
+  },
+  {
+   "id": "selection_scope",
+   "what": "Argmax is over recorded round proxies; the arithmetic check does not establish the paper's replay or deployment guarantee.",
+   "why": "The paper includes the current policy in a common-history comparison then deploys the selected policy. Here an unscored last round is omitted and the last scored row becomes the comparison incumbent. Scores with positive tokens are rounded to six decimals; ties prefer the earliest round, while the paper leaves argmax ties unspecified. base_round() edits a selected staged state or falls back to the actual incumbent when unstaged. No incumbent_round selection is emitted, and the newly edited candidate can regress. guarantee_holds is only a check of recorded proxy values, explicitly labelled guarantee_scope=recorded_proxy_values_only. Its effect relative to the paper is unknown.",
+   "direction": "unknown",
+   "source": "Dream-RSI/papers/Dream-RSI.pdf p.6, §3 Policy improvement and selection"
+  },
+  {
+   "id": "appendix_objective",
+   "what": "The appendix's beta-sweep AUC objective is not implemented; its relation to Eq. (1) is unknown.",
+   "why": "Appendix B.2 ranks pareto.reward = pareto.auc - lambda * parallel_penalty across a policy beta sweep, with parallel_penalty based on effective_sequential_rounds / total_probes. run.py uses one token-cost-adjusted score and no sweep or AUC. The appendix's single behavioral beta is not beta1/beta2 from Eq. (1). No released upstream evaluator is present locally to reconcile the two descriptions, so neither formula is silently substituted for the other.",
+   "direction": "unknown",
+   "source": "Dream-RSI/papers/Dream-RSI.pdf p.19, Appendix B.2 Listing 2 lines 12–21; p.21–22 lines 145–188; p.6 Eq. (1); README.md:64–65,126–135"
   }
  ]
 }

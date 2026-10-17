@@ -1,22 +1,15 @@
-"""Dream-RSI 的选择规则:在**包含 incumbent** 的版本集合上取 argmax V。
+"""Dream-RSI 的本地代理选择规则及其证据边界。
 
-**为什么这个移植不一样。** 我们其他每个方法都要为 mode A 缺的那个"拒绝步"道歉;
-Dream-RSI 不需要 —— 它的接受/拒绝作用在"**部署哪个版本**"上,不作用在"已经交出去的候选"上。
-只要把 incumbent 放进候选集合,它的不退化保证就成立:
-
-    "Because the candidate set includes the current policy, this selection satisfies
-     V^{m*} >= V^0."   (arXiv 2609.14858 §3)
-
-而平台本来就把每一轮留在曲线上、最后一个是 incumbent。所以这个保证在这里是**核对出来的
-事实**(`guarantee_holds`),不是一句声明。带不过来的是 replay simulator(`max_{v∈T} s_v`
-要对已记录的 discovery tree 取最大,我们每轮只有一个分数):移植版退化成"固定题集上的
-best-of",那仍然是这条规则有用的一半。
+依据: Dream-RSI/papers/Dream-RSI.pdf, §3, p.5–6, Eq. (1)。论文比较同一固定
+历史上的平均回放分数; 这里比较已记录的各轮代理值。旧有数值断言保留,但不能把它们
+解读成回放、质量或下一候选的不退化保证。附录 B.2 p.19 的 AUC 目标另有未解差异。
 """
 from __future__ import annotations
 
 import importlib.util
 import io
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -63,9 +56,10 @@ def test_v_is_quality_minus_cost_plus_the_parallelism_term():
 
 
 def test_the_default_makes_cost_a_tie_breaker_not_the_objective():
-    """**默认系数是量出来的,不是抄的。** 若 b1=0.05,一轮 100k token 要扣 5.0 —— 是整个
-    质量区间的五倍,`argmax V` 会悄悄变成"谁花得少"。默认取 0.001:质量 +0.1 能压过 10 倍
-    成本,而同分时成本仍然说话。"""
+    """保留已有代理默认值的数值检查; 论文 p.6 Eq. (1) 未指定 beta 数值。
+
+    本例只检验这些输入,不证明代价项对所有输入都只是平局裁决。
+    """
     cfg = DR.config()
     assert cfg["b1"] * 100 <= 0.2, "100 kilo-token 的惩罚不该超过质量区间的五分之一"
     cheap = DR.version_row(_point(0, 0.4, 5000), cfg)["v"]
@@ -226,6 +220,7 @@ def test_main_puts_the_version_table_and_the_selection_in_the_prompt(tmp_path, m
     assert "| version | quality | cost (kilo-tokens) | k | V |" in prompt
     assert "| r1 |" in prompt
     assert "guarantee V* >= V^0 holds: True" in prompt
+    assert "recorded proxy values only" in prompt
     assert got["stdout"]["changed"] is False
 
 
@@ -247,6 +242,8 @@ def test_main_hands_the_versions_and_the_guarantee_back_on_the_wire(tmp_path, mo
     reported = captured["method_reported"]["dream_rsi"]
     assert reported["selected"] == 1 and reported["guarantee_holds"] is True
     assert captured["extra"]["guarantee_holds"] is True
+    assert reported["guarantee_scope"] == "recorded_proxy_values_only"
+    assert captured["extra"]["guarantee_scope"] == reported["guarantee_scope"]
 
 
 def test_main_reports_a_real_edit_as_changed(tmp_path, monkeypatch):
@@ -266,3 +263,53 @@ def test_declining_keeps_the_budget(tmp_path, monkeypatch):
     got = _invoke(DR, _request(base, tmp_path / "ws", tmp_path / "traj.json", history),
                   monkeypatch, {"no_change": "all green"})
     assert got["stdout"].get("stop") is False
+
+
+# ---------------------------------------------------- 论文核对的记录契约 ---
+
+def _metadata():
+    return json.loads((ROOT / "methods" / "dream_rsi" / "method.json").read_text())
+
+
+def test_every_deviation_has_a_checkable_paper_or_readme_locator():
+    """记录本身需要出处; 不依赖本机上游目录,也不加载任何数据集。"""
+    for deviation in _metadata()["deviations"]:
+        source = deviation.get("source", "")
+        assert re.search(r"Dream-RSI\.pdf.*p\.\d+|README\.md:\d+", source), deviation
+
+
+@pytest.mark.parametrize("deviation_id, source_term, required_terms", [
+    ("replay_simulator", "p.5", ("replay", "tree")),
+    ("fixed_history", "p.6", ("max", "average", "world")),
+    ("execution_cost", "Eq. (1)", ("harness_tokens", "0.001", "unspecified")),
+    ("parallelism", "Eq. (1)", ("n_trials", "decision rounds", "0.0")),
+    ("offline_revisions", "p.5", ("M", "feedback")),
+    ("policy_surface", "p.4", ("harness", "exploration")),
+    ("selection_scope", "p.6", ("proxy", "unstaged", "unscored")),
+    ("appendix_objective", "p.19", ("pareto.reward", "pareto.auc", "unknown")),
+])
+def test_metadata_identifies_the_actual_substitutions_and_open_questions(
+        deviation_id, source_term, required_terms):
+    deviations = {d.get("id"): d for d in _metadata()["deviations"]}
+    deviation = deviations[deviation_id]
+    assert source_term in deviation["source"]
+    explanation = deviation["what"] + " " + deviation["why"]
+    for term in required_terms:
+        assert term in explanation
+    assert deviation["direction"] in {"weaker", "unknown"}
+
+
+@pytest.mark.parametrize("history, selected, incumbent", [
+    # A higher proxy can have lower quality: the check is not quality monotonicity.
+    ([_point(0, 0.8, 1000), _point(1, 0.9, 5000000)], 0, 1),
+    # Missing cost changes the objective on one row.
+    ([_point(0, 0.5, None), _point(1, 0.5, 1000)], 0, 1),
+    # Existing fallback compares to the last scored row, not the unscored current one.
+    ([_point(0, 0.5, 1000), _point(1, None, 1000)], 0, 0),
+])
+def test_the_guarantee_explicitly_covers_only_recorded_proxy_values(history, selected, incumbent):
+    got = DR.select(history, {"b1": 0.001, "b2": 0.0, "kilo_tokens": 1000.0})
+    assert got["selected"] == selected
+    assert got["incumbent"] == incumbent
+    assert got["guarantee_holds"] is True
+    assert got["guarantee_scope"] == "recorded_proxy_values_only"
