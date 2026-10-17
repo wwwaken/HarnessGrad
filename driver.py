@@ -234,6 +234,17 @@ def _read_trace_bodies(directory: Path) -> tuple[dict, dict]:
                     for task, parts in trials.items()}
 
 
+def _platform_content_sha() -> str:
+    """One digest for the whole platform tree (see `eval/run/integrity.py`).
+
+    Written into every run's `run_meta` so a later `--resume` can refuse to continue a
+    curve across a platform change: two code versions in one curve is the confound this
+    platform exists to remove, and nothing on disk said which version a run used.
+    """
+    from eval.run.integrity import content_sha
+    return content_sha(PLATFORM_ROOT)
+
+
 def _base_from_point(point: dict) -> dict:
     """Rebuild the measurement dictionary from a curve point.
 
@@ -421,6 +432,10 @@ def _main(attempt: dict) -> int:
                          "comparable only when those agree.")
     ap.add_argument("--from-run", default=None,
                     help="--side eval: the train run whose harness state to measure")
+    ap.add_argument("--resume", action="store_true",
+                    help="continue an interrupted run instead of starting clean: the train "
+                         "side continues from its last measured round, the eval side scores "
+                         "only the tasks whose progress file is missing")
     ap.add_argument("--from-round", type=int, default=None,
                     help="--side eval: which round of that run (default: its last)")
     ap.add_argument("--h0-from", default=None, metavar="RUN_ID",
@@ -1124,6 +1139,15 @@ def _main(attempt: dict) -> int:
         split_declared=split is not None,
         split_source=split_source,
         split_sha=datasets.split_sha(split) if split else None,
+        # **What this run is a measurement of, and of which platform.** `evaluated_from`
+        # is what an interrupted eval run needs to verify a `--resume` target: today the
+        # join lives only on the finished point, so a run killed at 147/200 recorded
+        # nowhere which state it was measuring. `platform_content_sha` is the same idea
+        # one level up: continuing a run after the platform changed would stitch two
+        # code versions into one curve, and this is the field that lets a resume refuse.
+        evaluated_from=({"run_id": args.from_run, "round": args.from_round}
+                        if getattr(args, "from_run", None) else None),
+        platform_content_sha=_platform_content_sha(),
         # **Where the oracle's reference artifact came from.** Gate 1 is the oracle
         # control, and "the benchmark's own reference scores 1 here" and "a reference the
         # platform wrote scores 1 here" are different claims about the check -- so the run

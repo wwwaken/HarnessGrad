@@ -98,6 +98,92 @@ def _eval_from_record(runs_root: Path, run_id: str, round_no: int) -> dict:
                     "train_score": p.get("score") if p.get("side") != "eval" else None}
     return {"run_id": run_id, "round": round_no}
 
+def _progress_results(run_dir: Path) -> dict[str, dict]:
+    """Per-task results an interrupted eval run already wrote.
+
+    `evaluate()` records one JSON per finished task under `progress/round-0/`. Those files
+    are the only evidence that a task was measured, so a resume reads them rather than
+    trusting a receipt count.
+    """
+    out: dict[str, dict] = {}
+    for path in sorted((run_dir / "progress").glob("round-0/*.json")):
+        try:
+            record = json.loads(path.read_text())
+        except (OSError, json.JSONDecodeError):
+            continue
+        task_id = record.get("task_id")
+        if task_id and record.get("complete"):
+            out[task_id] = record
+    return out
+
+
+def _resume_mismatch(run_dir: Path, args, pool: str, sha: str) -> str | None:
+    """Why this run cannot be resumed, or None when it can.
+
+    A resumed point must describe **one** measurement: same pool, same state, same
+    task set. Anything else would silently concatenate two different measurements into a
+    single number.
+    """
+    meta_path = run_dir / "run_meta.json"
+    if not meta_path.is_file():
+        return f"{run_dir.name} has progress files but no run_meta.json; cannot verify it"
+    try:
+        meta = json.loads(meta_path.read_text())
+    except (OSError, json.JSONDecodeError) as exc:
+        return f"{run_dir.name}/run_meta.json is unreadable: {exc}"
+    recorded_from = meta.get("from_run") or meta.get("evaluated_from") or {}
+    if isinstance(recorded_from, dict):
+        was_run, was_round = recorded_from.get("run_id"), recorded_from.get("round")
+    else:
+        was_run, was_round = recorded_from, None
+    # Runs created before `evaluated_from` was written record nothing to verify against.
+    # Treating that absence as "no mismatch" would resume a state nobody can name.
+    if not was_run:
+        return (f"{run_dir.name}/run_meta.json records no evaluated_from; "
+                f"which state this run was measuring cannot be verified")
+    if was_run != args.from_run:
+        return f"the interrupted run measured {was_run!r}, this invocation --from-run {args.from_run!r}"
+    if was_round is not None and args.from_round is not None and was_round != args.from_round:
+        return (f"the interrupted run measured round {was_round}, this invocation "
+                f"--from-round {args.from_round}")
+    was_pool = (meta.get("env") or {}).get("pool") if isinstance(meta.get("env"), dict) else None
+    if was_pool and was_pool != pool:
+        return f"the interrupted run measured pool {was_pool!r}, this invocation {pool!r}"
+    return None
+
+
+def _merge_prior(res: dict, prior: dict[str, dict]) -> dict:
+    """Fold the already-scored tasks back into a fresh `evaluate()` result.
+
+    Counts of invalid and harness-failed tasks come from the same records, so the merged
+    point's `n_invalid`/`n_harness_failed` describe the whole pool rather than the half that
+    this process re-measured.
+    """
+    merged = dict(res)
+    per_task = dict(merged.get("per_task") or {})
+    invalid = list(merged.get("invalid") or [])
+    failed = list(merged.get("harness_failed") or [])
+    known = {str(x.get("task_id")) for x in invalid if isinstance(x, dict)}
+    known_failed = {str(x.get("task_id")) for x in failed if isinstance(x, dict)}
+    for task_id, record in prior.items():
+        if task_id in per_task:
+            continue
+        outcome = record.get("process_outcome")
+        if outcome == "completed" and record.get("score") is not None:
+            per_task[task_id] = float(record["score"])
+        elif outcome in ("invalid", "unmeasured"):
+            if task_id not in known:
+                invalid.append({"task_id": task_id, "why": record.get("detail") or outcome})
+                known.add(task_id)
+        elif task_id not in known_failed:
+            failed.append({"task_id": task_id, "why": record.get("detail") or str(outcome)})
+            known_failed.add(task_id)
+    merged["per_task"] = per_task
+    merged["invalid"] = invalid
+    merged["harness_failed"] = failed
+    return merged
+
+
 def _run_eval_side(*, work: Path, man: dict, run_id: str, run_dir: Path, tasks: list[dict],
                    scorable: dict, setups, verifiers, envs, side_ids, split, args,
                    eval_from: dict | None, improver: dict | None = None,
@@ -120,12 +206,36 @@ def _run_eval_side(*, work: Path, man: dict, run_id: str, run_dir: Path, tasks: 
     sha = commit_state(work, f"eval of {args.from_run} round "
                              f"{(eval_from or {}).get('round')}")
     t0 = time.time()
-    res = evaluate(work, tasks, scorable, cache, harness_sha=sha, sandbox=args.sandbox,
-                   progress_dir=run_dir,
-                   trials=args.trials, jobs=args.jobs,
-                   setups=setups, verifiers=verifiers, envs=envs, run_id=run_id,
-                   run_seed=os.environ["HARNESSGRAD_SEED"],
-                   recordings_root=run_dir / "recordings", round_no=0)
+    # **--resume: finish what was interrupted, do not re-measure what was not.** The
+    # per-task progress files are the evidence of which tasks are done; a task that was
+    # scored once must not be scored again, because two measurements of one task are two
+    # numbers and picking either is a choice the record cannot defend.
+    prior: dict[str, dict] = {}
+    if getattr(args, "resume", False):
+        prior = _progress_results(run_dir)
+        if prior:
+            why = _resume_mismatch(run_dir, args,
+                                   os.environ.get("HG_ALFWORLD_POOL", ""), sha)
+            if why:
+                console.note(f"refusing --resume: {why}", level="error")
+                return 2
+            before = len(tasks)
+            tasks = [t for t in tasks if str(t.get("task_id")) not in prior]
+            console.note(f"--resume: {before - len(tasks)} of {before} tasks already carry "
+                         f"a result; scoring the remaining {len(tasks)}", level="info")
+    if prior and not tasks:
+        console.note("--resume: every task in this pool already has a result; writing the "
+                     "point from the progress files alone", level="info")
+        res = {"per_task": {}, "trials": args.trials, "identity_declared": None}
+    else:
+        res = evaluate(work, tasks, scorable, cache, harness_sha=sha, sandbox=args.sandbox,
+                       progress_dir=run_dir,
+                       trials=args.trials, jobs=args.jobs,
+                       setups=setups, verifiers=verifiers, envs=envs, run_id=run_id,
+                       run_seed=os.environ["HARNESSGRAD_SEED"],
+                       recordings_root=run_dir / "recordings", round_no=0)
+    if prior:
+        res = _merge_prior(res, prior)
     complete_measurement = after_evaluation(res) if after_evaluation is not None else True
     _require_untampered(res)
     _report_invalid(res, args.dataset)
