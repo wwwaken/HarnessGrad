@@ -64,36 +64,45 @@ container-only before this dataset (`eval/verification/verifier.py::_verify` now
 host check as well -- the smallest change that let a no-Docker dataset keep the
 contract's evidence channel).
 
-What the agent can read, and what that costs
---------------------------------------------
-`SETUP` hands the agent `game.tw-pddl` with the reference solution removed, and what is
-left is the **whole initial state**: `pddl_domain`, `pddl_problem` and `grammar`
-(`_stripped_game`). `pddl_problem` is ALFWorld's own `:init` -- 306 facts on one
-measured `valid_unseen` game -- and it states which object is inside which receptacle
-(`inReceptacle AlarmClock_... Desk_...`) and which object or receptacle is at which
-location (`objectAtLocation`, `receptacleAtLocation`). The object and receptacle ids are
-exactly the ids `alfworld`'s own `Demangler` turns into the names the agent sees, and
-that demangler reads nothing but the ids. So an agent that opens the file can read the
-object layout instead of exploring for it.
+What the agent can read, and what that used to cost
+--------------------------------------------------
+**Closed.** The agent used to receive `game.tw-pddl` in its working directory with only
+the reference solution removed (`_stripped_game`), and what was left was the **whole
+initial state**: `pddl_domain`, `pddl_problem` and `grammar`. `pddl_problem` is
+ALFWorld's own `:init` -- measured on this adapter's first `valid_unseen` game, 291
+facts -- and it states which object is inside which receptacle (`inReceptacle AlarmClock_... Desk_...`) and which object or
+receptacle is at which location (`objectAtLocation`, `receptacleAtLocation`). The object
+and receptacle ids are exactly the ids `alfworld`'s own `Demangler` turns into the names
+the agent sees, and that demangler reads nothing but the ids. So an agent that opened the
+file could read the object layout instead of exploring for it -- strictly easier than
+ALFWorld as published, where finding an unseen object is part of the task.
 
-That is strictly easier than ALFWorld as published: the paper's agent learns the scene by
-interacting, and finding an object it has not seen is part of the task. A score from this
-adapter is therefore taken with the layout available, and it is not comparable with the
-paper's ALFWorld number.
+The file cannot travel with the task any more, and the fix is not a smaller file:
+measured, TextWorld raises `KeyError` for a game file missing `pddl_problem`, `grammar`
+or `pddl_domain`, so every buildable copy carries the layout. The environment therefore
+runs **outside** the agent's namespace. `data/datasets/alfworld/relay.py` builds the same
+TextWorld environment from the same bytes with the same `gym_env.build`, and answers two
+ops over the platform's transport (`eval/service/tool_transport.py`): `look` (the last
+applied step's observation, no step consumed) and `do` (one step). A reply is exactly
+`{obs, admissible, won, done, step}` -- five fields projected off the environment's own
+record, so there is no key the PDDL, the object ids or the goal literal could travel in.
+The agent's CLI (`cli/alf`) is a client of that process and never opens a game file.
 
-Leaving it there is the platform's shape, not a judgement about ALFWorld. The agent acts
-through its own CLI and that CLI builds the TextWorld environment, so the game file it
-builds from has to be in the agent's working directory; measured, TextWorld raises
-`KeyError` for a game file missing `pddl_problem`, `grammar` or `pddl_domain`, so no
-reduced copy is buildable. There is also nowhere outside that directory to load it from:
-on the default `files` sandbox `bwrap` starts from an empty root and binds the runtime
-trees, the interpreter prefix, the work root and the task directory, which leaves the
-data root (`DATASET_ROOT`) absent, and any path the CLI could read the harness could read
-too -- same user, same namespace. Closing the exposure needs the environment to run
-outside the agent's namespace (a platform-side environment service, the way the model
-route already works); until one exists this paragraph is the record. `walkthrough` stays
-stripped, and `VERIFY` grades from the same stripped copy, so the check and the oracle
-control are unaffected.
+`SETUP` no longer ships the game at all. `_stripped_game` still exists and still matters:
+it is the bytes the relay is given (and the bytes `VERIFY.inputs` grades from), so the
+environment the agent acts in and the environment the check replays are built from one
+text -- `tests/quality/test_alfworld_relay.py` pins that byte identity for all 134 games.
+
+Two things about this are **not** in this repository yet, and both are required before
+an end-to-end run: (1) the runner must stage those bytes outside the sandbox and start
+`relay.py`, then pass the socket to the sandbox as `tool_socket=` so it is published at
+`/run/harnessgrad-tool/tool.sock` where the CLI imports and calls it (the mount wiring
+lives in `eval/containers/`, a separate task -- and this migration is the first to
+require `PLAN_VERSION` 4 -> 5, because from then on what a subject sees has changed);
+(2) a relay fault currently makes `alf` exit nonzero, and nothing yet maps that to an
+**unmeasured** task rather than a 0 -- `Relay.receipt` is the evidence the runner needs
+for that. Neither is faked here. `control.py --oracle` (the local arm) publishes the
+same pair into a temp directory itself and is unaffected.
 
 The metric, and what is deliberately not added
 ----------------------------------------------
@@ -188,6 +197,16 @@ CLI_DIR = ASSETS / "cli"
 LIB_DIR = ASSETS / "lib"
 VERIFY_DIR = ASSETS / "verify"
 
+#: The platform's one tool transport, and the fixed place the sandbox publishes it:
+#: `eval/containers/tool_route.py` mounts `/run/harnessgrad-tool/tool_transport.py` and
+#: `tool.sock` read-only, and the agent's CLI imports the module from there and calls the
+#: socket. It is deliberately **not** shipped by `SETUP`: a copy in the agent's workdir
+#: would be a copy the agent could edit, and the published pair is the platform's, not
+#: this dataset's. `TRANSPORT_SOURCE` is the file that gets published, named here so a
+#: reader can see the CLI and `relay.py` share one implementation of the wire format.
+TOOL_SOCKET = Path("/run/harnessgrad-tool/tool.sock")
+TRANSPORT_SOURCE = ASSETS.parents[2] / "eval" / "service" / "tool_transport.py"
+
 #: The step budget and the two filenames are **declared once**, in
 #: `data/datasets/alfworld/lib/gym_env.py`, which the agent's CLI and the check both import.
 #: Repeating the number here would be a second declaration that can drift from the one the
@@ -239,14 +258,14 @@ _GOAL_RE = re.compile(r'"task"\s*:\s*\[\s*\{\s*"rhs"\s*:\s*"((?:[^"\\]|\\.)*)"')
 
 #: The one field of a game file that must never reach the agent. `walkthrough` is
 #: ALFWorld's own reference solution for the game -- a list of the exact commands that
-#: solve it -- and handing it over would hand over the answer. What is **not** stripped
-#: is the initial state itself (`pddl_problem`, `pddl_domain`, `grammar`): the agent's
-#: CLI has to build the TextWorld environment from this copy and TextWorld refuses a game
-#: file missing any of the three, so there is no smaller buildable copy. That exposure,
-#: and why it cannot be closed from this layer, is measured and written down in the
-#: module docstring ("What the agent can read, and what that costs"). `SETUP` and every
-#: verifier input therefore carry `_stripped_game()` rather than the file on disk, and
-#: the oracle control reads the original from the data root.
+#: solve it -- and handing it over would hand over the answer. The initial state itself
+#: (`pddl_problem`, `pddl_domain`, `grammar`) cannot be stripped either: TextWorld
+#: refuses a game file missing any of the three, so there is no smaller buildable copy.
+#: That is why the copy exists at all -- it is what the **relay** builds from, outside
+#: the sandbox, not what the agent receives (see the module docstring, "What the agent
+#: can read, and what that used to cost"). Every verifier input therefore carries
+#: `_stripped_game()` rather than the file on disk, and the oracle control reads the
+#: original -- `walkthrough` included -- from the data root.
 _LEAKED_FIELD = "walkthrough"
 
 
@@ -354,11 +373,14 @@ def _stripped_game(gamedata: dict) -> str:
 
     Only `_LEAKED_FIELD` is removed; everything else -- including the initial state --
     stays, because TextWorld cannot build the environment without it (see the module
-    docstring, "What the agent can read, and what that costs").
+    docstring, "What the agent can read, and what that used to cost").
 
-    Kept as a string because that is the shape `SETUP`/`VERIFY.inputs` take for inline
-    content, and because it means the stripped copy is built once at import instead of
-    being written somewhere on disk that could drift from its source.
+    Kept as a string because that is the shape `VERIFY.inputs` takes for inline content,
+    and because it means the stripped copy is built once at import instead of being
+    written somewhere on disk that could drift from its source. **The agent never
+    receives it.** Its two readers are the relay, which builds the environment from it
+    outside the sandbox (`relay.game_content`, `relay.stage`), and the check, which
+    replays the action log from it.
     """
     clean = {k: v for k, v in gamedata.items() if k != _LEAKED_FIELD}
     return json.dumps(clean)
@@ -369,13 +391,14 @@ def _goal(record: dict) -> str:
 
     Nothing here hints at the solution. It states the goal the environment will check,
     how to act, and the budget -- the three things the agent cannot discover from the
-    interface alone.
+    interface alone. It names no file: the environment is not in the working directory.
     """
     return (
         f"# Task\n"
         f"\n"
         f"You are in a text-based house, described one room at a time, and you act by\n"
-        f"typing commands. The game is `{GAME_IN_WORKDIR}` in your working directory.\n"
+        f"typing commands. The environment is served by a process outside your working\n"
+        f"directory, and these commands are the only way to reach it.\n"
         f"\n"
         f"**{record['goal']}**\n"
         f"\n"
@@ -405,15 +428,33 @@ def _goal(record: dict) -> str:
 def _setup(record: dict) -> dict:
     """What the agent receives before it starts.
 
-    The CLI and its shared environment library travel as `from` references into this
-    repository; the game travels as inline content because it must be the *stripped*
-    copy (see `_LEAKED_FIELD`), which is not the bytes on disk.
+    The CLI and its shared environment library, and **no game file**. That is the whole
+    change: the game is not in the agent's working directory any more, because the
+    environment that reads it lives in a host process (`relay.py`) reached over a socket.
+    `gym_env.py` still travels because the CLI imports it (for the log, the budget and
+    the action parser); the transport does **not** travel, because the platform publishes
+    it read-only at `TOOL_SOCKET`'s directory and a copy in the workdir would be a copy
+    the agent could edit.
+
+    `VERIFY.inputs` keeps the game, and that copy is the one the runner stages for the
+    relay: the same bytes, read by the check and by the relay, never by the agent.
     """
-    return {"files": [
-        {"path": GAME_IN_WORKDIR, "content": record["stripped_game"]},
-        {"path": "gym_env.py", "from": str(LIB_DIR / "gym_env.py")},
-        {"path": "alf", "from": str(CLI_DIR / "alf")},
-    ]}
+    return {
+        "files": [
+            {"path": "gym_env.py", "from": str(LIB_DIR / "gym_env.py")},
+            {"path": "alf", "from": str(CLI_DIR / "alf")},
+        ],
+        # The environment itself. Deliberately not under "files": `eval/run/tool_relay.py`
+        # stages these bytes in a directory the platform owns, starts `relay.py` on them, and
+        # mounts only the resulting socket into the sandbox. `record["stripped_game"]` is the
+        # same string `VERIFY.inputs` carries, so the relay and the check read identical bytes.
+        "tool_relay": {
+            "program": str(ASSETS / "relay.py"),
+            "filename": GAME_IN_WORKDIR,
+            "content": record["stripped_game"],
+            "budget": STEP_BUDGET,
+        },
+    }
 
 
 def _verifier(record: dict) -> dict:

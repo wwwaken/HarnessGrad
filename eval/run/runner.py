@@ -21,6 +21,7 @@ import eval.containers.sandbox as sandbox_mod
 from eval.containers.process import run as run_process
 import eval.service.services as services_mod
 from eval.service.unix_stepwise_relay import StepwiseRelay
+from eval.run import tool_relay as tool_relay_mod
 from eval.run import chess_stepwise
 import tools.web_gateway as web_gateway_mod
 from ckpt.git_state import STATE_DIRNAME
@@ -492,6 +493,16 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                 public_fields=chess_stepwise.PUBLIC_FIELDS, timeout_s=timeout_s)
             child_env["HG_STEPWISE_SOCKET"] = str(stepwise_relay.path)
 
+        # The dataset's interaction environment, if it declares one. Started here and not in
+        # the harness: the whole point is that the agent gets a socket and never the state.
+        # A declared relay that cannot start is `unmeasured`, not a task scored against a hole.
+        tool_relay = None
+        if tool_relay_mod.declaration(setup) is not None:
+            try:
+                tool_relay = tool_relay_mod.start(setup)
+            except RuntimeError as exc:
+                return _invalid(task, exc, stage="tool relay", service=None)
+
         def launch():
             if is_exec:
                 # `runtime_paths` is deliberately not applied: it exists because a
@@ -536,6 +547,7 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                                                  if isinstance(model_gateway, NativeModelRoute) else None),
                                    model_path=(model_gateway.path
                                                if isinstance(model_gateway, NativeModelRoute) else ""),
+                                   tool_socket=(tool_relay.path if tool_relay is not None else None),
                                    package_overlays=package_overlays,
                                    immutable_runtimes=immutable_runtimes)
 
@@ -548,7 +560,13 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                 finally:
                     if stepwise_relay is not None:
                         stepwise_relay.stop()
+                    if tool_relay is not None:
+                        tool_relay.stop()
             exit_code, stderr = proc.returncode, proc.stderr[-2000:]
+            if tool_relay is not None:
+                fault = tool_relay.fault()
+                if fault is not None:
+                    return _invalid(task, fault, stage="tool relay", service=None)
         except subprocess.TimeoutExpired:
             exit_code, stderr = -1, f"timeout after {timeout_s}s"
         except modelgate_mod.GatewayUnavailable as exc:

@@ -32,6 +32,9 @@ ALLOWED_EVAL_CONFIG_EDGES = {
 EXCEPTIONS = {
     ("data-eval", "data/datasets/alfworld/control.py", "eval.run.runner"):
         "The existing platform control invokes run_one to validate adapter wiring.",
+    ("data-eval", "data/datasets/alfworld/relay.py", "eval.service.tool_transport"):
+        "The host-side ALFWorld environment server is a program, not a library: it serves "
+        "the platform's one tool transport, which lives in eval/service.",
     ("data-eval", "data/datasets/appworld/control.py", "eval.run.runner"):
         "The existing platform control invokes run_one with the AppWorld verifier.",
     ("data-eval", "data/datasets/appworld.py", "eval.policy.appworld_reporting"):
