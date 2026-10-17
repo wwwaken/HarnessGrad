@@ -368,6 +368,14 @@ def _main(attempt: dict) -> int:
                     help="--side eval: the train run whose harness state to measure")
     ap.add_argument("--from-round", type=int, default=None,
                     help="--side eval: which round of that run (default: its last)")
+    ap.add_argument("--h0-from", default=None, metavar="RUN_ID",
+                    help="reuse another run's round-0 measurement instead of measuring one. "
+                         "Same base tree, same study tasks, so every method must be offered "
+                         "the *same* first score: re-measuring it per method lets batching "
+                         "non-determinism hand one method a different number and a different "
+                         "trace set, which is the one thing a comparison cannot absorb. The "
+                         "reused point records `shared_from` naming the run it came from. "
+                         "Refused unless both runs share the base harness sha")
     ap.add_argument("--baseline", default=None,
                     help="a frozen reference point to measure this run against, as a JSON "
                          "file holding one curve point (the object a `curve.jsonl` line "
@@ -1161,13 +1169,58 @@ def _main(attempt: dict) -> int:
     # a measurement is what `--trials` is for.
     h0_sha = commit_state(work, "H0")
     t0 = time.time()
-    base = evaluate(work, tasks_all, scorable, cache, harness_sha=h0_sha,
-                    trials=args.trials, jobs=args.jobs, progress_dir=run_dir,
-                    sandbox=args.sandbox, setups=setups, verifiers=verifiers,
-                    envs=envs, run_id=run_id, run_seed=os.environ["HARNESSGRAD_SEED"],
-                    recordings_root=run_dir / "recordings",
-                    **({"diagnostic_authorization": diagnostic_authorization}
-                       if diagnostic_authorization is not None else {}))
+    # **The shared round 0.** This measurement is a method's first input, so if every run
+    # measures its own, batching non-determinism can hand one method a different number and
+    # a different trace set while the record still says they saw the same evidence.
+    # `--h0-from RUN` reuses one run's measurement for all of them.
+    shared_point = None
+    if args.h0_from:
+        donor_dir = Path(args.runs_root) / args.h0_from
+        payload_path = donor_dir / "h0.json"
+        if not payload_path.is_file():
+            print(f"refusing --h0-from {args.h0_from!r}: no {payload_path}", file=sys.stderr)
+            return 2
+        payload = json.loads(payload_path.read_text())
+        if payload.get("h0_sha") != h0_sha:
+            print(f"refusing --h0-from {args.h0_from!r}: it measured base {payload.get('h0_sha')!r}, "
+                  f"this run's base is {h0_sha!r}", file=sys.stderr)
+            return 2
+        donor_point = None
+        donor_curve = donor_dir / "curve.jsonl"
+        if donor_curve.is_file():
+            for line in donor_curve.read_text().splitlines():
+                if line.strip():
+                    donor_point = json.loads(line)
+                    break
+        if donor_point is None:
+            print(f"refusing --h0-from {args.h0_from!r}: it has no curve point", file=sys.stderr)
+            return 2
+        base = payload["base"]
+        # The traces travel with the measurement: a method that reads a trace channel to
+        # decide what to edit must see the same traces as every other method.
+        donor_traces = donor_dir / "round0_traces"
+        if donor_traces.is_dir() and not (run_dir / "round0_traces").exists():
+            shutil.copytree(donor_traces, run_dir / "round0_traces")
+        shared_point = {**donor_point, "run_id": run_id,
+                        "shared_from": {"run_id": args.h0_from, "path": str(donor_dir),
+                                        "h0_sha": h0_sha}}
+        console.note(f"round 0 reused from {args.h0_from} — one first score for every method",
+                     level="info")
+    else:
+        base = evaluate(work, tasks_all, scorable, cache, harness_sha=h0_sha,
+                        trials=args.trials, jobs=args.jobs, progress_dir=run_dir,
+                        sandbox=args.sandbox, setups=setups, verifiers=verifiers,
+                        envs=envs, run_id=run_id, run_seed=os.environ["HARNESSGRAD_SEED"],
+                        recordings_root=run_dir / "recordings",
+                        **({"diagnostic_authorization": diagnostic_authorization}
+                           if diagnostic_authorization is not None else {}))
+        # Kept so a later run can share *this* measurement instead of repeating it.
+        try:
+            (run_dir / "h0.json").write_text(
+                json.dumps({"base": base, "h0_sha": h0_sha, "run_id": run_id}, default=str))
+        except (TypeError, OSError) as exc:
+            console.note(f"could not write h0.json ({exc}); this run cannot be a --h0-from "
+                         f"donor", level="warn")
     if enforcement is not None:
         # Preserve raw execution/scorer facts with their comparison prohibition.
         # No aggregate score is published and the curve path below cannot run.
@@ -1253,30 +1306,36 @@ def _main(attempt: dict) -> int:
     # read against, and it needs a state to measure exactly like any other round.
     # (`h0_sha` was committed before the measurement, above.)
     _save_round_state(run_dir, 0, work)
-    curve = [_curve_point(
-        run_id=run_id, round_index=0,
-        identity=_identity(man, h0_sha, mode, improver=improver,
-                            declared=base.get("identity_declared"),
-                            jobs=args.jobs, trials=args.trials,
-                            gpu_budget=args.gpu_budget),
-        sampling=sampling,
-        scores=[base["per_task"][t] for t in _scored(base, task_ids)],
-        task_ids=_scored(base, task_ids),
-        train_scores=[base["per_task"][t] for t in _scored(base, train_ids)],
-        train_ids=_scored(base, train_ids), split=split,
-        invalid=base.get("invalid"),
-        harness_failed=base.get("harness_failed"),
-        model_gateway=base.get("model_gateway"),
-        harness_runtime=base.get("harness_runtime"),
-        evaluation_protocols=base.get("evaluation_protocols"),
-        env_record=_env_record(envs, task_ids),
-        cost=_cost_of(base, len(tasks_all), cumulative["wall_clock_s"]),
-        cumulative=cumulative, label="H0 (base harness)",
-        n_trials=base.get("trials"), score_std=base.get("score_std"),
-        per_task_std=base.get("per_task_std"),
-        per_task_trials=base.get("per_task_trials"),
-        cached_tasks=base.get("cached_tasks"),
-        **test_rate_fields(base))]
+    if shared_point is not None:
+        # The donor's point verbatim except for the id: its `identity` describes *how that
+        # number was produced* (jobs, budget, model), which is the honest record, and
+        # `shared_from` says which run produced it.
+        curve = [shared_point]
+    else:
+        curve = [_curve_point(
+            run_id=run_id, round_index=0,
+            identity=_identity(man, h0_sha, mode, improver=improver,
+                                declared=base.get("identity_declared"),
+                                jobs=args.jobs, trials=args.trials,
+                                gpu_budget=args.gpu_budget),
+            sampling=sampling,
+            scores=[base["per_task"][t] for t in _scored(base, task_ids)],
+            task_ids=_scored(base, task_ids),
+            train_scores=[base["per_task"][t] for t in _scored(base, train_ids)],
+            train_ids=_scored(base, train_ids), split=split,
+            invalid=base.get("invalid"),
+            harness_failed=base.get("harness_failed"),
+            model_gateway=base.get("model_gateway"),
+            harness_runtime=base.get("harness_runtime"),
+            evaluation_protocols=base.get("evaluation_protocols"),
+            env_record=_env_record(envs, task_ids),
+            cost=_cost_of(base, len(tasks_all), cumulative["wall_clock_s"]),
+            cumulative=cumulative, label="H0 (base harness)",
+            n_trials=base.get("trials"), score_std=base.get("score_std"),
+            per_task_std=base.get("per_task_std"),
+            per_task_trials=base.get("per_task_trials"),
+            cached_tasks=base.get("cached_tasks"),
+            **test_rate_fields(base))]
     # The base harness is always evaluated by the platform, so its point is a
     # platform measurement like any other. Leaving the field unset made the
     # exported record claim the score was the method's -- the opposite of true.
