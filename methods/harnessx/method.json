@@ -1,17 +1,32 @@
 {
  "kind": "published",
  "title": "HarnessX:历史最佳验收门(移植)",
- "note": "移植的是它的验收门,不是它的编辑:分数 = pass_rate - cost_weight * max(成本涨幅, 0),只有当分数跌破 tolerance 且通过任务数的变化达到噪声阈值时才回退;噪声级跌破算接受但不更新历史最佳,而且比较的是历史最佳、不是上一轮接受的候选。模式 A 没有拒绝这一步,所以回退只能写成一条记录加一个指令:把历史最佳状态 states/round-<n>/ 原样交回去当本轮候选,并指名它是下一轮该建的基准。",
+ "note": "历史最佳验收门：默认 HG_HARNESSX_REGRESSION_TOLERANCE=0.03、通过数噪声阈值=3，与本机上游一致；只有成本调整后分数退步超过容忍度、且通过数变化达到阈值时才回滚。回滚复制最佳轮完整树，并用 incumbent_round 声明选择；不调用编辑模型，保留被验收候选的原预注册，历史缺失时明确记录 unavailable。门在下一次方法调用时验收刚测完的候选；状态未暂存时记录选择并停止。上游 shipping validator 的运行时和 journal 检查仍未移植。",
  "deviations": [
   {
-   "what": "The gate cannot revert anything.",
-   "why": "mode A accepts unconditionally. The port records the gate's arithmetic and reason, and hands the historical best state back as the next candidate's base -- and that restore works only because the platform happens to measure the directory the method handed back.",
+   "what": "Rollback restores the staged historical-best tree and declares incumbent_round, but grading is delayed until the next method call.",
+   "why": "recipe/gaia_evolver/run.py:802-820 grades and restores inside the upstream loop. This port grades history[-1] on entry using only finite platform-measured scores, copies the best snapshot with editor.apply_edits and uses a single-step editor.report_many selection. Rollback changes the submitted tree and selection, not the measured score/history or the graded candidate's declaration: its pre-registration is copied from the previous round record (upstream :822-839 keeps and back-fills that round's journal). Missing declarations produce a schema-shaped record with source=unavailable and a reason, without inventing a hypothesis. No new proposal or model call is made during rollback. Unmeasured/missing scores are not read as zero. The restore consumes a platform submission; a final candidate is ungated if the budget ends before another invocation. If the best snapshot is absent from states/index.json, the port records incumbent_round but cannot physically restore it and stops.",
    "direction": "weaker"
   },
   {
-   "what": "The shipping gate cannot run at all.",
-   "why": "Its replay phase executes the candidate, which this platform does not do.",
+   "what": "The upstream shipping validator is not executed; version selection alone does not implement its preflight checks.",
+   "why": "harnessx/meta_harness/validate_workflow.py:909-933 requires HarnessConfig YAML canonicalization and structural changesets, processor hook-mutation contract checks, synthetic-task replay in the HarnessX runtime, and journal/memo novelty and evidence checks. The port edits generic harness trees and has no integration with those HarnessX engine objects or memo/journal artifacts. Platform candidate validation and subsequent scoring are available, but do not implement that workflow.",
    "direction": "weaker"
+  },
+  {
+   "what": "The optional cost penalty uses platform tokens rather than upstream USD.",
+   "why": "recipe/gaia_evolver/run.py:1218-1221 uses round_cost in USD. _round_cost instead reads cost[HARNESSX_COST_FIELD], default harness_tokens, falling back to method_generation_tokens and then zero. The relative-cost arithmetic is preserved; cost_weight defaults to 0.0, so the proxy has no effect unless enabled.",
+   "direction": "unknown"
+  },
+  {
+   "what": "The passed-count guard has a legacy aggregate fallback and accepts breaches with unavailable counts.",
+   "why": "Upstream recipe/gaia_evolver/run.py:1225 always has binary passed counts. _passed uses platform n_passed when present, otherwise rounds score times the available sampling task count, which is approximate for fractional scores. The default threshold is 3, matching upstream :1184 and recipe/gaia_evolver/defaults.py:23; with a positive threshold and no count, _gate_decision accepts without updating best. An explicit threshold of 0 disables the guard.",
+   "direction": "weaker"
+  },
+  {
+   "what": "Edit generation uses the shared editor, with JSON pre-registration rather than the resident HarnessX meta-agent and journal workflow.",
+   "why": "main delegates accepted-round proposals to editor.ask using HARNESSX_SYSTEM and records _preregistration fields plus lever validity; editor.fail preserves the actual provider exception and gate arithmetic. HG_HARNESSX_REGRESSION_TOLERANCE defaults to upstream 0.03 (recipe/gaia_evolver/run.py:463-475), absorbing typical 2-3 pp eval noise without drifting the best baseline; HARNESSX_TOLERANCE is a legacy fallback only when the HG variable is absent. Malformed or nonfinite tolerance falls back to 0.03, negative tolerance is clamped to 0.0, and explicit 0.0 remains supported. The port does not run HarnessX evolve orchestration, journal prediction grading or the novelty/evidence workflow. It tests an adapted acceptance rule, not a reproduction of upstream scores.",
+   "direction": "unknown"
   }
  ]
 }
