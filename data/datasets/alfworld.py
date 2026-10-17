@@ -131,6 +131,25 @@ DATASET_ROOT = Path(os.environ.get("HG_ALFWORLD_DATA",
 #: out-of-distribution evaluation split is used, which is the one ALFWorld reports.
 DATA_SUBDIR = ("json_2.1.1", "valid_unseen")
 
+#: **Which directory this run reads.** The default is the benchmark's own OOD evaluation
+#: split. `valid_seen` and `valid_train` are its other evaluation splits, and `train` is the
+#: training split -- read here only as *study* material (see `_STUDY_FILE`).
+_POOL = (os.environ.get("HG_ALFWORLD_POOL") or DATA_SUBDIR[-1]).strip()
+
+#: **A study set drawn from `train`, named by a file of task ids.** When it is set the pool
+#: spans two directories: those ids are the train side and the whole `_POOL` directory is the
+#: eval side.
+#:
+#: Why this exists: the port's earlier design drew its study tasks from `valid_unseen` itself,
+#: so search and report came from the same evaluation pool. That is defensible (the games are
+#: disjoint) but it invites the objection that the method was tuned on the benchmark's test
+#: split. Studying on the official training split removes the objection without changing the
+#: cost of a round, and makes the number directly comparable with the benchmark's protocol.
+#:
+#: The ids are read from a file rather than sampled here: a draw made at import is a draw
+#: nobody can reproduce, and `train100.csv` is a file a reader can diff.
+_STUDY_FILE = (os.environ.get("HG_ALFWORLD_STUDY_IDS") or "").strip()
+
 #: This module's own directory: the adapter is `data/datasets/alfworld.py`, its content is
 #: `data/datasets/alfworld/`.
 ASSETS = Path(__file__).resolve().parent / "alfworld"
@@ -196,11 +215,20 @@ _GOAL_RE = re.compile(r'"task"\s*:\s*\[\s*\{\s*"rhs"\s*:\s*"((?:[^"\\]|\\.)*)"')
 _LEAKED_FIELD = "walkthrough"
 
 
-def _split_dir() -> Path:
-    return DATASET_ROOT.joinpath(*DATA_SUBDIR)
+def _split_dir(pool: str | None = None) -> Path:
+    """The directory for `pool` (default: this run's `HG_ALFWORLD_POOL`)."""
+    return DATASET_ROOT / DATA_SUBDIR[0] / (pool or _POOL)
 
 
-def _collect() -> list[dict]:
+def _study_ids() -> list[str]:
+    """The train-side ids named by `HG_ALFWORLD_STUDY_IDS`, in file order."""
+    if not _STUDY_FILE:
+        return []
+    text = Path(_STUDY_FILE).read_text(encoding="utf-8").strip()
+    return [chunk.strip() for chunk in text.split(",") if chunk.strip()]
+
+
+def _collect(roots: list[tuple[Path, set[str] | None]] | None = None) -> list[dict]:
     """Every runnable game in the split, filtered exactly as ALFWorld filters them.
 
     The filter is `AlfredTWEnv.collect_game_files`, reproduced rather than called:
@@ -216,9 +244,19 @@ def _collect() -> list[dict]:
 
     Each returned record is everything the adapter needs and nothing it does not.
     """
-    root = _split_dir()
     records: list[dict] = []
-    for game_path in sorted(root.glob("*/*/game.tw-pddl")):
+    game_paths: list[Path] = []
+    for root, wanted in (roots or [(_split_dir(), None)]):
+        if wanted is None:
+            game_paths += sorted(Path(root).glob("*/*/game.tw-pddl"))
+            continue
+        # Named ids are opened directly instead of scanning 2,435 directories: reading
+        # every game file under `train` costs seconds at import, and a study set is a
+        # hundred of them.
+        for task_id in sorted(wanted):
+            task_dir, _, trial_dir = task_id.partition("__")
+            game_paths.append(Path(root) / task_dir / trial_dir / "game.tw-pddl")
+    for game_path in game_paths:
         trial_dir = game_path.parent
         task_dir = trial_dir.parent
         label = f"{task_dir.name}/{trial_dir.name}"
@@ -495,8 +533,24 @@ def provision_status() -> dict:
 #: exceptions and hides a module that will not import, and a dataset that cannot be
 #: seen in the chooser before its data is provisioned is a dataset a reader cannot
 #: find the instructions for. `_LOAD_ERROR` carries the reason into `load()`.
+#: The train-side ids this run studies on (empty unless `HG_ALFWORLD_STUDY_IDS` is set).
+_STUDY: list[str] = []
 try:
-    _RECORDS: list[dict] = _collect()
+    _STUDY = _study_ids()
+    if _STUDY:
+        _RECORDS: list[dict] = _collect([(_split_dir("train"), set(_STUDY)),
+                                         (_split_dir(), None)])
+        _found = {r["task_id"] for r in _RECORDS}
+        _missing = [t for t in _STUDY if t not in _found]
+        if _missing:
+            # Loudly, because a study set that silently lost its tasks changes what the
+            # method was shown without changing anything a reader can see.
+            raise ValueError(
+                f"{len(_missing)} of {len(_STUDY)} study ids in {_STUDY_FILE} are not "
+                f"runnable games under {_split_dir('train')} "
+                f"(first: {_missing[:3]})")
+    else:
+        _RECORDS = _collect()
     _LOAD_ERROR: str | None = None
 except Exception as _exc:  # noqa: BLE001 - reported by load(), which is where it bites
     _RECORDS = []
@@ -546,6 +600,15 @@ VERIFY: dict[str, dict] = {r["task_id"]: _verifier(r) for r in _RECORDS}
 _split_mode = (os.environ.get("HG_ALFWORLD_SPLIT") or "hash").lower()
 if _split_mode == "none":
     SPLIT = None
+elif _STUDY:
+    # **The declared sides, without a hash.** The train side is exactly the study file and
+    # the eval side is the rest of the pool, so the two cannot drift: they are the same
+    # partition seen twice. `_is_eval` is not consulted -- it exists to cut *one* pool in
+    # two, and this pool is already two directories.
+    _ids = [r["task_id"] for r in _RECORDS]
+    _study_set = set(_STUDY)
+    SPLIT = {"train": [t for t in _ids if t in _study_set],
+             "eval": [t for t in _ids if t not in _study_set]}
 else:
     _ids = [r["task_id"] for r in _RECORDS]
     SPLIT = {"train": [t for t in _ids if not _is_eval(t)],
