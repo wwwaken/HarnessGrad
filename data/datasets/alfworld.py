@@ -439,10 +439,21 @@ def _setup(record: dict) -> dict:
     `VERIFY.inputs` keeps the game, and that copy is the one the runner stages for the
     relay: the same bytes, read by the check and by the relay, never by the agent.
     """
-    return {"files": [
-        {"path": "gym_env.py", "from": str(LIB_DIR / "gym_env.py")},
-        {"path": "alf", "from": str(CLI_DIR / "alf")},
-    ]}
+    return {
+        "files": [
+            {"path": "gym_env.py", "from": str(LIB_DIR / "gym_env.py")},
+            {"path": "alf", "from": str(CLI_DIR / "alf")},
+        ],
+        # The environment itself. Deliberately not under "files": `eval/run/tool_relay.py`
+        # stages these bytes in a directory the platform owns, starts `relay.py` on them, and
+        # mounts only the resulting socket into the sandbox. `record["stripped_game"]` is the
+        # same string `VERIFY.inputs` carries, so the relay and the check read identical bytes.
+        "tool_relay": {
+            "program": str(ASSETS / "relay.py"),
+            "content": record["stripped_game"],
+            "budget": STEP_BUDGET,
+        },
+    }
 
 
 def _verifier(record: dict) -> dict:

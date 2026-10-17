@@ -79,7 +79,8 @@ from harnessgrad.config import current as current_config
 #: A curve made under plan 1 and one made under plan 2 are measurements of a
 #: harness in two different worlds, so `run_meta.json` records this number and
 #: `tools/plot_curve.py` refuses to put them on the same axis without saying so.
-PLAN_VERSION = 4  # Offline model socket and trusted namespace-local HTTP bootstrap.
+PLAN_VERSION = 5  # 5 adds the read-only host-side tool socket (`eval/containers/tool_route.py`);
+                  # 4 was the offline model socket and the trusted namespace-local HTTP bootstrap.
 
 #: Runtime trees a subject may need, bound read-only at their host paths. Kept as
 #: a short explicit list rather than "the whole host": the point of the namespace
