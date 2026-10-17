@@ -399,6 +399,42 @@
       "surface": "code_generation"
     },
     {
+      "dataset": "locomo",
+      "demand": "evidence",
+      "surface": "long_context",
+      "exercises": [
+        "context"
+      ],
+      "shared_blockers": [],
+      "blockers": [
+        {
+          "id": "adapter-acceptance-pending",
+          "family": "measurement-coverage",
+          "status": "measurement",
+          "observed": "Native files adapter following pinned Harbor input rendering and scoring, using official LoCoMo data: 10 conversations, 1986 questions, all five categories. Complete conversation.md and questions are available at task start; the harness writes answers.json. Per-question scores are retained in standard verdict evidence. The platform uses its existing task mean; report.py provides a separately invoked question-weighted summary with explicit selected coverage. Uses Conda and the existing local HTTP model route with network none. No platform execution changes, model judge or declared study/eval split. Current implementation and validation scope are documented in data/datasets/locomo/README.md and specs/validation-20261017.json. Real local-model inference, target-host readiness and full model benchmark results are not established.",
+          "evidence": [
+            {
+              "kind": "repository",
+              "path": "tests/quality/test_dataset_controls.py",
+              "locator": "\"locomo\": {"
+            },
+            {
+              "kind": "repository",
+              "path": "tools/dataset_classes.py",
+              "locator": "\"locomo\": (\"evidence\", \"long_context\")"
+            },
+            {
+              "kind": "repository",
+              "path": "data/datasets/locomo/README.md",
+              "locator": "LoCoMo native adapter (Harbor protocol)"
+            }
+          ],
+          "next_action": "Review the current Conda validation receipt and adapter documentation. Validate the intended local-model configuration and native sandbox on the target host before model evaluation. Specify task scope, model and budget for the experiment; use the manual question-weighted report with complete selected coverage and matching trial evidence. Preserve invalid and unmeasured outcomes and verification records. Formal staged evaluation remains subject to existing platform runtime and publication checks."
+        }
+      ],
+      "historical_runs": []
+    },
+    {
       "blockers": [],
       "dataset": "musique",
       "demand": "evidence",

@@ -228,9 +228,9 @@ class ImportDirectionTests(unittest.TestCase):
         for old in ("qa", "registry.py", "command_control.py", "command_oracle_harness"):
             self.assertFalse((ROOT / "data" / old).exists(), f"old scaffold shim: {old}")
 
-    def test_publication_preserves_the_ordered_29_adapter_names(self):
+    def test_publication_preserves_the_ordered_30_adapter_names(self):
         from data.scaffolds import registry
-        expected = ('agentdojo', 'aime', 'alfworld', 'api_bank', 'appworld', 'bfcl_v3', 'bird_minidev', 'chessbench_puzzles', 'ds1000', 'fever', 'gaia', 'gsm8k', 'hotpotqa', 'jericho', 'livecodebench', 'musique', 'nestful', 'physicsquestions', 'reasoning_gym', 'scienceworld', 'sotuqa', 'sportsunderstanding', 'spreadsheetbench', 'strategyqa', 'tau2_bench', 'tau_bench', 'terminal_bench', 'triviaqa', 'twowikimultihopqa')
+        expected = ('agentdojo', 'aime', 'alfworld', 'api_bank', 'appworld', 'bfcl_v3', 'bird_minidev', 'chessbench_puzzles', 'ds1000', 'fever', 'gaia', 'gsm8k', 'hotpotqa', 'jericho', 'livecodebench', 'locomo', 'musique', 'nestful', 'physicsquestions', 'reasoning_gym', 'scienceworld', 'sotuqa', 'sportsunderstanding', 'spreadsheetbench', 'strategyqa', 'tau2_bench', 'tau_bench', 'terminal_bench', 'triviaqa', 'twowikimultihopqa')
         self.assertEqual(registry.published(), expected)
         for name in expected:
             module = registry.importlib.import_module(registry.module_name(name))
