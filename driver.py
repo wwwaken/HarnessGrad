@@ -207,6 +207,33 @@ def load_env(path: Path) -> dict:
     return loaded
 
 
+def _read_trace_bodies(directory: Path) -> tuple[dict, dict]:
+    """Read back the trace bodies this platform wrote for one round.
+
+    `_save_traces` writes `traces[task_id]` **verbatim** to `<task>.jsonl`, so the file is
+    the value and the read is lossless. Needed when a measurement is shared: the method's
+    trace channel is staged from the in-memory dict, not from the run directory, so a
+    shared H0 without its traces would hand the methods an empty channel -- the same
+    unfairness sharing exists to remove.
+    """
+    traces: dict = {}
+    trials: dict = {}
+    if not directory.is_dir():
+        return traces, trials
+    for path in sorted(directory.glob("*.jsonl")):
+        name = path.name[: -len(".jsonl")]
+        if ".trial" in name:
+            task, _, index = name.partition(".trial")
+            try:
+                trials.setdefault(task, []).append((int(index), path.read_text()))
+            except ValueError:
+                continue
+        else:
+            traces[name] = path.read_text()
+    return traces, {task: [body for _, body in sorted(parts)]
+                    for task, parts in trials.items()}
+
+
 def _base_from_point(point: dict) -> dict:
     """Rebuild the measurement dictionary from a curve point.
 
@@ -1243,6 +1270,8 @@ def _main(attempt: dict) -> int:
         donor_traces = donor_dir / "round0_traces"
         if donor_traces.is_dir() and not (run_dir / "round0_traces").exists():
             shutil.copytree(donor_traces, run_dir / "round0_traces")
+        # The method's trace channel is staged from the *dict*, not from the directory.
+        base["traces"], base["trial_traces"] = _read_trace_bodies(donor_traces)
         shared_point = {**donor_point, "run_id": run_id,
                         "shared_from": {"run_id": args.h0_from, "path": str(donor_dir),
                                         "h0_sha": h0_sha}}
