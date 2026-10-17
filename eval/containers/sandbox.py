@@ -69,7 +69,7 @@ import tempfile
 from pathlib import Path
 
 from eval.containers.immutable_runtime import ImmutableRuntimeUnavailable, targets
-from eval.containers import model_route
+from eval.containers import model_route, tool_route
 from eval.containers.process import run as run_process
 
 from ckpt.git_state import STATE_DIRNAME
@@ -185,6 +185,7 @@ def command(argv: list[str], *, platform: Path, work_root: Path,
             network: str | None = None,
             model_socket: Path | None = None,
             model_path: str = "",
+            tool_socket: Path | None = None,
             package_overlays: tuple[tuple[Path, Path], ...] = (),
             immutable_runtimes: tuple[tuple[Path, str], ...] = ()) -> list[str]:
     """Wrap `argv` so it runs with the platform off its disk.
@@ -390,6 +391,30 @@ def command(argv: list[str], *, platform: Path, work_root: Path,
             writable_paths=(task_dir, *writable_paths, *state_dirs))
         argv = model_route.bootstrap(argv, model_path)
 
+    if tool_socket is not None:
+        # The interaction environment, served from the host: the same placement as the
+        # model socket and for the same reason -- after every parent bind and every
+        # hide, so no later mount may cover or reopen it. The tool route has its own
+        # fixed destination (`/run/harnessgrad-tool`) and its own rules, and it is
+        # told about the model route's directory so a task cannot point one route's
+        # mount at the other's. Unlike the model route it does not require
+        # `network == "none"`: `{"kind": "files"}` datasets may leave the policy unset,
+        # and a UNIX socket is not reachable over a network (`eval/containers/
+        # tool_route.py` says why).
+        #
+        # Nothing is inserted into `argv` here, unlike the model bootstrap: the agent
+        # imports the published transport module itself. A dataset that passes
+        # `tool_socket` has to bump PLAN_VERSION, because from that commit on its
+        # subjects see a socket they did not see before; no dataset passes it yet.
+        plan += tool_route.mounts(
+            tool_socket, network=network,
+            exposed_paths=(platform, work_root, repo, task_dir, *runtime_paths,
+                           *visible_paths, *writable_paths, *state_dirs,
+                           *(target for _, target in package_overlays),
+                           *(task_dir / rel for _, rel in immutable_runtimes),
+                           model_route.ROOT),
+            writable_paths=(task_dir, *writable_paths, *state_dirs))
+
     #: Variables the platform itself sets to a filesystem path. Only these are
     #: checked against the hidden tree, and the list is explicit because guessing
     #: is what went wrong twice: `HG_AGENT_MODEL=deepseek-flash` is not a path, but
@@ -437,6 +462,7 @@ def run(argv: list[str], *, platform: Path, work_root: Path, task_dir: Path,
         network: str | None = None,
         model_socket: Path | None = None,
         model_path: str = "",
+        tool_socket: Path | None = None,
         package_overlays: tuple[tuple[Path, Path], ...] = (),
         immutable_runtimes: tuple[tuple[Path, str], ...] = ()):
     """`subprocess.run` with the namespace in place. Same return type.
@@ -456,6 +482,7 @@ def run(argv: list[str], *, platform: Path, work_root: Path, task_dir: Path,
                           writable_paths=writable_paths,
                           network=network, package_overlays=package_overlays,
                           model_socket=model_socket, model_path=model_path,
+                          tool_socket=tool_socket,
                           immutable_runtimes=immutable_runtimes)
     except SandboxUnavailable as exc:
         if immutable_runtimes:
