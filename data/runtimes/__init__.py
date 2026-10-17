@@ -19,6 +19,6 @@ NATIVE_PINS = {
     "jericho": {
         "dataset": "jericho",
         "manifest": "data/runtimes/jericho-native.json",
-        "sha256": "dfd1979e4c42c582ab7680438fd24002a9c329e258bec92096287bdd9243cff7",
+        "sha256": "939ba54197a9840512009e01a958e4a05a4537cce20d381e9d337f259eea45b2",
     },
 }

@@ -117,6 +117,8 @@ def test_every_task_has_a_goal_and_the_interface_it_needs(jericho):
     for task in tasks:
         assert task["goal"].strip()
         assert "jer do" in task["goal"]
+        assert "jer look" in task["goal"], "the fixed observation command must stay advertised"
+        assert "jer valid" not in task["goal"], "a command that cannot work is not advertised"
         assert "jer_game.json" not in task["goal"], "the internal filename is not the interface"
 
 
@@ -356,19 +358,22 @@ def test_the_cli_can_report_the_score(jericho, live):
 
 
 def test_the_cli_s_valid_actions_are_best_effort(jericho, live):
-    """`jer valid` needs the spaCy model Jericho's own install instructions fetch.
+    """`jer valid` is gone, and this test says why it was not merely fixed.
 
-    Measured: without `en_core_web_sm` it dies with a **network error** (`Connection reset by
-    peer`) while trying to download it, which is a property of the tool rather than of this
-    dataset. The command is still shipped -- a reader who has the model gets the useful
-    action list -- and this test asserts only that it either works or fails for that reason,
-    so a broken *parser* would still be caught.
+    The command used to be advertised and returned an empty list: the agent runtime is a
+    code-only projection whose `defines.py` has `BINDINGS_DICT = {}` (that table hides the
+    walkthrough, and it is also what `FrotzEnv` builds its template action generator from), so
+    `get_valid_actions()` short-circuits to `[]`. Restoring the table is not enough either --
+    the generator needs spaCy's `en_core_web_sm`, whose fallback is a **network download**, and
+    this dataset's agent runtime has `network: none` (measured: this environment has spaCy but
+    not the model, and `get_valid_actions()` then raises from `spacy.cli.download`). The
+    interface therefore no longer offers it. See
+    `test_jericho_interface_regressions.py::test_the_cli_no_longer_ships_the_action_lister`.
     """
     workdir, _record = live
     valid = subprocess.run([sys.executable, "jer", "valid"], cwd=workdir,
                            capture_output=True, text=True)
-    if valid.returncode == 0:
-        assert valid.stdout.strip(), "the opening room should have some valid action"
-    else:
-        assert "ConnectionError" in valid.stderr or "en_core_web_sm" in valid.stderr, \
-            f"`jer valid` failed for an unexpected reason: {valid.stderr[-300]}"
+    assert valid.returncode == 2, valid.stdout
+    assert "unknown command" in valid.stderr and "valid" in valid.stderr
+    assert "jer valid" not in subprocess.run([sys.executable, "jer", "help"], cwd=workdir,
+                                             capture_output=True, text=True).stdout
