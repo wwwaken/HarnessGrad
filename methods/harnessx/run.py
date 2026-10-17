@@ -7,18 +7,16 @@ candidate with the historical best, adjusts for relative cost increases, keeps
 the earliest best on ties, and restores best_cfg on regression (:813-820).
 The port replays that kernel over platform history and, on rollback, copies the
 complete staged best tree and declares incumbent_round via editor.report_many
-(INTERFACE.md §4.1.1). No editor/model call is made on the rollback path.
+(INTERFACE.md §4.1.1). No editor/model call is made on the rollback path; the
+graded round's pre-registration is retained independently of the restored tree.
 
-Policy required by the fix brief
--------------------------------
-HG_HARNESSX_REGRESSION_TOLERANCE defaults to 0.0: any score drop exceeding the
-tolerance reverts. The local upstream actually defaults to tolerance 0.03
-(recipe/gaia_evolver/run.py:463-475) and a three-pass noise guard (:486-498,
-:1222-1236). This port intentionally defaults the count guard to 0 (disabled),
-so small drops and missing counts cannot silently disable the requested gate.
-A positive HARNESSX_PASS_COUNT_NOISE_THRESHOLD opts into the upstream count
-policy; HARNESSX_TOLERANCE remains a legacy fallback when the HG variable is
-absent. These policy differences are disclosed in method.json.
+HG_HARNESSX_REGRESSION_TOLERANCE defaults to upstream's 0.03
+(recipe/gaia_evolver/run.py:463-475), which absorbs typical eval stochastic noise
+(~2-3 pp) so a useful code fix isn't discarded because an unrelated task flipped.
+The historical-best baseline still only advances on strict improvements.
+The passed-count noise guard defaults to upstream's 3 (:1184, :1222-1236).
+Explicit tolerance 0.0 and count threshold 0 select a strict score-only gate.
+HARNESSX_TOLERANCE remains a legacy fallback when the HG variable is absent.
 
 The gate acts on the last measured round, before proposing another edit. It
 excludes unmeasured or nonfinite scores rather than treating them as zero.
@@ -46,9 +44,9 @@ back to method_generation_tokens), not USD; its weight defaults to upstream's
 fallback. These are platform adaptations, not a reproduction of upstream scores.
 
 Environment variables:
-    HG_HARNESSX_REGRESSION_TOLERANCE    0.0 (legacy: HARNESSX_TOLERANCE)
+    HG_HARNESSX_REGRESSION_TOLERANCE    0.03 (legacy: HARNESSX_TOLERANCE)
     HARNESSX_COST_WEIGHT               0.0
-    HARNESSX_PASS_COUNT_NOISE_THRESHOLD 0 (disabled; upstream default is 3)
+    HARNESSX_PASS_COUNT_NOISE_THRESHOLD 3 (0 disables the count guard)
     HARNESSX_COST_FIELD                harness_tokens
 """
 from __future__ import annotations
@@ -74,8 +72,8 @@ LEVERS = ("configuration", "control", "action", "instruction")
 ACCEPTANCE_RULE = (
     "HarnessX best-so-far gate (recipe/gaia_evolver/run.py:1210-1257): "
     "score = pass_rate - cost_weight*max(cost_delta_ratio,0); revert iff "
-    "score < best_rate - tolerance (HG_HARNESSX_REGRESSION_TOLERANCE defaults to 0.0). "
-    "The passed-count guard is disabled by default; when explicitly enabled, a "
+    "score < best_rate - tolerance (HG_HARNESSX_REGRESSION_TOLERANCE defaults to 0.03) "
+    "and the passed-count delta meets the noise threshold (default 3). A "
     "noise-level breach is accepted without updating best. A rollback hands back "
     "the historical best tree and declares incumbent_round; missing snapshots "
     "record selection only and stop. Upstream shipping preflight is not executed."
@@ -85,7 +83,7 @@ ACCEPTANCE_RULE = (
 # ------------------------------------------------------------- tunables ---
 
 def _tunables() -> dict:
-    """The gate's knobs, with the strict defaults required by the fix brief.
+    """The gate's knobs, with the upstream defaults (run.py:463-498, :1184).
 
     Read per call, not at import time, so a test (or an operator) can change one
     without reloading the module. A malformed value falls back to the default rather
@@ -104,18 +102,17 @@ def _tunables() -> dict:
         except (TypeError, ValueError):
             return int(default)
 
-    # recipe/gaia_evolver/run.py:463-475 defines tolerance as an allowed score
-    # drop, but the local source defaults to 0.03. The brief explicitly requires
-    # 0.0; its HG variable wins over the previous port's legacy variable.
+    # recipe/gaia_evolver/run.py:463-475 defaults to 0.03 to absorb typical
+    # eval noise (~2-3 pp) without discarding a useful fix over a task flip.
+    # The HG variable wins over the previous port's legacy variable.
     tolerance_var = ("HG_HARNESSX_REGRESSION_TOLERANCE"
                      if "HG_HARNESSX_REGRESSION_TOLERANCE" in os.environ
                      else "HARNESSX_TOLERANCE")
     return {
-        "tolerance": max(0.0, _float(tolerance_var, "0.0")),
+        "tolerance": max(0.0, _float(tolerance_var, "0.03")),
         "cost_weight": _float("HARNESSX_COST_WEIGHT", "0.0"),
-        # Upstream run.py:1222-1236 exempts small passed-count changes. Disable
-        # that exemption by default to implement the brief's any-regression rule.
-        "pass_count_noise_threshold": _int("HARNESSX_PASS_COUNT_NOISE_THRESHOLD", "0"),
+        # Upstream run.py:1184, :1222-1236 exempts passed-count changes below 3.
+        "pass_count_noise_threshold": _int("HARNESSX_PASS_COUNT_NOISE_THRESHOLD", "3"),
         "cost_field": os.environ.get("HARNESSX_COST_FIELD", "harness_tokens"),
     }
 
@@ -184,9 +181,9 @@ def _gate_decision(point: dict, best: dict | None, *, tolerance: float,
 
     `best` is `{rate, cost, round, passed}` or `None`. Returns the gate record plus
     the updated `best` and, on a revert, the round to restore. The two-condition rule
-    is the source's when a positive count threshold is explicitly requested
-    (`recipe/gaia_evolver/run.py:1222-1236`). By default the brief's strict score
-    comparison applies even if passed counts are unavailable.
+    is the source's (`recipe/gaia_evolver/run.py:1222-1236`), including the default
+    positive count threshold. Setting that threshold to 0 disables the guard and
+    applies the score comparison even if passed counts are unavailable.
     """
     rate = _num(point.get("score"))
     cost = _round_cost(point, cost_field)
@@ -539,6 +536,16 @@ def main() -> int:
     # platform's incumbent_round contract (INTERFACE.md §4.1.1). report() has no
     # such argument; report_many() supports it even for a single step.
     if gate["decision"] == "REVERTED":
+        # Upstream recipe/gaia_evolver/run.py:813-839 restores current_config,
+        # then back-fills the graded round's existing journal declaration. It
+        # does not erase the prediction or generate another one for the restore.
+        # Legacy history can lack it: expose that absence without inventing one.
+        if graded_prereg is None:
+            graded_prereg = {
+                **_preregistration({}), "source": "unavailable",
+                "reason": (f"no pre-registration recorded for graded round "
+                           f"{gate.get('graded_round')}"),
+            }
         best_round = gate["reverted_to_round"]
         state_dir = _state_dir(base, best_round)
         directive = _revert_directive(base, best_round, state_dir)
