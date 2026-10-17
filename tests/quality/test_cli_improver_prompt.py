@@ -12,8 +12,12 @@
 """
 from __future__ import annotations
 
+import os
+import subprocess
 import sys
 from pathlib import Path
+
+import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
@@ -214,3 +218,167 @@ def test_the_ask_comes_first_and_the_evidence_is_a_path_not_a_copy():
     assert "one change" not in full, "又写成'一个改动'了"
     # no_change 不再是免费出口
     assert "name the\nmechanism you checked" in full or "name the mechanism you checked" in full
+
+
+# --------------------------------------------------------- CLI 的 argv ---
+
+def _command(tmp_path, name="dsh"):
+    """A stub CLI on disk: `_improver_command` refuses a path that does not exist."""
+    path = tmp_path / name
+    path.write_text("#!/bin/sh\n")
+    path.chmod(0o755)
+    return path
+
+
+def test_a_dsh_run_gets_dsh_s_argv_and_not_codex_s(tmp_path):
+    """第二个 CLI 不是 codex 命令行的变体。
+
+    dsh 收 `--profile` 和一个 overlay,working directory 从进程读;把 codex 的
+    `exec --skip-git-repo-check --sandbox danger-full-access -C <dir>` 塞给它,它不是
+    退化运行,是起不来 —— 而报出来的错会像是方法的 bug,不是 argv 的 bug。
+    """
+    command = _command(tmp_path)
+    argv = ci._cli_argv({"improver": {"argv_style": "dsh", "path": str(command)}},
+                        tmp_path, "TASK TEXT")
+    assert argv == [str(command), "TASK TEXT"]
+
+
+def test_the_codex_vocabulary_is_still_the_default(tmp_path):
+    """没声明 `argv_style` 的条目仍然是 codex —— 老的和手写的条目不许变。"""
+    command = _command(tmp_path, "codex")
+    argv = ci._cli_argv({"improver": {"path": str(command)}}, tmp_path, "TASK")
+    assert argv[:2] == [str(command), "exec"]
+    assert "--skip-git-repo-check" in argv and "-C" in argv
+    assert argv[argv.index("-C") + 1] == str(tmp_path)
+    assert argv[-1] == "TASK"
+
+
+def test_an_unknown_cli_style_refuses_rather_than_guessing(tmp_path):
+    """argv 猜不出来,所以不认识就拒绝,而不是塞一堆 flag 让它自己忽略。"""
+    command = _command(tmp_path, "gemini")
+    with pytest.raises(SystemExit) as err:
+        ci._cli_argv({"improver": {"argv_style": "gemini", "name": "gemini",
+                                   "path": str(command)}}, tmp_path, "TASK")
+    message = str(err.value)
+    assert "argv_style" in message and "gemini" in message
+
+
+def test_the_dsh_home_is_seeded_into_the_workspace(tmp_path, monkeypatch):
+    """dsh 在 sandbox 里必须有一个**可写**的 home。
+
+    sandbox 把 improver 的树绑成只读,而 dsh 要往 home 下写 session;namespace 里
+    `$HOME` 又什么都摸不到。所以要在 workspace 里复制一份,并且**必须带上 `profiles/`** ——
+    没有 bundle 层,`--profile headless` 没有东西可 boot。
+    """
+    source = tmp_path / "real-dsh-home"
+    (source / "profiles" / "headless").mkdir(parents=True)
+    (source / "profiles" / "headless" / "package.json").write_text("{}")
+    (source / "settings.yaml").write_text("agent-default-model:\n  model: something-else\n")
+    (source / ".credentials.yaml").write_text("---\n")
+    monkeypatch.setenv("DSH_HOME", str(source))
+    workspace = tmp_path / "ws"
+    workspace.mkdir()
+
+    env: dict = {}
+    ci._seed_dsh_home(workspace, env)
+
+    home = workspace / ".dsh-home"
+    assert env["DSH_HOME"] == str(home)
+    assert (home / "profiles" / "headless" / "package.json").is_file()
+    assert (home / ".credentials.yaml").is_file()
+    # settings 也复制,环境是操作者的 —— 模型不是从这里读的,见下一条
+    assert "something-else" in (home / "settings.yaml").read_text()
+
+
+def test_the_seeded_home_does_not_follow_symlinks(tmp_path, monkeypatch):
+    """`profiles/` 是 pnpm 的软链接农场,而 `copytree` 默认会**解引用**它们。
+
+    实测(2026-10-16,`alfworld-dshsmoke3`):`profiles/node_modules` 下有 **277 个软链接**,
+    每个指向 DSH checkout 里某个包的 `node_modules`;默认的 `copytree` 于是把**目标**递归拷
+    进来,而那些目标里又各自带 `node_modules` —— 复制无界。round 1 在这个调用里坐了十几分钟,
+    132s user / 510s system,py-spy 栈上是几千层 `_copytree`,磁盘上什么也没多出来。整个 9 方法
+    批次会一起死在这里,而且它不报错,只是不动。
+
+    这条测试用一个"目录软链接 + 目标里放一堆文件"来钉住它:链接必须还是链接,目标的文件
+    **不许**出现在种出来的 home 里。
+    """
+    source = tmp_path / "real-dsh-home"
+    target = tmp_path / "checkout" / "pkg"
+    target.mkdir(parents=True)
+    for i in range(50):
+        (target / f"file{i}").write_text("x" * 100)
+    (source / "profiles" / "headless").mkdir(parents=True)
+    (source / "profiles" / "headless" / "package.json").write_text("{}")
+    (source / "profiles" / "node_modules").mkdir()
+    (source / "profiles" / "node_modules" / "linked-package").symlink_to(target)
+    monkeypatch.setenv("DSH_HOME", str(source))
+    workspace = tmp_path / "ws"
+    workspace.mkdir()
+
+    ci._seed_dsh_home(workspace, {})
+
+    seeded = workspace / ".dsh-home" / "profiles"
+    link = seeded / "node_modules" / "linked-package"
+    assert link.is_symlink(), (
+        "软链接被解引用了 —— 这正是把 profiles 的复制变成无界复制的原因")
+    # 链到的是**原来的目标**,不是一份拷贝
+    assert link.readlink() == target
+    # 真目录要真的复制过来(profile 必须能 boot,而且 dsh 会重写 profiles/<name>/cordis.yml,
+    # 所以它得是可写的真实目录)
+    assert (seeded / "headless" / "package.json").is_file()
+    # **判别标准是真实文件数**,不是 `is_dir()`:后者会跟随软链接,对链接也返回 True。
+    # 解引用的版本会把目标里那 50 个文件全拷进来。
+    real = [p for p in seeded.rglob("*") if p.is_file() and not p.is_symlink()]
+    assert len(real) < 10, (
+        f"目标被解引用进来了:种出来的 home 里有 {len(real)} 个真实文件(链接保持为链接时只有 1 个)")
+
+
+def test_the_launcher_pins_the_model_on_the_command_line(tmp_path):
+    """模型必须是**命令行上的事实**,不是环境里的。
+
+    dsh 从 `$DSH_HOME/settings.yaml` 读 `agent-default-model`,而那份文件属于登录的人 ——
+    所以一次 run 可能被记成一个模型、由另一个回答,正是 `deepseek` 条目的 note 要防的那种
+    谎。launcher 用 `--patch` 在组装期把 provider 和 model 都钉死:`--patch` 在 profile 的
+    user layer **之后**应用,所以被复制过去的 settings 压不过它,而 pin 出现在 argv 里。
+
+    这条用一个只回显 argv 的假 `node` 测,所以它测的是 launcher 真正传了什么,而不是它
+    自称会传什么。
+    """
+    root = tmp_path / "dsh"
+    (root / "apps" / "cli" / "lib").mkdir(parents=True)
+    (root / "apps" / "cli" / "lib" / "bin.js").write_text("")
+    stub = tmp_path / "stub-bin"
+    stub.mkdir()
+    node = stub / "node"
+    node.write_text('#!/bin/sh\nprintf "%s\\n" "$@"\n')
+    node.chmod(0o755)
+
+    workspace = tmp_path / "ws"
+    candidate = workspace / "candidate"
+    candidate.mkdir(parents=True)
+    env = {**os.environ, "PATH": f"{stub}{os.pathsep}{os.environ['PATH']}",
+           "HG_DSH_ROOT": str(root), "HG_IMPROVER_MODEL": "deepseek-flash"}
+
+    def run(extra_env=None):
+        proc = subprocess.run([str(ROOT / "methods" / "dsh-improver"), "TASK TEXT"],
+                              cwd=str(candidate), env={**env, **(extra_env or {})},
+                              capture_output=True, text=True, timeout=120)
+        assert proc.returncode == 0, proc.stderr
+        return [line for line in proc.stdout.splitlines() if line]
+
+    argv = run()
+    # 假 node 回显的是 `node <bin.js> --profile ...`,所以 `--profile` 不在第 0 位
+    assert argv.index("--profile") == 1 and argv[2] == "headless", argv
+    patch = Path(argv[argv.index("--patch") + 1])
+    assert argv[-1] == "TASK TEXT", argv
+    # pin 是这次 run 的收据:它落在 workspace 里(候选的父目录),不在候选里 ——
+    # 在候选里 `_changed_files` 会把它报成改进器对 harness 的改动
+    assert patch.parent == workspace
+    assert patch.name == ".dsh-model-pin.yml"
+    assert "model: deepseek-flash" in patch.read_text()
+
+    # 环境里换一个模型,pin 跟着换 —— 说明这个默认值不是写死的
+    argv = run({"HG_IMPROVER_MODEL": "another-model"})
+    patch = Path(argv[argv.index("--patch") + 1])
+    assert "model: another-model" in patch.read_text()
+

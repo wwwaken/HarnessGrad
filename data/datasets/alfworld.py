@@ -64,6 +64,46 @@ container-only before this dataset (`eval/verification/verifier.py::_verify` now
 host check as well -- the smallest change that let a no-Docker dataset keep the
 contract's evidence channel).
 
+What the agent can read, and what that used to cost
+--------------------------------------------------
+**Closed.** The agent used to receive `game.tw-pddl` in its working directory with only
+the reference solution removed (`_stripped_game`), and what was left was the **whole
+initial state**: `pddl_domain`, `pddl_problem` and `grammar`. `pddl_problem` is
+ALFWorld's own `:init` -- measured on this adapter's first `valid_unseen` game, 291
+facts -- and it states which object is inside which receptacle (`inReceptacle AlarmClock_... Desk_...`) and which object or
+receptacle is at which location (`objectAtLocation`, `receptacleAtLocation`). The object
+and receptacle ids are exactly the ids `alfworld`'s own `Demangler` turns into the names
+the agent sees, and that demangler reads nothing but the ids. So an agent that opened the
+file could read the object layout instead of exploring for it -- strictly easier than
+ALFWorld as published, where finding an unseen object is part of the task.
+
+The file cannot travel with the task any more, and the fix is not a smaller file:
+measured, TextWorld raises `KeyError` for a game file missing `pddl_problem`, `grammar`
+or `pddl_domain`, so every buildable copy carries the layout. The environment therefore
+runs **outside** the agent's namespace. `data/datasets/alfworld/relay.py` builds the same
+TextWorld environment from the same bytes with the same `gym_env.build`, and answers two
+ops over the platform's transport (`eval/service/tool_transport.py`): `look` (the last
+applied step's observation, no step consumed) and `do` (one step). A reply is exactly
+`{obs, admissible, won, done, step}` -- five fields projected off the environment's own
+record, so there is no key the PDDL, the object ids or the goal literal could travel in.
+The agent's CLI (`cli/alf`) is a client of that process and never opens a game file.
+
+`SETUP` no longer ships the game at all. `_stripped_game` still exists and still matters:
+it is the bytes the relay is given (and the bytes `VERIFY.inputs` grades from), so the
+environment the agent acts in and the environment the check replays are built from one
+text -- `tests/quality/test_alfworld_relay.py` pins that byte identity for all 134 games.
+
+Two things about this are **not** in this repository yet, and both are required before
+an end-to-end run: (1) the runner must stage those bytes outside the sandbox and start
+`relay.py`, then pass the socket to the sandbox as `tool_socket=` so it is published at
+`/run/harnessgrad-tool/tool.sock` where the CLI imports and calls it (the mount wiring
+lives in `eval/containers/`, a separate task -- and this migration is the first to
+require `PLAN_VERSION` 4 -> 5, because from then on what a subject sees has changed);
+(2) a relay fault currently makes `alf` exit nonzero, and nothing yet maps that to an
+**unmeasured** task rather than a 0 -- `Relay.receipt` is the evidence the runner needs
+for that. Neither is faked here. `control.py --oracle` (the local arm) publishes the
+same pair into a temp directory itself and is unaffected.
+
 The metric, and what is deliberately not added
 ----------------------------------------------
 `reward = 1` iff the replayed episode reports `won` at some step inside `STEP_BUDGET`
@@ -131,12 +171,41 @@ DATASET_ROOT = Path(os.environ.get("HG_ALFWORLD_DATA",
 #: out-of-distribution evaluation split is used, which is the one ALFWorld reports.
 DATA_SUBDIR = ("json_2.1.1", "valid_unseen")
 
+#: **Which directory this run reads.** The default is the benchmark's own OOD evaluation
+#: split. `valid_seen` and `valid_train` are its other evaluation splits, and `train` is the
+#: training split -- read here only as *study* material (see `_STUDY_FILE`).
+_POOL = (os.environ.get("HG_ALFWORLD_POOL") or DATA_SUBDIR[-1]).strip()
+
+#: **A study set drawn from `train`, named by a file of task ids.** When it is set the pool
+#: spans two directories: those ids are the train side and the whole `_POOL` directory is the
+#: eval side.
+#:
+#: Why this exists: the port's earlier design drew its study tasks from `valid_unseen` itself,
+#: so search and report came from the same evaluation pool. That is defensible (the games are
+#: disjoint) but it invites the objection that the method was tuned on the benchmark's test
+#: split. Studying on the official training split removes the objection without changing the
+#: cost of a round, and makes the number directly comparable with the benchmark's protocol.
+#:
+#: The ids are read from a file rather than sampled here: a draw made at import is a draw
+#: nobody can reproduce, and `train100.csv` is a file a reader can diff.
+_STUDY_FILE = (os.environ.get("HG_ALFWORLD_STUDY_IDS") or "").strip()
+
 #: This module's own directory: the adapter is `data/datasets/alfworld.py`, its content is
 #: `data/datasets/alfworld/`.
 ASSETS = Path(__file__).resolve().parent / "alfworld"
 CLI_DIR = ASSETS / "cli"
 LIB_DIR = ASSETS / "lib"
 VERIFY_DIR = ASSETS / "verify"
+
+#: The platform's one tool transport, and the fixed place the sandbox publishes it:
+#: `eval/containers/tool_route.py` mounts `/run/harnessgrad-tool/tool_transport.py` and
+#: `tool.sock` read-only, and the agent's CLI imports the module from there and calls the
+#: socket. It is deliberately **not** shipped by `SETUP`: a copy in the agent's workdir
+#: would be a copy the agent could edit, and the published pair is the platform's, not
+#: this dataset's. `TRANSPORT_SOURCE` is the file that gets published, named here so a
+#: reader can see the CLI and `relay.py` share one implementation of the wire format.
+TOOL_SOCKET = Path("/run/harnessgrad-tool/tool.sock")
+TRANSPORT_SOURCE = ASSETS.parents[2] / "eval" / "service" / "tool_transport.py"
 
 #: The step budget and the two filenames are **declared once**, in
 #: `data/datasets/alfworld/lib/gym_env.py`, which the agent's CLI and the check both import.
@@ -189,18 +258,31 @@ _GOAL_RE = re.compile(r'"task"\s*:\s*\[\s*\{\s*"rhs"\s*:\s*"((?:[^"\\]|\\.)*)"')
 
 #: The one field of a game file that must never reach the agent. `walkthrough` is
 #: ALFWorld's own reference solution for the game -- a list of the exact commands that
-#: solve it. The game file is the task's initial state, so it is handed to the agent;
-#: handing over the walkthrough would hand over the answer. `SETUP` and every verifier
-#: input therefore carry `_stripped_game()` rather than the file on disk, and the
-#: oracle control reads the original from the data root.
+#: solve it -- and handing it over would hand over the answer. The initial state itself
+#: (`pddl_problem`, `pddl_domain`, `grammar`) cannot be stripped either: TextWorld
+#: refuses a game file missing any of the three, so there is no smaller buildable copy.
+#: That is why the copy exists at all -- it is what the **relay** builds from, outside
+#: the sandbox, not what the agent receives (see the module docstring, "What the agent
+#: can read, and what that used to cost"). Every verifier input therefore carries
+#: `_stripped_game()` rather than the file on disk, and the oracle control reads the
+#: original -- `walkthrough` included -- from the data root.
 _LEAKED_FIELD = "walkthrough"
 
 
-def _split_dir() -> Path:
-    return DATASET_ROOT.joinpath(*DATA_SUBDIR)
+def _split_dir(pool: str | None = None) -> Path:
+    """The directory for `pool` (default: this run's `HG_ALFWORLD_POOL`)."""
+    return DATASET_ROOT / DATA_SUBDIR[0] / (pool or _POOL)
 
 
-def _collect() -> list[dict]:
+def _study_ids() -> list[str]:
+    """The train-side ids named by `HG_ALFWORLD_STUDY_IDS`, in file order."""
+    if not _STUDY_FILE:
+        return []
+    text = Path(_STUDY_FILE).read_text(encoding="utf-8").strip()
+    return [chunk.strip() for chunk in text.split(",") if chunk.strip()]
+
+
+def _collect(roots: list[tuple[Path, set[str] | None]] | None = None) -> list[dict]:
     """Every runnable game in the split, filtered exactly as ALFWorld filters them.
 
     The filter is `AlfredTWEnv.collect_game_files`, reproduced rather than called:
@@ -216,9 +298,19 @@ def _collect() -> list[dict]:
 
     Each returned record is everything the adapter needs and nothing it does not.
     """
-    root = _split_dir()
     records: list[dict] = []
-    for game_path in sorted(root.glob("*/*/game.tw-pddl")):
+    game_paths: list[Path] = []
+    for root, wanted in (roots or [(_split_dir(), None)]):
+        if wanted is None:
+            game_paths += sorted(Path(root).glob("*/*/game.tw-pddl"))
+            continue
+        # Named ids are opened directly instead of scanning 2,435 directories: reading
+        # every game file under `train` costs seconds at import, and a study set is a
+        # hundred of them.
+        for task_id in sorted(wanted):
+            task_dir, _, trial_dir = task_id.partition("__")
+            game_paths.append(Path(root) / task_dir / trial_dir / "game.tw-pddl")
+    for game_path in game_paths:
         trial_dir = game_path.parent
         task_dir = trial_dir.parent
         label = f"{task_dir.name}/{trial_dir.name}"
@@ -261,15 +353,34 @@ def _collect() -> list[dict]:
             "game_path": game_path,
             "stripped_game": _stripped_game(gamedata),
         })
-    return records
+    # **Deduplicated, because the same directory can be named twice.** The pool is a list of
+    # (root, wanted) pairs and nothing stops two of them from resolving to one directory --
+    # that is what a `train` study set over a `train` pool does, and it produced 200 train
+    # ids for a 100-task file, i.e. every study task measured twice. A duplicate is not a
+    # harmless repeat here: it is a second curve entry and a second charge for one task.
+    seen: set[str] = set()
+    unique: list[dict] = []
+    for record in records:
+        if record["task_id"] in seen:
+            continue
+        seen.add(record["task_id"])
+        unique.append(record)
+    return unique
 
 
 def _stripped_game(gamedata: dict) -> str:
     """The game file without the reference solution, as JSON text.
 
-    Kept as a string because that is the shape `SETUP`/`VERIFY.inputs` take for inline
-    content, and because it means the stripped copy is built once at import instead of
-    being written somewhere on disk that could drift from its source.
+    Only `_LEAKED_FIELD` is removed; everything else -- including the initial state --
+    stays, because TextWorld cannot build the environment without it (see the module
+    docstring, "What the agent can read, and what that used to cost").
+
+    Kept as a string because that is the shape `VERIFY.inputs` takes for inline content,
+    and because it means the stripped copy is built once at import instead of being
+    written somewhere on disk that could drift from its source. **The agent never
+    receives it.** Its two readers are the relay, which builds the environment from it
+    outside the sandbox (`relay.game_content`, `relay.stage`), and the check, which
+    replays the action log from it.
     """
     clean = {k: v for k, v in gamedata.items() if k != _LEAKED_FIELD}
     return json.dumps(clean)
@@ -280,13 +391,14 @@ def _goal(record: dict) -> str:
 
     Nothing here hints at the solution. It states the goal the environment will check,
     how to act, and the budget -- the three things the agent cannot discover from the
-    interface alone.
+    interface alone. It names no file: the environment is not in the working directory.
     """
     return (
         f"# Task\n"
         f"\n"
         f"You are in a text-based house, described one room at a time, and you act by\n"
-        f"typing commands. The game is `{GAME_IN_WORKDIR}` in your working directory.\n"
+        f"typing commands. The environment is served by a process outside your working\n"
+        f"directory, and these commands are the only way to reach it.\n"
         f"\n"
         f"**{record['goal']}**\n"
         f"\n"
@@ -316,15 +428,33 @@ def _goal(record: dict) -> str:
 def _setup(record: dict) -> dict:
     """What the agent receives before it starts.
 
-    The CLI and its shared environment library travel as `from` references into this
-    repository; the game travels as inline content because it must be the *stripped*
-    copy (see `_LEAKED_FIELD`), which is not the bytes on disk.
+    The CLI and its shared environment library, and **no game file**. That is the whole
+    change: the game is not in the agent's working directory any more, because the
+    environment that reads it lives in a host process (`relay.py`) reached over a socket.
+    `gym_env.py` still travels because the CLI imports it (for the log, the budget and
+    the action parser); the transport does **not** travel, because the platform publishes
+    it read-only at `TOOL_SOCKET`'s directory and a copy in the workdir would be a copy
+    the agent could edit.
+
+    `VERIFY.inputs` keeps the game, and that copy is the one the runner stages for the
+    relay: the same bytes, read by the check and by the relay, never by the agent.
     """
-    return {"files": [
-        {"path": GAME_IN_WORKDIR, "content": record["stripped_game"]},
-        {"path": "gym_env.py", "from": str(LIB_DIR / "gym_env.py")},
-        {"path": "alf", "from": str(CLI_DIR / "alf")},
-    ]}
+    return {
+        "files": [
+            {"path": "gym_env.py", "from": str(LIB_DIR / "gym_env.py")},
+            {"path": "alf", "from": str(CLI_DIR / "alf")},
+        ],
+        # The environment itself. Deliberately not under "files": `eval/run/tool_relay.py`
+        # stages these bytes in a directory the platform owns, starts `relay.py` on them, and
+        # mounts only the resulting socket into the sandbox. `record["stripped_game"]` is the
+        # same string `VERIFY.inputs` carries, so the relay and the check read identical bytes.
+        "tool_relay": {
+            "program": str(ASSETS / "relay.py"),
+            "filename": GAME_IN_WORKDIR,
+            "content": record["stripped_game"],
+            "budget": STEP_BUDGET,
+        },
+    }
 
 
 def _verifier(record: dict) -> dict:
@@ -495,8 +625,28 @@ def provision_status() -> dict:
 #: exceptions and hides a module that will not import, and a dataset that cannot be
 #: seen in the chooser before its data is provisioned is a dataset a reader cannot
 #: find the instructions for. `_LOAD_ERROR` carries the reason into `load()`.
+#: The train-side ids this run studies on (empty unless `HG_ALFWORLD_STUDY_IDS` is set).
+_STUDY: list[str] = []
 try:
-    _RECORDS: list[dict] = _collect()
+    _STUDY = _study_ids()
+    if _STUDY:
+        if _POOL == "train":
+            raise ValueError(
+                "HG_ALFWORLD_POOL=train would measure the split the study set is drawn "
+                "from; the eval pool is one of valid_seen / valid_train / valid_unseen")
+        _RECORDS: list[dict] = _collect([(_split_dir("train"), set(_STUDY)),
+                                         (_split_dir(), None)])
+        _found = {r["task_id"] for r in _RECORDS}
+        _missing = [t for t in _STUDY if t not in _found]
+        if _missing:
+            # Loudly, because a study set that silently lost its tasks changes what the
+            # method was shown without changing anything a reader can see.
+            raise ValueError(
+                f"{len(_missing)} of {len(_STUDY)} study ids in {_STUDY_FILE} are not "
+                f"runnable games under {_split_dir('train')} "
+                f"(first: {_missing[:3]})")
+    else:
+        _RECORDS = _collect()
     _LOAD_ERROR: str | None = None
 except Exception as _exc:  # noqa: BLE001 - reported by load(), which is where it bites
     _RECORDS = []
@@ -546,6 +696,15 @@ VERIFY: dict[str, dict] = {r["task_id"]: _verifier(r) for r in _RECORDS}
 _split_mode = (os.environ.get("HG_ALFWORLD_SPLIT") or "hash").lower()
 if _split_mode == "none":
     SPLIT = None
+elif _STUDY:
+    # **The declared sides, without a hash.** The train side is exactly the study file and
+    # the eval side is the rest of the pool, so the two cannot drift: they are the same
+    # partition seen twice. `_is_eval` is not consulted -- it exists to cut *one* pool in
+    # two, and this pool is already two directories.
+    _ids = [r["task_id"] for r in _RECORDS]
+    _study_set = set(_STUDY)
+    SPLIT = {"train": [t for t in _ids if t in _study_set],
+             "eval": [t for t in _ids if t not in _study_set]}
 else:
     _ids = [r["task_id"] for r in _RECORDS]
     SPLIT = {"train": [t for t in _ids if not _is_eval(t)],

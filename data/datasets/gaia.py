@@ -42,6 +42,21 @@ check calls **upstream's bytes** rather than a transcription of them: a float, a
 list, and a string are each normalized differently, and that asymmetry is exactly what a
 hand-written "exact match" would get wrong. Reward is 1.0 or 0.0.
 
+The level, which this dataset was shipping and no one was reading
+----------------------------------------------------------------
+GAIA's published table is overall accuracy **and** Level 1/2/3 accuracy, and the level was
+already crossing into the verifier -- `_verify` puts it in the gold record beside the answer --
+while `verify/check.py` wrote only `reward 1.0`/`0.0`. So a GAIA mean produced here could not be
+set beside the paper's per-level rows, and the level distribution of the *measured* set (as
+opposed to the pool's 53/86/26) was not recoverable from anything written.
+
+It is now: `check.py` writes `level` into its evidence, `harnessgrad/records.py::per_level_breakdown`
+turns the per-task labels into a `per_level` report on the curve point (measured tasks, tasks
+scored 1, and accuracy for each of levels 1/2/3, plus an explicit `unknown` count), and the
+progress record the nightly fold reads carries the label per task. **Reporting only** -- reward,
+`score` and the headline mean are untouched, and the mean stays the flat `arithmetic_mean` over
+measured tasks that `data/aggregation_policies.json` declares.
+
 The environment, and the one thing the oracle does not prove
 ------------------------------------------------------------
 GAIA runs in an `exec` container on the internal `services` network and declares `web` access.

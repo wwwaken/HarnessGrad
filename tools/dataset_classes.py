@@ -147,18 +147,14 @@ UNCOVERED_DEMANDS: dict[str, tuple[str, ...]] = {
 #: the harness under test has that component at all, so one dataset can carry a different set
 #: for a different harness family. The demand axis has neither property, because it is a
 #: property of the dataset alone.
-FUNCTIONS = (
-    "context",
-    "tools",
-    "control",
-    "memory",
-    "verification",
-    "recovery",
-    "delegation",
-    "reliability",
-    "cost",
-    "safety",
-)
+#: **Not defined here any more.** The ten names are the same decomposition the harness side
+#: needs, so the list lives in `harnessgrad/components.py` and this is the re-export --
+#: `tools/` imports `harnessgrad/` and never the reverse, so that is the legal direction. Two
+#: copies is how a taxonomy rots: the moment one grows, every claim phrased over the other is
+#: silently about a different set. `harnessgrad/components.py` also says why the same list
+#: answers both "which component does a dataset exercise" and "which component did a round's
+#: edit touch".
+from harnessgrad.components import COMPONENTS as FUNCTIONS  # noqa: E402
 
 EXERCISES: dict[str, tuple[str, ...]] = {
     "alfworld": ("context", "tools", "control", "recovery"),

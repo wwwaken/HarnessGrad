@@ -482,6 +482,13 @@ def _write_progress(progress_dir, round_no: int, tid: str,
             "score", 1.0 if (r.get("verdict") or {}).get("passed") else 0.0))
             for r in measured]
         last = (measured[-1].get("verdict") or {}) if measured else {}
+        # The benchmark's own difficulty label, when the check reported one. Carried on the
+        # per-task record because this is the file a fold joins on (`hg-census/fold_nightly.py`
+        # reads `progress/round-N/<task>.json`), so a per-level table can be published
+        # downstream without that consumer also having to open `verdicts/`. Reporting only:
+        # the label sits beside `score` and never enters it.
+        evidence = last.get("evidence")
+        level = evidence.get("level") if isinstance(evidence, dict) else None
         # The process's own ending, kept *beside* the score rather than folded into it:
         # §2.2 makes the harness's exit code and the task's score independent, and this
         # is what lets a reader tell a crash-driven zero from a completion-driven one.
@@ -512,6 +519,7 @@ def _write_progress(progress_dir, round_no: int, tid: str,
                 last_exit, last_stderr,
                 wrapper=bool((measured[-1] if measured else {}).get("sandbox"))),
             "complete": True,
+            **({"level": level} if level is not None else {}),
             **({"enforcement": enforcement} if enforcement is not None else {}),
         }, indent=1, ensure_ascii=False), encoding="utf-8")
         traces = dest / "traces"

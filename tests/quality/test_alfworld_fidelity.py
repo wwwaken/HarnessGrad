@@ -5,6 +5,7 @@ import ast
 import hashlib
 import json
 import os
+import shutil
 import sys
 from pathlib import Path
 from types import ModuleType, SimpleNamespace
@@ -118,24 +119,49 @@ def test_budget_evidence_distinguishes_cap_from_win(protocol, monkeypatch, tmp_p
 
 def test_cli_allows_fiftieth_action_and_refuses_fifty_first(protocol, monkeypatch,
                                                           tmp_path):
+    """The budget boundary, through the relay the CLI now acts against.
+
+    Two counts have to agree for an episode to be honest: the log's (which the CLI
+    enforces) and the environment's (which the relay holds). Every call carries the step
+    it is acting from and the relay refuses a mismatch, so this also pins that the
+    fiftieth action is applied *and* logged and the fifty-first is refused before the
+    environment is asked anything. The environment is synthetic -- no TextWorld here.
+    """
     gym, _, cli = protocol
-    (tmp_path / gym.GAME_FILENAME).write_text("synthetic game; never loaded")
+    relay = _module("alfworld_fidelity_relay", ASSETS / "relay.py")
+    applied = []
+    env = SimpleNamespace(close=lambda: None)
+
+    monkeypatch.setattr(gym, "build", lambda game, budget: env)
+    monkeypatch.setattr(gym, "reset", lambda _: {
+        "won": False, "observation": "synthetic", "admissible": []})
+
+    def step(actual_env, action):
+        assert actual_env is env
+        applied.append(action)
+        return {"won": False, "done": len(applied) >= 50,
+                "observation": f"synthetic {len(applied)}", "admissible": []}
+
+    monkeypatch.setattr(gym, "step", step)
+
+    # The pair the sandbox publishes at /run/harnessgrad-tool, built here because a host
+    # run has nothing to mount. `HG_ALF_TOOL_DIR` is the host-side stand-in.
+    published = tmp_path / "tool"
+    published.mkdir()
+    shutil.copy2(ROOT / "eval" / "service" / "tool_transport.py",
+                 published / "tool_transport.py")
+    socket_path = published / "tool.sock"
     log = tmp_path / gym.LOG_FILENAME
-    log.write_text((json.dumps({"kind": "action", "action": "look"}) + "\n") * 49)
-    replay_calls = []
-
-    def replay(game, actions, budget):
-        replay_calls.append((len(actions), budget))
-        return {"won": False, "records": [
-            {"observation": "synthetic", "admissible": [], "done": i == 49}
-            for i in range(len(actions))]}
-
-    monkeypatch.setattr(gym, "replay", replay)
-    assert cli.main(["--workdir", str(tmp_path), "do", "look"]) == 0
-    assert len(gym.action_log_records(log)) == 50
-    assert cli.main(["--workdir", str(tmp_path), "do", "look"]) == 2
-    assert replay_calls == [(50, 50)]
-    assert len(gym.action_log_records(log)) == 50
+    with relay.EnvServer("synthetic-game", socket_path, budget=50) as server:
+        monkeypatch.setenv("HG_ALF_TOOL_DIR", str(published))
+        for index in range(50):
+            assert cli.main(["--workdir", str(tmp_path), "do", "look"]) == 0
+            assert len(gym.action_log_records(log)) == index + 1
+        before = log.read_text()
+        assert cli.main(["--workdir", str(tmp_path), "do", "look"]) == 2
+        assert log.read_text() == before, "a refused action reached the log"
+    assert len(applied) == 50
+    assert server.receipt["errors"] == server.receipt["refused"] == 0, server.receipt
 
 
 def _declared_split(ids):
@@ -147,7 +173,10 @@ def _declared_split(ids):
                  isinstance(t, ast.Name) and t.id == "_split_mode" for t in n.targets)) or
              (isinstance(n, ast.If) and ast.unparse(n.test) == "_split_mode == 'none'")]
     assert len(nodes) == 3
-    scope = {"hashlib": hashlib, "os": os,
+    # `_STUDY` is empty here on purpose: this test pins the **hash** rule, which is the
+    # path a run without a study file takes. The study branch has its own test
+    # (`test_alfworld_study_pool.py`), where the ids are known.
+    scope = {"hashlib": hashlib, "os": os, "_STUDY": [],
              "_RECORDS": [{"task_id": t} for t in ids]}
     exec(compile(ast.Module(body=nodes, type_ignores=[]), "alfworld-split", "exec"), scope)
     return scope["SPLIT"], scope["_is_eval"]

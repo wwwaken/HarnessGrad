@@ -387,6 +387,196 @@ def test_an_unreadable_reply_raises_instead_of_reporting_no_change(monkeypatch):
     assert "refuse" in str(exc.value), exc.value
 
 
+def _cli_harness(tmp_path: Path, monkeypatch) -> Path:
+    """A harness whose `round.json` resolved a CLI improver, so `ask` dispatches to it.
+
+    **No `HG_METHOD_*` is set, and that is the point of this helper now.** It used to set all
+    three, because `ask` called `model_settings()` *before* it dispatched
+    (`methods/editor.py:1069`), so a CLI improver was asked for endpoint credentials it does
+    not use -- the same conflation of the two improver layers that the `no_change` collapse
+    below is. The call moved below the dispatch, so the CLI branch no longer touches an
+    endpoint; leaving the variables unset is what keeps that true, and every test using this
+    helper fails with `SystemExit: a method needs HG_METHOD_BASE_URL ...` if it comes back.
+    """
+    base = _write_harness(tmp_path / "h")
+    (base / "_harnessgrad" / "round.json").write_text(json.dumps(
+        {"identity": {"improver": {"name": "codex", "kind": "cli", "path": "/x/codex.js"}}}))
+    for name in ("HG_METHOD_BASE_URL", "HG_METHOD_API_KEY", "HG_METHOD_MODEL"):
+        monkeypatch.delenv(name, raising=False)
+    return base
+
+
+def _stub_cli(monkeypatch, *, exit_code: int, note: str, files: list | None = None,
+              tmp_path: Path | None = None) -> None:
+    import cli_improver
+
+    def stub(*_a, **_k):
+        return {"candidate": (tmp_path or Path("/nonexistent")), "changed": files or [],
+                "files": files or [], "protected": [], "exit_code": exit_code,
+                "seconds": 0.1, "note": note, "reported": {}, "transcript": "…"}
+
+    monkeypatch.setattr(cli_improver, "propose", stub)
+
+
+def test_a_crashed_cli_improver_raises_instead_of_reporting_no_change(tmp_path, monkeypatch):
+    """**CLI 那条路漏了同一条规则,而上面那条测试只守住了 endpoint 那条。**
+
+    `UnparseableReply` 的 docstring 自己写着两者的区别:*"collapsing the second into the
+    first puts a decision in the curve that nobody made."* `_ask_cli` 正是那个 collapse:
+    improver 退出码非 0、一个文件没改,它却把 `result["note"]`(improver 打印的一段 prose)
+    包成 `{"no_change": <prose>}` 返回。
+
+    实测(`v12-dgm`,2026-10-05):improver 是 codex CLI,三轮都只打印 prose、没改文件,
+    于是 `"no_change" in reply` 成立、`edits=[]`,曲线上写的是 "DGM: no child produced"。
+    同仓库的 `cli_improver.run` 对**同一情形**记的是 error(`if code != 0 and not changed`),
+    两条路不一致 —— 这条测试钉住它们一致。
+    """
+    import editor
+    monkeypatch.delenv("HG_IMPROVER", raising=False)
+    base = _cli_harness(tmp_path, monkeypatch)
+    _stub_cli(monkeypatch, exit_code=1, note="Let me check the index files differently:",
+              tmp_path=tmp_path)
+    with pytest.raises(editor.UnparseableReply) as exc:
+        editor.ask("prompt", base=base, parent=base)
+    assert "exited 1" in str(exc.value), exc.value
+    assert "index files" in str(exc.value), "原因必须留在异常里,不能丢掉"
+
+
+def test_a_cli_improver_that_declines_is_still_a_no_change(tmp_path, monkeypatch):
+    """**不要修过头。** 干净退出、没改文件 = improver 真的决定不改,这是合法答案。
+
+    `cli_improver` 的 prompt 要求 `no_change` 必须点名机制,所以那段 prose 就是理由本身。
+    把这一条也抛掉,等于把"方法决定不改"变成"调用坏了",是反方向的同一个错误。
+    """
+    import editor
+    monkeypatch.delenv("HG_IMPROVER", raising=False)
+    base = _cli_harness(tmp_path, monkeypatch)
+    _stub_cli(monkeypatch, exit_code=0, note="no_change: the retry cap is already 3",
+              tmp_path=tmp_path)
+    reply = editor.ask("prompt", base=base, parent=base)
+    assert "no_change" in reply, reply
+    assert "retry cap" in str(reply["no_change"]), reply
+
+
+def test_a_file_the_cli_improver_deleted_is_carried_as_a_deletion(tmp_path, monkeypatch):
+    """**删除是编辑,不是读取失败。** `_changed_files` 会遍历 pristine 侧、点名候选里已经不在
+    的文件,所以删除会送到 `_ask_cli` —— 而它曾用 `except OSError: continue` 把删除吞掉。
+    后果是静默的:一轮里删一个文件又改了另一个,被测的树里那个删掉的文件**还在**。
+
+    这个 stub 用 candidate 里不存在的路径来表示"被删掉"`——`正是 `_changed_files` 报出来的
+    形状。
+    """
+    import editor
+    monkeypatch.delenv("HG_IMPROVER", raising=False)
+    base = _cli_harness(tmp_path, monkeypatch)
+    candidate = tmp_path / "cand"
+    candidate.mkdir()
+    (candidate / "agent.py").write_text("x = 1\n", encoding="utf-8")
+    _stub_cli(monkeypatch, exit_code=0, note="removed the dead module",
+              files=["agent.py", "dead.py"], tmp_path=candidate)
+
+    reply = editor._ask_cli("prompt", base, base,
+                            {"name": "dsh", "argv_style": "dsh"})
+
+    by_path = {edit["path"]: edit for edit in reply["files"]}
+    assert by_path["dead.py"] == {"path": "dead.py", "delete": True}, reply
+    assert by_path["agent.py"]["content"] == "x = 1\n", reply
+
+
+def test_a_deletion_only_round_is_not_recorded_as_no_change(tmp_path, monkeypatch):
+    """只删了一个文件的轮次曾经变成 `{"no_change": ...}`。
+
+    那是 `UnparseableReply` 的 docstring 禁止的那个 collapse,低一层再犯一次:一次真的做出来
+    的改动被记成"improver 决定不改",而记录里分不出它和一个真的什么都没找到的轮次。
+    """
+    import editor
+    monkeypatch.delenv("HG_IMPROVER", raising=False)
+    base = _cli_harness(tmp_path, monkeypatch)
+    candidate = tmp_path / "cand"
+    candidate.mkdir()
+    _stub_cli(monkeypatch, exit_code=0, note="deleted the dead module",
+              files=["dead.py"], tmp_path=candidate)
+
+    reply = editor._ask_cli("prompt", base, base,
+                            {"name": "dsh", "argv_style": "dsh"})
+
+    assert "no_change" not in reply, reply
+    assert reply["files"] == [{"path": "dead.py", "delete": True}], reply
+
+
+def _improver_workspace_stub(transcript: str = "I read the round-0 traces and changed agent.py.",
+                             pin: str = "model: deepseek-flash\n"):
+    """A `propose` that behaves like the real one about the two files it leaves behind."""
+    def stub(req, *_a, **_k):
+        workspace = Path(req["workspace"])
+        (workspace / "agent.py").write_text("x = 1\n", encoding="utf-8")
+        if pin:
+            (workspace / ".dsh-model-pin.yml").write_text(pin, encoding="utf-8")
+        return {"candidate": workspace, "changed": ["agent.py"], "files": ["agent.py"],
+                "protected": [], "exit_code": 0, "seconds": 1.0, "note": "edited the parser",
+                "reported": {}, "transcript": transcript}
+    return stub
+
+
+def test_the_improver_transcript_lands_where_the_platform_keeps_logs(tmp_path, monkeypatch):
+    """**transcript 必须落在平台会去拷的地方,否则它等于没写。**
+
+    `_keep_method_logs` 扫的是**方法 workspace** 根目录的 `*.log`;而 improver 的 transcript
+    和 model pin 都写在 `_ask_cli` 自己 `mkdtemp` 出来的目录里 —— 那个目录在
+    `eval/containers/sandbox.py` 挂的**空 tmpfs** `/tmp` 上("a private /tmp, so two runs
+    cannot read each other's task directories"),随 namespace 一起消失。实测:宿主上活下来的
+    12 个 `hg-cli-ask-*` 目录**全是空的**,而且全来自测试运行(测试把 `propose` 打了桩,所以
+    留下目录留不下文件);真跑的轮次连目录都不剩。
+
+    代价是"improver 到底读了 trace 还是猜的"这个问题**无法回答** —— 而比较这些*方法*,问的
+    主要就是它。
+    """
+    import cli_improver
+    import editor
+    monkeypatch.delenv("HG_IMPROVER", raising=False)
+    base = _cli_harness(tmp_path, monkeypatch)
+    method_ws = tmp_path / "method_ws"
+    method_ws.mkdir()
+    monkeypatch.setattr(editor, "_method_workspace", lambda: method_ws)
+    monkeypatch.setattr(cli_improver, "propose", _improver_workspace_stub())
+
+    editor._ask_cli("prompt", base, base, {"name": "dsh", "argv_style": "dsh"})
+
+    logs = sorted(p.name for p in method_ws.glob("*.log"))
+    assert len(logs) == 2, logs
+    transcript = next(p for p in method_ws.glob("*.log") if "model-pin" not in p.name)
+    assert "read the round-0 traces" in transcript.read_text()
+    pin = next(p for p in method_ws.glob("*.log") if "model-pin" in p.name)
+    assert "deepseek-flash" in pin.read_text()
+
+
+def test_what_the_improver_left_behind_survives_the_round(tmp_path, monkeypatch):
+    """和真正的消费者对起来:`_keep_method_logs` 必须真的把这些文件拷进 record。
+
+    只断言"文件写出来了"是不够的 —— 这个缺陷的形状恰恰就是"写出来了,但没人从那里拷"。
+    """
+    import cli_improver
+    import editor
+    from harnessgrad.records import _keep_method_logs
+    monkeypatch.delenv("HG_IMPROVER", raising=False)
+    base = _cli_harness(tmp_path, monkeypatch)
+    method_ws = tmp_path / "method_ws"
+    method_ws.mkdir()
+    run_dir = tmp_path / "run"
+    run_dir.mkdir()
+    monkeypatch.setattr(editor, "_method_workspace", lambda: method_ws)
+    monkeypatch.setattr(cli_improver, "propose", _improver_workspace_stub())
+
+    editor._ask_cli("prompt", base, base, {"name": "dsh", "argv_style": "dsh"})
+    _keep_method_logs(method_ws, run_dir, 1)
+
+    kept = sorted(p.name for p in (run_dir / "method_logs" / "round-1").iterdir())
+    assert len(kept) == 2, kept
+    text = "\n".join((run_dir / "method_logs" / "round-1" / n).read_text() for n in kept)
+    assert "read the round-0 traces" in text
+    assert "deepseek-flash" in text
+
+
 def test_the_hypothesis_is_found_wherever_the_model_put_it():
     """实测:要的是顶层 `hypothesis`,模型塞进了 file 对象里,于是标签是空的 ——
     一次真实的 8 KB 编辑被记成了"没有理由"。两处都读。"""

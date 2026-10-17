@@ -21,6 +21,7 @@ exactly like an unreachable check.
 from __future__ import annotations
 
 import json
+import traceback
 from pathlib import Path
 
 #: The filename `SETUP` writes with the game's identity, and the log the CLI appends to.
@@ -101,18 +102,38 @@ def append_marker(path: Path, kind: str, step: int) -> None:
         handle.write(json.dumps({"kind": kind, "step": step}) + "\n")
 
 
-def replay(env, actions: list[str]) -> list[dict]:
-    """Apply `actions` in order. Returns one record per action that the game accepted.
+def replay(env, actions: list[str]) -> dict:
+    """Apply `actions` in order and report the game's answer, including a crash.
 
-    Stops early when the game reports `done` -- Zork can end, and continuing to act in a
-    finished game is not what the reference solution does.
+    Returns `{"steps": [...], "failure": None | {...}}`: one step record per action the game
+    accepted, and -- when the game died -- the exception that stopped the replay.
+
+    The replay stops for exactly two reasons, and they are **not** the same event:
+
+    * `done` -- the game ended. Zork can end, and continuing to act in a finished game is not
+      what the reference solution does. `failure` is `None`; this is a measured episode.
+    * an exception from `env.step` -- the interpreter or its process died. That is a
+      **measurement failure**, and it is recorded as such (`type`, `message`, the step index,
+      the action, and a traceback) instead of being swallowed. `check.py` then reports
+      `measured: false`, writes no reward and exits 3, because the alternative -- grading the
+      score of the last action that happened to work -- is indistinguishable from a real
+      partial score.
+
+    A command the parser simply does not understand is **not** an exception: measured, an empty
+    line, an unknown word, a 300-character command and raw control bytes all come back as
+    ordinary text ("I don't know the word ...", "I beg your pardon?"), with the game still
+    running. So a raise cannot be read as "the game declined this action", and it is not
+    replayed past.
     """
     steps = []
     for index, action in enumerate(actions):
         try:
             observation, reward, done, info = env.step(action)
-        except Exception:  # noqa: BLE001 - a game that rejects an action ends the replay there
-            break
+        except Exception as exc:  # noqa: BLE001 - recorded, and the caller refuses to score it
+            return {"steps": steps,
+                    "failure": {"step": index, "action": action,
+                                "type": type(exc).__name__, "message": str(exc),
+                                "traceback": traceback.format_exc()[-2000:]}}
         steps.append({
             "step": index,
             "action": action,
@@ -124,7 +145,7 @@ def replay(env, actions: list[str]) -> list[dict]:
         })
         if done:
             break
-    return steps
+    return {"steps": steps, "failure": None}
 
 
 def score_fraction(score: int, maximum: int) -> float:

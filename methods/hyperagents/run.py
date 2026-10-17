@@ -47,24 +47,36 @@ What is transplanted
 
 What is not transplanted
 ------------------------
-* **Staged-eval rescaling** (`gl_utils.py:38-44`, `:526`): with no full eval run,
+* **Staged-eval rescaling** (`utils/gl_utils.py:38-44`, `:527`): with no full eval run,
   HyperAgents multiplies both the agent and ensemble scores by the domain's
-  staged fraction. The platform's score is already a full-set measurement, so
-  applying a discount would invent an advantage the platform did not grant.
-* **`type="max"` over agent and ensemble scores**: needs several archive members
-  evaluated together; mode A has none.
-* **Multi-domain averaging**: the platform has one task set, so the mean is a
-  no-op -- harmless, but it is a real loss of the structure the rule was tuned
-  around.
+  staged fraction. This selector reads the platform's scalar studied score;
+  `staged_eval.py:30-40` records stage metadata without rescaling, and main passes
+  a staged fraction of 1.0.
+* **`type="max"` over agent and ensemble scores** (`utils/gl_utils.py:51-57`):
+  `archive.py:57-61` implements this helper, but the live selector below uses
+  `_score`, not `ArchiveNode.score`, so the helper does not affect parent weights.
+* **Multi-domain averaging** (`utils/gl_utils.py:523-530`): the live selector
+  reads one `protocol.studied_score` per point, not separate per-domain results.
 * Docker, the meta-agent that rewrites its whole repo, and generation-level patch
   replay (`generate_loop.py:502-504`). The edit half here is the shared editor.
 
-What mode A costs this method
------------------------------
-One candidate per round and an unconditional accept, so there is no "which of
-several children to keep" and no true archive. What survives is the selection
-rule and the validity gate; the method records what the archive would have done
-rather than pretending it did it.
+Batch and archive limitations
+------------------------------
+One call can submit multiple children, drawn from the same pre-call history.
+Upstream archives each evaluated generation before selecting its next parent
+(`generate_loop.py:900-925,1006-1017`); siblings here do not see one another's
+scores or update child counts between draws.
+
+All historical round summaries are visible. Snapshot staging is controlled by
+`HG_METHOD_HISTORY_ROUNDS=0` (all states by default); a positive N stages only
+the newest N states (`harnessgrad/channel.py:395-397,427-449,565-569`;
+`harnessgrad/config/areas.py:107-110`). A selected parent whose staged directory
+is unavailable is skipped, not resampled. There is no fixed newest-12 cap.
+
+`HG_HYPERAGENTS_SELECT` chooses a fixed local weight branch at import, rather
+than running or evolving upstream `select_next_parent.py:49-57`. Unknown values
+fall back to score_child_prop weights while retaining the requested setting in
+the report; `latest` is not a live-selector branch.
 """
 from __future__ import annotations
 
@@ -319,12 +331,11 @@ def main() -> int:
 
     HyperAgents' rule is a population rule -- parent weights are a sigmoid centred on the
     top-three mean, times `exp(-(children/8)^3)`, and both terms are *about siblings*. Our
-    port was one-candidate-per-round to fit mode A, so the population never existed and the
-    child-count term was dead code (`hyperagents/run.py` says as much in its own notes about
-    `select_next_parent` being the branch that actually used the statistics). One call now
+    selector follows upstream `utils/gl_utils.py:570-584`; the separate
+    `select_next_parent.py:49-57` branch discards its statistics. One call
     draws `HG_HYPERAGENTS_CHILDREN` parents (default 3, from the same weight function) and
-    submits one child per parent; every child is measured, and the platform's budget caps how
-    many states the run pays for.
+    submits changed children for measurement; missing parents and unusable edits may leave
+    a partial batch, and the platform's budget caps how many states the run pays for.
     """
     req = editor.read_request()
     editor.require_api(req)

@@ -82,7 +82,14 @@ def test_the_goal_is_the_environment_s_own_word_for_word(alfworld):
 
 
 def test_the_reference_solution_is_stripped_from_the_agent_s_game(alfworld):
-    """`walkthrough` is ALFWorld's own solution to the game; the agent must not get it."""
+    """`walkthrough` is ALFWorld's own solution to the game; the agent must not get it.
+
+    The other three keys are asserted present on purpose: they are the initial state the
+    agent *can* read, because the agent's own CLI has to build the TextWorld environment
+    and TextWorld refuses a game file without them. The module docstring ("What the agent
+    can read, and what that costs") records that cost; this test pins the shape as it is,
+    not as one would wish it.
+    """
     for record in alfworld._RECORDS[:5]:
         game = json.loads(record["stripped_game"])
         assert "walkthrough" not in game

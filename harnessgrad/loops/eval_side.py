@@ -23,6 +23,7 @@ from harnessgrad.environments import _report_invalid
 from harnessgrad.identity import _identity
 from harnessgrad.records import _cost_of
 from harnessgrad.records import _curve_point
+from harnessgrad.records import level_fields as _level_fields
 from harnessgrad.records import test_rate_fields as _test_rate_fields
 from harnessgrad.records import _require_untampered
 from harnessgrad.records import _save_traces
@@ -150,7 +151,9 @@ def _run_eval_side(*, work: Path, man: dict, run_id: str, run_dir: Path, tasks: 
     point = _curve_point(
         run_id=run_id, round_index=0,
         identity=_identity(man, sha, args.mode, improver=improver,
-                           declared=res.get("identity_declared")),
+                           declared=res.get("identity_declared"),
+                           jobs=args.jobs, trials=args.trials,
+                           gpu_budget=getattr(args, "gpu_budget", None)),
         sampling={"dataset": args.dataset, "policy": "all", "task_ids": list(scored),
                   "selection_basis_round": 0, "selected_within": "eval"},
         scores=[res["per_task"][t] for t in scored], task_ids=scored,
@@ -165,7 +168,8 @@ def _run_eval_side(*, work: Path, man: dict, run_id: str, run_dir: Path, tasks: 
         cumulative=cumulative, label="exam", side="eval",
         evaluated_from=eval_from, n_trials=res.get("trials"),
         score_std=res.get("score_std"), per_task_std=res.get("per_task_std"),
-        **_test_rate_fields(res))
+        **_test_rate_fields(res),
+        **_level_fields(res, scored))
     point["measured_by_platform"] = True
     point["verifier_kinds"] = sorted({(verifiers.get(t) or {}).get("kind", "answer")
                                       for t in scored})

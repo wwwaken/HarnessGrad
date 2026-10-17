@@ -105,6 +105,22 @@ def _history() -> list[dict]:
              "harness_sha": "b" * 40, "edits_applied": ["agent.py"]}]
 
 
+def test_method_metadata_records_multiple_children_and_default():
+    # 上游 DGM_outer.py:90-100 按概率抽取多个父代，:111-148 逐父代选 target；
+    # DGM_outer.py:224 的 --selfimprove_size 默认 2，移植版 HG_DGM_CHILDREN 默认 3。
+    metadata = json.loads((ROOT / "methods" / "dgm" / "method.json").read_text())
+    text = json.dumps(metadata, ensure_ascii=False).lower()
+    assert "no parallel children" not in text
+    assert "one candidate per round" not in text
+    assert "一轮一个子代" not in metadata["note"]
+    deviations = " ".join(
+        f"{entry['what']} {entry['why']}" for entry in metadata["deviations"])
+    assert "HG_DGM_CHILDREN" in deviations
+    assert "default 3" in deviations
+    assert "--selfimprove_size" in deviations
+    assert "default 2" in deviations
+
+
 def test_one_call_submits_a_whole_batch(tmp_path, monkeypatch):
     """一次调用 = k 个子代,每个子代一棵独立的树,`stop: true`。"""
     mod = _load()
@@ -203,6 +219,17 @@ def test_a_batch_becomes_one_curve_point_per_child(tmp_path):
     assert [p["round"] for p in points] == sorted(p["round"] for p in points), points
     for point in points[1:]:
         assert point.get("steps_in_submission", 1) >= 1, point
+        # **The attribution field is wired onto a real curve point**, which is the half unit
+        # tests cannot reach (`test_components.py` covers the reading itself). The harness here
+        # is `loop_plain`, which declares no `components` map, so every touched path must come
+        # back honestly `unattributed` rather than the field being absent or the paths being
+        # dropped -- an empty component list is what "nothing changed" looks like, and it is
+        # not what happened.
+        assert "editable_surface_components" in point, point
+        block = point["editable_surface_components"]
+        assert set(block) == {"components", "unattributed"}, block
+        assert block["components"] == [], block
+        assert block["unattributed"] == sorted(point.get("editable_surface_touched") or []), block
     meta = json.loads((runs / "dgm-batch" / "run_meta.json").read_text())
     # `run_meta` 的字段是 `mode`(点上的是 `identity.run_mode`)
     assert meta.get("mode") == "unified", meta.get("mode")

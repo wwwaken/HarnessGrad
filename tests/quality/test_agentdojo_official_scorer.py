@@ -5,6 +5,7 @@ The full suite remains in trusted VERIFY runtime; no task predicates enter subje
 """
 from __future__ import annotations
 
+import ast
 import inspect
 import json
 import subprocess
@@ -103,16 +104,31 @@ def test_all_pair_oracles_were_measured_and_split_groups_do_not_leak():
         assert groups and groups.isdisjoint(other_groups)
 
 
-def test_subject_package_contains_tools_but_no_gold_or_scorer():
-    package=next((dataset.DATASET_ROOT/'agent_runtime').glob('lib/python*/site-packages/agentdojo'))
-    assert (package/'functions_runtime.py').is_file()
-    assert (package/'default_suites/v1/tools/banking_client.py').is_file()
-    for path in package.rglob('*.py'):
-        text=path.read_text()
-        assert 'GROUND_TRUTH_OUTPUT' not in text
-        assert 'def ground_truth(' not in text
-        assert 'def utility(' not in text
-        assert 'def security(' not in text
+def test_subject_projection_ships_no_agentdojo_package():
+    """`dojo_runtime` left SETUP with the snapshot: the client imports no AgentDojo package.
+
+    This replaces a test that asserted the tool-only package held tools but no gold/scorer.
+    Nothing projects that package into the agent's workdir any more -- the relay serves the
+    tools from outside the sandbox -- so the property that has to hold is that the one
+    agent-visible program has no environment, no task code and no AgentDojo import.
+    """
+    files = dataset.SETUP['agentdojo/0']['files']
+    assert [entry['path'] for entry in files] == ['dojo.py']
+    assert all(Path(entry['from']).is_file() for entry in files)
+    assert 'agent_runtime' not in json.dumps(files)
+    # Nothing agent-visible is copied out of the dataset tree (runtimes, prepared cases).
+    assert not any(str(Path(entry['from'])).startswith(str(dataset.DATASET_ROOT))
+                   for entry in files)
+    # The transport is the platform's, imported from the published directory beside the
+    # socket -- not projected here and not imported from `eval/`, which a sandbox cannot see.
+    imported = set()
+    for node in ast.walk(ast.parse((dataset.ASSETS / 'cli/dojo').read_text())):
+        if isinstance(node, ast.Import):
+            imported |= {alias.name.split('.')[0] for alias in node.names}
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            imported.add(node.module.split('.')[0])
+    assert imported == {'__future__', 'argparse', 'json', 'os', 'sys', 'pathlib',
+                        'tool_transport'}, imported
 
 
 @pytest.mark.parametrize('arm,score',[('--oracle','1.0'),('--noop','0.0')])

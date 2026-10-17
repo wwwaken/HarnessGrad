@@ -1,15 +1,21 @@
 """Trusted AgentDojo replay preflight; not evidence of a published adapter yet.
 
-Pinned runtime lives outside git. Agent-visible tools still need a stripped package;
-these tests only establish official gold/noop utility and trusted replay semantics.
+Pinned runtime lives outside git. The agent-visible side is two programs and a socket
+(`agentdojo/relay.py`, covered by `test_agentdojo_relay.py`); these tests only establish
+official gold/noop utility and trusted replay semantics.
 """
 from __future__ import annotations
 
 import json
+import os
+import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
+
+from data.datasets import agentdojo as dataset
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = Path('/mnt/20t/xubuqiang/datasets/agentdojo')
@@ -38,29 +44,15 @@ def test_version_and_pair_count():
     assert all(set(c) == {'suite', 'user', 'injection', 'prompt'} for c in cases)
 
 
-def test_tool_only_cli_replays_gold_with_real_observations(tmp_path):
+def test_gold_transcript_reaches_utility_with_real_observations(tmp_path):
+    """The replay transcript alone is enough: no state, no reported tool results."""
     case = json.loads((DATA / '_src/cases.json').read_text())[0]
     case_path = tmp_path / 'case.json'
     case_path.write_text(json.dumps(case))
-    initial = run_bridge('snapshot', case_path)
-    assert initial['attack'] == 'ignore_previous'
-    (tmp_path / 'dojo.initial.json').write_text(json.dumps(initial))
     oracle = run_bridge('oracle', case_path)
-    cli = ROOT / 'data/datasets/agentdojo/cli/dojo'
-    python = DATA / 'agent_runtime/bin/python'
-    tools = subprocess.run([str(python), str(cli), 'tools'], cwd=tmp_path,
-                           capture_output=True, text=True, timeout=30)
-    assert tools.returncode == 0, tools.stderr
-    assert json.loads(tools.stdout)
-    for call in oracle['calls']:
-        proc = subprocess.run([str(python), str(cli), 'call', json.dumps(call)], cwd=tmp_path,
-                              capture_output=True, text=True, timeout=30)
-        assert proc.returncode == 0, proc.stderr
-        assert json.loads(proc.stdout)['error'] is None
-    proc = subprocess.run([str(python), str(cli), 'submit', oracle['output']], cwd=tmp_path,
-                          capture_output=True, text=True, timeout=30)
-    assert proc.returncode == 0, proc.stderr
-    result = run_bridge('evaluate', case_path, tmp_path / 'action.json')
+    action = tmp_path / 'action.json'
+    action.write_text(json.dumps(oracle))
+    result = run_bridge('evaluate', case_path, action)
     assert result['utility'] is True
     assert result['attack_success'] is False
 
@@ -101,10 +93,57 @@ def test_registered_attack_text_matches_agent_snapshot_and_replay(tmp_path):
     assert snapshot['attack'] == run_bridge('evaluate', case_path)['attack'] == 'ignore_previous'
 
 
-def test_cli_refuses_a_legacy_snapshot(tmp_path):
+def test_cli_has_no_snapshot_path_at_all(tmp_path):
+    """The old `dojo.initial.json` path is gone; a leftover file is just an unread file."""
     (tmp_path / 'dojo.initial.json').write_text(json.dumps({'suite': 'banking'}))
-    proc = subprocess.run([str(DATA / 'agent_runtime/bin/python'),
-                           str(ROOT / 'data/datasets/agentdojo/cli/dojo'), 'tools'],
-                          cwd=tmp_path, capture_output=True, text=True, timeout=30)
+    for entry in dataset.SETUP['agentdojo/0']['files']:
+        shutil.copy2(entry['from'], tmp_path / entry['path'])
+    env = {key: value for key, value in os.environ.items() if key != 'HG_DOJO_SOCKET'}
+    proc = subprocess.run([sys.executable, 'dojo.py', 'tools'], cwd=tmp_path, env=env,
+                          capture_output=True, text=True, timeout=30)
     assert proc.returncode != 0
-    assert 'freshly prepared registered ignore_previous snapshot' in proc.stderr
+    assert 'relay socket is absent' in proc.stderr
+    assert not (tmp_path / 'action.json').exists()
+
+
+def test_verifier_measures_without_the_agent_visible_snapshot(tmp_path):
+    """The verifier must measure when no environment is agent-side.
+
+    Documented in the adapter docstring. The verifier replays `case.json` through the
+    trusted runtime, and `SETUP` contains no environment at all -- it used to write
+    `dojo.initial.json` there. Both halves are asserted here so a change to one side
+    cannot silently break the other.
+    """
+    if not PYTHON.is_file():
+        pytest.skip('isolated AgentDojo runtime not provisioned')
+    case = json.loads((DATA / '_src/cases.json').read_text())[0]
+    work = tmp_path / 'verify-only'
+    (work / 'verify').mkdir(parents=True)
+    shutil.copy2(ROOT / 'data/datasets/agentdojo/verify/check.py', work / 'verify/check.py')
+    shutil.copy2(ROOT / 'data/datasets/agentdojo/bridge.py', work / 'verify/bridge.py')
+    case_path = work / 'verify/case.json'
+    case_path.write_text(json.dumps(case))
+    (work / 'action.json').write_text(json.dumps(run_bridge('oracle', case_path)))
+    (work / 'trusted_runtime').symlink_to(DATA / 'runtime')
+    assert not (work / 'dojo.initial.json').exists()
+    proc = subprocess.run(['python3', 'verify/check.py',
+                           '--reward-file', 'verifier/reward.txt',
+                           '--evidence-file', 'verifier/evidence.json'],
+                          cwd=work, capture_output=True, text=True, timeout=120)
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    evidence = json.loads((work / 'verifier/evidence.json').read_text())
+    assert evidence['measured'] is True
+    assert evidence['utility'] is True and evidence['attack_success'] is False
+    assert evidence['attack'] == 'ignore_previous'
+
+    agent = tmp_path / 'agent'
+    agent.mkdir()
+    for entry in dataset.SETUP['agentdojo/0']['files']:
+        shutil.copy2(entry['from'], agent / entry['path'])
+    assert sorted(path.name for path in agent.iterdir()) == ['dojo.py']
+    env = {key: value for key, value in os.environ.items() if key != 'HG_DOJO_SOCKET'}
+    proc = subprocess.run([sys.executable, 'dojo.py', 'tools'], cwd=agent, env=env,
+                          capture_output=True, text=True, timeout=60)
+    assert proc.returncode != 0
+    assert 'relay socket is absent' in proc.stderr
+    assert not (agent / 'action.json').exists()
