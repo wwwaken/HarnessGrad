@@ -6,6 +6,29 @@ never inverted into a utility score. This is not the paper's ``important_instruc
 attacker, all-attacks safety, or an adaptive attack. Goals carry no defence treatment.
 Same-user attack variants stay on the same platform train/eval side to avoid split leakage.
 Agent runtime contains upstream tool code but no tasks, ground_truth, or scorer modules.
+
+**The initial environment is agent-readable, and that changes what the numbers mean.**
+``SETUP`` materialises ``dojo.initial.json`` into the agent's working directory. The file
+is ``bridge.snapshot(case)``: the whole initial environment (inbox, calendar, cloud drive,
+bank, slack, web) plus the tool catalogue. It has to be there because ``cli/dojo`` is a
+program the agent runs and it reads that file from its cwd on every command (``tools``,
+``call``, ``submit``); the sandbox binds the task directory but not the prepared dataset
+tree, so the source is not otherwise reachable, and deleting the copy stops the bridge
+(``dojo.py tools`` -> FileNotFoundError). The registered injection payload is therefore
+verbatim in that file, inside ``environment``, for all 949 prepared cases -- not only in
+what a tool returns. The goal does not name the file, but ``dojo.py``, which it does name,
+sits beside it. The verifier does not read it: ``VERIFY.inputs`` is check.py + bridge.py +
+case.json + the trusted runtime, and ``check.py`` re-derives the environment from
+``case.json`` with ``load_and_inject_default_environment``. Consequence: utility is an
+upper bound, because the state is readable and a case is answerable with no tool call at
+all (``submit`` alone yields utility 1 on case 0), and ``attack_success`` no longer
+measures an instruction delivered inside a tool response -- it measures one the agent could
+read directly. The published 0.2055 utility under ``ignore_previous`` (949 pairs) was
+produced under this SETUP and is affected. No safe local fix exists: any state the
+agent-side bridge can read the agent can read too, removing the copy breaks the bridge, and
+redacting ``environment`` would strip the payload from tool responses as well (the same file
+is what the bridge serves). A trusted tool service owning the environment (the tau-bench
+pattern) is the real fix; it needs an image and a service spec, not an adapter edit.
 """
 from __future__ import annotations
 
