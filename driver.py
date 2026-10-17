@@ -1272,9 +1272,33 @@ def _main(attempt: dict) -> int:
             shutil.copytree(donor_traces, run_dir / "round0_traces")
         # The method's trace channel is staged from the *dict*, not from the directory.
         base["traces"], base["trial_traces"] = _read_trace_bodies(donor_traces)
-        shared_point = {**donor_point, "run_id": run_id,
+        # **The identity has two kinds of field, and they belong to different runs.** The
+        # measurement facts -- which tree, which agent model, which jobs and budget produced
+        # the number -- are the donor's, and copying them is the point. The *run* facts are
+        # not: `improver`, `skill_sha` and `method_model` describe who is proposing edges in
+        # **this** run, and the platform stages them into the method's `round.json`, which is
+        # how a method learns whether it has a CLI improver at all. Copying the donor's
+        # `improver: None` (the donor ran with `--improver none`) told all nine methods they
+        # had no CLI improver, so each fell back to the chat endpoint with a prompt sized for
+        # a CLI and died on the 16k window -- every method, every round 1, on 2026-10-17.
+        run_identity = _identity(man, h0_sha, mode, improver=improver,
+                                 jobs=args.jobs, trials=args.trials,
+                                 gpu_budget=args.gpu_budget)
+        merged_identity = dict(donor_point.get("identity") or {})
+        for key in ("improver", "skill_sha", "method_model"):
+            if key in run_identity:
+                merged_identity[key] = run_identity[key]
+            else:
+                merged_identity.pop(key, None)
+        shared_point = {**donor_point, "run_id": run_id, "identity": merged_identity,
                         "shared_from": {"run_id": args.h0_from, "path": str(donor_dir),
-                                        "h0_sha": h0_sha}}
+                                        "h0_sha": h0_sha,
+                                        # The donor's own measurement conditions, kept so a
+                                        # reader can tell "measured at jobs=13" from "this
+                                        # run's jobs".
+                                        "measured_with": {
+                                            "jobs": (donor_point.get("identity") or {}).get("jobs"),
+                                            "gpu_budget": (donor_point.get("identity") or {}).get("gpu_budget")}}}
         console.note(f"round 0 reused from {args.h0_from} — one first score for every method",
                      level="info")
     else:
