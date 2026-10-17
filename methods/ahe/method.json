@@ -1,16 +1,36 @@
 {
  "kind": "published",
  "title": "AHE:预注册预测与组件级回退",
- "note": "移植的是 AHE 的每轮决策规则:动手之前先写 change_manifest,声明 predicted_fixes 和 risk_tasks;下一轮用 per-task 的 fail→pass / pass→fail 把每条改动判成 HARMFUL / MIXED / EFFECTIVE / PARTIALLY_EFFECTIVE / INEFFECTIVE,判决再渲染成「保留 / 改进 / 回滚并换一层重来」。回滚不是验收门槛 —— AHE 本来就没有验收门槛,它是模型自己把文件拷回去,所以这里在 HARMFUL 时把候选建在上一轮之前的状态上。它的 k 次 rollout 全过聚合、全工具编辑器和 Best-of-N 都无法在 mode A 表达;constraint_level 在 AHE 里没有任何 Python 读它,这里也只当声明记录。",
+ "note": "移植的是 AHE 的每轮决策规则:动手之前先写 change_manifest,声明 predicted_fixes 和 risk_tasks;下一轮用 per-task 的 fail→pass / pass→fail 把每条改动判成 HARMFUL / MIXED / EFFECTIVE / PARTIALLY_EFFECTIVE / INEFFECTIVE,判决再渲染成「保留 / 改进 / 回滚并换一层重来」。HARMFUL 时把候选建在被归因改动的基底上。每次调用恢复 Best-of-2:以不同策略指令并发生成两个独立候选,两者有效且不同则一批提交测量;声明相同、实际内容相同或只有一个有效候选时确定性退回单候选并记录原因。winner 仍由平台按 train 分数选择,AHE 自己的 winner 规则无法在 mode A 表达。这里的两候选不等于每任务 k 次 rollout 全过聚合;全工具编辑器也未恢复。constraint_level 在 AHE 里没有任何 Python 读它,这里也只当声明记录。",
  "deviations": [
   {
-   "what": "With no reject step, the rollback degrades to 'different base + instruction'.",
-   "why": "mode A accepts unconditionally: the platform owns the schedule, and a method cannot refuse its own candidate.",
+   "what": "Rollback uses a different edit base plus an instruction, at whole-candidate granularity rather than restoring individual declared changes.",
+   "why": "choose_edit_dir restores the staged base of a HARMFUL candidate; the one-shot editor receives the per-change rollback instructions (upstream evolve.py:2860-2861), but there is no mechanical per-change restoration.",
    "direction": "weaker"
   },
   {
-   "what": "The rollback's granularity is the whole round rather than one change, and `k=2` rollouts become `k=1`.",
-   "why": "Same cause: one candidate and one measurement per round.",
+   "what": "Proposal rollouts are restored to k=2 (Best-of-2), but winner selection remains with the platform by train score; AHE's own winner rule cannot be expressed in mode A.",
+   "why": "Both independent candidates are submitted through report_many before either score is visible. Upstream evolve.py:3313-3336 ranks pass_rate, then n_exception, then variant index; :3185-3223 merges only the winner and adopts its manifest. The method cannot select that winner inside this call or perform the upstream winner-manifest handoff.",
+   "direction": "weaker"
+  },
+  {
+   "what": "The batch deterministically falls back to its first usable candidate when change declarations or applied contents are identical; a declined, invalid or failed sibling also reduces the usable batch.",
+   "why": "Temperature=0.0 needs explicit strategy differences, supplied by variant_prompt as upstream strategy hints (evolve.py:3715-3758). Declarations are compared before filling omitted files and without list-order differences; applied contents are also compared. ahe_rollouts records the fallback reason and both variant outcomes rather than claiming two distinct proposals.",
+   "direction": "weaker"
+  },
+  {
+   "what": "Exact shared-base attribution requires the recorded parent point to remain in the staged history.",
+   "why": "ahe_rule.edited_from_round identifies the parent of both variants. attribution_history compares against that point when present, but retains the legacy adjacent-point fallback if the recorded parent is absent; truncated history cannot support exact shared-base attribution.",
+   "direction": "weaker"
+  },
+  {
+   "what": "Per-task rollout aggregation still uses one score per task, independently of the two proposal variants.",
+   "why": "The method reads one studied_per_task score per task. It cannot reconstruct upstream all-k-pass aggregation and pass@1 estimation (evolve.py:650-695) from that scalar; Best-of-2 restores proposal breadth, not repeated task trials.",
+   "direction": "weaker"
+  },
+  {
+   "what": "Each variant uses one shared-editor request instead of AHE's full tool-using evolution and debugger workflow.",
+   "why": "run.py dispatches editor.ask once per variant and applies its returned edits; it does not run the upstream evolve-agent tool loop or cross-variant debugger (evolve.py:3690-3712).",
    "direction": "weaker"
   },
   {
