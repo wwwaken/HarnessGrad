@@ -881,7 +881,35 @@ def parse_reply(text: str) -> dict:
 #: every round of every run, including rounds where the improver answered six model calls
 #: over a 24 KB prompt. A cost-aware acceptance rule was therefore reading a constant, and
 #: a constant is a rule that permits everything.
-_SPENT: dict = {"input": 0, "output": 0, "calls": 0, "model": None}
+_SPENT: dict = {"input": 0, "output": 0, "calls": 0, "model": None,
+                # **Whether the spend is known at all.** A CLI improver is an agent
+                # process whose provider is built in: it prints prose, not a usage
+                # record, so nothing reports tokens. Before this field the sum stayed 0
+                # and was recorded as `generation_tokens: 0` -- a claim that the improver
+                # spent nothing, when the truth is "nobody counted". `None` is the honest
+                # value and the platform already distinguishes it from zero.
+                "source": None}
+
+
+#: The last CLI improver run's own account, attached to whichever step the method
+#: reports next. Module-level for the same reason `_SPENT` is: one process is one method
+#: invocation, so there is exactly one improver run to describe.
+_LAST_IMPROVER: dict = {}
+
+
+def improver_run() -> dict:
+    """What the last CLI improver reported about itself (empty for endpoint improvers)."""
+    return dict(_LAST_IMPROVER)
+
+
+def spend_source() -> str | None:
+    """Who reported the spend: `None` (nobody yet) or `cli_unreported`.
+
+    Kept out of `spent()` on purpose: that mapping is the four numbers and the model, and
+    a caller comparing it to the numbers it recorded should not have to filter a string
+    out of it.
+    """
+    return _SPENT.get("source")
 
 
 def spent() -> dict:
@@ -892,11 +920,19 @@ def spent() -> dict:
     otherwise cannot tell "the improver did nothing" from "the improver's spend was not
     reported".
     """
-    return dict(_SPENT)
+    return {k: _SPENT[k] for k in ("input", "output", "calls", "model")}
 
 
-def spent_tokens() -> int:
-    """Input + output: the single number the method reply carries as `generation_tokens`."""
+def spent_tokens() -> int | None:
+    """Input + output, or **`None` when nothing reported them**.
+
+    A CLI improver cannot report its spend: the provider lives inside the agent process
+    and its output is a transcript. Summing to 0 would record "the improver used no
+    tokens", which is a different and false statement -- and one a cost-aware rule would
+    act on.
+    """
+    if _SPENT.get("source") == "cli_unreported":
+        return None
     return _SPENT["input"] + _SPENT["output"]
 
 
@@ -908,12 +944,17 @@ def reset_spent() -> None:
     -- the two-stage loops that ask a proposer and then a critic -- and for tests, which
     share an interpreter and would otherwise read each other's numbers.
     """
-    _SPENT.update(input=0, output=0, calls=0, model=None)
+    _SPENT.update(input=0, output=0, calls=0, model=None, source=None)
 
 
 def _record_usage(usage, model: str | None) -> None:
     """Add one reply's usage. One call is counted whether or not the provider reported it."""
     _SPENT["calls"] += 1
+    # An endpoint reply that arrives means the spend *is* being counted, whatever an
+    # earlier CLI call in the same process concluded. Without this the flag set by
+    # `_ask_cli` outlives the call it described and turns a later, reported spend into
+    # `None`.
+    _SPENT["source"] = "endpoint"
     _SPENT["model"] = getattr(usage, "model", None) or model or _SPENT["model"]
     if usage is None:
         return
@@ -1172,6 +1213,27 @@ def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:
                                    evidence=evidence_pointer(base))
     _keep_improver_transcript(result, workspace)
     artifacts = _read_cli_artifacts(workspace)
+    # **What the improver itself cost, as far as anyone can see.** `propose` returns a
+    # `reported` block -- exit code, wall-clock seconds, which files moved, and what the
+    # environment boundary withheld -- and `_ask_cli` used to drop it on the floor, so a
+    # nine-method batch could not answer "how long did the improver take per round".
+    # Tokens are *not* in it: the CLI's provider is built in, so the honest record is the
+    # wall clock plus the prompt size we constructed ourselves.
+    reported = result.get("reported") or {}
+    _LAST_IMPROVER.clear()
+    _LAST_IMPROVER.update({
+        "exit_code": reported.get("exit_code"),
+        "seconds": reported.get("seconds"),
+        "files_changed": len(result.get("files") or []),
+        "env_withheld": reported.get("env_withheld"),
+        "prompt_chars": len(prompt),
+        # A token count we can defend: the prompt is ours, so its length is exact and
+        # the usual characters-per-token ratio makes the estimate reproducible. Label
+        # it as an estimate in the name, not in a comment nobody reads.
+        "prompt_tokens_estimate": round(len(prompt) / 4),
+        "spend_reported": False,
+    })
+    _SPENT["source"] = "cli_unreported"
     edits: list[dict] = []
     for rel in result["files"]:
         path = Path(result["candidate"]) / rel
@@ -1479,7 +1541,7 @@ def report(req: dict, *, method: str, harness_dir: Path, changed: bool,
     """
     spent_now = spent()
     if tokens is None:
-        tokens = spent_now["input"] + spent_now["output"]
+        tokens = spent_tokens()
     if changed:
         problems = candidate.validate(Path(harness_dir))
         if problems:
@@ -1501,8 +1563,12 @@ def report(req: dict, *, method: str, harness_dir: Path, changed: bool,
                              "method_input_tokens": spent_now["input"] or None,
                              "method_output_tokens": spent_now["output"] or None,
                              "method_model_calls": spent_now["calls"] or None,
-                             "method_model": spent_now["model"]},
-            "method_reported": {"score": None, **(method_reported or {})},
+                             "method_model": spent_now["model"],
+                             # Null tokens above mean "nobody counted" only if this says
+                             # so; without it a reader cannot tell a free round from an
+                             # invisible one.
+                             "method_spend_source": spend_source()},
+            "method_reported": {"score": None, **_reported_with_improver(method_reported)},
         }],
         "trajectory_shape": "sequence",
         # Mode A: the platform owns the schedule, so nobody nominates a step.
@@ -1533,7 +1599,7 @@ def report(req: dict, *, method: str, harness_dir: Path, changed: bool,
                 # statements, and a method that counts its own calls by hand is exactly
                 # the case where they can disagree.
                 "method_usage": spent_now,
-                "method_reported": method_reported or {}}
+                "method_reported": _reported_with_improver(method_reported)}
     if stop is not None:
         response["stop"] = bool(stop)
     # The method's own one-line account of this round. The driver falls back to a
@@ -1566,12 +1632,41 @@ def _step_payload(*, harness_dir, label, edit_kind, changed, tokens_now,
         # source-reading cost, not a thinking cost.
         "claimed_cost": {"generation_tokens": tokens_now,
                          "method_input_tokens": None, "method_output_tokens": None,
-                         "method_model_calls": None, "method_model": None},
-        "method_reported": {"score": None, **(method_reported or {})},
+                         "method_model_calls": None, "method_model": None,
+                         "method_spend_source": None},
+        "method_reported": {"score": None, **_reported_with_improver(method_reported)},
     }
     if incumbent_round is not None:
         step["incumbent_round"] = int(incumbent_round)
     return step
+
+
+def _reported_with_improver(method_reported: dict | None) -> dict:
+    """The method's own report plus the improver's account of itself, under its own key.
+
+    Kept apart rather than merged so a method's keys cannot collide with the improver's,
+    and omitted entirely for endpoint improvers -- an empty block would say "the improver
+    reported nothing", which is not the same as "there was no CLI improver".
+    """
+    merged = dict(method_reported or {})
+    run = improver_run()
+    if run:
+        merged["improver_run"] = run
+    return merged
+
+
+def _batch_reported(steps: list[dict], payloads: list[dict]) -> dict:
+    """The envelope-level record for a batch submission (see `report_many`)."""
+    envelope: dict = {"steps": len(payloads)}
+    if len(steps) == 1:
+        envelope.update(_reported_with_improver(steps[0].get("method_reported")))
+    else:
+        per_step = [e.get("method_reported") or {} for e in steps]
+        if any(per_step):
+            envelope["per_step"] = per_step
+        if improver_run():
+            envelope["improver_run"] = improver_run()
+    return envelope
 
 
 def report_many(req: dict, *, method: str, steps: list[dict],
@@ -1600,7 +1695,7 @@ def report_many(req: dict, *, method: str, steps: list[dict],
     """
     spent_now = spent()
     if tokens is None:
-        tokens = spent_now["input"] + spent_now["output"]
+        tokens = spent_tokens()
     if not steps:
         raise SystemExit("report_many needs at least one step; use report for a single one")
 
@@ -1667,7 +1762,13 @@ def report_many(req: dict, *, method: str, steps: list[dict],
     response = {"modified": changed_any, "changed": changed_any,
                 "files": files, "hypothesis": hypothesis, "steps": len(payloads),
                 "generation_tokens": tokens, "method_usage": spent_now,
-                "method_reported": {"steps": len(payloads)}}
+                # **The method's own record, at the level the curve point reads.** This
+                # envelope used to say only `{"steps": n}`, so a method that submits its
+                # batch through `report_many` -- DGM, HyperAgents, Meta-Harness -- had its
+                # rule record written into the step payloads and nowhere the point kept.
+                # One step is unambiguous and merges; several are listed per step so
+                # nothing is silently chosen between them.
+                "method_reported": _batch_reported(steps, payloads)}
     if stop is not None:
         response["stop"] = bool(stop)
     if note is not None:
