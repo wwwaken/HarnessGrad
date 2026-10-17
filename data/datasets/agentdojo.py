@@ -131,9 +131,21 @@ def __getattr__(name):
     if name == 'SETUP':
         # One agent-visible program and no data. The interaction environment is served over the
         # socket the platform publishes; the transport beside it is the platform's, not a copy.
-        return {f'agentdojo/{i}': {'files': [
-            {'path': 'dojo.py', 'from': str(ASSETS / 'cli/dojo')},
-        ]} for i in _indices()}
+        #
+        # `tool_relay` is deliberately not under `files`: `eval/run/tool_relay.py` stages
+        # `case.json` in a directory the platform owns, starts `relay.py` on it with the
+        # verifier's own interpreter (the environment needs `task_suite`/`attacks`, which the
+        # agent-visible tool runtime never had), and publishes only the socket into the sandbox.
+        return {f'agentdojo/{i}': {
+            'files': [{'path': 'dojo.py', 'from': str(ASSETS / 'cli/dojo')}],
+            'tool_relay': {
+                'program': str(ASSETS / 'relay.py'),
+                'python': str(DATASET_ROOT / 'runtime/bin/python'),
+                'content_flag': '--case',
+                'filename': 'case.json',
+                'content': (DATASET_ROOT / PREPARED / str(i) / 'case.json').read_text(),
+            },
+        } for i in _indices()}
     if name == 'VERIFY':
         return {f'agentdojo/{i}': {
             'kind': 'command', 'argv': ['python3', 'verify/check.py', '--reward-file', REWARD_REL,

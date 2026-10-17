@@ -127,7 +127,9 @@ def start(setup: dict | None, *, ready_timeout_s: float = READY_TIMEOUT_S) -> To
     receipt_path = directory / "receipt.json"
     log_path = directory / "relay.log"
 
-    argv = [sys.executable, str(program), "--socket", str(sock),
+    # A dataset may need its own interpreter: AgentDojo's environment imports the task suite and
+    # the attacks, which live in the dataset's provisioned runtime and not in the driver's python.
+    argv = [str(decl.get("python") or sys.executable), str(program), "--socket", str(sock),
             "--receipt", str(receipt_path)]
     # The program names its own input flag; `content_flag` defaults to `--game` because that
     # is what the first migrated dataset uses, and a second dataset states its own.

@@ -157,12 +157,19 @@ def main(argv=None):
     parser.add_argument("--socket", required=True, help="absolute path to serve on")
     parser.add_argument("--deadline-s", type=float, default=None)
     parser.add_argument("--max-calls", type=int, default=MAX_CALLS)
+    # The runner reads this file rather than stdout: a relay that is SIGKILLed prints nothing,
+    # and "no receipt" is how the runner distinguishes "died" from "served and stopped".
+    parser.add_argument("--receipt", default=None,
+                        help="write the call/refusal/rejection counts here on exit")
     args = parser.parse_args(argv)
     if not Path(args.case).is_file():
         raise SystemExit(f"relay: no such case: {args.case}")
     receipt = serve(args.case, args.socket, deadline_s=args.deadline_s,
                     max_calls=args.max_calls)
-    print(json.dumps(receipt))
+    text = json.dumps(receipt, indent=1, sort_keys=True)
+    if args.receipt:
+        Path(args.receipt).write_text(text + "\n")
+    print(text)
     return 0 if not (receipt["errors"] or receipt["refused"]) else 1
 
 
