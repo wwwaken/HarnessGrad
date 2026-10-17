@@ -992,7 +992,43 @@ def reset_spent() -> None:
     -- the two-stage loops that ask a proposer and then a critic -- and for tests, which
     share an interpreter and would otherwise read each other's numbers.
     """
-    _SPENT.update(input=0, output=0, calls=0, model=None, source=None)
+    # `cache_read` resets with the rest: a per-phase window that kept the previous phase's
+    # cache reads would report a split that belongs to a different call.
+    _SPENT.update(input=0, output=0, calls=0, model=None, source=None, cache_read=0)
+
+
+def _cached_prompt_tokens(usage) -> int:
+    """Prompt tokens the provider says it served from cache, in any of the shapes it uses.
+
+    Three spellings exist in the wild and a client sees different ones depending on how it
+    parses the body: OpenAI's `prompt_tokens_details.cached_tokens`, DeepSeek's native
+    `prompt_cache_hit_tokens`, and whatever the SDK left in `model_extra`. Reading all
+    three is the difference between an endpoint row that can be compared with a CLI row and
+    one that silently reports zero cache hits.
+    """
+    def as_int(value) -> int:
+        return int(value) if isinstance(value, int) and not isinstance(value, bool) else 0
+
+    details = getattr(usage, "prompt_tokens_details", None)
+    if details is not None:
+        cached = getattr(details, "cached_tokens", None)
+        if isinstance(cached, int) and not isinstance(cached, bool):
+            return cached
+        if isinstance(details, dict):
+            cached = details.get("cached_tokens")
+            if isinstance(cached, int) and not isinstance(cached, bool):
+                return cached
+    for name in ("prompt_cache_hit_tokens", "cache_read_tokens", "cached_tokens"):
+        cached = getattr(usage, name, None)
+        if isinstance(cached, int) and not isinstance(cached, bool):
+            return cached
+    extra = getattr(usage, "model_extra", None) or {}
+    if isinstance(extra, dict):
+        for name in ("prompt_cache_hit_tokens", "cache_read_tokens", "cached_tokens"):
+            cached = extra.get(name)
+            if isinstance(cached, int) and not isinstance(cached, bool):
+                return cached
+    return 0
 
 
 def _record_usage(usage, model: str | None) -> None:
@@ -1006,7 +1042,16 @@ def _record_usage(usage, model: str | None) -> None:
     _SPENT["model"] = getattr(usage, "model", None) or model or _SPENT["model"]
     if usage is None:
         return
-    _SPENT["input"] += int(getattr(usage, "prompt_tokens", 0) or 0)
+    prompt = int(getattr(usage, "prompt_tokens", 0) or 0)
+    cached = _cached_prompt_tokens(usage)
+    # **Cache reads are reported here too, and subtracted from the input count.** The
+    # provider gives a single `prompt_tokens` that includes whatever it served from its
+    # cache, while the CLI channel reports the two *disjoint* (its `inputTokens` already
+    # excludes cache reads). Keeping one convention is what makes a mixed method's two
+    # rows add up: input is the tokens that were actually priced as fresh, cache_read is
+    # the cheap remainder, and neither contains the other.
+    _SPENT["input"] += max(0, prompt - cached)
+    _SPENT["cache_read"] += cached
     _SPENT["output"] += int(getattr(usage, "completion_tokens", 0) or 0)
 
 
