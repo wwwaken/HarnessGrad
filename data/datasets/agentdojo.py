@@ -143,7 +143,10 @@ def __getattr__(name):
                 'python': str(DATASET_ROOT / 'runtime/bin/python'),
                 'content_flag': '--case',
                 'filename': 'case.json',
-                'content': (DATASET_ROOT / PREPARED / str(i) / 'case.json').read_text(),
+                # A path, not the text: `SETUP` must not read a task's case file (that is an
+                # existing invariant, pinned by test_agentdojo_metadata_privacy). The runner
+                # reads it when it stages the relay, for the one task it is about to run.
+                'content_path': str(DATASET_ROOT / PREPARED / str(i) / 'case.json'),
             },
         } for i in _indices()}
     if name == 'VERIFY':

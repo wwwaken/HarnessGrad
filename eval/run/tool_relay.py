@@ -6,6 +6,7 @@ declares it in its `SETUP` with a `tool_relay` key::
     "tool_relay": {
         "program": "<absolute path to the dataset's relay program>",
         "content": "<the environment's own bytes, e.g. a game file>",
+        # or "content_path": "<a file the runner copies here at start>"
         "budget":  50,               # optional
     }
 
@@ -121,7 +122,13 @@ def start(setup: dict | None, *, ready_timeout_s: float = READY_TIMEOUT_S) -> To
     # format from the extension, so a file called `environment` is not a `.tw-pddl` and the
     # relay dies at startup -- which the runner then reports as an unmeasured task.
     payload = state / decl.get("filename", "environment")
-    payload.write_text(decl["content"], encoding="utf-8")
+    if "content" in decl:
+        payload.write_text(decl["content"], encoding="utf-8")
+    else:
+        # `content_path` is for a dataset whose `SETUP` must not read the file: it hands the
+        # path and the runner copies it here, so the relay still gets a private copy and the
+        # agent still gets nothing.
+        payload.write_text(Path(decl["content_path"]).read_text(), encoding="utf-8")
     os.chmod(payload, 0o600)
     sock = directory / "tool.sock"
     receipt_path = directory / "receipt.json"

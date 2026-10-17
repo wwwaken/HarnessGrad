@@ -105,12 +105,17 @@ def test_selected_lookup_has_only_fixed_metadata(name, index, monkeypatch, adapt
         if name == "ENV":
             assert metadata == {"kind": "files"}
         elif name == "SETUP":
-            assert metadata == {"files": [
-                # One program and no data: the environment is served by `agentdojo/relay.py`
-                # over the socket the platform publishes at /run/harnessgrad-tool, so there is
-                # no snapshot, no state file and no per-task runtime to copy.
+            # `files` is what the agent receives; `tool_relay` is a declaration the platform
+            # reads to start the host-side environment (`eval/run/tool_relay.py`). One program
+            # and no data: no snapshot, no state file, no per-task runtime to copy.
+            assert set(metadata) == {"files", "tool_relay"}
+            assert metadata["files"] == [
                 {"path": "dojo.py", "from": str(module.ASSETS / "cli/dojo")},
-            ]}
+            ]
+            relay = metadata["tool_relay"]
+            assert set(relay) == {"program", "python", "content_flag", "filename", "content_path"}
+            assert relay["content_flag"] == "--case"
+            assert relay["content_path"].endswith("/case.json")
         else:
             # Check metadata identities and selected paths, leaving argv opaque.
             assert set(metadata) == {"kind", "argv", "inputs", "reward_file", "evidence_file"}
