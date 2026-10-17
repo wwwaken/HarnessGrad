@@ -41,6 +41,7 @@ EXPECTED_DATASETS = (
     "hotpotqa",
     "jericho",
     "livecodebench",
+    "locomo",
     "musique",
     "nestful",
     "physicsquestions",

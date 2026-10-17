@@ -69,6 +69,10 @@ ROWS: dict[str, dict] = {
         "control": ["data/scaffolds/qa/control.py", "--dataset", "chessbench_puzzles"],
         "metric_tests": ["test_chessbench_puzzles_official_scorer.py", "test_qa_dataset_contract.py"],
     },
+    "locomo": {
+        "control": ["data/datasets/locomo/control.py", "--task-id", "locomo/conv-26"],
+        "metric_tests": ["test_locomo_harbor_scoring.py", "test_locomo_dataset.py"],
+    },
     "musique": {
         "control": ["data/scaffolds/qa/control.py", "--dataset", "musique"],
         "metric_tests": ["test_musique_official_scorer.py", "test_qa_dataset_contract.py"],
