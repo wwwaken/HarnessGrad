@@ -20,7 +20,7 @@ SCAFFOLDS = DATA / "scaffolds"
 
 # Independent, reviewed inventory: do not derive this expectation from discovery.
 EXPECTED_DATASETS = (
-    "agentdojo", "alfworld", "api_bank", "appworld", "bfcl_v3",
+    "agentdojo", "aime", "alfworld", "api_bank", "appworld", "bfcl_v3",
     "bird_minidev", "chessbench_puzzles", "ds1000", "fever", "gaia",
     "gsm8k", "hotpotqa", "jericho", "livecodebench", "musique", "nestful",
     "physicsquestions", "reasoning_gym", "scienceworld", "sotuqa",
@@ -92,7 +92,7 @@ def test_scaffolds_contain_shared_code_and_no_adapters():
     _check(errors)
 
 
-def test_all_28_adapters_live_in_datasets():
+def test_all_29_adapters_live_in_datasets():
     errors = []
     if not DATASETS.is_dir():
         errors.append("Missing adapter directory: data/datasets/")
@@ -110,7 +110,7 @@ def test_all_28_adapters_live_in_datasets():
     _check(errors)
 
 
-def test_registry_publishes_exactly_the_28_adapters_without_loading_them(monkeypatch):
+def test_registry_publishes_exactly_the_29_adapters_without_loading_them(monkeypatch):
     path = SCAFFOLDS / "registry.py"
     assert path.is_file(), f"Missing registry: {_relative(path)}"
     errors = []

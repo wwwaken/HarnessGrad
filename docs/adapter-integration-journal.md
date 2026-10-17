@@ -5745,3 +5745,9 @@ no stray branches. Only `main` was pushed, as instructed.
   already paid for one rewrite - which is why GSM8K's archived-run `platform.git_sha` is unresolvable.
   Measured clone cost: **37.5 MB to download** (`--depth 1`: 14 MB); 134 MB on disk, of which 89 MB is the
   checked-out tree and 37 MB is local-only worktree indexes that are never pushed.
+
+
+## AIME registry consistency — 2026-10-17
+
+- AIME is a published adapter. Declare its existing task-mean aggregation in `data/aggregation_policies.json`, and include it in the layout/import inventories (29 datasets). Extend the aggregation regression beyond its immutable original fixture to check AIME explicitly. No adapter, scorer or execution behavior changes.
+- Conda validation: **76 passed, 38 subtests passed, 1 deselected** across aggregation policies, layout and import-direction checks. The deselected inventory test imports every dataset and requires unrelated host datasets/dependencies; the source-only inventory checks ran.

@@ -141,7 +141,13 @@ def test_before_after_all_numbers_and_verdicts_are_identical(adapters):
                       for name in expected["run_means"]},
     }
     assert actual == expected
-    assert set(actual["run_means"]) == set(_published_sources(ROOT / "data" / "datasets"))
+    # Keep the original migration receipt immutable. Later registrations have no
+    # pre-migration result, but still participate in the same declared run mean.
+    added_since_baseline = {"aime"}
+    assert set(actual["run_means"]) | added_since_baseline == set(
+        _published_sources(ROOT / "data" / "datasets"))
+    for name in added_since_baseline:
+        assert [mean(xs, dataset=name) for xs in inputs["run_scores"]] == expected["run_means"]["gsm8k"]
 
 
 def _replace_policy(monkeypatch, tmp_path, dataset, scope, **changes):
