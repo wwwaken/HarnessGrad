@@ -89,3 +89,28 @@ def test_a_donor_measured_before_the_payload_existed_is_still_sharable(tmp_path)
     a, b = _first_point(tmp_path, "donor"), _first_point(tmp_path, "consumer")
     assert b["per_task"] == a["per_task"]
     assert b["shared_from"]["run_id"] == "donor"
+
+
+def test_a_shared_round_zero_stages_the_donors_traces(tmp_path):
+    """**回归**：共用 H0 时 `base` 里没有 `traces`，方法一被调用就 `KeyError: 'traces'`。
+
+    方法的 trace 通道是从内存里的 dict 布出去的，不是从 run 目录读的 —— 所以共用必须把
+    donor 的 trace body 一起读回来，否则九方法拿到的是空通道。
+    """
+    donor = _run(tmp_path, "donor")
+    assert donor.returncode == 0, donor.stderr[-600:]
+    (tmp_path / "runs" / "donor" / "h0.json").unlink()
+    traces_dir = tmp_path / "runs" / "donor" / "round0_traces"
+    assert traces_dir.is_dir() and any(traces_dir.glob("*.jsonl")), "donor 应当留下了 trace"
+
+    argv = [sys.executable, "driver.py", "--harness", "loop_plain", "--mode", "A",
+            "--rounds", "1", "--dataset", "demo", "--sampling", "all", "--jobs", "1",
+            "--run-id", "consumer", "--runs-root", str(tmp_path / "runs"),
+            "--work-root", str(tmp_path / "work-consumer"), "--h0-from", "donor",
+            "--method-entrypoint", f"{sys.executable} {ROOT / 'methods/noop/run.py'}"]
+    proc = subprocess.run(argv, cwd=ROOT, capture_output=True, text=True, timeout=600,
+                          env={**os.environ, "HG_AGENT_BACKEND": "mock"})
+    assert proc.returncode == 0, proc.stderr[-1200:]
+    staged = tmp_path / "runs" / "consumer" / "round0_traces"
+    assert staged.is_dir() and any(staged.glob("*.jsonl")), "trace 必须跟着测量一起搬过来"
+    assert "KeyError" not in proc.stderr
