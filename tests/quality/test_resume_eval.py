@@ -11,8 +11,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from harnessgrad.loops.eval_side import (_merge_prior, _progress_results,
-                                         _resume_mismatch)
+from harnessgrad.loops.eval_side import (
+    _merge_prior,
+    _progress_results,
+    _resume_mismatch,
+)
 
 
 def _progress(run_dir: Path, task_id: str, *, score=None, outcome="completed",

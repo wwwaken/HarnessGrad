@@ -24,7 +24,7 @@ def _run(*extra: str, rounds: str) -> subprocess.CompletedProcess:
             "--runs-root", str(TMP / "runs"), "--work-root", str(TMP / "work"),
             "--method-entrypoint", f"{sys.executable} {ROOT / 'methods/noop/run.py'}",
             *extra]
-    return subprocess.run(argv, cwd=ROOT, capture_output=True, text=True, timeout=600,
+    return subprocess.run(argv, cwd=ROOT, capture_output=True, text=True, timeout=600, check=False,
                           env={**os.environ, "HG_AGENT_BACKEND": "mock"})
 
 

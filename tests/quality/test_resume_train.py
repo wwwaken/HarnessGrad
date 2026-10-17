@@ -14,7 +14,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from driver import (ResumeNothingToDo, ResumeRefused, _resume_train_state)
+from driver import ResumeNothingToDo, ResumeRefused, _resume_train_state
 
 
 def _run(tmp_path: Path, *, rounds: tuple[int, ...] = (0, 1), sha: str = "sha-a",
