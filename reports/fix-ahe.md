@@ -85,3 +85,18 @@ python3 tools/method_lint.py | tail -3
   这项限制也已记入 `method.json`。本次没有改变平台保留历史、状态或预算截断的策略。
 - 未运行 driver、真实模型调用、数据集诊断或 pilot，也未做联网下载。测试证明提交结构与
   决策分支，不构成实际 benchmark 测量或两候选改善分数的证据。
+
+---
+
+## 验收方附记
+
+原提交把两件事都叫 rollouts/`k`，而上游里它们是**不同的量**：
+
+* **`n_variants`**（提案变体数）：`adopt_variant_winner` 建 `n_variants` 个 worktree、只 merge 冠军
+  ——这次恢复的就是这个,现在一次调用交 2 个变体。
+* **`k`**（每题 rollout 数）：`evolve.py:599-602` *"a task passes only if ALL k rollouts pass"*。
+  它由平台的 `--trials` 决定,本批是 `--trials 1`,所以 `k=1` 是**运行配置**,不是移植缺陷。
+
+已把 deviation 里的 "Proposal rollouts are restored to k=2" 改为 `n_variants` 的说法,并把 per-task
+rollouts 那条独立写成"由 `--trials` 决定、本移植版不阻止 `--trials 2`"。这样读者不会把"我们交了 2 个
+候选"误读成"每题测了 2 次"。

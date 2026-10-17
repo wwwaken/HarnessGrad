@@ -9,8 +9,8 @@
    "direction": "weaker"
   },
   {
-   "what": "Proposal rollouts are restored to k=2 (Best-of-2), but winner selection remains with the platform by train score; AHE's own winner rule cannot be expressed in mode A.",
-   "why": "Both independent candidates are submitted through report_many before either score is visible. Upstream evolve.py:3313-3336 ranks pass_rate, then n_exception, then variant index; :3185-3223 merges only the winner and adopts its manifest. The method cannot select that winner inside this call or perform the upstream winner-manifest handoff.",
+   "what": "Two proposal variants are generated per call in the upstream `n_variants` sense (`evolve.py:3123-3151`), but winner selection remains with the platform by train score; AHE's own winner rule cannot be expressed in mode A.",
+   "why": "Upstream `adopt_variant_winner` merges the best of `n_variants` git worktrees and tags the losers; here both variants are measured and the platform keeps whichever train score is best. The word `k` is deliberately not used here: upstream `k` is per-task rollout count (`evolve.py:599-602`), a different quantity from the number of proposal variants.",
    "direction": "weaker"
   },
   {
@@ -24,8 +24,8 @@
    "direction": "weaker"
   },
   {
-   "what": "Per-task rollout aggregation still uses one score per task, independently of the two proposal variants.",
-   "why": "The method reads one studied_per_task score per task. It cannot reconstruct upstream all-k-pass aggregation and pass@1 estimation (evolve.py:650-695) from that scalar; Best-of-2 restores proposal breadth, not repeated task trials.",
+   "what": "Per-task rollouts stay at 1 because the platform runs `--trials 1`; upstream's `k` (`evolve.py:599-602`) passes a task only if ALL k rollouts pass, so this is a run configuration, not a difference in the ported rule.",
+   "why": "`--trials` is the platform's knob and it is recorded on every point, so a run with `--trials 2` would exercise upstream's aggregation; nothing in this port prevents it. Kept separate from the two proposal variants above so the two quantities are not conflated.",
    "direction": "weaker"
   },
   {
