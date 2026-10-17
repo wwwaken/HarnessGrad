@@ -114,3 +114,25 @@ def test_a_shared_round_zero_stages_the_donors_traces(tmp_path):
     staged = tmp_path / "runs" / "consumer" / "round0_traces"
     assert staged.is_dir() and any(staged.glob("*.jsonl")), "trace 必须跟着测量一起搬过来"
     assert "KeyError" not in proc.stderr
+
+
+def test_a_shared_point_carries_this_runs_improver_not_the_donors(tmp_path):
+    """**2026-10-17 整批失败就是这条。** donor 用 `--improver none` 测（我们那份真实的 H0 就是），
+    共用时把它的 `improver` 一起抄过来 —— 那里根本没有这个键 —— 于是九个方法都以为
+    "我没有 CLI improver"，退回聊天端点，用为 CLI 准备的 prompt 去撞 16k 窗口，round 1 全灭。
+
+    测量事实（树、agent 模型、jobs）属于 donor；`improver` 属于**本次 run**。
+    """
+    donor = _run(tmp_path, "donor", "--improver", "none")
+    assert donor.returncode == 0, donor.stderr[-600:]
+    assert "improver" not in (_first_point(tmp_path, "donor")["identity"]), (
+        "--improver none 的点不该记录 improver，这个前提不成立就测不到那条 bug")
+
+    consumer = _run(tmp_path, "consumer", "--h0-from", "donor", "--improver", "dsh")
+    assert consumer.returncode == 0, consumer.stderr[-800:]
+    b = _first_point(tmp_path, "consumer")
+    improver = (b.get("identity") or {}).get("improver")
+    assert improver and improver.get("name") == "dsh", (
+        f"共用点必须记录本次 run 解析到的 improver，实际是 {improver!r}")
+    # donor 的测量条件仍然可查
+    assert b["shared_from"]["measured_with"]["jobs"] == 1
