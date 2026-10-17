@@ -3,7 +3,7 @@
 
 Paper evidence (local source; no upstream implementation is available)
 --------------------------------------------------------------------
-Dream-RSI/papers/Dream-RSI.pdf: p.5–6, §3, Eq. (1), defines:
+The local PDF is **v1** (2026-09-14). It defines, at p.5–6, §3, Eq. (1):
 
     V_i^m = max_{v in T_i^{m,*}} s_v - b1*N_i^m + b2*N_i^m / max(1, k_i^{m,*})
     V^m   = (1/t) * sum_{i=1..t} V_i^m
@@ -28,11 +28,23 @@ selected staged state when available and falls back to the incumbent otherwise. 
 that state does not deploy the unchanged selected policy or guarantee the next score.
 
 There is no discovery-tree replay, shared-world re-evaluation, offline M-version phase,
-or explicit exploration-policy action interface here. The proposer edits a harness.
-Furthermore, Appendix B.2 (p.19, Listing 2 lines 12–21) describes a beta-sweep objective
-`pareto.reward = pareto.auc - lambda * parallel_penalty`; its relation to Eq. (1) is
-unresolved without the unreleased source (README.md:64–65,126–135). We retain the proxy
-formula and coefficients and record these limits in method.json.
+or explicit exploration-policy action interface here. The proposer edits a harness; v2's
+fourth domain (§4.4) also optimizes a harness, so the surface is not foreign, but the
+declarative exploration-policy layer that allocates discovery calls is absent.
+
+**Upstream moved after this port was audited.** arXiv:2609.14858 v2 (2026-10-06) rewrote
+§3 and promoted the objective v1 had only in Appendix B.2 (p.19, Listing 2 lines 12–21)
+to the main Eq. (1):
+
+    V = normalized hypervolume over the quality–cost frontier - lambda * parallelism penalty
+
+The formula implemented below --- `max s_v - b1*N + b2*N/max(1,k)` --- is therefore the
+**superseded v1** one. v2 also fixes M = 4 (current policy plus three new versions), sweeps
+budget preferences rho in {0, 0.25, 0.5, 0.75, 1} instead of a beta knob, publishes no
+value for lambda either, and adds a fourth domain (harness optimization, Terminal-Bench
+2.1). Reaching v2 needs a replay world, which needs the still-unreleased code. The proxy
+formula and coefficients are retained, and every point above is recorded in method.json and
+docs/upstream-pins.md.
 
 Only `protocol.studied_score` is read; the exam side stays outside the comparison.
 """
@@ -76,11 +88,13 @@ nothing else.
 def config() -> dict:
     """Existing proxy coefficients and units, retained without retuning.
 
-    Dream-RSI/papers/Dream-RSI.pdf: p.6, Eq. (1), specifies fixed beta1,beta2 >= 0
-    per generation–evaluation request, with numerical defaults unspecified. This port
-    instead uses kilo-tokens and defaults (0.001, 0.0). Neither these values nor the
-    earlier port value 0.05 can be attributed to the paper. Environment overrides are
-    parsed as floats without enforcing the paper's nonnegative coefficient constraint.
+    v1's Eq. (1) (local PDF p.6) specifies fixed beta1,beta2 >= 0 per generation–
+    evaluation request, with numerical defaults unspecified; v2 superseded that formula
+    with a Pareto hypervolume minus a lambda penalty and still publishes no coefficient
+    value. This port instead uses kilo-tokens and defaults (0.001, 0.0). Neither these
+    values nor the earlier port value 0.05 can be attributed to either version.
+    Environment overrides are parsed as floats without enforcing the paper's nonnegative
+    coefficient constraint.
     """
     def number(name: str, default: float) -> float:
         try:
