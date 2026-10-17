@@ -147,7 +147,10 @@ def _declared_split(ids):
                  isinstance(t, ast.Name) and t.id == "_split_mode" for t in n.targets)) or
              (isinstance(n, ast.If) and ast.unparse(n.test) == "_split_mode == 'none'")]
     assert len(nodes) == 3
-    scope = {"hashlib": hashlib, "os": os,
+    # `_STUDY` is empty here on purpose: this test pins the **hash** rule, which is the
+    # path a run without a study file takes. The study branch has its own test
+    # (`test_alfworld_study_pool.py`), where the ids are known.
+    scope = {"hashlib": hashlib, "os": os, "_STUDY": [],
              "_RECORDS": [{"task_id": t} for t in ids]}
     exec(compile(ast.Module(body=nodes, type_ignores=[]), "alfworld-split", "exec"), scope)
     return scope["SPLIT"], scope["_is_eval"]
