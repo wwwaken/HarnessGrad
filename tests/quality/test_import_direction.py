@@ -30,6 +30,10 @@ ALLOWED_EVAL_CONFIG_EDGES = {
 # neither a whole control directory nor other imports from these files are exempt.
 # Remove an entry when its dependency is moved; stale entries fail the guard.
 EXCEPTIONS = {
+    ("data-eval", "data/datasets/agentdojo/relay.py", "eval.service.tool_transport"):
+        "The dataset's host-side environment server needs the case and the dataset runtime, so it"
+        " lives dataset-side; it serves through the platform's one transport instead of writing a"
+        " second implementation of the wire format.",
     ("data-eval", "data/datasets/alfworld/control.py", "eval.run.runner"):
         "The existing platform control invokes run_one to validate adapter wiring.",
     ("data-eval", "data/datasets/alfworld/relay.py", "eval.service.tool_transport"):
