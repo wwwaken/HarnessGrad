@@ -1237,7 +1237,8 @@ def _main(attempt: dict) -> int:
     curve = [_curve_point(
         run_id=run_id, round_index=0,
         identity=_identity(man, h0_sha, mode, improver=improver,
-                            declared=base.get("identity_declared")),
+                            declared=base.get("identity_declared"),
+                            jobs=args.jobs, trials=args.trials),
         sampling=sampling,
         scores=[base["per_task"][t] for t in _scored(base, task_ids)],
         task_ids=_scored(base, task_ids),

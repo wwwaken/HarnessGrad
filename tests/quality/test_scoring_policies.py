@@ -290,6 +290,36 @@ def test_a_changed_fixed_field_is_named(field, value):
     assert len(problems) == 1 and field in problems[0], problems
 
 
+def test_contention_is_compared_when_both_sides_record_it():
+    """`jobs`/`trials` 决定数字是在什么竞争下产生的,分数里看不出来。
+
+    冻结参考多为这些字段问世之前测的,所以"参考里没有"必须与"两边不同"区分开:前者报
+    unknown,后者才是 mismatch。否则每一条比较都会永久报一条问题,读者就会学会跳过这张表。
+    """
+    ref = _point()
+    ref["identity"].update({"jobs": 40, "trials": 1})
+    cur = _point()
+    cur["identity"].update({"jobs": 6, "trials": 1})
+    problems = policies.reference_problems(ref, cur)
+    assert len(problems) == 1 and "jobs changed" in problems[0], problems
+    # 行数一致、只有 trials 不同时,也要被抓到。
+    cur["identity"]["jobs"] = 40
+    assert policies.reference_problems(ref, cur) == []
+    cur["identity"]["trials"] = 3
+    problems = policies.reference_problems(ref, cur)
+    assert len(problems) == 1 and "trials changed" in problems[0], problems
+
+
+def test_a_reference_that_predates_the_field_is_unknown_not_wrong():
+    """老参考没有 `jobs` 键: 这**不是**不一致, 是不知道。"""
+    cur = _point()
+    cur["identity"].update({"jobs": 6, "trials": 1})
+    problems = policies.reference_problems(_point(), cur)
+    assert len(problems) == 2, problems
+    assert all("not recorded on the reference" in p and "unknown" in p.lower()
+               or "not known to agree" in p for p in problems), problems
+
+
 def test_a_changed_task_set_is_reported_with_counts():
     """**这条是最会静默出错的一条。** `improvement` 在交集上配对,所以题目集合不同不会报错,
     它只会让比较悄悄变小,然后给出一个关于幸存者的 p 值。"""
