@@ -9,7 +9,7 @@ NATIVE_PINS = {
     "chessbench_puzzles": {
         "dataset": "chessbench_puzzles",
         "manifest": "data/runtimes/chessbench_puzzles-native.json",
-        "sha256": "b659926d93273b11654b140801c83e9a1d5231a3c679310a5981ab6befcbc20c",
+        "sha256": "615b3b6fb8a1b9eff2dd75187ba739a7dc3363f8e1af31b017600ab5f3632859",
     },
     "alfworld": {
         "dataset": "alfworld",
@@ -19,6 +19,6 @@ NATIVE_PINS = {
     "jericho": {
         "dataset": "jericho",
         "manifest": "data/runtimes/jericho-native.json",
-        "sha256": "dfd1979e4c42c582ab7680438fd24002a9c329e258bec92096287bdd9243cff7",
+        "sha256": "939ba54197a9840512009e01a958e4a05a4537cce20d381e9d337f259eea45b2",
     },
 }

@@ -202,7 +202,10 @@ def install_spies(case, check, work, monkeypatch, *, replace_after=False):
             consume(paths)
             return SimpleNamespace(get_max_score=lambda: 100)
         monkeypatch.setattr(check.jer_env, "load_game", game)
-        monkeypatch.setattr(check.jer_env, "replay", lambda *a: [])
+        # `replay` reports its steps *and* the crash that stopped it (w-jerlook). This stub
+        # replays nothing and stops for no failure, which is what an empty log produces.
+        monkeypatch.setattr(check.jer_env, "replay",
+                            lambda *a: {"steps": [], "failure": None})
     elif case.name == "scienceworld":
         monkeypatch.setattr(check, "_point_at_the_jvm", lambda root: work)
         def task(root, **kwargs):

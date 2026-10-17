@@ -144,3 +144,49 @@ def test_the_default_skill_travels_in_the_channel(tmp_path):
     assert staged.is_file(), "默认 skill 没有进通道"
     platform_copy = ROOT / "improvers" / "skill.md"
     assert staged.read_text() == platform_copy.read_text()
+
+
+def test_the_instruments_own_state_never_moves_the_harness_identity(tmp_path):
+    """**钉原则,不是钉清单。** 一切非 harness 代码的文件都属于仪器自身,不得进入身份。
+
+    `content_sha` 是一棵 git 树的哈希,所以任何被 commit 进去的文件都是 harness 的
+    **一部分**。于是"一轮什么也没改"只要多出一个非 harness 文件,就会铸出一个新的
+    `harness_sha`;而缓存键是 `(harness_sha, task_id)`,那一轮会被**重新测量**,曲线上
+    出现没有任何方法做过的移动。
+
+    实测(`v10-dgm`,2026-10-05):improver 在 3 行的 `agent.py` 编辑旁写了 `agent.py.bak`
+    (635 行),备份被 commit,那一轮的 diff 与 sha 把两个文件都报了出来。旧的四条清单
+    (`_harnessgrad/`、`__pycache__/`、`*.pyc`、`.state/`)是同一原则的两个实例,漏掉了
+    这一类 —— 这条测试把整类钉住。
+
+    行为测试而不是字符串断言:它真的建 repo、真的写这些文件、真的比较 sha。
+    """
+    from ckpt.git_state import IGNORED_HARNESS_STATE, content_sha  # noqa: PLC0415
+
+    work, _ = _repo(tmp_path, ["print('v0')\n"])
+    before = content_sha(work)
+
+    # The improver's own bookkeeping: `agent.py.bak` is the measured instance.
+    for junk in ("agent.py.bak", "agent.py.orig", "agent.py.rej", "agent.py~"):
+        (work / junk).write_text("the improver's own copy of the file it edited\n")
+    # The two the platform was first bitten by, kept in the same test so the class is one
+    # rule rather than two lists that can drift apart.
+    (work / "__pycache__").mkdir(exist_ok=True)
+    (work / "__pycache__" / "agent.cpython-312.pyc").write_text("bytecode\n")
+    (work / ".state").mkdir(exist_ok=True)
+    (work / ".state" / "cache.json").write_text("{}\n")
+
+    after = commit_state(work, "a round that changed nothing")
+    assert after == before, (
+        "the instrument's own state moved the harness's identity, so a no-op round would be "
+        "re-measured and the curve would show movement no method made")
+
+    # The negative control: harness *code* still moves it, so the rule cannot be satisfied by
+    # ignoring everything.
+    (work / "agent.py").write_text("print('v0')\n# a real edit\n")
+    assert commit_state(work, "a round that changed the harness") != before
+
+    # And every rule the constant names is really in the file git reads.
+    written = (work / ".gitignore").read_text()
+    missing = [rule for rule in IGNORED_HARNESS_STATE if rule not in written]
+    assert not missing, f"rules named in the constant but not written to .gitignore: {missing}"

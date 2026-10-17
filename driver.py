@@ -57,6 +57,7 @@ import tools.web_gateway as web_gateway_mod
 # visible in the import line rather than flattened through the entrypoint.
 from harnessgrad import FRAMEWORK_VERSION
 from harnessgrad import config as platform_config
+from harnessgrad import slots
 from harnessgrad.budget_integration import (
     BudgetBinding,
     BudgetConfigurationError,
@@ -91,7 +92,18 @@ def _cli_provider(improver: dict) -> dict:
     not accept, gets 401, and reports "this endpoint cannot emit tool calls" -- a refusal
     about the wrong fact. Measured 2026-10-06: it passed only because this deployment
     happens to set `HG_AGENT_API_KEY` and `DEEPSEEK_API_KEY` to the same value.
+
+    **`~/.codex/config.toml` is codex's file, so only a codex improver may be read for it.**
+    Any `kind == "cli"` improver used to come through here, and with the `dsh` entry resolved
+    this returned the custom provider out of the operator's codex config
+    (`https://naiccc.com/v1`) -- so the gate below would have probed *that* endpoint, one
+    belonging to someone else, and written its answer onto the curve as a fact about
+    `deepseek-flash`. An improver that declares its own `provider` (dsh declares
+    `deepseek-official`) uses that CLI's built-in endpoint, which is exactly the
+    "cannot be probed from here" case the caller already records as *unprobed*.
     """
+    if improver.get("provider") or improver.get("argv_style", "codex") != "codex":
+        return {}
     home = os.environ.get("CODEX_HOME") or str(Path.home() / ".codex")
     cfg = Path(home) / "config.toml"
     if not cfg.is_file():
@@ -287,6 +299,15 @@ def _main(attempt: dict) -> int:
     #: share the model endpoint and this host's CPU, which is why the default stays 1: a
     #: number produced under contention is not comparable with one produced without it,
     #: and the run records the value it used.
+    ap.add_argument("--gpu-budget", type=int, default=None, metavar="N",
+                    help="machine-wide ceiling on concurrently *measured* tasks across every "
+                         "run sharing this host, enforced with file locks "
+                         "(harnessgrad/slots.py). `--jobs` stays this run's own ceiling; the "
+                         "budget is what keeps N runs from each measuring `--jobs` at once. "
+                         "Unset keeps the old behaviour: `--jobs` alone")
+    ap.add_argument("--gpu-budget-dir", default=None, metavar="DIR",
+                    help="where the budget's slot locks live (default: $TMPDIR/hg-gpu-slots). "
+                         "Two batches with different capacities must not share a directory")
     ap.add_argument("--jobs", type=int, default=1,
                     help="measure up to N tasks concurrently (default 1). The tasks share "
                          "one model endpoint and one host, so raise it deliberately")
@@ -347,6 +368,19 @@ def _main(attempt: dict) -> int:
                     help="--side eval: the train run whose harness state to measure")
     ap.add_argument("--from-round", type=int, default=None,
                     help="--side eval: which round of that run (default: its last)")
+    ap.add_argument("--baseline", default=None,
+                    help="a frozen reference point to measure this run against, as a JSON "
+                         "file holding one curve point (the object a `curve.jsonl` line "
+                         "carries). Declared rather than inferred: without it the baseline "
+                         "is round 0 of this same run, which is the control for one method "
+                         "and a different reference for every other one. A frozen reference "
+                         "puts every method on one axis, which is what cross-method "
+                         "comparison needs -- and because nothing re-measures it, this run "
+                         "checks and records whether it still describes the run in front of "
+                         "it (agent model, backend, harness family, framework version and "
+                         "the task set). Measure the frozen reference well: it is amortized "
+                         "over every method that uses it, so its own sampling noise is "
+                         "baked into all of them.")
     ap.add_argument("--seed", default=None,
                     help="the environment's seed (INTERFACE.md §2.5.7). A per-task "
                          "seed is derived from it and given to services that declare "
@@ -650,6 +684,10 @@ def _main(attempt: dict) -> int:
         budget_binding.record("rounds", args.rounds)
         budget_binding.record("trials", args.trials)
         budget_binding.record("jobs", args.jobs)
+        # Configured here, before any measurement and before the run files exist: the budget
+        # is a property of the machine, and every point written by this run must have been
+        # produced under it.
+        slots.configure(args.gpu_budget, args.gpu_budget_dir)
         args.budget_profile = str(budget_profile_source)
         args.budget_ledger = str(budget_binding.ledger_path)
         args.budget_arm = budget_binding.arm_id
@@ -1213,7 +1251,9 @@ def _main(attempt: dict) -> int:
     curve = [_curve_point(
         run_id=run_id, round_index=0,
         identity=_identity(man, h0_sha, mode, improver=improver,
-                            declared=base.get("identity_declared")),
+                            declared=base.get("identity_declared"),
+                            jobs=args.jobs, trials=args.trials,
+                            gpu_budget=args.gpu_budget),
         sampling=sampling,
         scores=[base["per_task"][t] for t in _scored(base, task_ids)],
         task_ids=_scored(base, task_ids),

@@ -43,6 +43,18 @@ def _write(path: str, payload: str) -> None:
     out.write_text(payload, encoding="utf-8")
 
 
+def _identity(record: dict) -> dict:
+    """The labels the gold record already carries, passed into the evidence unchanged.
+
+    `level` is GAIA's own difficulty label (1/2/3), and this check is the only place that
+    knows what a level is: reporting it here is what lets the platform publish accuracy per
+    level (`harnessgrad/records.py::per_level_breakdown`) without the platform having to
+    learn a dataset's vocabulary. It is **reporting only** -- it never enters `reward`, and
+    nothing below branches on it.
+    """
+    return {"task_id": record.get("task_id"), "level": record.get("level")}
+
+
 def _measure(args, reward: float, why: str, extra: dict) -> int:
     _write(args.reward_file, f"{reward:g}\n")
     evidence = {"measured": True, "metric": "GAIA exact match (official question_scorer)",
@@ -91,7 +103,7 @@ def main() -> int:
     answer = answer_path.read_text(encoding="utf-8").strip() if answer_path.is_file() else ""
     if not answer:
         return _measure(args, 0.0, "no answer (measured zero): answer.txt is missing or empty",
-                        {"gold": gold, "task_id": record.get("task_id")})
+                        {**_identity(record), "gold": gold})
 
     transcript = io.StringIO()
     try:
@@ -103,7 +115,7 @@ def main() -> int:
     return _measure(args, 1.0 if correct else 0.0,
                     "exact match after the official normalization" if correct
                     else "no match after the official normalization",
-                    {"answer": answer, "gold": gold, "task_id": record.get("task_id"),
+                    {**_identity(record), "answer": answer, "gold": gold,
                      "scorer_said": transcript.getvalue().strip()[:500]})
 
 

@@ -18,14 +18,22 @@ are all in the evidence, so "0.42" can be read back into "147 of 350".
 **No `done` gate.** A game ends when the game says so; `jer done` exists so a harness can stop
 and is recorded, not required -- the same reading as ALFWorld's and ScienceWorld's. §2.
 
+**A crash is not a score.** A command the interpreter merely does not understand is answered
+with text ("I don't know the word ...") and the game goes on, so it is an ordinary step. An
+exception from `env.step` is the interpreter or its process dying: the replay stops, records
+the exception (type, message, step, action), and this check refuses to measure -- no reward
+file, `measured: false`, exit 3 -- rather than grading the last action that happened to work,
+which would be indistinguishable from a real partial score.
+
 What makes this check trustworthy
 ---------------------------------
 * The game file, the ROM and this script are re-materialized by the platform before the check
   runs, so editing any of them in the workdir changes nothing.
 * The seed is the game's official one, from the same file the agent was given, so the check
   replays the episode the agent actually played rather than a different arrangement.
-* A check that cannot measure -- no game file, no ROM, an interpreter that will not start --
-  writes **no reward file**, writes evidence saying `measured: false`, and exits 3.
+* A check that cannot measure -- no game file, no ROM, an interpreter that will not start, a
+  game that crashes while the log is replayed -- writes **no reward file**, writes evidence
+  saying `measured: false`, and exits 3.
 
 Outputs
 -------
@@ -131,7 +139,7 @@ def _score(args, inputs, receipt) -> int:
     try:
         maximum = int(env.get_max_score())
         spec = json.loads(inputs[str(args.game)].read_text())
-        steps = jer_env.replay(env, actions)
+        replay = jer_env.replay(env, actions)
     except Exception as exc:  # noqa: BLE001
         evidence.update(measured=False, error=f"the game died mid-episode: {exc}",
                         traceback=traceback.format_exc()[-2000:])
@@ -139,6 +147,25 @@ def _score(args, inputs, receipt) -> int:
         print(f"check cannot measure: {evidence['error']}", file=sys.stderr)
         return 3
 
+    failure = replay["failure"]
+    if failure:
+        # The game died while the log was being replayed. That is a measurement failure, not a
+        # partial score: the steps that did replay were never the episode the agent played, and
+        # grading their last score would be indistinguishable from a real partial score. So no
+        # reward file, `measured: false`, and the exception itself in the evidence.
+        evidence.update(
+            measured=False,
+            error=(f"the game crashed replaying action {failure['step']} "
+                   f"({failure['action']!r}): {failure['type']}: {failure['message']}"),
+            failure=failure,
+            actions_replayed=len(replay["steps"]),
+            steps=replay["steps"],
+        )
+        write_evidence(args.evidence_file, evidence)
+        print(f"check cannot measure: {evidence['error']}", file=sys.stderr)
+        return 3
+
+    steps = replay["steps"]
     score = steps[-1]["score"] if steps else 0
     moves = steps[-1]["moves"] if steps else 0
     fraction = jer_env.score_fraction(score, maximum)

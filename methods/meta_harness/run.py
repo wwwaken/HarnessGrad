@@ -113,6 +113,14 @@ being replaced. Do not rewrite a file wholesale unless the change is genuinely
 whole-file. Return the JSON envelope described below and nothing else.
 """
 
+META_HARNESS_DESIGN_SYSTEM = """You are designing agent-harness candidates, not editing code.
+Read the failed AND successful trajectories, frontier, prior hypotheses and source evidence.
+One mechanism per candidate; each candidate tests exactly one falsifiable hypothesis.
+Candidate mechanisms must be mutually different, with specific, distinct changes.
+Return only a JSON object with a candidates array. Each entry must contain nonempty string
+fields name (snake_case), hypothesis, and changes. Do not return files or implement edits.
+"""
+
 
 # --------------------------------------------------------------- the rule ---
 
@@ -336,6 +344,35 @@ def build_prompt(edit_base: Path, channel_base: Path, req: dict, frontier: dict,
     )
 
 
+def parse_candidates(reply: object, limit: int) -> list[dict]:
+    """Keep well-formed designs in order, deduplicating their changes before capping.
+
+    Upstream reference_examples/terminal_bench_2/.claude/skills/
+    meta-harness-terminal-bench-2/SKILL.md:65,83-98 specifies one mechanism and
+    passes its name + changes to a separate implementer. Text deduplication is a
+    local guard against repeated designs, not a claim to verify semantic diversity.
+    """
+    entries = reply.get("candidates") if isinstance(reply, dict) else None
+    if not isinstance(entries, list):
+        return []
+    candidates: list[dict] = []
+    seen: set[str] = set()
+    for entry in entries:
+        if not isinstance(entry, dict) or not all(
+                isinstance(entry.get(key), str) and entry[key].strip()
+                for key in ("name", "hypothesis", "changes")):
+            continue
+        candidate = {key: entry[key].strip() for key in ("name", "hypothesis", "changes")}
+        changes = " ".join(candidate["changes"].split()).casefold()
+        if changes in seen:
+            continue
+        seen.add(changes)
+        candidates.append(candidate)
+        if len(candidates) >= limit:
+            break
+    return candidates
+
+
 # ------------------------------------------------------------------ main ---
 
 def main() -> int:
@@ -347,11 +384,11 @@ def main() -> int:
     A, so a "frontier" had exactly one member per round and the rule degenerated into
     hill-climbing on the incumbent.
 
-    One call now proposes `HG_META_HARNESS_CANDIDATES` candidates (default 3) from the same
-    edit base -- the overall best staged state, chosen by `base_round`. The diversity inside
-    the batch comes from the model's own sampling rather than from a different parent, which
-    is what the frontier arm of the paper does: several proposals from the frontier, then the
-    frontier is recomputed from what they scored.
+    One design call requests `HG_META_HARNESS_CANDIDATES` candidates (default 3), then
+    separate implementation calls edit the same overall best staged state chosen by
+    `base_round`. Diversity comes from explicitly different mechanism descriptions in the
+    implementation prompts. A single candidate skips design; unusable/repeated designs
+    fall back to one implementation, with the reason carried on the wire.
     """
     req = editor.read_request()
     editor.require_api(req)
@@ -367,11 +404,14 @@ def main() -> int:
     per_task = protocol.studied_per_task(history[-1]) if history else {}
     reason = validity_gate(history, per_task)
 
+    design_record: dict = {}
+
     def carried(children: int, parent_rounds: list) -> dict:
         return {"meta_harness_frontier": frontier, "meta_harness_base": base_why,
                 "meta_harness_children": children,
                 "meta_harness_parent": parent_rounds[0] if parent_rounds else None,
-                "meta_harness_parents": parent_rounds}
+                "meta_harness_parents": parent_rounds,
+                "meta_harness_design": design_record}
 
     if reason is not None:
         return editor.report(
@@ -390,15 +430,66 @@ def main() -> int:
     if parent_round is None:
         parent_round = (history[-1] or {}).get("round") if history else None
 
+    context = build_prompt(edit_base, incumbent, req, frontier, base_why)
+    designs: list[dict] = []
+    design_record = {"requested": candidates, "mode": "direct_single"}
+    if candidates > 1:
+        # Upstream reference_examples/terminal_bench_2/meta_harness.py:431-456
+        # makes one proposer session per iteration, not independent sampled sessions.
+        # Its .claude/skills/meta-harness-terminal-bench-2/SKILL.md:70-98 first
+        # analyzes trajectories, then gives the implementer the named design.
+        design_prompt = (
+            context + f"\n\n## Design stage: propose {candidates} candidates\n"
+            "Analyze failed AND successful trajectories and earlier outcomes. Return "
+            f"{candidates} candidates as "
+            '{"candidates": [{"name": "snake_case", "hypothesis": "falsifiable claim", '
+            '"changes": "specific implementation changes"}]}. '
+            "One mechanism per candidate. All mechanisms and changes must be mutually "
+            "different; do not split the same mechanism into renamed candidates. "
+            "Do not implement anything or return an edit envelope in this stage.")
+        design_record["mode"] = "designed"
+        try:
+            # This is a schema question. A CLI editor returns file edits instead;
+            # use the shared editor's endpoint route, with the incumbent's channel
+            # and the selected edit base's source evidence.
+            reply = editor.ask(design_prompt, system=META_HARNESS_DESIGN_SYSTEM,
+                               base=incumbent, parent=edit_base, endpoint_only=True)
+            designs = parse_candidates(reply, candidates)
+        except editor.UnparseableReply as exc:
+            design_record["fallback_reason"] = f"unparseable design: {exc}"
+        except SystemExit:
+            raise
+        except Exception as exc:                                       # noqa: BLE001
+            design_record["mode"] = "failed"
+            return editor.fail(req, method="meta_harness", exc=exc, base=incumbent,
+                               state=carried(0, [parent_round]))
+        design_record["unique_candidates"] = len(designs)
+        if len(designs) < 2:
+            design_record["mode"] = "single_fallback"
+            design_record.setdefault("fallback_reason", "fewer than 2 distinct valid changes")
+        design_record["candidates"] = designs
+        candidates = max(1, len(designs))
+
     steps: list[dict] = []
     errors: list[BaseException] = []
     reported_tail: dict = {}
     for child in range(candidates):
         dest = editor.candidate_path(req, f"child{child + 1}")
+        # propose_and_apply chooses workspace/candidate internally. Give each
+        # implementation its own workspace so later children cannot overwrite it.
+        child_req = {**req, "workspace": str(dest)}
+        design = designs[child] if designs else None
+        implementation_prompt = context
+        if design is not None:
+            implementation_prompt += (
+                "\n\n## Implement this candidate only\n"
+                + json.dumps(design, ensure_ascii=False)
+                + "\nImplement exactly this named candidate's changes, testing its one "
+                  "hypothesis. Do not add another mechanism. Return the edit JSON envelope.")
         try:
             reply, dest, apply_problems = editor.propose_and_apply(
-                edit_base, req, META_HARNESS_SYSTEM,
-                lambda problems: build_prompt(edit_base, incumbent, req, frontier, base_why)
+                edit_base, child_req, META_HARNESS_SYSTEM,
+                lambda problems: implementation_prompt
                                  + editor.repair_block(problems, expect=editor.EDIT_EXPECT),
                 parent=edit_base)
         except SystemExit:
@@ -423,7 +514,8 @@ def main() -> int:
             "edit_kind": "meta_harness_rule", "hypothesis": hypothesis,
             "label": f"[Meta-Harness child {child + 1}] {hypothesis[:50]}",
             "method_reported": {**carried(candidates, [parent_round]),
-                                "child": child + 1},
+                                "child": child + 1,
+                                "meta_harness_candidate": design},
         })
 
     if not steps:

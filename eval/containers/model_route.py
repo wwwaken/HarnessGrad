@@ -1,7 +1,14 @@
-"""Validated infrastructure mounts for the native offline model route."""
-from pathlib import Path
-import stat
+"""Validated infrastructure mounts for the native offline model route.
 
+The alias/replacement/writable-storage rules are shared with the tool route
+(`eval/containers/unix_socket_route.py`) rather than restated here: two copies of a
+security check drift, and the one that has drifted is the one nobody re-reads. What
+stays local is what is actually specific to the model: the fixed `ROOT`, the trusted
+forwarder, and the bootstrap that hands the client its loopback URL.
+"""
+from pathlib import Path
+
+from eval.containers import unix_socket_route
 from eval.service.modelgate import GatewayUnavailable
 
 ROOT = Path("/run/harnessgrad-model")
@@ -11,19 +18,9 @@ FORWARDER = Path(__file__).resolve().parents[1] / "service/native_model_forwarde
 def mounts(socket_path: Path, *, network, exposed_paths, writable_paths):
     """Revalidate at launch; never bind a relay directory or accept a task target."""
     source = Path(socket_path)
-    if (network != "none" or not source.is_absolute() or ".." in source.parts
-            or any(p.is_symlink() for p in (source, *source.parents))):
-        raise GatewayUnavailable("model socket requires network none and an absolute non-symlink source")
-    if not stat.S_ISSOCK(source.stat().st_mode):
-        raise GatewayUnavailable("model route source must be a UNIX socket")
-    for path in exposed_paths:
-        path = Path(path).resolve()
-        if ROOT == path or ROOT in path.parents or path in ROOT.parents:
-            raise GatewayUnavailable("model route target overlaps another mount")
-    for path in writable_paths:
-        path = Path(path).resolve()
-        if source == path or path in source.parents:
-            raise GatewayUnavailable("model socket source is reachable through writable storage")
+    unix_socket_route.verify(source, root=ROOT, label="model", network=network,
+                             exposed_paths=exposed_paths,
+                             writable_paths=writable_paths)
     if FORWARDER.is_symlink() or not FORWARDER.is_file():
         raise GatewayUnavailable("trusted native model forwarder is unavailable")
     return ["--ro-bind", str(source), str(ROOT / "model.sock"),

@@ -151,10 +151,22 @@ def test_r3_platform_reaches_methods_only_through_the_manifest():
 def test_r4_harness_state_never_contains_platform_channel_or_pycache():
     """Committing the framework-method channel or bytecode makes a no-op round
     mint a new sha, so the control curve appears to move. This bug existed once;
-    the rule exists so it cannot come back silently."""
+    the rule exists so it cannot come back silently.
+
+    Asserted against `IGNORED_HARNESS_STATE` rather than a hand-copied pair: the principle
+    is "the instrument's own state is not harness state", and a second copy of two of its
+    rules is the copy that goes stale when the class grows -- `*.bak` joined the constant
+    for exactly that reason, and
+    `test_states.py::test_the_instruments_own_state_never_moves_the_harness_identity` is
+    the behavioural half of this rule.
+    """
+    from ckpt.git_state import IGNORED_HARNESS_STATE  # noqa: PLC0415
+
     src = (ROOT / "ckpt" / "git_state.py").read_text()
-    for rule in ("_harnessgrad/", "__pycache__/"):
-        assert rule in src, f"harness .gitignore must exclude {rule}"
+    assert "_harnessgrad/" in IGNORED_HARNESS_STATE
+    assert "__pycache__/" in IGNORED_HARNESS_STATE
+    for rule in IGNORED_HARNESS_STATE:
+        assert f'"{rule}"' in src, f"harness .gitignore must exclude {rule}"
 
 
 def test_r5_a_method_hands_over_a_harness_directory_not_a_claim():

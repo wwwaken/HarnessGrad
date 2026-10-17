@@ -32,9 +32,10 @@ from __future__ import annotations
 import json
 import os
 import shutil
+import stat
 import sys
 import tempfile
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -105,6 +106,10 @@ SOURCE_TOTAL_LIMIT = int(os.environ.get("HG_METHOD_SOURCE_TOTAL", "60000"))
 #: at character 5595. Truncation is never silent; a prompt that quietly drops its own
 #: guidance is worse than no guidance, because the round is spent and nothing says why.
 SKILL_LIMIT = int(os.environ.get("HG_METHOD_SKILL_LIMIT", "24000"))
+
+# Artifact transport is bounded in bytes and never truncates a method's card.
+CLI_ARTIFACT_FILE_LIMIT = 256 * 1024
+CLI_ARTIFACT_TOTAL_LIMIT = 1024 * 1024
 
 
 # --------------------------------------------------------------- the channel ---
@@ -876,7 +881,76 @@ def parse_reply(text: str) -> dict:
 #: every round of every run, including rounds where the improver answered six model calls
 #: over a 24 KB prompt. A cost-aware acceptance rule was therefore reading a constant, and
 #: a constant is a rule that permits everything.
-_SPENT: dict = {"input": 0, "output": 0, "calls": 0, "model": None}
+_SPENT: dict = {"input": 0, "output": 0, "calls": 0, "model": None,
+                # Prompt tokens the provider served from its cache. Kept beside `input`
+                # because the provider reports them as disjoint counts: `input` already
+                # excludes them, so adding this into the total would double-bill the cheap
+                # half and make the expensive half look smaller than it is.
+                "cache_read": 0,
+                # **Whether the spend is known at all.** A CLI improver is an agent
+                # process whose provider is built in: it prints prose, not a usage
+                # record, so nothing reports tokens. Before this field the sum stayed 0
+                # and was recorded as `generation_tokens: 0` -- a claim that the improver
+                # spent nothing, when the truth is "nobody counted". `None` is the honest
+                # value and the platform already distinguishes it from zero.
+                "source": None}
+
+
+#: The last CLI improver run's own account, attached to whichever step the method
+#: reports next. Module-level for the same reason `_SPENT` is: one process is one method
+#: invocation, so there is exactly one improver run to describe.
+_LAST_IMPROVER: dict = {}
+
+
+#: The line a usage-reporting improver CLI prints. `dsh` was patched to emit it on stderr:
+#: `packages/bundle/headless/src/index.ts` used to receive the provider's usage chunk and
+#: `return` without printing it, so a CLI-driven round had no token count to report at all.
+DASH_USAGE_PREFIX = "dsh-usage "
+
+
+def parse_usage_lines(transcript: str) -> dict | None:
+    """Sum every `dsh-usage {json}` line a CLI wrote, or `None` if it wrote none.
+
+    A CLI round makes many model calls, and the CLI prints one line per call, so the round's
+    spend is the sum. `None` -- not a zero dict -- because "this CLI does not report usage"
+    and "this CLI spent nothing" are different facts, and only one of them is plausible.
+    """
+    total = {"input": 0, "output": 0, "cache_read": 0, "calls": 0}
+    found = False
+    for line in (transcript or "").splitlines():
+        line = line.strip()
+        if not line.startswith(DASH_USAGE_PREFIX):
+            continue
+        try:
+            payload = json.loads(line[len(DASH_USAGE_PREFIX):])
+        except (ValueError, TypeError):
+            continue
+        if not isinstance(payload, dict):
+            continue
+        for key, field in (("input_tokens", "input"), ("output_tokens", "output"),
+                           ("cache_read_tokens", "cache_read")):
+            value = payload.get(key)
+            if isinstance(value, bool) or not isinstance(value, int):
+                continue
+            total[field] += value
+        total["calls"] += 1
+        found = True
+    return total if found else None
+
+
+def improver_run() -> dict:
+    """What the last CLI improver reported about itself (empty for endpoint improvers)."""
+    return dict(_LAST_IMPROVER)
+
+
+def spend_source() -> str | None:
+    """Who reported the spend: `None` (nobody yet) or `cli_unreported`.
+
+    Kept out of `spent()` on purpose: that mapping is the four numbers and the model, and
+    a caller comparing it to the numbers it recorded should not have to filter a string
+    out of it.
+    """
+    return _SPENT.get("source")
 
 
 def spent() -> dict:
@@ -887,11 +961,26 @@ def spent() -> dict:
     otherwise cannot tell "the improver did nothing" from "the improver's spend was not
     reported".
     """
-    return dict(_SPENT)
+    return {k: _SPENT[k] for k in ("input", "output", "calls", "model")}
 
 
-def spent_tokens() -> int:
-    """Input + output: the single number the method reply carries as `generation_tokens`."""
+def cache_read_tokens() -> int | None:
+    """Prompt tokens the provider served from cache, or `None` when nobody reported any."""
+    if _SPENT.get("source") == "cli_unreported":
+        return None
+    return _SPENT["cache_read"]
+
+
+def spent_tokens() -> int | None:
+    """Input + output, or **`None` when nothing reported them**.
+
+    A CLI improver cannot report its spend: the provider lives inside the agent process
+    and its output is a transcript. Summing to 0 would record "the improver used no
+    tokens", which is a different and false statement -- and one a cost-aware rule would
+    act on.
+    """
+    if _SPENT.get("source") == "cli_unreported":
+        return None
     return _SPENT["input"] + _SPENT["output"]
 
 
@@ -903,12 +992,17 @@ def reset_spent() -> None:
     -- the two-stage loops that ask a proposer and then a critic -- and for tests, which
     share an interpreter and would otherwise read each other's numbers.
     """
-    _SPENT.update(input=0, output=0, calls=0, model=None)
+    _SPENT.update(input=0, output=0, calls=0, model=None, source=None)
 
 
 def _record_usage(usage, model: str | None) -> None:
     """Add one reply's usage. One call is counted whether or not the provider reported it."""
     _SPENT["calls"] += 1
+    # An endpoint reply that arrives means the spend *is* being counted, whatever an
+    # earlier CLI call in the same process concluded. Without this the flag set by
+    # `_ask_cli` outlives the call it described and turns a later, reported spend into
+    # `None`.
+    _SPENT["source"] = "endpoint"
     _SPENT["model"] = getattr(usage, "model", None) or model or _SPENT["model"]
     if usage is None:
         return
@@ -987,6 +1081,144 @@ def cli_improver_identity(base: Path | None) -> dict | None:
     return None
 
 
+def _method_workspace() -> Path:
+    """The directory the platform copies a method's own `*.log` files out of.
+
+    It is this process's working directory: `harnessgrad/loops/mode_a.py` runs the method with
+    `cwd=method_ws` and then calls `records._keep_method_logs(method_ws, run_dir, round)`,
+    which copies the `*.log` files at that directory's root into
+    `<run>/method_logs/round-N/`. Kept as a function rather than an inline `Path.cwd()` so a
+    test can point it somewhere and so the coupling is named in one place.
+    """
+    return Path.cwd()
+
+
+def _keep_improver_transcript(result: dict, improver_ws: Path) -> list[str]:
+    """Copy what the CLI improver left behind to where the platform will keep it.
+
+    **Both files the improver writes are destroyed, and both are evidence.** `propose` writes
+    the transcript -- up to 200 kB of what it read, what it tried, and why it changed nothing
+    -- to `<improver_ws>/improver.log`, and the launcher writes the model pin to
+    `<improver_ws>/.dsh-model-pin.yml`. Both statements about that contract are in the tree
+    (`methods/cli_improver.py`'s module docstring and `harnessgrad/records.py:642`) and both
+    were false for every sandboxed round:
+
+      * `improver_ws` is a `tempfile.mkdtemp` under `/tmp`, and
+        `eval/containers/sandbox.py` mounts an **empty tmpfs** on `/tmp` ("a private /tmp, so
+        two runs cannot read each other's task directories") -- so it is gone with the
+        namespace, not merely un-copied;
+      * `_keep_method_logs` scans the *method workspace*, which is a different directory and a
+        host path bound into the namespace.
+
+    Measured: twelve surviving `hg-cli-ask-*` directories on the host, every one of them
+    empty, and every one of them from a test run -- a test stubs `propose`, so it leaves the
+    directory and nothing in it, while a real round leaves nothing at all. The question this
+    costs is the one a comparison of *methods* is mostly about: did the improver read the
+    traces, or did it guess?
+
+    Written as `*.log` at the method workspace root, which is the convention
+    `_keep_method_logs` documents, so no new path convention is invented and the platform
+    still does not need to know which method it is. Returns the names written.
+    """
+    written: list[str] = []
+    destination = _method_workspace()
+    if not destination.is_dir():
+        return written
+    transcript = str(result.get("transcript") or "")
+    payloads = [(f"improver-{improver_ws.name}.log", transcript[-200_000:])]
+    pin = improver_ws / ".dsh-model-pin.yml"
+    if pin.is_file():
+        # The pin is the record of which model the improver was *actually* given, which is not
+        # always the registry's value: `HG_IMPROVER_MODEL` overrides it, and without this the
+        # override would be invisible in the record.
+        payloads.append((f"improver-{improver_ws.name}-model-pin.log",
+                         pin.read_text(errors="replace")[:4_000]))
+    for name, text in payloads:
+        if not text:
+            continue
+        try:
+            (destination / name).write_text(text, encoding="utf-8")
+        except OSError:
+            continue
+        written.append(name)
+    return written
+
+
+def artifact_path_error(name) -> str | None:
+    """Artifact keys are relative to artifacts/, with no parent traversal."""
+    if (not isinstance(name, str) or not name or "\x00" in name
+            or Path(name).is_absolute() or PureWindowsPath(name).anchor
+            or ".." in Path(name).parts or ".." in PureWindowsPath(name).parts
+            or "\\" in name or name == "."):
+        return f"unsafe artifact path: {name!r}"
+    return None
+
+
+def _read_cli_artifacts(workspace: Path) -> dict[str, str]:
+    """Read only artifacts/, without following links, under byte limits.
+
+    TTHE text_to_sql/proposer.py:150-164,372-388 writes and reads a JSON
+    proposal card on disk. This bridge transports that file unchanged instead
+    of requiring a CLI's prose response to contain structured method fields.
+    Directory-relative opens with O_NOFOLLOW keep even replaced links from
+    redirecting a read outside the artifact directory. Non-text files fail
+    explicitly: replacing bad bytes or truncating would alter a method's card.
+    """
+    artifacts: dict[str, str] = {}
+    total = 0
+    directory_flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+
+    def collect(directory: int, prefix: str = "") -> None:
+        nonlocal total
+        for name in sorted(os.listdir(directory)):
+            rel = f"{prefix}{name}"
+            problem = artifact_path_error(rel)
+            if problem:
+                raise UnparseableReply(problem)
+            info = os.stat(name, dir_fd=directory, follow_symlinks=False)
+            if stat.S_ISLNK(info.st_mode):
+                raise UnparseableReply(f"artifact symlink is forbidden: {rel!r}")
+            if stat.S_ISDIR(info.st_mode):
+                child = os.open(name, directory_flags, dir_fd=directory)
+                try:
+                    collect(child, rel + "/")
+                finally:
+                    os.close(child)
+                continue
+            if not stat.S_ISREG(info.st_mode):
+                raise UnparseableReply(f"artifact is not a regular file: {rel!r}")
+            descriptor = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
+                                 dir_fd=directory)
+            with os.fdopen(descriptor, "rb") as stream:
+                if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+                    raise UnparseableReply(f"artifact is not a regular file: {rel!r}")
+                remaining = CLI_ARTIFACT_TOTAL_LIMIT - total
+                data = stream.read(min(CLI_ARTIFACT_FILE_LIMIT, remaining) + 1)
+            if len(data) > CLI_ARTIFACT_FILE_LIMIT:
+                raise UnparseableReply(f"artifact {rel!r} exceeds per-file limit "
+                                       f"({CLI_ARTIFACT_FILE_LIMIT} bytes)")
+            if len(data) > remaining:
+                raise UnparseableReply(f"artifact {rel!r} exceeds total limit "
+                                       f"({CLI_ARTIFACT_TOTAL_LIMIT} bytes)")
+            try:
+                artifacts[rel] = data.decode("utf-8")
+            except UnicodeDecodeError as exc:
+                raise UnparseableReply(f"artifact {rel!r} must be UTF-8 text") from exc
+            total += len(data)
+
+    try:
+        if (workspace / "artifacts").is_symlink():
+            raise UnparseableReply("artifact directory symlink is forbidden: 'artifacts'")
+        root = os.open(workspace / "artifacts", directory_flags)
+        try:
+            collect(root)
+        finally:
+            os.close(root)
+    except OSError as exc:
+        raise UnparseableReply(f"artifact read failed: {exc}") from exc
+    return artifacts
+
+
 def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:
     """Propose through a **CLI** improver and return the result as an edit sequence.
 
@@ -1011,24 +1243,94 @@ def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:
     # `evidence/` beside the tree the improver edits, so the paths are enough and the prompt
     # stops growing with the dataset (`evidence_pointer` states the ceiling this removes).
     workspace = Path(tempfile.mkdtemp(prefix="hg-cli-ask-"))
+    artifact_dir = workspace / "artifacts"
+    artifact_dir.mkdir()
+    prompt += (
+        "\n\n## Method artifacts\n"
+        f"If this method requests artifacts/<path>, write it under `{artifact_dir}` "
+        "(relative to your harness working directory: `../artifacts/<path>`). "
+        "Artifacts are separate from harness edits. Only UTF-8 files in that directory "
+        f"are returned, unchanged, with relative keys; limits: {CLI_ARTIFACT_FILE_LIMIT} "
+        f"bytes per file, {CLI_ARTIFACT_TOTAL_LIMIT} bytes total. "
+        "Absolute artifact keys, parent traversal and symlinks are forbidden.\n")
     req = {"platform_api_version": "0.1.0", "workspace": str(workspace),
            "base_harness": str(parent), "candidate": str(workspace / "candidate"),
            "improver": improver, "channel": str(channel(base)),
            "trajectory_out": "", "task_ids": [], "train_task_ids": []}
     result = cli_improver.propose(req, parent, prompt=prompt, facts=facts,
                                    evidence=evidence_pointer(base))
+    _keep_improver_transcript(result, workspace)
+    artifacts = _read_cli_artifacts(workspace)
+    # **What the improver itself cost, as far as anyone can see.** `propose` returns a
+    # `reported` block -- exit code, wall-clock seconds, which files moved, and what the
+    # environment boundary withheld -- and `_ask_cli` used to drop it on the floor, so a
+    # nine-method batch could not answer "how long did the improver take per round".
+    # Tokens are *not* in it: the CLI's provider is built in, so the honest record is the
+    # wall clock plus the prompt size we constructed ourselves.
+    reported = result.get("reported") or {}
+    # What the provider said it spent, if this CLI reports it at all.
+    usage = parse_usage_lines(result.get("transcript") or "")
+    if usage:
+        _SPENT["source"] = "cli_reported"
+        _SPENT["input"] += usage["input"]
+        _SPENT["output"] += usage["output"]
+        _SPENT["cache_read"] += usage["cache_read"]
+        _SPENT["calls"] += usage["calls"]
+    _LAST_IMPROVER.clear()
+    _LAST_IMPROVER.update({
+        "exit_code": reported.get("exit_code"),
+        "seconds": reported.get("seconds"),
+        "files_changed": len(result.get("files") or []),
+        "env_withheld": reported.get("env_withheld"),
+        "prompt_chars": len(prompt),
+        # A token count we can defend: the prompt is ours, so its length is exact and
+        # the usual characters-per-token ratio makes the estimate reproducible. Label
+        # it as an estimate in the name, not in a comment nobody reads.
+        "prompt_tokens_estimate": round(len(prompt) / 4),
+        "spend_reported": bool(usage),
+        **({"usage": usage} if usage else {}),
+    })
+    if not usage:
+        _SPENT["source"] = "cli_unreported"
     edits: list[dict] = []
     for rel in result["files"]:
         path = Path(result["candidate"]) / rel
-        try:
-            edits.append({"path": rel, "content": path.read_text(errors="replace")})
-        except OSError:
+        if not path.is_file():
+            # **A file the improver removed is an edit, not a read failure.** `_changed_files`
+            # walks the pristine side and names what the candidate no longer has, so a
+            # deletion arrives here -- and this loop used to swallow it in `except OSError:
+            # continue`. Two consequences, both silent: a round that deleted one file and
+            # edited another measured a tree that still contained the deleted file, and a
+            # round that *only* deleted files produced an empty `edits`, fell into the
+            # `no_change` return below, and recorded "the improver decided to change nothing"
+            # for a change it had actually made. That is the same collapse `UnparseableReply`
+            # exists to prevent, one layer down.
+            edits.append({"path": rel, "delete": True})
             continue
+        edits.append({"path": rel, "content": path.read_text(errors="replace")})
     if not edits:
+        # **A crashed CLI improver is not a decision.** `cli_improver.run` already draws this
+        # line (`if code != 0 and not changed:` -> `reported["error"]`), and this path did
+        # not: it wrapped whatever the improver had printed into `{"no_change": <prose>}`,
+        # so a call that never ran became a method saying "I chose not to change anything".
+        # Measured (`v12-dgm`, 2026-10-05): the improver was codex, three rounds printed
+        # prose and edited nothing, and the curve read "DGM: no child produced" -- a decision
+        # nobody made, in the shape `UnparseableReply`'s own docstring forbids.
+        #
+        # Raised, not returned, because the two callers already do the right thing with an
+        # exception: `ask_for_json` retries it with the failure fed back, and a method that
+        # calls `ask` directly records it as an outage rather than as a proposal it declined.
+        if result["exit_code"] != 0:
+            raise UnparseableReply(
+                f"the CLI improver exited {result['exit_code']} and changed nothing: "
+                f"{(result['note'] or '').strip()[:300]}")
+        # Exit 0 with no files is a genuine decline, and `cli_improver`'s prompt makes it name
+        # a mechanism, so the note *is* the reason. Kept as `no_change` on purpose.
         return {"no_change": result["note"] or (
-            f"the CLI improver exited {result['exit_code']} and changed nothing")}
+            "the CLI improver exited 0 and changed nothing"), "artifacts": artifacts}
     return {"files": edits,
-            "hypothesis": result["note"] or f"{len(edits)} file(s) edited by the CLI"}
+            "hypothesis": result["note"] or f"{len(edits)} file(s) edited by the CLI",
+            "artifacts": artifacts}
 
 
 def ask(prompt: str, system: str = DEFAULT_SYSTEM, base: Path | None = None,
@@ -1066,17 +1368,24 @@ def ask(prompt: str, system: str = DEFAULT_SYSTEM, base: Path | None = None,
     """
     from openai import OpenAI
 
-    base_url, api_key, model = model_settings()
     # **One dispatch point for the improver layer.** When this run resolved a *CLI* improver
     # (codex), drive it rather than a chat endpoint -- on the tree the rule chose to build on
     # (`parent`, defaulting to the incumbent) -- and hand the result back as an ordinary edit
     # sequence. A rule thus runs on either layer without knowing which it got, which is what
     # makes "the RSI rule is the rule; codex is the shell" true rather than aspirational.
+    #
+    # **The CLI needs no endpoint, so it must not be made to require one.** `model_settings()`
+    # below demands `HG_METHOD_BASE_URL / _API_KEY / _MODEL` and raises when any is missing,
+    # and a run whose improver is a CLI injects none of them -- `harnessgrad/methods.py` only
+    # writes them for an improver that carries a `base_url`. Called first, as it was, it
+    # refused every CLI run with "a method brings its own credentials": the one layer with no
+    # endpoint would have been the only one that could not start without one.
     cli = None if endpoint_only else cli_improver_identity(base)
     if cli is not None:
         tree = Path(parent) if parent is not None else Path(base)
         return _ask_cli(prompt, Path(base) if base is not None else tree, tree, cli)
 
+    base_url, api_key, model = model_settings()
     client = OpenAI(base_url=base_url, api_key=api_key,
                     timeout=float(os.environ.get("HG_METHOD_TIMEOUT_S", "180")),
                     max_retries=2)
@@ -1290,7 +1599,7 @@ def report(req: dict, *, method: str, harness_dir: Path, changed: bool,
     """
     spent_now = spent()
     if tokens is None:
-        tokens = spent_now["input"] + spent_now["output"]
+        tokens = spent_tokens()
     if changed:
         problems = candidate.validate(Path(harness_dir))
         if problems:
@@ -1312,8 +1621,13 @@ def report(req: dict, *, method: str, harness_dir: Path, changed: bool,
                              "method_input_tokens": spent_now["input"] or None,
                              "method_output_tokens": spent_now["output"] or None,
                              "method_model_calls": spent_now["calls"] or None,
-                             "method_model": spent_now["model"]},
-            "method_reported": {"score": None, **(method_reported or {})},
+                             "method_model": spent_now["model"],
+                             # Null tokens above mean "nobody counted" only if this says
+                             # so; without it a reader cannot tell a free round from an
+                             # invisible one.
+                             "method_spend_source": spend_source(),
+                             "method_cache_read_tokens": cache_read_tokens()},
+            "method_reported": {"score": None, **_reported_with_improver(method_reported)},
         }],
         "trajectory_shape": "sequence",
         # Mode A: the platform owns the schedule, so nobody nominates a step.
@@ -1344,7 +1658,7 @@ def report(req: dict, *, method: str, harness_dir: Path, changed: bool,
                 # statements, and a method that counts its own calls by hand is exactly
                 # the case where they can disagree.
                 "method_usage": spent_now,
-                "method_reported": method_reported or {}}
+                "method_reported": _reported_with_improver(method_reported)}
     if stop is not None:
         response["stop"] = bool(stop)
     # The method's own one-line account of this round. The driver falls back to a
@@ -1377,12 +1691,41 @@ def _step_payload(*, harness_dir, label, edit_kind, changed, tokens_now,
         # source-reading cost, not a thinking cost.
         "claimed_cost": {"generation_tokens": tokens_now,
                          "method_input_tokens": None, "method_output_tokens": None,
-                         "method_model_calls": None, "method_model": None},
-        "method_reported": {"score": None, **(method_reported or {})},
+                         "method_model_calls": None, "method_model": None,
+                         "method_spend_source": None},
+        "method_reported": {"score": None, **_reported_with_improver(method_reported)},
     }
     if incumbent_round is not None:
         step["incumbent_round"] = int(incumbent_round)
     return step
+
+
+def _reported_with_improver(method_reported: dict | None) -> dict:
+    """The method's own report plus the improver's account of itself, under its own key.
+
+    Kept apart rather than merged so a method's keys cannot collide with the improver's,
+    and omitted entirely for endpoint improvers -- an empty block would say "the improver
+    reported nothing", which is not the same as "there was no CLI improver".
+    """
+    merged = dict(method_reported or {})
+    run = improver_run()
+    if run:
+        merged["improver_run"] = run
+    return merged
+
+
+def _batch_reported(steps: list[dict], payloads: list[dict]) -> dict:
+    """The envelope-level record for a batch submission (see `report_many`)."""
+    envelope: dict = {"steps": len(payloads)}
+    if len(steps) == 1:
+        envelope.update(_reported_with_improver(steps[0].get("method_reported")))
+    else:
+        per_step = [e.get("method_reported") or {} for e in steps]
+        if any(per_step):
+            envelope["per_step"] = per_step
+        if improver_run():
+            envelope["improver_run"] = improver_run()
+    return envelope
 
 
 def report_many(req: dict, *, method: str, steps: list[dict],
@@ -1411,7 +1754,7 @@ def report_many(req: dict, *, method: str, steps: list[dict],
     """
     spent_now = spent()
     if tokens is None:
-        tokens = spent_now["input"] + spent_now["output"]
+        tokens = spent_tokens()
     if not steps:
         raise SystemExit("report_many needs at least one step; use report for a single one")
 
@@ -1478,7 +1821,13 @@ def report_many(req: dict, *, method: str, steps: list[dict],
     response = {"modified": changed_any, "changed": changed_any,
                 "files": files, "hypothesis": hypothesis, "steps": len(payloads),
                 "generation_tokens": tokens, "method_usage": spent_now,
-                "method_reported": {"steps": len(payloads)}}
+                # **The method's own record, at the level the curve point reads.** This
+                # envelope used to say only `{"steps": n}`, so a method that submits its
+                # batch through `report_many` -- DGM, HyperAgents, Meta-Harness -- had its
+                # rule record written into the step payloads and nowhere the point kept.
+                # One step is unambiguous and merges; several are listed per step so
+                # nothing is silently chosen between them.
+                "method_reported": _batch_reported(steps, payloads)}
     if stop is not None:
         response["stop"] = bool(stop)
     if note is not None:

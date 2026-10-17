@@ -143,7 +143,8 @@ class ApiBank:
         init_tool:   `cls(init_database)` when the class names a `database_name` the release
                      ships, plus the `CheckToken` instance when the class takes a `token`
         api_call:    coerce each argument by the class's declared `input_parameters` type
-                     (`int`, `float`, `str`, and the two list shapes), then call `tool.call`
+                     (`int`, `float`, `bool`, `str`, and the two list shapes; anything else
+                     raises `invalid parameter type.`, as upstream does), then call `tool.call`
 
     That is the whole of the semantics a grade depends on, and reproducing it keeps the loader
     independent of the one file whose import list is the problem.
@@ -256,7 +257,31 @@ class ApiBank:
         return tool
 
     def api_call(self, name: str, param_dict: dict) -> dict:
-        """`ToolManager.api_call`, reproduced: coerce by declared type, then call."""
+        """`ToolManager.api_call`, reproduced: coerce by declared type, then call.
+
+        The coercion set is upstream's, branch for branch (`tool_manager.py:150-169`):
+
+            int          `int(value)`
+            float        `float(value)`
+            bool         `value == 'True'`  -- a *string* comparison, so "True" is True and
+                         every other value, including "False", "false", "", and a real bool,
+                         is False. The gold rows store a JSON boolean for these
+                         (`TimedSwitch`), so this branch decides a grade.
+            str          unchanged
+            list(str)    unchanged
+            list         unchanged
+            anything else
+                         `raise Exception('invalid parameter type.')`, as upstream does. No
+                         declared type in the vendored tree falls outside the set above
+                         (`str` 121, `list(str)` 4, `int` 4, `list` 3, `bool` 1), so this
+                         branch cannot cost a sample.
+
+        One difference predates this fix and is left alone: upstream asserts that a *string*
+        `int`/`float` is digit-shaped (`isdigit`) before converting, while this helper calls
+        `int()`/`float()` directly -- so `'-7'` and `' 42 '` are accepted here and rejected
+        there. That can only turn a raise into a comparison, never the reverse, and no gold row
+        carries a non-digit string for a declared `int` or `float`.
+        """
         info = self.description(name)
         if info is None:
             raise KeyError(f"no API class named {name!r} in the vendored tree")
@@ -270,8 +295,12 @@ class ApiBank:
                 processed[key] = int(value)
             elif kind == "float":
                 processed[key] = float(value)
-            else:
+            elif kind == "bool":
+                processed[key] = value == "True"
+            elif kind in ("str", "list(str)", "list"):
                 processed[key] = value
+            else:
+                raise Exception("invalid parameter type.")
         tool = self._init_tool(name)
         return tool.call(**processed)
 

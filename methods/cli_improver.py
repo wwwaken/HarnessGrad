@@ -246,6 +246,142 @@ def _improver_command(req: dict) -> list[str]:
     return [resolved]
 
 
+def _cli_argv(req: dict, candidate: Path, task: str) -> list[str]:
+    """Build the CLI's own argv: its vocabulary, then the task.
+
+    codex is the shipped improver, so it is the default when an entry declares no style --
+    but the styles are **named**, not guessed from the command's name, because the two are
+    not variations of one command line. codex takes a subcommand, a sandbox mode, a working
+    directory and a model override; dsh takes a profile, an optional patch overlay and the
+    task, and reads its working directory from the process -- which is why `propose` runs it
+    with `cwd=candidate`. Passing codex's flags to dsh is not a degraded round, it is a
+    failure to start, reported as a method bug.
+    """
+    style = str((req.get("improver") or {}).get("argv_style") or "codex")
+    command = _improver_command(req)
+    extra = shlex.split(os.environ.get("HG_IMPROVER_ARGS", ""))
+    if style == "codex":
+        argv = command + ["exec", "--skip-git-repo-check",
+                          "--sandbox", "danger-full-access",
+                          "-C", str(candidate)]
+        if model := os.environ.get("HG_IMPROVER_MODEL"):
+            argv += ["-c", f'model="{model}"']
+        if effort := os.environ.get("HG_IMPROVER_EFFORT"):
+            argv += ["-c", f'model_reasoning_effort="{effort}"']
+        return argv + extra + [task]
+    if style == "dsh":
+        return command + extra + [task]
+    raise SystemExit(
+        f"the resolved improver {(req.get('improver') or {}).get('name')!r} declares "
+        f"argv_style {style!r} and this method has no argument builder for it. A CLI's argv "
+        f"is not guessable -- add a branch here rather than passing flags it may ignore.")
+
+
+def _seed_codex_home(workspace: Path, env: dict) -> Path:
+    """Copy codex's own state into the workspace and point `CODEX_HOME` at it."""
+    home = workspace / ".codex-home"
+    home.mkdir(exist_ok=True)
+    source_home = Path(os.environ.get("HG_CODEX_HOME_SOURCE", Path.home() / ".codex"))
+    for name in ("config.toml", "auth.json"):
+        if (source_home / name).is_file():
+            shutil.copy2(source_home / name, home / name)
+    cfg = home / "config.toml"
+    text = cfg.read_text() if cfg.exists() else ""
+    if "responses_experimental_transport" not in text:
+        cfg.write_text(text + '\nresponses_experimental_transport = "https"\n')
+    env["CODEX_HOME"] = str(home)
+    return home
+
+
+def _seed_dsh_home(workspace: Path, env: dict) -> Path:
+    """Give dsh a home of its own, inside the workspace.
+
+    Two reasons, and the second is the one that bites. The method sandbox binds the
+    improver's trees **read-only** -- a tool a method runs is not state it may write -- and
+    dsh writes sessions, caches and storages under its home, so pointing `DSH_HOME` at the
+    real `~/.dsh` would have every one of those writes fail. And inside the namespace there
+    is nothing under `$HOME` to fall back on, which is the same failure `_seed_codex_home`
+    already exists for.
+
+    What has to come along: `profiles/`, because without a bundle layer `--profile headless`
+    has nothing to boot, and the credentials. Measured: `profiles/` is 1.3 MB, so a copy per
+    round is cheaper than making the sandbox's read-only bind conditional.
+
+    **`symlinks=True`, and that is not a detail.** `profiles/node_modules` is a pnpm link
+    farm -- measured here, 277 symlinks, each pointing into a package's `node_modules`
+    inside the DSH checkout -- and `copytree` dereferences symlinks by default. So the
+    ordinary call copied the *targets*, every one of which carries further `node_modules`,
+    and the copy was unbounded. Measured (`alfworld-dshsmoke3`, 2026-10-16): round 1 sat in
+    this call for over ten minutes, 132 s user and 510 s system time, with thousands of
+    nested `_copytree` frames and nothing on disk to show for it. The seeded home is meant
+    to be a small writable overlay; copying links as links makes it one. The links resolve,
+    because the DSH checkout is bound read-only into the same namespace.
+
+    `settings.yaml` comes too, so the improver runs in the operator's environment -- but the
+    model it uses is not read from there: the launcher pins `agent-default-model` with
+    `--patch`, which is applied after the profile's user layer, so the recorded model cannot
+    be overridden by ambient state.
+    """
+    home = workspace / ".dsh-home"
+    home.mkdir(exist_ok=True)
+    # **The declared home wins over the ambient one.** `DSH_HOME` is exported by this tool
+    # environment, so the driver and every method inherit it -- which meant the improver read
+    # the operator's settings file (complete with third-party `llm-pi-ai` providers nobody
+    # chose for it) and that "which model edits the harness" was a property of the shell. The
+    # registry entry names the home this tool should use; the fallbacks keep the older
+    # behaviour reachable for an improver that has not been given one.
+    source = Path(os.environ.get("HG_IMPROVER_DSH_HOME")
+                  or os.environ.get("DSH_HOME")
+                  or (Path.home() / ".dsh")).expanduser()
+    for name in ("settings.yaml", ".credentials.yaml"):
+        if (source / name).is_file():
+            shutil.copy2(source / name, home / name)
+    if (source / "profiles").is_dir():
+        shutil.copytree(source / "profiles", home / "profiles", symlinks=True,
+                        dirs_exist_ok=True)
+    env["DSH_HOME"] = str(home)
+    return home
+
+
+#: What a CLI subprocess may keep, besides the one credential its entry names. An allowlist
+#: rather than a denylist of secret-shaped names, because the point is a boundary and a
+#: boundary that has to recognise every way a secret can be spelled is not one. `PATH` and
+#: `HOME` because a program cannot start without them; `TMPDIR`/`TMP`/`TEMP` because node and
+#: pnpm both use them; `LANG`/`LC_*`/`TZ`/`TERM` because encoding and timestamps end up in
+#: logs; the proxy variables because a deployment behind one would otherwise watch the
+#: improver fail to reach its own endpoint and read it as a method bug.
+_ENV_KEEP = ("PATH", "HOME", "TMPDIR", "TMP", "TEMP", "LANG", "LC_ALL", "LC_CTYPE", "TZ",
+             "TERM", "SHELL", "USER", "LOGNAME", "NODE_OPTIONS", "NODE_PATH",
+             "HTTP_PROXY", "HTTPS_PROXY", "NO_PROXY", "http_proxy", "https_proxy", "no_proxy")
+
+
+def _restrict_env(env: dict, improver: dict) -> list[str]:
+    """Leave the improver exactly one credential, and say what was withheld.
+
+    A CLI improver runs with whatever the method inherited, and the method inherits the
+    driver's environment -- which holds the agent's key and every provider's alongside the
+    improver's. So a dsh improver *could* reach an endpoint nobody chose for it, and "no
+    forbidden models, no other endpoints" rested on it not trying. This makes that structural
+    rather than aspirational.
+
+    **Only for an entry that declares `api_key_env`** -- one that has opted into naming the
+    single credential it needs. codex does not, and its provider config can name any variable,
+    so it keeps the environment it has always had; narrowing it here would be a change nobody
+    asked for, made in the one place least able to notice.
+
+    Returns the names dropped. The round records them, so the boundary is visible in the
+    receipt instead of being an invisible difference between two improvers.
+    """
+    declared = str(improver.get("api_key_env") or "")
+    if not declared:
+        return []
+    kept = [name for name in _ENV_KEEP if name in env]
+    withheld = sorted(name for name in env if name not in kept and name != declared)
+    for name in withheld:
+        del env[name]
+    return withheld
+
+
 def _stage_evidence(workspace: Path, req: dict) -> Path:
     """Put the platform's channel where the improver will look for it.
 
@@ -379,33 +515,30 @@ def propose(req: dict, parent: Path, *, prompt: str | None = None,
 
     _stage_evidence(candidate, req)
 
-    # The shipped CLI improver is codex, so the argv is codex's. A different CLI needs its
-    # own argv, which is what `HG_IMPROVER_ARGS` is for; a second CLI would earn a proper
-    # argument builder here rather than a guess.
-    argv = _improver_command(req) + ["exec", "--skip-git-repo-check",
-                                     "--sandbox", "danger-full-access",
-                                     "-C", str(candidate)]
-    if model := os.environ.get("HG_IMPROVER_MODEL"):
-        argv += ["-c", f'model="{model}"']
-    if effort := os.environ.get("HG_IMPROVER_EFFORT"):
-        argv += ["-c", f'model_reasoning_effort="{effort}"']
-    argv += shlex.split(os.environ.get("HG_IMPROVER_ARGS", ""))
-    argv += [instruction(prompt, evidence=evidence, facts=facts)]
+    # **Which CLI this is, is declared, not assumed.** This used to append codex's argv
+    # unconditionally, with a comment saying a second CLI would earn a proper argument
+    # builder "rather than a guess". `dsh` is that second CLI, and it is not a variation of
+    # codex's command line: it takes a profile and a patch overlay, and reads its working
+    # directory from the process. `_cli_argv` builds both vocabularies and refuses an
+    # unknown one, because a CLI handed flags it does not know either ignores them or dies
+    # -- and both look like a method bug rather than a wrong argv.
+    argv = _cli_argv(req, candidate, instruction(prompt, evidence=evidence, facts=facts))
 
     timeout = int(os.environ.get("HG_IMPROVER_TIMEOUT_S", "1800"))
     started = time.time()
     env = dict(os.environ)
-    home = workspace / ".codex-home"
-    home.mkdir(exist_ok=True)
-    source_home = Path(os.environ.get("HG_CODEX_HOME_SOURCE", Path.home() / ".codex"))
-    for name in ("config.toml", "auth.json"):
-        if (source_home / name).is_file():
-            shutil.copy2(source_home / name, home / name)
-    cfg = home / "config.toml"
-    text = cfg.read_text() if cfg.exists() else ""
-    if "responses_experimental_transport" not in text:
-        cfg.write_text(text + '\nresponses_experimental_transport = "https"\n')
-    env["CODEX_HOME"] = str(home)
+    # **Narrow the environment first, then seed into it.** The order matters twice over: the
+    # restriction must see the inherited environment (that is what it is narrowing), and the
+    # seeding must run after it so the `DSH_HOME` it sets is the one the improver gets --
+    # restricting afterwards would delete the very variable that points at the seeded home.
+    style = str((req.get("improver") or {}).get("argv_style") or "codex")
+    withheld = _restrict_env(env, req.get("improver") or {})
+    # The CLI's own state, seeded into the workspace because the sandbox binds the
+    # improver's trees read-only and nothing under `$HOME` is reachable from inside it.
+    if style == "dsh":
+        _seed_dsh_home(workspace, env)
+    else:
+        _seed_codex_home(workspace, env)
 
     transcript = ""
     try:
@@ -430,6 +563,10 @@ def propose(req: dict, parent: Path, *, prompt: str | None = None,
         "seconds": round(time.time() - started, 1),
         "files_changed": changed,
         "note": summary,
+        # What the boundary withheld, so a reader can tell two improvers apart by what they
+        # *could* reach and not only by what they did. Empty for an improver that declares no
+        # `api_key_env`, which is every improver that has not opted into being narrowed.
+        "env_withheld": withheld,
     }
     return {"candidate": candidate, "changed": changed, "files": changed,
             "protected": protected, "exit_code": code, "seconds": reported["seconds"],

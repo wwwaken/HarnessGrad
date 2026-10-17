@@ -76,6 +76,13 @@ def _cost_of(res: dict | None, n_tasks: int, wall_s: float,
         "method_generation_output": claimed.get("method_output_tokens"),
         "method_model_calls": claimed.get("method_model_calls"),
         "method_model": claimed.get("method_model"),
+        # Why the token fields above are what they are. `cli_unreported` means an agent
+        # CLI did the work and nobody counted; it is the reason a null is null rather
+        # than a zero, and it is what makes a per-round efficiency number interpretable.
+        "method_spend_source": claimed.get("method_spend_source"),
+        # Prompt tokens the improver's provider served from cache. Disjoint from the input
+        # count, so it is reported beside it rather than added into it.
+        "method_cache_read_tokens": claimed.get("method_cache_read_tokens"),
         "harness_tokens": harness_tokens,
         "harness_tokens_reported_by_tasks": tokens.get("tasks_reported", 0),
         "harness_model_calls": tokens.get("calls"),
@@ -145,6 +152,125 @@ def test_rate_fields(res: dict | None) -> dict:
     }
 
 
+#: The difficulty labels the report always carries a row for. GAIA is the dataset this
+#: report exists for -- its paper publishes Level 1/2/3 accuracy beside the overall number --
+#: and a level nothing was measured on has to stay visible: an absent row cannot be told from
+#: a level the benchmark does not have. Any *other* label a check reports is added beside
+#: these rather than dropped.
+LEVELS: tuple[str, ...] = ("1", "2", "3")
+
+
+def _level_label(value) -> str | None:
+    """One level as the label a table can be grouped on; `None` means "no label".
+
+    The pool stores levels as strings (`data/datasets/gaia/prepare.py` writes
+    `str(row["Level"])`), but a check that reports the same level as a number, a float or a
+    padded string is reporting that level and must not fall into `unknown` because of its
+    type. `True` is excluded deliberately: `bool` is an `int` in Python, and a boolean flag
+    is not a difficulty.
+    """
+    if isinstance(value, bool) or value is None:
+        return None
+    if isinstance(value, int):
+        return str(value)
+    if isinstance(value, float):
+        if value != value:                     # NaN: a number that is not a label
+            return None
+        return str(int(value)) if value.is_integer() else str(value)
+    if isinstance(value, str):
+        return value.strip() or None
+    return None
+
+
+def per_level_breakdown(records: dict[str, dict]) -> dict:
+    """Measured tasks, tasks scored 1, and accuracy -- per difficulty level.
+
+    **Why this is additive and not a second metric.** GAIA's paper reports overall accuracy
+    *and* accuracy per level, and this platform shipped the level to the verifier
+    (`data/datasets/gaia.py::_verify` puts it in the gold record) and never read it back:
+    `data/datasets/gaia/verify/check.py` wrote only `reward 1.0`/`0.0`, so a published mean
+    could not be set beside the paper's table and the level distribution of the *measured*
+    set was not recoverable from what the run wrote. This computes that table from the
+    per-task records the platform already keeps. It **reads** `score`; it never writes one,
+    and the point's `score` is still `mean()` over the same list, so the headline number is
+    the number it was before this report existed.
+
+    `records` maps task id -> `{"score": float, "level": <label>}`. Only measured tasks
+    belong here -- `runner.evaluate` leaves an unmeasured task out of `per_task`
+    (INTERFACE.md §2.5.7) -- so the rows partition exactly the set `n_scored` counts.
+
+    `scored_1` counts tasks whose published score is 1.0, the same rule as the point's
+    `n_passed`: with `--trials > 1` a task's score is the mean over its trials, so 2 of 3 is
+    not a 1.
+
+    A level with nothing measured keeps its row (`measured: 0`, `accuracy: None`), because
+    "Level 3 was not attempted" and "this benchmark has no Level 3" are different facts and
+    an absent row cannot say which one it is. `unknown` is always present and counts the
+    measured tasks whose check reported no label.
+    """
+    rows = {label: {"measured": 0, "scored_1": 0} for label in LEVELS}
+    unknown = {"measured": 0, "scored_1": 0}
+    for record in records.values():
+        record = record or {}
+        label = _level_label(record.get("level"))
+        row = unknown if label is None else rows.setdefault(
+            label, {"measured": 0, "scored_1": 0})
+        row["measured"] += 1
+        if float(record.get("score") or 0.0) >= 1.0:
+            row["scored_1"] += 1
+
+    def _row(counts: dict) -> dict:
+        return {"measured": counts["measured"], "scored_1": counts["scored_1"],
+                "accuracy": (round(counts["scored_1"] / counts["measured"], 6)
+                             if counts["measured"] else None)}
+
+    ordered = list(LEVELS) + sorted(set(rows) - set(LEVELS))
+    return {
+        "levels": {label: _row(rows[label]) for label in ordered},
+        "unknown": _row(unknown),
+        "measured_tasks": sum(row["measured"] for row in rows.values())
+                          + unknown["measured"],
+        "level_tasks": sum(row["measured"] for row in rows.values()),
+        # Which rows are backed by a measurement, so a reader does not have to filter zeros.
+        "levels_reported": [label for label in ordered if rows[label]["measured"]],
+        "note": ("rows partition the measured tasks `score` is the mean over; a task is "
+                 "counted once, in the level its check reported, or in `unknown` when it "
+                 "reported none"),
+    }
+
+
+def level_fields(res: dict | None, task_ids) -> dict:
+    """`_curve_point`'s per-level report, read from the check's own evidence.
+
+    The label travels in the check's evidence rather than in a platform-side table of
+    dataset metadata, and that is what keeps the platform dataset-agnostic: the adapter that
+    owns the label (`data/datasets/gaia/verify/check.py`) is the only thing that has to know
+    what a level is, and every per-task record the platform already writes -- the evidence
+    file, `verdicts/round-N/<task>.json`, and the progress record a fold reads -- carries it
+    unchanged.
+
+    A check that reports no label -- every `files` check, and every dataset with no levels --
+    costs nothing here: `per_level` is `None`, a fact rather than a zero, on the same
+    convention `test_rate: null` follows. Emitting a table of zero rows instead would claim
+    the platform looked for levels and found none, which is a different statement.
+
+    `task_ids` is the caller's own side of the split, so the report partitions exactly the
+    measured set that `score` is computed over.
+    """
+    res = res or {}
+    per_task = res.get("per_task") or {}
+    verdicts = res.get("verdicts") or {}
+    records = {}
+    for tid in task_ids:
+        if tid not in per_task:
+            continue           # not measured: in no level (INTERFACE.md §2.5.7)
+        evidence = (verdicts.get(tid) or {}).get("evidence")
+        records[tid] = {"score": per_task[tid],
+                        "level": evidence.get("level") if isinstance(evidence, dict) else None}
+    breakdown = per_level_breakdown(records)
+    return {"per_level": breakdown if breakdown["level_tasks"] else None}
+
+
 def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
                  cost, cumulative, selection=None, label="",
                  method_reported=None, train_scores=None, train_ids=None,
@@ -157,7 +283,7 @@ def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
                  per_task_trials=None, cached_tasks=None,
                  per_task_test_rate=None, test_rate=None, test_rate_n_tasks=0,
                  tests_passed=0, tests_total=0,
-                 per_task_test_rate_trials=None) -> dict:
+                 per_task_test_rate_trials=None, per_level=None) -> dict:
     isolation_by_task = {tid: (per_task_scorer_isolation or {}).get(tid, "unknown")
                          for tid in task_ids}
     isolation = common_class(isolation_by_task.values())
@@ -277,6 +403,14 @@ def _curve_point(*, run_id, round_index, identity, sampling, scores, task_ids,
         # carries no per-task information, so it can be given back whole.
         "n_scored": len(scores),
         "n_passed": sum(1 for s in scores if s >= 1.0),
+        # **The same measured set, split by the benchmark's own difficulty label.** GAIA's
+        # paper reports Level 1/2/3 accuracy beside the overall number, and the level was
+        # already crossing into the verifier and being thrown away there; the breakdown is
+        # built by `per_level_breakdown` from the check's evidence (`level_fields`). Always
+        # present, `null` when no check reported a label -- the same convention `test_rate`
+        # follows, for the same reason: "this dataset publishes no levels" and "this point
+        # predates the field" must not share a spelling.
+        "per_level": per_level,
         # Tasks the platform could not measure, kept apart from tasks that scored
         # nothing. `n_invalid` + the attribution is what makes "the mock API never came
         # up" distinguishable from "the harness failed", which is the distinction

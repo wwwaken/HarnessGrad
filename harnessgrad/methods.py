@@ -160,6 +160,13 @@ def _method_env(work: Path, improver: dict | None = None) -> dict:
         key_env = (improver or {}).get("api_key_env") or ""
         if key_env and os.environ.get(key_env):
             env["HG_METHOD_API_KEY"] = os.environ[key_env]
+    # A CLI improver that builds its own home gets the path from the resolution rather than
+    # from an ambient `DSH_HOME`. That ambient variable is the coupling this closes: it is
+    # exported by the tool environment, inherited by the driver and by every method, and it
+    # decided which settings file the improver read -- measured, the operator's, complete
+    # with `llm-pi-ai` providers nobody chose for it.
+    if (improver or {}).get("home"):
+        env["HG_IMPROVER_DSH_HOME"] = str(improver["home"])
     env["HARNESSGRAD_WORKSPACE"] = str(work.resolve())
     existing = env.get("PYTHONPATH", "")
     env["PYTHONPATH"] = (f"{work.resolve()}{os.pathsep}{existing}"

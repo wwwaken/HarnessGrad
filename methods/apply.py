@@ -145,6 +145,25 @@ def apply(base: Path, dest: Path, edits) -> tuple[list[str], list[str]]:
             problems.append(f"edit {index} ({rel!r}) {why}")
             continue
 
+        # **A deletion is an edit, and it needs a form of its own.** A CLI improver edits a
+        # tree, so what it produces is a *diff*, and a diff includes files it removed --
+        # removing dead code is a structural change, not an absence of one. Without a
+        # deletion form the translation from that diff into this vocabulary had nowhere to
+        # put it, and `methods/editor.py:_ask_cli` dropped it silently in a `continue` on
+        # `OSError`. Reported here rather than ignored, like every other rejection.
+        if edit.get("delete") is True:
+            if not target.is_file():
+                problems.append(f"edit {index} ({rel!r}) is a deletion, but no such file "
+                                f"exists in the tree")
+                continue
+            try:
+                target.unlink()
+            except OSError as exc:
+                problems.append(f"edit {index} ({rel!r}) could not be deleted: {exc}")
+                continue
+            applied.append(rel)
+            continue
+
         find, replace = edit.get("find"), edit.get("replace")
         content = edit.get("content")
         if find is not None or replace is not None:
@@ -191,7 +210,7 @@ def apply(base: Path, dest: Path, edits) -> tuple[list[str], list[str]]:
 
         if not isinstance(content, str):
             problems.append(f"edit {index} ({rel!r}) carries neither a `content` string "
-                            f"nor a `find`/`replace` pair")
+                            f"nor a `find`/`replace` pair nor `delete: true`")
             continue
         if len(content.encode("utf-8", "replace")) > MAX_EDIT_BYTES:
             problems.append(f"edit {index} ({rel!r}) is larger than {MAX_EDIT_BYTES} "

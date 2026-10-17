@@ -23,9 +23,9 @@ def test_count_and_load_follow_the_catalog(count, monkeypatch):
     tasks, gold = agentdojo.load()
     assert agentdojo.TASK_COUNT == len(tasks) == len(gold) == count
     assert all(task['goal'] == 'synthetic\n\nUse the AgentDojo tools through this CLI:\n'
-               '  dojo_runtime/bin/python dojo.py tools\n'
-               '  dojo_runtime/bin/python dojo.py call \'{"function":"name","args":{}}\'\n'
-               '  dojo_runtime/bin/python dojo.py submit "final answer"\n' for task in tasks)
+               '  python3 dojo.py tools\n'
+               '  python3 dojo.py call \'{"function":"name","args":{}}\'\n'
+               '  python3 dojo.py submit "final answer"\n' for task in tasks)
 
 def test_control_requires_explicit_id_before_any_catalog_read(monkeypatch):
     monkeypatch.setattr(agentdojo,'records',lambda: pytest.fail('mixed catalog read'))
@@ -80,6 +80,7 @@ def test_public_roster_uses_canonical_ids_without_opening_cases(tmp_path, monkey
     monkeypatch.setattr(agentdojo.Path, 'read_text', lambda *a, **k: pytest.fail('case read'))
     assert agentdojo._indices() == [0, 2]
     assert set(agentdojo.SETUP) == {'agentdojo/0', 'agentdojo/2'}
-    assert all('/prepared-ignore_previous/' in entry['from']
-               for spec in agentdojo.SETUP.values() for entry in spec['files']
-               if entry['path'] == 'dojo.initial.json')
+    # Nothing agent-visible comes from the prepared tree or the tool-only runtime: the
+    # environment is served by the relay, so SETUP is two programs and no task data.
+    assert not any('/prepared' in entry['from'] or '/agent_runtime' in entry['from']
+                   for spec in agentdojo.SETUP.values() for entry in spec['files'])

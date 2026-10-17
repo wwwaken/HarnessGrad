@@ -162,10 +162,100 @@ def cell_level_compare(wb_gt, wb_proc, sheet_name, cell_range):
     for cell_name in generate_cell_names(cell_range):
         cell_gt = ws_gt[cell_name]
         cell_proc = ws_proc[cell_name]
+        # `ws["A1:B2"]` returns a TUPLE OF TUPLES, not a cell. That happens whenever a released
+        # `answer_position` component still holds a range after the `split("!")` above, and the
+        # previous code then raised `'tuple' object has no attribute 'value'` -- turning a task
+        # the comparator could have decided into an unmeasured one (task 45944). Compare
+        # elementwise instead. A single-cell lookup never takes this branch, so no task that
+        # previously produced a verdict can change.
+        if isinstance(cell_gt, tuple) or isinstance(cell_proc, tuple):
+            def _flat(x):
+                rows = x if isinstance(x, tuple) else ((x,),)
+                return [c for row in rows for c in (row if isinstance(row, tuple) else (row,))]
+            fg, fp = _flat(cell_gt), _flat(cell_proc)
+            if len(fg) != len(fp):
+                return False, (f"range size difference at {cell_name}: golden has {len(fg)} "
+                               f"cells, result has {len(fp)}")
+            for g, pr in zip(fg, fp):
+                if not compare_cell_value(g.value, pr.value):
+                    return False, (f"value difference at {g.coordinate}: golden has "
+                                   f"{g.value!r}, result has {pr.value!r}")
+            continue
         if not compare_cell_value(cell_gt.value, cell_proc.value):
             return False, (f"value difference at {cell_gt.coordinate}: golden has "
                            f"{cell_gt.value!r}, result has {cell_proc.value!r}")
     return True, ""
+
+
+#: openpyxl 3.1.2 raises this while *parsing* a worksheet `customFilter` `val` that
+#: Excel itself wrote (`openpyxl/worksheet/filters.py:165`). It is a reader bug, not a
+#: corrupt workbook: the same file parses with ElementTree and opens in LibreOffice.
+AUTOFILTER_PARSE_ERROR = "must be either numerical or a string containing a wildcard"
+
+#: Workbooks that had to be normalised for openpyxl, recorded in the evidence so a
+#: reader can see it and no normalisation can ever be silent.
+NORMALISED: list[str] = []
+
+
+def _strip_autofilter(source: Path, destination: Path) -> None:
+    """Copy `source` to `destination` with every worksheet AutoFilter removed.
+
+    An AutoFilter is a view over rows: it stores no cell value and no formula, so a
+    workbook without it has exactly the same cells to compare. Dropping it from a
+    *scoring copy* sidesteps openpyxl's parser bug without touching the golden file
+    and without changing any value `compare_cell_value` looks at.
+    """
+    import re
+
+    patterns = (re.compile(rb"<autoFilter\b[^>]*/>"),
+                re.compile(rb"<autoFilter\b[^>]*>.*?</autoFilter>", re.S))
+    staging = destination.with_name(destination.name + ".partial")
+    with zipfile.ZipFile(source) as zin, \
+            zipfile.ZipFile(staging, "w", zipfile.ZIP_DEFLATED) as zout:
+        for item in zin.infolist():
+            payload = zin.read(item.filename)
+            if item.filename.startswith("xl/worksheets/") and item.filename.endswith(".xml"):
+                for pattern in patterns:
+                    payload = pattern.sub(b"", payload)
+            zout.writestr(item, payload)
+    os.replace(staging, destination)
+
+
+def _is_autofilter_parse_error(exc: BaseException) -> bool:
+    """Is `exc`, or anything it was raised from, openpyxl's AutoFilter parse bug?
+
+    openpyxl wraps the real `ValueError` in a generic "could not read worksheets"
+    `ValueError`, and that wrapper's own text does not mention the filter -- so the
+    chain is what has to be inspected.
+    """
+    seen: set[int] = set()
+    node: BaseException | None = exc
+    while node is not None and id(node) not in seen:
+        seen.add(id(node))
+        if AUTOFILTER_PARSE_ERROR in str(node):
+            return True
+        node = node.__cause__ or node.__context__
+    return False
+
+
+def _load_workbook(path: Path, *, data_only: bool):
+    """`openpyxl.load_workbook`, working around the AutoFilter parser bug.
+
+    A failure other than that one `ValueError` propagates unchanged, so a genuinely
+    broken workbook is still a measurement failure rather than a silent zero.
+    """
+    import openpyxl
+
+    try:
+        return openpyxl.load_workbook(filename=path, data_only=data_only)
+    except ValueError as exc:
+        if not _is_autofilter_parse_error(exc):
+            raise
+        scratch = Path(tempfile.mkdtemp(prefix="hg-spread-norm-")) / Path(path).name
+        _strip_autofilter(Path(path), scratch)
+        workbook = openpyxl.load_workbook(filename=scratch, data_only=data_only)
+        NORMALISED.append(Path(path).name)
+        return workbook
 
 
 def compare_workbooks(gt_file, proc_file, instruction_type, answer_position):
@@ -174,14 +264,12 @@ def compare_workbooks(gt_file, proc_file, instruction_type, answer_position):
     `instruction_type` is accepted and unused, exactly as upstream: the comparison does not
     branch on it (upstream only uses it to group the report).
     """
-    import openpyxl
-
     if not os.path.exists(proc_file):
         # main() handles an absent submission; disappearance during comparison is a failure.
         raise FileNotFoundError(f"result workbook unavailable for comparison: {proc_file}")
     try:
-        wb_gt = openpyxl.load_workbook(filename=gt_file, data_only=True)
-        wb_proc = openpyxl.load_workbook(filename=proc_file, data_only=True)
+        wb_gt = _load_workbook(Path(gt_file), data_only=True)
+        wb_proc = _load_workbook(Path(proc_file), data_only=True)
     except Exception as exc:  # noqa: BLE001 - loading failed, no comparison was completed
         raise RuntimeError(f"workbook load failed: {type(exc).__name__}: {exc}") from exc
 
@@ -328,10 +416,8 @@ def recalculate(workbook: Path, *, scratch: Path, soffice: str) -> tuple[bool, s
 
 def workbook_has_formulas(path: Path) -> bool:
     """Does any cell hold a formula? Decides whether recalculation is needed."""
-    import openpyxl
-
     try:
-        wb = openpyxl.load_workbook(filename=path, data_only=False)
+        wb = _load_workbook(path, data_only=False)
     except Exception as exc:  # noqa: BLE001 - False must mean a readable, formula-free file
         raise RuntimeError(f"workbook load failed during formula detection: "
                            f"{type(exc).__name__}: {exc}") from exc
@@ -370,6 +456,10 @@ def write_reward(path: Path, score: float) -> None:
 
 
 def write_evidence(path: Path, evidence: dict) -> None:
+    if NORMALISED:
+        # Recorded on every path, successful or not: a reader must never have to guess
+        # whether a score came from a normalised workbook.
+        evidence["normalised_for_openpyxl"] = sorted(set(NORMALISED))
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(evidence, indent=1, sort_keys=True,

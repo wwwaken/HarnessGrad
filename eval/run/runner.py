@@ -1,5 +1,6 @@
 """Execute a harness on a task set. Framework-owned (INTERFACE.md §0)."""
 from __future__ import annotations
+from harnessgrad import slots
 
 import concurrent.futures as futures
 import hashlib
@@ -20,6 +21,7 @@ import eval.containers.sandbox as sandbox_mod
 from eval.containers.process import run as run_process
 import eval.service.services as services_mod
 from eval.service.unix_stepwise_relay import StepwiseRelay
+from eval.run import tool_relay as tool_relay_mod
 from eval.run import chess_stepwise
 import tools.web_gateway as web_gateway_mod
 from ckpt.git_state import STATE_DIRNAME
@@ -491,6 +493,16 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                 public_fields=chess_stepwise.PUBLIC_FIELDS, timeout_s=timeout_s)
             child_env["HG_STEPWISE_SOCKET"] = str(stepwise_relay.path)
 
+        # The dataset's interaction environment, if it declares one. Started here and not in
+        # the harness: the whole point is that the agent gets a socket and never the state.
+        # A declared relay that cannot start is `unmeasured`, not a task scored against a hole.
+        tool_relay = None
+        if tool_relay_mod.declaration(setup) is not None:
+            try:
+                tool_relay = tool_relay_mod.start(setup)
+            except RuntimeError as exc:
+                return _invalid(task, exc, stage="tool relay", service=None)
+
         def launch():
             if is_exec:
                 # `runtime_paths` is deliberately not applied: it exists because a
@@ -535,6 +547,7 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                                                  if isinstance(model_gateway, NativeModelRoute) else None),
                                    model_path=(model_gateway.path
                                                if isinstance(model_gateway, NativeModelRoute) else ""),
+                                   tool_socket=(tool_relay.path if tool_relay is not None else None),
                                    package_overlays=package_overlays,
                                    immutable_runtimes=immutable_runtimes)
 
@@ -547,7 +560,13 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                 finally:
                     if stepwise_relay is not None:
                         stepwise_relay.stop()
+                    if tool_relay is not None:
+                        tool_relay.stop()
             exit_code, stderr = proc.returncode, proc.stderr[-2000:]
+            if tool_relay is not None:
+                fault = tool_relay.fault()
+                if fault is not None:
+                    return _invalid(task, fault, stage="tool relay", service=None)
         except subprocess.TimeoutExpired:
             exit_code, stderr = -1, f"timeout after {timeout_s}s"
         except modelgate_mod.GatewayUnavailable as exc:
@@ -917,6 +936,16 @@ def evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
         return result
 
 
+def _held(measure, index: int, task: dict) -> dict:
+    """One task, holding one global measurement slot while it runs.
+
+    When no budget is configured (`slots.current()` is `None`) this is a bare call and the
+    platform behaves exactly as before: `--jobs` is the only bound.
+    """
+    with slots.slot():
+        return measure(index, task)
+
+
 def _in_parallel(tasks: list[dict], measure, jobs: int) -> dict[str, dict]:
     """Measure every task, up to `jobs` at a time, and collect the outcomes by task id.
 
@@ -937,10 +966,10 @@ def _in_parallel(tasks: list[dict], measure, jobs: int) -> dict[str, dict]:
     if jobs <= 1:
         # Computed in task order, which is what makes the merge reproducible at one
         # `--jobs` setting as well as comparable across two of them.
-        return {task["task_id"]: measure(index, task)
+        return {task["task_id"]: _held(measure, index, task)
                 for index, task in enumerate(tasks, start=1)}
     pool = futures.ThreadPoolExecutor(max_workers=jobs, thread_name_prefix="hg-task")
-    pending = [pool.submit(measure, index, task)
+    pending = [pool.submit(_held, measure, index, task)
                for index, task in enumerate(tasks, start=1)]
     outcomes: dict[str, dict] = {}
     try:

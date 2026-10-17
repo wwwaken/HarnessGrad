@@ -5,7 +5,6 @@ r"""`jer` -- the command line the agent uses to play a Jericho interactive-ficti
     python3 jer do "<command>"      apply one game command
     python3 jer score               the game's score, the maximum, and the moves spent
     python3 jer inventory           what the agent is carrying
-    python3 jer valid               the actions Jericho believes are available
     python3 jer done                declare the episode over and stop acting
     python3 jer help                this text
 
@@ -25,6 +24,14 @@ Where things live (override with the matching flag):
     <workdir>/jer_game.json       the game and its seed, written by the platform's SETUP
     <workdir>/<rom>               the game file, written by SETUP and by VERIFY
     <workdir>/jer_actions.jsonl   this program's append-only output
+
+There is no `valid` command, and the absence is deliberate. The agent runtime is a code-only
+projection of the jericho package whose `defines.py` has `BINDINGS_DICT = {}` -- that table is
+what hides the walkthrough, and it is also what `FrotzEnv` builds its template action generator
+from, so `get_valid_actions()` returns `[]` there. Restoring the table would not be enough
+either: the generator needs spaCy's `en_core_web_sm`, which is neither installed nor reachable
+(its fallback is a download, and this dataset's runtime has `network: none`). Listing it as a
+command only cost the agent turns, so it is gone rather than advertised and broken.
 """
 from __future__ import annotations
 
@@ -46,23 +53,50 @@ def _current(args):
     records = jer_env.action_log_records(args.log)
     actions = jer_env.actions_in(records)
     env = jer_env.load_game(args.workdir, rom_dir=args.rom_dir)
-    steps = jer_env.replay(env, actions)
-    return env, (steps[-1] if steps else None), actions
+    result = jer_env.replay(env, actions)
+    return env, (result["steps"][-1] if result["steps"] else None), actions
 
 
 def cmd_look(args) -> int:
-    env, last, actions = _current(args)
-    if last is None:
-        # No actions yet: the game's opening text is the observation. `reset` already ran,
-        # and `get_state`-free re-reading is not available, so ask the game to look.
-        observation, _reward, _done, info = env.step("look")
-    else:
-        observation, info = last["observation"], last
+    """Print the observation *now*: the room the agent is in, not its last action's feedback.
+
+    `FrotzEnv` has no call that re-describes the current room without stepping: `get_state()`'s
+    `narrative` is the *last* turn's text (exactly the "Taken." this command used to print) and
+    the object tree carries object names, not room descriptions. `look` is the game's own
+    command for re-observing, so the only honest answer is to ask the game and print what it
+    says.
+
+    That step is free with respect to the grade. `_current()` rebuilt this game by replaying the
+    log, nothing here appends to `jer_actions.jsonl`, and the check replays the log in its own
+    fresh game -- so an ephemeral advance cannot leak into a score. The move counter is
+    therefore read from the replayed log as well, never from this step: the game counts `look`
+    itself as a move, and reporting that number would claim a move the check never replays.
+    """
+    env, last, _actions = _current(args)
+    observation = _observation_now(env, last)
+    last = last or {}
     print(str(observation).strip())
     print()
-    print(f"[jer] move {actions and (last or {}).get('moves', 0) or info.get('moves', 0)}; "
-          f"score {info.get('score', 0)}/{env.get_max_score()}")
+    print(f"[jer] move {last.get('moves', 0)}; "
+          f"score {last.get('score', 0)}/{env.get_max_score()}")
     return 0
+
+
+def _observation_now(env, last) -> str:
+    """The game's answer to "what do I see here", asked of the game.
+
+    Before the first action this is the opening text. If the step itself fails -- a halted
+    interpreter, or any game that will not take `look` -- the last recorded output is returned
+    instead of a traceback; that record keeps only 400 characters, so the fallback is a floor,
+    not the preferred reading, and there is nothing to fall back to before the first action.
+    """
+    try:
+        observation, _reward, _done, _info = env.step("look")
+        return str(observation)
+    except Exception:  # the whole game, not this command, is what failed
+        if last is None:
+            raise
+        return str(last["observation"])
 
 
 def cmd_do(args) -> int:
@@ -94,14 +128,6 @@ def cmd_inventory(args) -> int:
     return 0
 
 
-def cmd_valid(args) -> int:
-    """Best-guess admissible actions. Not an action: it does not consume the budget."""
-    env, _last, _actions = _current(args)
-    for action in env.get_valid_actions():
-        print(action)
-    return 0
-
-
 def cmd_done(args) -> int:
     records = jer_env.action_log_records(args.log)
     if not any(r.get("kind") == "done" for r in records):
@@ -129,7 +155,6 @@ USAGE = """jer -- play a Jericho interactive-fiction game
   python3 jer do "<command>"  apply one game command
   python3 jer score           the game's score, the maximum, and the moves spent
   python3 jer inventory       what you are carrying
-  python3 jer valid           the actions Jericho believes are available
   python3 jer done            declare the episode over
 
 Options (anywhere on the line): --workdir DIR --log FILE --rom-dir DIR
@@ -152,8 +177,6 @@ def main(argv: list) -> int:
         return cmd_score(args)
     if command == "inventory":
         return cmd_inventory(args)
-    if command == "valid":
-        return cmd_valid(args)
     if command == "done":
         return cmd_done(args)
     print(f"error: unknown command {command!r}", file=sys.stderr)

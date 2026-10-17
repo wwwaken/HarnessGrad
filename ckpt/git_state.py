@@ -24,6 +24,34 @@ def _git(repo: Path, *args: str) -> str:
     ).stdout
 
 
+#: What a harness's identity excludes: **the instrument's own state, never the harness**.
+#:
+#: A harness is code, and `content_sha` is a git tree hash, so whatever is committed into
+#: the tree is part of what the harness *is*. Every file that is not harness code is
+#: therefore a way for a round that changed nothing to mint a new `harness_sha` -- and the
+#: cache key is `(harness_sha, task_id)`, so that round is re-measured and the curve shows
+#: movement no method made. The list is the class, not the two instances the platform was
+#: first bitten by:
+#:
+#: * `_harnessgrad/` -- the platform<->method channel;
+#: * `__pycache__/`, `*.pyc` -- bytecode from the process-call entrypoints;
+#: * `.state/` -- the one writable place inside an otherwise read-only tree
+#:   (`eval/containers/sandbox.py`), so its contents are by definition not harness state;
+#: * `*.bak`, `*.orig`, `*.rej`, `*~` -- **the improver's own bookkeeping**, which is what
+#:   the previous four-rule list was missing. Measured (`v10-dgm`, 2026-10-05): an improver
+#:   wrote `agent.py.bak` (635 lines) beside its 3-line edit to `agent.py`, the backup was
+#:   committed, and the round's diff and sha both reported it
+#:   (`runs/v10-dgm/state_after_round3/agent.py.bak`).
+#:
+#: Excluding a *real* file that happens to carry one of these names is the accepted cost:
+#: it is a narrower loss than a curve that moves when nothing did, and a method that means
+#: to ship a file can decline to name it like a backup. A rule that *rejects* such a file
+#: instead of ignoring it is a different change -- it needs a pre-execution check, and it
+#: belongs with the candidate preflight rather than here.
+IGNORED_HARNESS_STATE = ("_harnessgrad/", "__pycache__/", "*.pyc", ".state/",
+                         "*.bak", "*.orig", "*.rej", "*~")
+
+
 def init_repo(root: Path) -> None:
     """Turn `root` into a git repo with one commit holding its current contents."""
     if (root / ".git").exists():
@@ -34,15 +62,8 @@ def init_repo(root: Path) -> None:
     # sha every round and the control curve would look like movement.
     gi = root / ".gitignore"
     existing = gi.read_text() if gi.exists() else ""
-    # `_harnessgrad/` is the framework<->method channel; `__pycache__/` is noise
-    # from the process-call entrypoints. Neither is harness state, and committing
-    # either would make a no-op round mint a new sha and look like movement.
-    # `.state/` is the harness's own scratch space during a task: it is the one
-    # writable place inside an otherwise read-only tree (eval/containers/sandbox.py), so its
-    # contents are by definition not part of the harness and must never be
-    # committed -- a harness that wrote a cache file would otherwise mint a new
-    # sha and the curve would show movement that no method made.
-    for rule in ("_harnessgrad/", "__pycache__/", "*.pyc", ".state/"):
+    # `IGNORED_HARNESS_STATE` states the principle and the measured instances behind it.
+    for rule in IGNORED_HARNESS_STATE:
         if rule not in existing:
             existing = existing.rstrip("\n") + f"\n{rule}\n"
     gi.write_text(existing)

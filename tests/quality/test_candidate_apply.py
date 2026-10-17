@@ -768,3 +768,82 @@ def test_a_candidate_that_does_not_compile_is_unmeasured_not_zero(tmp_path):
     assert broken[-1]["measured_by_platform"] is False
     assert broken[-1]["n_scored"] == 0 and broken[-1]["per_task"] == {}
     assert broken[-1]["scorer_isolation_class"] == "unknown"
+
+
+def test_the_candidate_preflight_never_executes_the_candidate(tmp_path):
+    """**预检不执行模块代码。** 这条性质是必须的,因为它发生在一个危险的时刻。
+
+    预检跑在**测量沙箱存在之前**(`harnessgrad/loops/mode_a.py:433`,在
+    `commit_state` 与任何 `bwrap` 之前)。如果它执行候选,平台就会在完全没有沙箱的情况下
+    运行**方法写出来的代码** —— 而候选正是那个不可信的东西。所以平台自带的候选重检
+    (`eval/run/candidate.py`,注释写着"the method is not trusted")选的是不执行的检法:
+    复用 `tools/validate_harness.py` 的结构检查,加上 `env_kinds` 不得放宽、`role` 不得改。
+
+    它现在成立只靠一个参数:`eval/run/candidate.py:67` 传 `smoke=False`,而
+    `tools/validate_harness.py:150` 的 `if smoke and ...` 才是执行那一步。参数是会被顺手
+    改掉的东西,`smoke=True` 又会跑 `<entrypoint> --task <trivial>` —— 所以把"不执行"
+    钉成行为测试,而不是留在一次阅读里。
+
+    带**反向对照**:同一个树在 `smoke=True` 下**必须**真的被执行,否则第一个断言可以是
+    空的(比如 entrypoint 根本没被解析到)。
+    """
+    marker = tmp_path / "EXECUTED"
+    dest = _harness(tmp_path / "dest", body=(
+        "import pathlib\n"
+        "import sys\n"
+        f"pathlib.Path({str(marker)!r}).write_text('ran')\n"
+        "sys.exit(0)\n"))
+
+    problems = candidate.validate(dest)
+    assert not marker.exists(), (
+        "the candidate preflight executed the candidate. The pre-check runs before the "
+        "measurement sandbox exists, so this runs method-produced code unsandboxed")
+    assert problems == [], problems
+
+    # Negative control: `smoke=True` is the path that does run it, so the assertion above is
+    # a real observation rather than a vacuous one.
+    import tools.validate_harness as harness_validator  # noqa: PLC0415
+    harness_validator.validate(dest, True)
+    assert marker.exists(), (
+        "the negative control did not execute the entrypoint, so the preflight's silence "
+        "proves nothing about whether it would have")
+
+
+# --------------------------------------------------------------- 删除是编辑 ---
+
+def test_a_deletion_edit_removes_the_file(tmp_path):
+    """**删除需要一个自己的形式。** CLI improver 编辑的是一棵树,所以它产出的是 *diff*,而
+    diff 里有它删掉的文件 —— 删死代码是结构性改动,不是"什么都没做"。没有删除形式时,那份
+    diff 翻译进这个词汇表就无处安放,`methods/editor.py:_ask_cli` 只能把它丢在一个
+    `continue` 里。"""
+    base = _harness(tmp_path / "base")
+    (base / "dead.py").write_text("gone\n", encoding="utf-8")
+    applied, problems = apply(base, tmp_path / "dest", [{"path": "dead.py", "delete": True}])
+    assert problems == [], problems
+    assert applied == ["dead.py"]
+    assert not (tmp_path / "dest" / "dead.py").exists()
+    assert (base / "dead.py").is_file(), "base 被改动了"
+
+
+def test_deleting_a_file_that_is_not_there_is_reported(tmp_path):
+    """像其它每一种拒绝一样被**报出来**,而不是当成"没有这个编辑"。"""
+    base = _harness(tmp_path / "base")
+    applied, problems = apply(base, tmp_path / "dest", [{"path": "ghost.py", "delete": True}])
+    assert applied == []
+    assert problems and "no such file" in problems[0], problems
+
+
+def test_a_deletion_and_a_rewrite_together_both_land(tmp_path):
+    """混合序列里删除不能被跳过 —— 只测删除一种形式会漏掉这条路径。"""
+    base = _harness(tmp_path / "base")
+    (base / "dead.py").write_text("gone\n", encoding="utf-8")
+    applied, problems = apply(base, tmp_path / "dest", [
+        {"path": "dead.py", "delete": True},
+        {"path": "agent.py", "find": "print('hi')", "replace": "print('new')"},
+    ])
+    assert problems == [], problems
+    assert sorted(applied) == ["agent.py", "dead.py"]
+    dest = tmp_path / "dest"
+    assert not (dest / "dead.py").exists()
+    assert (dest / "agent.py").read_text() == "print('new')\n"
+
