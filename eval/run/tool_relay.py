@@ -117,7 +117,10 @@ def start(setup: dict | None, *, ready_timeout_s: float = READY_TIMEOUT_S) -> To
     os.chmod(directory, 0o700)
     state = directory / "state"
     state.mkdir(mode=0o700)
-    payload = state / "environment"
+    # The staged file keeps the name the environment expects. TextWorld guesses the world
+    # format from the extension, so a file called `environment` is not a `.tw-pddl` and the
+    # relay dies at startup -- which the runner then reports as an unmeasured task.
+    payload = state / decl.get("filename", "environment")
     payload.write_text(decl["content"], encoding="utf-8")
     os.chmod(payload, 0o600)
     sock = directory / "tool.sock"

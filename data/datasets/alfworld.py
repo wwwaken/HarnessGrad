@@ -450,6 +450,7 @@ def _setup(record: dict) -> dict:
         # same string `VERIFY.inputs` carries, so the relay and the check read identical bytes.
         "tool_relay": {
             "program": str(ASSETS / "relay.py"),
+            "filename": GAME_IN_WORKDIR,
             "content": record["stripped_game"],
             "budget": STEP_BUDGET,
         },
