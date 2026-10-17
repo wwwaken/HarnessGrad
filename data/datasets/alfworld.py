@@ -299,7 +299,19 @@ def _collect(roots: list[tuple[Path, set[str] | None]] | None = None) -> list[di
             "game_path": game_path,
             "stripped_game": _stripped_game(gamedata),
         })
-    return records
+    # **Deduplicated, because the same directory can be named twice.** The pool is a list of
+    # (root, wanted) pairs and nothing stops two of them from resolving to one directory --
+    # that is what a `train` study set over a `train` pool does, and it produced 200 train
+    # ids for a 100-task file, i.e. every study task measured twice. A duplicate is not a
+    # harmless repeat here: it is a second curve entry and a second charge for one task.
+    seen: set[str] = set()
+    unique: list[dict] = []
+    for record in records:
+        if record["task_id"] in seen:
+            continue
+        seen.add(record["task_id"])
+        unique.append(record)
+    return unique
 
 
 def _stripped_game(gamedata: dict) -> str:
@@ -538,6 +550,10 @@ _STUDY: list[str] = []
 try:
     _STUDY = _study_ids()
     if _STUDY:
+        if _POOL == "train":
+            raise ValueError(
+                "HG_ALFWORLD_POOL=train would measure the split the study set is drawn "
+                "from; the eval pool is one of valid_seen / valid_train / valid_unseen")
         _RECORDS: list[dict] = _collect([(_split_dir("train"), set(_STUDY)),
                                          (_split_dir(), None)])
         _found = {r["task_id"] for r in _RECORDS}

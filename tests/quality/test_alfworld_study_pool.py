@@ -90,3 +90,22 @@ def test_a_study_id_that_is_not_runnable_fails_loudly(tmp_path):
     bogus.write_text("no-such-house-None-Nothing-999__trial_20190901_000000_000000\n")
     got = _probe(HG_ALFWORLD_STUDY_IDS=bogus)
     assert got["error"] and "study ids" in got["error"]
+
+
+def test_the_same_directory_cannot_supply_a_task_twice():
+    """实测过的 bug：study 文件放在 pool 的同一个目录上时，100 题变成 200 条 train 侧记录
+    （每道题被收集两次），等于同一个任务被测量两次、记两个曲线点、收两次费。"""
+    import sys
+    sys.path.insert(0, str(ROOT))
+    from data.datasets import alfworld as A
+    once = A._collect([(A._split_dir("valid_unseen"), None)])
+    twice = A._collect([(A._split_dir("valid_unseen"), None),
+                        (A._split_dir("valid_unseen"), None)])
+    assert len(twice) == len(once) == 134
+    assert len({r["task_id"] for r in twice}) == len(twice)
+
+
+def test_measuring_the_split_the_study_set_comes_from_is_refused():
+    """`--pool train` + 一个 train 的 study 文件 = 在自己的学习材料上考试。响亮拒绝。"""
+    got = _probe(HG_ALFWORLD_STUDY_IDS=STUDY_FILE, HG_ALFWORLD_POOL="train")
+    assert got["error"] and "study set is drawn from" in got["error"]
