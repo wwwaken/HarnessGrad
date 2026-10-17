@@ -1,8 +1,12 @@
 """Dream-RSI 的本地代理选择规则及其证据边界。
 
-依据: Dream-RSI/papers/Dream-RSI.pdf, §3, p.5–6, Eq. (1)。论文比较同一固定
-历史上的平均回放分数; 这里比较已记录的各轮代理值。旧有数值断言保留,但不能把它们
-解读成回放、质量或下一候选的不退化保证。附录 B.2 p.19 的 AUC 目标另有未解差异。
+依据: 本机 PDF 是 **v1**（2026-09-14），Dream-RSI/papers/Dream-RSI.pdf §3, p.5–6,
+Eq. (1)。论文比较同一固定历史上的平均回放分数; 这里比较已记录的各轮代理值。旧有数值
+断言保留,但不能把它们解读成回放、质量或下一候选的不退化保证。
+
+**v1 → v2（arXiv:2609.14858v2, 2026-10-06）把附录 B.2 p.19 的 AUC 目标提为正文
+Eq. (1)**（归一化 hypervolume 减 λ 并行惩罚），并把 M 定为 4。本端口实现的是被 v2
+替换掉的 v1 线性公式,所以下面钉住的是"实现的是哪一版"这件事本身。
 """
 from __future__ import annotations
 
@@ -275,7 +279,8 @@ def test_every_deviation_has_a_checkable_paper_or_readme_locator():
     """记录本身需要出处; 不依赖本机上游目录,也不加载任何数据集。"""
     for deviation in _metadata()["deviations"]:
         source = deviation.get("source", "")
-        assert re.search(r"Dream-RSI\.pdf.*p\.\d+|README\.md:\d+", source), deviation
+        assert re.search(r"arXiv:2609\.14858v\d+|Dream-RSI\.pdf.*p\.\d+|README\.md:\d+",
+                      source), deviation
 
 
 @pytest.mark.parametrize("deviation_id, source_term, required_terms", [
@@ -286,7 +291,7 @@ def test_every_deviation_has_a_checkable_paper_or_readme_locator():
     ("offline_revisions", "p.5", ("M", "feedback")),
     ("policy_surface", "p.4", ("harness", "exploration")),
     ("selection_scope", "p.6", ("proxy", "unstaged", "unscored")),
-    ("appendix_objective", "p.19", ("pareto.reward", "pareto.auc", "unknown")),
+    ("appendix_objective", "v2", ("pareto.reward", "pareto.auc", "superseded")),
 ])
 def test_metadata_identifies_the_actual_substitutions_and_open_questions(
         deviation_id, source_term, required_terms):
@@ -297,6 +302,27 @@ def test_metadata_identifies_the_actual_substitutions_and_open_questions(
     for term in required_terms:
         assert term in explanation
     assert deviation["direction"] in {"weaker", "unknown"}
+
+
+#: 方向也是记录的一部分。v2 把目标函数写清楚之后，原先记作 `unknown`（"关系不明"）的几条
+#: 变成可核实的 `weaker`（"实现的是被替换掉的 v1 形式"）；这一变化必须被钉住，否则把方向
+#: 改回 `unknown` 不会让任何测试失败。
+EXPECTED_DIRECTIONS = {
+    "replay_simulator": "weaker",
+    "fixed_history": "weaker",
+    "execution_cost": "weaker",
+    "parallelism": "weaker",
+    "offline_revisions": "weaker",
+    "policy_surface": "weaker",
+    "selection_scope": "unknown",
+    "appendix_objective": "weaker",
+}
+
+
+def test_each_deviation_keeps_the_direction_the_audit_assigned():
+    """方向被悄悄弱化(unknown -> weaker 或反向)时失败, 不加载数据集。"""
+    actual = {d.get("id"): d.get("direction") for d in _metadata()["deviations"]}
+    assert actual == EXPECTED_DIRECTIONS
 
 
 @pytest.mark.parametrize("history, selected, incumbent", [
