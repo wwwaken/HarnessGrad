@@ -72,3 +72,20 @@ def test_a_missing_donor_is_refused(tmp_path):
     consumer = _run(tmp_path, "consumer", "--h0-from", "no-such-run")
     assert consumer.returncode != 0
     assert "refusing" in consumer.stderr
+
+
+def test_a_donor_measured_before_the_payload_existed_is_still_sharable(tmp_path):
+    """**实测的用途**：我们那份 0.53 的 H0 是在 `h0.json` 之前测的，不能因此再测一遍。
+
+    曲线点保留了 round-0 路径需要的全部东西（逐题分数、invalid、harness_failed、运行时
+    记录、trial 离散度），trace 在 `round0_traces/` 里。所以从点重建测量即可，数和原来一样。
+    """
+    donor = _run(tmp_path, "donor")
+    assert donor.returncode == 0, donor.stderr[-600:]
+    (tmp_path / "runs" / "donor" / "h0.json").unlink()      # 退回"旧 run"的形态
+
+    consumer = _run(tmp_path, "consumer", "--h0-from", "donor")
+    assert consumer.returncode == 0, consumer.stderr[-800:]
+    a, b = _first_point(tmp_path, "donor"), _first_point(tmp_path, "consumer")
+    assert b["per_task"] == a["per_task"]
+    assert b["shared_from"]["run_id"] == "donor"

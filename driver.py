@@ -207,6 +207,34 @@ def load_env(path: Path) -> dict:
     return loaded
 
 
+def _base_from_point(point: dict) -> dict:
+    """Rebuild the measurement dictionary from a curve point.
+
+    A curve point keeps everything the rest of the round-0 path reads: the per-task
+    scores, the invalid and harness-failed records, the runtime and protocol records,
+    and the trial spread. It does not keep the trace maps -- those live in the run's
+    `round0_traces/`, which `--h0-from` copies. This exists so a run measured **before**
+    `h0.json` was written can still be shared instead of being measured again: the
+    number is the same number.
+    """
+    identity = point.get("identity") or {}
+    base = {
+        "per_task": point.get("per_task") or {},
+        "invalid": point.get("invalid"),
+        "harness_failed": point.get("harness_failed"),
+        "model_gateway": point.get("model_gateway"),
+        "harness_runtime": point.get("harness_runtime"),
+        "evaluation_protocols": point.get("evaluation_protocols"),
+        "identity_declared": identity.get("harness_identity"),
+        "trials": point.get("n_trials"),
+        "score_std": point.get("score_std"),
+        "per_task_std": point.get("per_task_std"),
+        "per_task_trials": point.get("per_task_trials"),
+        "cached_tasks": point.get("cached_tasks"),
+    }
+    return base
+
+
 def describe_model() -> dict:
     """What the platform will record as `agent_model`, and whether it is real.
 
@@ -1177,14 +1205,14 @@ def _main(attempt: dict) -> int:
     if args.h0_from:
         donor_dir = Path(args.runs_root) / args.h0_from
         payload_path = donor_dir / "h0.json"
-        if not payload_path.is_file():
-            print(f"refusing --h0-from {args.h0_from!r}: no {payload_path}", file=sys.stderr)
-            return 2
-        payload = json.loads(payload_path.read_text())
-        if payload.get("h0_sha") != h0_sha:
-            print(f"refusing --h0-from {args.h0_from!r}: it measured base {payload.get('h0_sha')!r}, "
-                  f"this run's base is {h0_sha!r}", file=sys.stderr)
-            return 2
+        payload = None
+        if payload_path.is_file():
+            payload = json.loads(payload_path.read_text())
+            if payload.get("h0_sha") != h0_sha:
+                print(f"refusing --h0-from {args.h0_from!r}: it measured base "
+                      f"{payload.get('h0_sha')!r}, this run's base is {h0_sha!r}",
+                      file=sys.stderr)
+                return 2
         donor_point = None
         donor_curve = donor_dir / "curve.jsonl"
         if donor_curve.is_file():
@@ -1195,7 +1223,21 @@ def _main(attempt: dict) -> int:
         if donor_point is None:
             print(f"refusing --h0-from {args.h0_from!r}: it has no curve point", file=sys.stderr)
             return 2
-        base = payload["base"]
+        if payload is not None:
+            base = payload["base"]
+        else:
+            # No raw payload: this run predates `h0.json`. Its own base sha is checked
+            # against `h0_sha` below -- through the point's identity -- and the number is
+            # the same number, so re-measuring it would only spend compute to produce a
+            # second value for one measurement.
+            if (donor_point.get("identity") or {}).get("harness_sha") != h0_sha:
+                print(f"refusing --h0-from {args.h0_from!r}: its point measured base "
+                      f"{(donor_point.get('identity') or {}).get('harness_sha')!r}, this "
+                      f"run's base is {h0_sha!r}", file=sys.stderr)
+                return 2
+            base = _base_from_point(donor_point)
+            console.note(f"{args.h0_from} has no h0.json; rebuilt the measurement from its "
+                         f"curve point (same base tree, same number)", level="info")
         # The traces travel with the measurement: a method that reads a trace channel to
         # decide what to edit must see the same traces as every other method.
         donor_traces = donor_dir / "round0_traces"
