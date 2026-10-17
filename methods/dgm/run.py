@@ -51,18 +51,21 @@ What is not reproduced, and two findings worth carrying
    signal**, and the copy of DGM we can run is materially weaker than the
    published one. Saying so is part of porting it honestly.
 
-The `noise_leeway` of 0.1 is an absolute accuracy on SWE-bench, where a round
-submits hundreds of instances. On a small task set the same 0.1 is many interval
-widths wide, so it is a *configured* constant here (see `HG_DGM_NOISE_LEEWAY`),
-not a reproduced statistic.
+The `noise_leeway` default is 0.1, matching `DGM_outer.py:238`, and is configured
+through `HG_DGM_NOISE_LEEWAY`. It sets the initial-score-minus-leeway floor only
+under `keep_better`; the default `keep_all` bypasses it (`DGM_outer.py:174-188`).
+No task-set-specific statistical calibration is implemented here.
 
-What mode A costs this method
+Batch submission and rejection
 -----------------------------
-The platform measures one candidate per round and accepts it unconditionally, so
-DGM's parallel children (`selfimprove_size`, sampled with replacement) collapse
-to one child per round. What survives is the archive and the sampling rule; what
-does not is the branching. The method also cannot decline a candidate -- it can
-only choose its parent and record what the archive rule would have retained.
+Upstream `DGM_outer.py:90-100` samples parents with replacement and `:111-148`
+chooses an entry per parent. Here each child samples a parent and chooses a target,
+then usable edits are generated sequentially and submitted via `editor.report_many`.
+`HG_DGM_CHILDREN` defaults to 3, a port configuration choice differing from upstream
+`--selfimprove_size` default 2 (`DGM_outer.py:224`); the remaining budget caps it.
+There is no post-measurement score-based rejection or `incumbent_round` rollback.
+Archive retention controls future parents; no-change edits and invalid parents
+are still filtered before submission.
 """
 from __future__ import annotations
 
@@ -93,8 +96,8 @@ def _load_component(filename: str, module_name: str):
 # Kept method-local: DGM's archive and staged schedule are not a shared algorithm.
 DGM_STAGED = _load_component("staged_eval.py", "harnessgrad_dgm_staged_eval")
 
-#: DGM's `--eval_noise` default (`DGM_outer.py:238`). Absolute, and calibrated on
-#: a benchmark whose rounds submit hundreds of instances -- see the docstring.
+#: DGM's absolute `--eval_noise` default (`DGM_outer.py:238`), configurable here.
+#: Applied only to `keep_better`; `keep_all` ignores this score floor.
 NOISE_LEEWAY = float(os.environ.get("HG_DGM_NOISE_LEEWAY", "0.1"))
 
 #: `keep_better` or `keep_all`. Default matches the shipped CLI default

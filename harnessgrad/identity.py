@@ -141,7 +141,8 @@ def _improver_runtime(improver: dict | None) -> tuple[str, ...]:
 
 def _identity(man: dict, sha: str, mode: str, method_model: str = "n/a",
               declared: dict | None = None, improver: dict | None = None,
-              method: str | None = None) -> dict:
+              method: str | None = None, jobs: int | None = None,
+              trials: int | None = None, gpu_budget: int | None = None) -> dict:
     """Who produced this number.
 
     There is no platform-side method identity any more: the method IS the
@@ -190,6 +191,21 @@ def _identity(man: dict, sha: str, mode: str, method_model: str = "n/a",
         # step rather than guessed from the entrypoint's directory.
         **({"method": method} if method else {}),
         **({"harness_identity": declared} if declared else {}),
+        # **The conditions the number was produced under.** `run_meta.json` already records
+        # `jobs` and `trials`, but a curve point is the unit that gets copied, plotted and
+        # compared, and it did not carry them -- so "0.83" from a six-way run and "0.83" from
+        # a forty-way run were indistinguishable inside the point itself. `trials` was also
+        # half-present: the point carries `n_trials`, while the reference check reads
+        # identity, so a reference and a candidate could disagree on trials and nothing said
+        # so. Both are emitted only when known, like every other optional field here.
+        **({"jobs": int(jobs)} if jobs is not None else {}),
+        **({"trials": int(trials)} if trials is not None else {}),
+        # The **global** measurement budget this point was produced under, when a batch shared
+        # one: `jobs` is this run's own ceiling, while this is the capacity every concurrent
+        # run on the machine was admitted against (`harnessgrad/slots.py`). They answer
+        # different questions -- "how many at once here" versus "how many at once anywhere" --
+        # and a reader needs both to reproduce the contention.
+        **({"gpu_budget": int(gpu_budget)} if gpu_budget is not None else {}),
         # **The harness's own runtime budget, promoted out of the declaration.**
         #
         # `HG_AGENT_MAX_STEPS=16` and `=32` run the same harness file: one trajectory

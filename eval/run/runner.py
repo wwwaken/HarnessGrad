@@ -1,5 +1,6 @@
 """Execute a harness on a task set. Framework-owned (INTERFACE.md §0)."""
 from __future__ import annotations
+from harnessgrad import slots
 
 import concurrent.futures as futures
 import hashlib
@@ -917,6 +918,16 @@ def evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
         return result
 
 
+def _held(measure, index: int, task: dict) -> dict:
+    """One task, holding one global measurement slot while it runs.
+
+    When no budget is configured (`slots.current()` is `None`) this is a bare call and the
+    platform behaves exactly as before: `--jobs` is the only bound.
+    """
+    with slots.slot():
+        return measure(index, task)
+
+
 def _in_parallel(tasks: list[dict], measure, jobs: int) -> dict[str, dict]:
     """Measure every task, up to `jobs` at a time, and collect the outcomes by task id.
 
@@ -937,10 +948,10 @@ def _in_parallel(tasks: list[dict], measure, jobs: int) -> dict[str, dict]:
     if jobs <= 1:
         # Computed in task order, which is what makes the merge reproducible at one
         # `--jobs` setting as well as comparable across two of them.
-        return {task["task_id"]: measure(index, task)
+        return {task["task_id"]: _held(measure, index, task)
                 for index, task in enumerate(tasks, start=1)}
     pool = futures.ThreadPoolExecutor(max_workers=jobs, thread_name_prefix="hg-task")
-    pending = [pool.submit(measure, index, task)
+    pending = [pool.submit(_held, measure, index, task)
                for index, task in enumerate(tasks, start=1)]
     outcomes: dict[str, dict] = {}
     try:

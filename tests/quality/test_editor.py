@@ -504,6 +504,79 @@ def test_a_deletion_only_round_is_not_recorded_as_no_change(tmp_path, monkeypatc
     assert reply["files"] == [{"path": "dead.py", "delete": True}], reply
 
 
+def _improver_workspace_stub(transcript: str = "I read the round-0 traces and changed agent.py.",
+                             pin: str = "model: deepseek-flash\n"):
+    """A `propose` that behaves like the real one about the two files it leaves behind."""
+    def stub(req, *_a, **_k):
+        workspace = Path(req["workspace"])
+        (workspace / "agent.py").write_text("x = 1\n", encoding="utf-8")
+        if pin:
+            (workspace / ".dsh-model-pin.yml").write_text(pin, encoding="utf-8")
+        return {"candidate": workspace, "changed": ["agent.py"], "files": ["agent.py"],
+                "protected": [], "exit_code": 0, "seconds": 1.0, "note": "edited the parser",
+                "reported": {}, "transcript": transcript}
+    return stub
+
+
+def test_the_improver_transcript_lands_where_the_platform_keeps_logs(tmp_path, monkeypatch):
+    """**transcript 必须落在平台会去拷的地方,否则它等于没写。**
+
+    `_keep_method_logs` 扫的是**方法 workspace** 根目录的 `*.log`;而 improver 的 transcript
+    和 model pin 都写在 `_ask_cli` 自己 `mkdtemp` 出来的目录里 —— 那个目录在
+    `eval/containers/sandbox.py` 挂的**空 tmpfs** `/tmp` 上("a private /tmp, so two runs
+    cannot read each other's task directories"),随 namespace 一起消失。实测:宿主上活下来的
+    12 个 `hg-cli-ask-*` 目录**全是空的**,而且全来自测试运行(测试把 `propose` 打了桩,所以
+    留下目录留不下文件);真跑的轮次连目录都不剩。
+
+    代价是"improver 到底读了 trace 还是猜的"这个问题**无法回答** —— 而比较这些*方法*,问的
+    主要就是它。
+    """
+    import cli_improver
+    import editor
+    monkeypatch.delenv("HG_IMPROVER", raising=False)
+    base = _cli_harness(tmp_path, monkeypatch)
+    method_ws = tmp_path / "method_ws"
+    method_ws.mkdir()
+    monkeypatch.setattr(editor, "_method_workspace", lambda: method_ws)
+    monkeypatch.setattr(cli_improver, "propose", _improver_workspace_stub())
+
+    editor._ask_cli("prompt", base, base, {"name": "dsh", "argv_style": "dsh"})
+
+    logs = sorted(p.name for p in method_ws.glob("*.log"))
+    assert len(logs) == 2, logs
+    transcript = next(p for p in method_ws.glob("*.log") if "model-pin" not in p.name)
+    assert "read the round-0 traces" in transcript.read_text()
+    pin = next(p for p in method_ws.glob("*.log") if "model-pin" in p.name)
+    assert "deepseek-flash" in pin.read_text()
+
+
+def test_what_the_improver_left_behind_survives_the_round(tmp_path, monkeypatch):
+    """和真正的消费者对起来:`_keep_method_logs` 必须真的把这些文件拷进 record。
+
+    只断言"文件写出来了"是不够的 —— 这个缺陷的形状恰恰就是"写出来了,但没人从那里拷"。
+    """
+    import cli_improver
+    import editor
+    from harnessgrad.records import _keep_method_logs
+    monkeypatch.delenv("HG_IMPROVER", raising=False)
+    base = _cli_harness(tmp_path, monkeypatch)
+    method_ws = tmp_path / "method_ws"
+    method_ws.mkdir()
+    run_dir = tmp_path / "run"
+    run_dir.mkdir()
+    monkeypatch.setattr(editor, "_method_workspace", lambda: method_ws)
+    monkeypatch.setattr(cli_improver, "propose", _improver_workspace_stub())
+
+    editor._ask_cli("prompt", base, base, {"name": "dsh", "argv_style": "dsh"})
+    _keep_method_logs(method_ws, run_dir, 1)
+
+    kept = sorted(p.name for p in (run_dir / "method_logs" / "round-1").iterdir())
+    assert len(kept) == 2, kept
+    text = "\n".join((run_dir / "method_logs" / "round-1" / n).read_text() for n in kept)
+    assert "read the round-0 traces" in text
+    assert "deepseek-flash" in text
+
+
 def test_the_hypothesis_is_found_wherever_the_model_put_it():
     """实测:要的是顶层 `hypothesis`,模型塞进了 file 对象里,于是标签是空的 ——
     一次真实的 8 KB 编辑被记成了"没有理由"。两处都读。"""

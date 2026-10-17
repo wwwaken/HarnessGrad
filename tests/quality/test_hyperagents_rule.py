@@ -19,7 +19,9 @@ only thing standing behind it was the prose above.
 from __future__ import annotations
 
 import importlib.util
+import json
 import math
+import re
 import sys
 from pathlib import Path
 
@@ -202,3 +204,31 @@ def test_a_degenerate_weight_vector_falls_back_to_uniform(monkeypatch):
     chosen, report = HA.select_parent([_point(0, 0.2), _point(1, 0.9)], round_index=0)
     assert chosen["round"] in (0, 1)
     assert set(report["weights"].values()) == {1.0}
+
+
+def test_metadata_describes_multiple_children_instead_of_a_single_candidate():
+    """Upstream utils/gl_utils.py:570-584 supplies the sampler used by main's batch."""
+    metadata = json.loads((ROOT / "methods/hyperagents/method.json").read_text())
+    text = json.dumps(metadata).lower()
+    assert not re.search(r"one[\s-]+candidate[\s-]+per[\s-]+round", text)
+    assert "no real archive" not in text
+    assert "multiple children per call" in text
+
+
+def test_metadata_archive_window_matches_the_configuration_default():
+    """Upstream generate_loop.py:924-925 grows the archive; the channel may cap it.
+
+    Read the platform's declared default, rather than repeating the old window size
+    in this test. HG_METHOD_HISTORY_ROUNDS=0 means all states, not an empty archive.
+    """
+    from harnessgrad.config.areas import MethodConfig
+
+    metadata = json.loads((ROOT / "methods/hyperagents/method.json").read_text())
+    archive = metadata["deviations"][0]
+    text = archive["what"] + " " + archive["why"]
+    documented = re.search(r"HG_METHOD_HISTORY_ROUNDS=(\d+)", text)
+    assert documented is not None, "archive documentation must name its configured default"
+    assert int(documented.group(1)) == MethodConfig().history_rounds
+    assert "all states by default" in text
+    assert "newest N states" in text
+    assert "skipped" in text

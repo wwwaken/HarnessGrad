@@ -76,6 +76,10 @@ def _cost_of(res: dict | None, n_tasks: int, wall_s: float,
         "method_generation_output": claimed.get("method_output_tokens"),
         "method_model_calls": claimed.get("method_model_calls"),
         "method_model": claimed.get("method_model"),
+        # Why the token fields above are what they are. `cli_unreported` means an agent
+        # CLI did the work and nobody counted; it is the reason a null is null rather
+        # than a zero, and it is what makes a per-round efficiency number interpretable.
+        "method_spend_source": claimed.get("method_spend_source"),
         "harness_tokens": harness_tokens,
         "harness_tokens_reported_by_tasks": tokens.get("tasks_reported", 0),
         "harness_model_calls": tokens.get("calls"),

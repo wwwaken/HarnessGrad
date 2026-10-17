@@ -3,7 +3,7 @@
  "title": "DGM:归档里的父代采样",
  "fidelity_profile": "archive-aligned-staged-eval-dual-role",
  "source_commit": "bd7c0773c8f7d17549a3b67e7d783c47f7fba407",
- "note": "移植的是 DGM 的归档规则:父代权重 = sigmoid(10*(分数-0.5)) / (1+子代数),让搜索从\"一个走运的祖先\"上散开。它的平行子代和 SWE-bench 的日志(含 gold patch)无法带过来,所以这里是一轮一个子代的 DGM,而且少了它最强的那个信号。",
+ "note": "移植的是 DGM 的归档规则:父代权重 = sigmoid(10*(分数-0.5)) / (1+子代数),让搜索从\"一个走运的祖先\"上散开。一次调用可提交多个 child:HG_DGM_CHILDREN 默认 3(上游 --selfimprove_size 默认 2),受剩余预算和可用编辑限制。逐 child 抽父代并选择 target,顺序生成后批量提交;不根据子代测量分数拒绝或回滚,归档保留规则只控制未来父代池。SWE-bench 的 gold patch、private test patch 和官方测试日志仍不提供,因此缺少上游诊断的重要信号。",
  "deviations": [
   {
    "what": "The diagnostic prompt carries no gold patch, no private test patch and no test log.",
@@ -11,13 +11,18 @@
    "direction": "weaker"
   },
   {
-   "what": "One candidate per round: no parallel children and no rejection.",
-   "why": "The `1/(1+children)` term would be inert on a straight chain, so parentage is round-tripped through `method_reported`.",
+   "what": "One invocation can submit multiple children via `editor.report_many`: each child samples a parent from the same archive history and chooses that parent's target, then children are generated sequentially and submitted as a batch. No rejection means no post-measurement score-based rejection or rollback to an earlier incumbent via `incumbent_round`.",
+   "why": "Upstream DGM_outer.py:90-100 samples parents with replacement and :111-148 selects an entry per parent. The port uses child-specific sampling seeds; repeated parents and identical edits remain possible. Only changed, usable edits are submitted, subject to the remaining budget. `keep_all` (default) / `keep_better` governs future parent eligibility, not whether a measured child is rolled back; malformed history and unsafe, unmeasured or uncompiled parents are still filtered.",
    "direction": "neutral"
   },
   {
-   "what": "`noise_leeway` is a platform setting (`HG_DGM_NOISE_LEEWAY`).",
-   "why": "0.1 is an absolute accuracy on SWE-bench, where a round submits hundreds of instances; on a small task set it is many interval widths wide.",
+   "what": "`HG_DGM_CHILDREN` has default 3, whereas upstream `--selfimprove_size` has default 2 (DGM_outer.py:224). This is an existing port configuration choice and a default batch-size deviation, not the upstream default.",
+   "why": "methods/dgm/run.py reads the environment setting and caps the requested batch by the remaining budget; missing parents or unusable edits can further reduce submissions. This documentation repair leaves that setting and its default unchanged; its effect on outcomes is not established.",
+   "direction": "unknown"
+  },
+  {
+   "what": "`noise_leeway` remains configurable via `HG_DGM_NOISE_LEEWAY`, with default 0.1 matching upstream `--eval_noise` (DGM_outer.py:238).",
+   "why": "As in DGM_outer.py:174-188, it affects only `keep_better`: the archive score floor is the initial score minus the leeway. The default `HG_DGM_RETAIN=keep_all` bypasses this floor. Environment-based configuration is a platform adaptation; no task-set-specific recalibration or statistical guarantee is implemented.",
    "direction": "unknown"
   }
  ]

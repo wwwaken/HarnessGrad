@@ -17,8 +17,8 @@ the round is allowed to bundle**. From its own selection module
 Around that rule sit five other decisions RRSI makes every round, and this file
 ports all six: the annealed edit budget, the stall flag and its reserved
 exploration slot, the prune set, the novelty term, and the pre-evaluation leakage
-critic. What differs from RRSI is only the loop around them: HarnessGrad's mode A
-owns the schedule (one candidate per round, evaluated by the platform) whereas
+critic. What differs from RRSI is the loop around them: this port submits one
+candidate per call, evaluated by the platform, whereas
 RRSI owns its own loop (m candidates, k trials, its own evaluation).
 
 Where each rule was read from
@@ -64,20 +64,24 @@ platform.
 
 What is *not reproduced*, and why -- stated plainly
 ---------------------------------------------------
-Mode A hands this method one pristine incumbent, measures **one** candidate, and
-**accepts it unconditionally** (there is no reject step; the driver never asks the
-method again about a state it already measured). Therefore:
+The platform can measure several submitted steps, record `kept_round`, and expose
+historical trees in `states/`. This port still drafts one candidate per call:
 
-1. **The `m`-candidate argmax is not expressible.** Mode A drafts one candidate, so
-   `argmax_{H' admissible} S'` has a single term. `_judge` can judge one candidate;
-   there is no pool to take a max over.
-2. **"No admissible candidate => stay at H_t" is not expressible.** Mode A always
-   advances to the candidate it was handed. So this file does not pretend to veto
-   anything: it **re-adjudicates** the incumbent it was handed -- it reports what
-   RRSI's rule *would have said* about the round that produced the current state --
-   and labels that record as a re-adjudication of a decision the platform already
-   made unconditionally. The forward-looking numbers (S*, delta, the next floor
-   `S* - delta`) are reported so the record shows what RRSI would demand next.
+1. **The native `m`-candidate loop is not wired here.** `report_many` can carry a
+   batch, but the method sees no measurements between its steps. Upstream drafts
+   and screens m candidates from one incumbent, evaluates them, then selects
+   (`rrsi/loop.py:290-307`, `rrsi/selection.py:124-137`). This port does not group
+   such a pool and select it on a later call.
+2. **Retention is recorded after measurement, without restoring a tree.** The
+   latest historical candidate is re-adjudicated against its actual predecessor.
+   An admissible verdict names that candidate's round; a rejection names its
+   predecessor, following the singleton case of `rrsi/selection.py:124-137` and
+   `rrsi/loop.py:327-340`. The step carries this as `incumbent_round`. A missing
+   verdict carries no selection claim and explains why. This is a delayed receipt,
+   not an immediate veto or a reconstructed native frontier: the newly submitted
+   candidate is still built from the platform's current base, and the record does
+   not claim to judge that unmeasured candidate. Restoring `states/` is possible
+   on this platform but not implemented in this port.
 3. **Delta IS calibrated now -- the channel arrived with per-trial rewards.** This
    paragraph used to say the opposite, and it was true when written: the platform
    recorded one score per task per round, so `calibrate.py`'s two estimators (R >= 2
@@ -91,11 +95,12 @@ method again about a state it already measured). Therefore:
    on this platform (5 tasks, 3 trials): `score_std = 0.094` -> **delta ~ 0.27**, which is
    the size of the re-measurement swing that fooled a control arm into "gaining" +0.200.
    When the point carries no `score_std` (one trial) the fallback is used and said so.
-4. **A dropped candidate costs the whole trajectory, not one slot.** In RRSI a
+4. **A dropped candidate leaves this call with no live proposal.** In RRSI a
    critic rejection or an over-budget proposal is a `gate_failure`: the candidate is
-   dropped and another is drafted (`rrsi/loop.py:299-302`). Mode A drafted only one,
+   dropped while other screened variants can still be measured
+   (`rrsi/loop.py:290-302`). This port drafted only one,
    so this file reports `changed: false` with the objection recorded -- the honest
-   reading, and the reason the trajectory may stop early where RRSI's would not.
+   reading; `stop=False` lets the platform invoke it again within the run budget.
 
 The one place the port is deliberately stricter than RRSI: RRSI substitutes
 `Delta C = 0` whenever either side reports no token count (`evaluate.py:131-135`),
@@ -128,7 +133,7 @@ value only where the value is actually RRSI's:
   HG_RRSI_B_MIN          1       b_min (schedule.py)
   HG_RRSI_B_MAX          4       b_max (schedule.py)
   HG_RRSI_W              3       stall window w (history.py)
-  HG_RRSI_M_DRAFT        1       reserved exploration slots; capped at mode A's m=1
+  HG_RRSI_M_DRAFT        1       reserved exploration slots; capped at this port's m=1
   HG_RRSI_DELTA          unset   calibrated noise band; unset = use the fallback
   HG_RRSI_DELTA_FALLBACK 0.0     delta used when no calibration exists (NOT RRSI's)
   HG_RRSI_DELTA_Z        2.0     z for delta = z * sd(null Delta S) (calibrate.py)
@@ -211,7 +216,7 @@ class RRSIConfig(NamedTuple):
     """RRSI's hyperparameters, read from the environment.
 
     Field names and published defaults follow `rrsi/config.py:56-85`; the two that
-    are deliberately *not* RRSI's (`delta_fallback`, and `m_draft` capped by mode A)
+    are deliberately *not* RRSI's (`delta_fallback`, and `m_draft` capped by this port)
     are documented on the field and in the module docstring.
     """
     T: int = 20
@@ -634,6 +639,31 @@ def _adjudicate_incumbent(history: list[dict], cfg: RRSIConfig,
     return decision
 
 
+def _retention(history: list[dict], adjudication: dict) -> dict:
+    """Translate the existing singleton verdict into a historical round receipt.
+
+    Upstream `rrsi/selection.py:133-137` selects an admissible candidate, or none;
+    `rrsi/loop.py:327-340` then keeps H_t when none qualify. Here the measured H'
+    is history[-1], and its actual H_t is history[-2]. Do not invent an argmax over
+    unrelated historical candidates or claim a verdict when inputs are missing.
+    """
+    admissible = adjudication.get("admissible")
+    if admissible is None:
+        return {"incumbent_round": None, "reason": adjudication["reason"]}
+    chosen = history[-1] if admissible else history[-2]
+    round_no = chosen.get("round")
+    if isinstance(round_no, bool) or not isinstance(round_no, int) or round_no < 0:
+        return {"incumbent_round": None,
+                "reason": "the selected historical state has no valid round number"}
+    return {"incumbent_round": round_no,
+            "candidate_round": history[-1].get("round"),
+            "prior_incumbent_round": history[-2].get("round"),
+            "reason": (("retain the admissible historical candidate: " if admissible
+                        else "no admissible candidate; retain its prior incumbent: ")
+                       + adjudication["reason"]),
+            "scope": "delayed singleton re-adjudication; no tree restored"}
+
+
 # --------------------------------------------- 组件归类(critic 的第一层) ---
 
 def _text_only(diff: str) -> bool:
@@ -974,20 +1004,53 @@ def _gate(files: list[str], components: list[str], diff: str, rule: dict,
 # ----------------------------------------------------------------- 主流程 ---
 
 #: What the platform records as this method's acceptance rule. It says what was
-#: transplanted and, in the same breath, what mode A cannot do with it.
+#: transplanted and what this port still leaves to the platform.
 _ACCEPTANCE_RULE = (
     "RRSI's rule: admissible iff S' >= S* - delta and the two-branch cost rule "
     "holds (Delta C <= beta0 + beta1 Delta S when the gain exceeds the band, "
-    "otherwise w_s Delta S - w_c Delta C + w_n nu > 0). Mode A accepts "
-    "unconditionally, so the floor and the cost rule are re-adjudicated and "
-    "reported, never applied as a veto; the platform's measurement decides the score.")
+    "otherwise w_s Delta S - w_c Delta C + w_n nu > 0). The last measured "
+    "candidate is re-adjudicated against its actual predecessor, and "
+    "incumbent_round records which of those historical rounds the rule retains. "
+    "This delayed receipt neither judges the new unmeasured candidate nor restores "
+    "a historical tree; the platform's measurement decides the score.")
+
+
+def _report(req: dict, *, method_reported: dict, **kwargs) -> int:
+    """Use the existing step serializer for retention, without changing editor.py.
+
+    `report` has no incumbent_round argument; `report_many` supports it even for a
+    singleton. Keep the same candidate, step metadata and stop behavior on every exit.
+    """
+    retention = method_reported["rrsi_rule"]["retention"]
+    if retention["incumbent_round"] is None:
+        return editor.report(req, method_reported=method_reported, **kwargs)
+    step = {key: kwargs[key] for key in
+            ("harness_dir", "changed", "files", "hypothesis", "edit_kind", "label")
+            if key in kwargs}
+    step.update(method_reported=method_reported,
+                incumbent_round=retention["incumbent_round"])
+    return editor.report_many(
+        req, method=kwargs["method"], steps=[step],
+        acceptance_rule=kwargs.get("acceptance_rule", ""),
+        extra=kwargs.get("extra"), stop=kwargs.get("stop"),
+        hypothesis=kwargs.get("hypothesis", ""))
+
+
+def _fail(req: dict, *, exc: Exception | str, base: Path, rule: dict) -> int:
+    """Preserve the already computed historical receipt on proposal failures."""
+    why = exc if isinstance(exc, str) else f"{type(exc).__name__}: {str(exc)[:300]}"
+    print(f"rrsi: {why}", file=sys.stderr)
+    return _report(req, method="rrsi", harness_dir=base, changed=False, stop=False,
+                   hypothesis=why, edit_kind="none", label="method error",
+                   method_reported={"error": why, "rrsi_rule": rule},
+                   acceptance_rule=_ACCEPTANCE_RULE)
 
 
 def _rule_report(history: list[dict], t: int, cfg: RRSIConfig) -> dict:
     """Every number RRSI computes before drafting: S*, delta, b_t, sigma_t, U_t, B_t.
 
-    Also the re-adjudication of the incumbent, which is the only place mode A can
-    show the floor and the cost rule acting on a real measurement.
+    Also the re-adjudication of the latest measured candidate and its retention
+    receipt. This port does not see a new candidate's score before submitting it.
     """
     series = [_train_score(p) for p in history]
     scores = [s for s in series if s is not None]
@@ -995,7 +1058,7 @@ def _rule_report(history: list[dict], t: int, cfg: RRSIConfig) -> dict:
     delta, delta_source = _delta(history, cfg)
     tried, counts, comps_by_round, ds_by_round = _edit_history(history)
     stall = _stall_flag(series, t, cfg.w, delta)
-    # Mode A drafts one candidate (m=1), so at most one slot can be reserved; an
+    # This port drafts one candidate (m=1), so at most one slot can be reserved; an
     # env value above 1 is capped rather than silently reserving slots that do not
     # exist.
     m_draft = min(max(cfg.m_draft, 0), 1)
@@ -1028,14 +1091,18 @@ def _rule_report(history: list[dict], t: int, cfg: RRSIConfig) -> dict:
         "prune_set": prune,
         "incumbent_counts": counts,
         "incumbent_adjudication": adjudication,
+        "retention": _retention(history, adjudication),
         # The one cost verdict this round can produce is the re-adjudication's.
         "cost_rule_active": bool(adjudication.get("cost_rule_active")),
         "rule_evaluated": S_star is not None,
         "not_expressible_in_mode_a": [
-            "the m-candidate argmax over one incumbent (mode A drafts one candidate)",
-            "'no admissible candidate => stay at H_t' (mode A always advances)",
-            "delta calibration from per-trial rewards (the platform records one "
-            "score per task per round)",
+            "same-call selection after measuring a submitted batch: the method "
+            "sees feedback only on its next invocation",
+        ],
+        "not_implemented_in_port": [
+            "drafting and grouping m screened candidates from one incumbent",
+            "restoring the selected historical tree from states/ before drafting",
+            "upstream repeated-base calibration (the port adapts score_std instead)",
         ],
     }
 
@@ -1070,19 +1137,18 @@ def main() -> int:
                              + editor.repair_block(problems,
                                                    expect=editor.EDIT_EXPECT))
         if apply_problems:
-            return editor.fail(
-                req, method="rrsi",
+            return _fail(
+                req,
                 exc=f"the edit sequence did not apply in 3 attempts: {apply_problems}",
-                base=base, state={"rrsi_rule": rule})
+                base=base, rule=rule)
     except SystemExit:
         raise
     except Exception as exc:                                   # noqa: BLE001
-        return editor.fail(req, method="rrsi", exc=exc, base=base,
-                               state={"rrsi_rule": rule})
+        return _fail(req, exc=exc, base=base, rule=rule)
 
     if isinstance(reply, dict) and "no_change" in reply:
         editor.apply_edits(base, dest, [])
-        return editor.report(
+        return _report(
             req, method="rrsi", harness_dir=dest, changed=False,
             stop=False,
             hypothesis=str(reply["no_change"])[:200], edit_kind="none",
@@ -1104,7 +1170,7 @@ def main() -> int:
         edits = reply.get("files") if isinstance(reply, dict) else None
         changed, files, note = editor.apply_edits(base, dest, edits)
         if not changed:
-            return editor.report(
+            return _report(
                 req, method="rrsi", harness_dir=dest, changed=False,
                 stop=False,
                 hypothesis=f"unusable proposal: {note}", edit_kind="rrsi_rule",
@@ -1121,7 +1187,7 @@ def main() -> int:
         if repairs >= cfg.repair_rounds:
             rule = {**rule, "critic": verdict, "touched_components": [],
                     "repairs": repairs, "dropped": objections}
-            return editor.report(
+            return _report(
                 req, method="rrsi", harness_dir=base, changed=False,
                 stop=False,
                 hypothesis=("RRSI's screen dropped the candidate: "
@@ -1139,13 +1205,12 @@ def main() -> int:
         except SystemExit:
             raise
         except Exception as exc:                               # noqa: BLE001
-            return editor.fail(req, method="rrsi", exc=exc, base=base,
-                               state={"rrsi_rule": rule})
+            return _fail(req, exc=exc, base=base, rule=rule)
         if isinstance(reply, dict) and "no_change" in reply:
             rule = {**rule, "critic": verdict, "touched_components": [],
                     "repairs": repairs, "dropped": objections}
             editor.apply_edits(base, dest, [])
-            return editor.report(
+            return _report(
                 req, method="rrsi", harness_dir=dest, changed=False,
                 stop=False,
                 hypothesis=(f"repair {repairs} produced no candidate; dropped: "
@@ -1163,7 +1228,7 @@ def main() -> int:
     out_rule = {**rule, "touched_components": components, "repairs": repairs,
                 "critic": verdict, "edit_budget_used": len(files)}
     hypothesis = str(reply.get("hypothesis", ""))[:300]
-    return editor.report(
+    return _report(
         req, method="rrsi", harness_dir=dest, changed=True, files=files,
         hypothesis=hypothesis,
         # RRSI tags each accepted edit with a component from K

@@ -57,6 +57,7 @@ import tools.web_gateway as web_gateway_mod
 # visible in the import line rather than flattened through the entrypoint.
 from harnessgrad import FRAMEWORK_VERSION
 from harnessgrad import config as platform_config
+from harnessgrad import slots
 from harnessgrad.budget_integration import (
     BudgetBinding,
     BudgetConfigurationError,
@@ -298,6 +299,15 @@ def _main(attempt: dict) -> int:
     #: share the model endpoint and this host's CPU, which is why the default stays 1: a
     #: number produced under contention is not comparable with one produced without it,
     #: and the run records the value it used.
+    ap.add_argument("--gpu-budget", type=int, default=None, metavar="N",
+                    help="machine-wide ceiling on concurrently *measured* tasks across every "
+                         "run sharing this host, enforced with file locks "
+                         "(harnessgrad/slots.py). `--jobs` stays this run's own ceiling; the "
+                         "budget is what keeps N runs from each measuring `--jobs` at once. "
+                         "Unset keeps the old behaviour: `--jobs` alone")
+    ap.add_argument("--gpu-budget-dir", default=None, metavar="DIR",
+                    help="where the budget's slot locks live (default: $TMPDIR/hg-gpu-slots). "
+                         "Two batches with different capacities must not share a directory")
     ap.add_argument("--jobs", type=int, default=1,
                     help="measure up to N tasks concurrently (default 1). The tasks share "
                          "one model endpoint and one host, so raise it deliberately")
@@ -674,6 +684,10 @@ def _main(attempt: dict) -> int:
         budget_binding.record("rounds", args.rounds)
         budget_binding.record("trials", args.trials)
         budget_binding.record("jobs", args.jobs)
+        # Configured here, before any measurement and before the run files exist: the budget
+        # is a property of the machine, and every point written by this run must have been
+        # produced under it.
+        slots.configure(args.gpu_budget, args.gpu_budget_dir)
         args.budget_profile = str(budget_profile_source)
         args.budget_ledger = str(budget_binding.ledger_path)
         args.budget_arm = budget_binding.arm_id
@@ -1237,7 +1251,9 @@ def _main(attempt: dict) -> int:
     curve = [_curve_point(
         run_id=run_id, round_index=0,
         identity=_identity(man, h0_sha, mode, improver=improver,
-                            declared=base.get("identity_declared")),
+                            declared=base.get("identity_declared"),
+                            jobs=args.jobs, trials=args.trials,
+                            gpu_budget=args.gpu_budget),
         sampling=sampling,
         scores=[base["per_task"][t] for t in _scored(base, task_ids)],
         task_ids=_scored(base, task_ids),

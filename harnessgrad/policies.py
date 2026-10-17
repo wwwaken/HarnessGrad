@@ -213,7 +213,16 @@ def improvement(candidate: dict, baseline: dict, *, alpha: float = 0.05) -> dict
 #: fields here are the ones that must be held fixed for the comparison to be about the edit --
 #: a different agent model, backend or harness family makes the two numbers answers to
 #: different questions.
-REFERENCE_FIXED = ("agent_model", "agent_backend", "harness_name", "framework_version")
+#: The *measurement condition*, kept apart from the identity because "absent" and
+#: "different" are not the same answer here. Every frozen reference on disk predates these
+#: fields, and a missing value must not read as a mismatch or the check would fire on every
+#: comparison forever and teach readers to skip the list. They are still checked: a run at
+#: `jobs=6` compared against a reference measured at `jobs=40` is a comparison the reader has
+#: to know about, because contention is the one axis that is invisible in the score.
+REFERENCE_MEASUREMENT = ("jobs", "trials")
+
+REFERENCE_FIXED = ("agent_model", "agent_backend", "harness_name", "framework_version",
+                   *REFERENCE_MEASUREMENT)
 
 
 def reference_problems(reference: dict, current: dict, *,
@@ -239,8 +248,14 @@ def reference_problems(reference: dict, current: dict, *,
     problems = []
     for field in REFERENCE_FIXED:
         was, now = ref_id.get(field), cur_id.get(field)
-        if was != now:
-            problems.append(f"{field} changed: reference {was!r}, this run {now!r}")
+        if was == now:
+            continue
+        if field in REFERENCE_MEASUREMENT and was is None:
+            problems.append(
+                f"{field} is not recorded on the reference (it was measured "
+                f"{now!r} here), so the two numbers' contention is not known to agree")
+            continue
+        problems.append(f"{field} changed: reference {was!r}, this run {now!r}")
     # **Defaulted from the points themselves.** The task set is the check that bites
     # silently, so leaving it to a caller to pass means the one check that must not be
     # forgotten is the one that is. Explicit arguments still win, because a point's studied

@@ -105,6 +105,22 @@ def _history() -> list[dict]:
              "harness_sha": "b" * 40, "edits_applied": ["agent.py"]}]
 
 
+def test_method_metadata_records_multiple_children_and_default():
+    # 上游 DGM_outer.py:90-100 按概率抽取多个父代，:111-148 逐父代选 target；
+    # DGM_outer.py:224 的 --selfimprove_size 默认 2，移植版 HG_DGM_CHILDREN 默认 3。
+    metadata = json.loads((ROOT / "methods" / "dgm" / "method.json").read_text())
+    text = json.dumps(metadata, ensure_ascii=False).lower()
+    assert "no parallel children" not in text
+    assert "one candidate per round" not in text
+    assert "一轮一个子代" not in metadata["note"]
+    deviations = " ".join(
+        f"{entry['what']} {entry['why']}" for entry in metadata["deviations"])
+    assert "HG_DGM_CHILDREN" in deviations
+    assert "default 3" in deviations
+    assert "--selfimprove_size" in deviations
+    assert "default 2" in deviations
+
+
 def test_one_call_submits_a_whole_batch(tmp_path, monkeypatch):
     """一次调用 = k 个子代,每个子代一棵独立的树,`stop: true`。"""
     mod = _load()
