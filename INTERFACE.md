@@ -1367,6 +1367,17 @@ spread, `jobs` buys wall clock.
   one host, which is why one is the default and why the number used is recorded. *Reason:
   87.8% of a measured three-task run's wall clock (2578 s of 2936 s) was the harness's own
   agent loop, with the platform idle for all of it.*
+* **`--gpu-budget N`** (default: unset). A **machine-wide** ceiling on how many tasks are
+  being measured concurrently by *every* run sharing this host; `--jobs` stays this run's own
+  ceiling. Enforced with one `flock`-ed file per slot under `--gpu-budget-dir`
+  (default `$TMPDIR/hg-gpu-slots`), so a killed run cannot leak capacity and no supervisor
+  process exists to die. `identity.gpu_budget` records it on every point beside `jobs`.
+  *Reason: `--jobs` is a reservation each run makes for itself, and a batch of runs that
+  alternate between measuring and proposing cannot use it. Nine methods at a fixed `jobs=6`
+  spend **100 of 203 minutes** with the endpoint idle, because all nine enter their improver
+  phase together and all nine leave it together; the same nine under a work-conserving global
+  budget of 40 finish in **2.21 h against 3.36 h** (rate model fitted to two measured points:
+  21 s/task at `jobs=3`, 78 s/task at `jobs=40`). See `docs/measurement-budget.md`.*
 
 Four more fields exist so that two runs can be told apart at all -- and one of them, the
 last, is not about telling runs apart but about telling *candidates* apart:
