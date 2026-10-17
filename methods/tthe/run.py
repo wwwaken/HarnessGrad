@@ -71,7 +71,9 @@ What is transplanted (and how mode A expresses it)
   `method_reported`.** The model supplies the four content lists; the method
   fills the controller-known fields (`candidate`, `branch_id`,
   `generation_round`, `base_candidate`, `peer_candidates`, `role`) and validates
-  the result the way `proposer.py:154-193` does.
+  the result the way `proposer.py:154-193` does. CLI proposers write the lists
+  to `artifacts/proposal_card.json`, transported by the editor; endpoint replies
+  may still carry `proposal_card` directly, which takes precedence.
 
 What is NOT transplanted
 ------------------------
@@ -299,6 +301,49 @@ def _card_ok(card: dict, round_index: int, incumbent_name: str) -> bool:
     )
 
 
+def _proposal_content(reply: dict) -> tuple[object, str, str]:
+    """Restore disk-card transport (text_to_sql/proposer.py:150-164,372-388).
+
+    Endpoint cards keep precedence, including invalid ones: an invalid reply
+    must not be rescued by a second card. Artifact keys are data, never paths
+    to open here; reject unsafe keys explicitly rather than ignoring them.
+    """
+    source = ("reply: proposal_card" if "proposal_card" in reply
+              else "file: artifacts/proposal_card.json")
+    artifacts = reply.get("artifacts", {})
+    if not isinstance(artifacts, dict):
+        return None, source, "artifacts must be an object with relative path keys"
+    for name in artifacts:
+        problem = editor.artifact_path_error(name)
+        if problem:
+            return None, source, problem
+    if "proposal_card" in reply:
+        return reply["proposal_card"], source, ""
+    if "proposal_card.json" not in artifacts:
+        return None, source, "missing proposal_card.json (reply has no proposal_card)"
+    raw = artifacts["proposal_card.json"]
+    if not isinstance(raw, str):
+        return None, source, "proposal_card.json must be UTF-8 text"
+    try:
+        return json.loads(raw), source, ""
+    except json.JSONDecodeError as exc:
+        return None, source, f"invalid JSON at line {exc.lineno}, column {exc.colno}: {exc.msg}"
+
+
+def _content_problem(content) -> str:
+    """Explain a gate failure; admission still uses the unchanged _card_ok."""
+    if not isinstance(content, dict):
+        return "expected an object containing the four content lists"
+    keys = ("behavior_changes", "preserved_behaviors", "verification", "risks")
+    problems = []
+    missing = [key for key in keys if key not in content]
+    if missing:
+        problems.append("missing " + ", ".join(missing))
+    problems.extend(f"{key} must be a list (got {type(content[key]).__name__})"
+                    for key in keys if key in content and not isinstance(content[key], list))
+    return "; ".join(problems) or "card failed controller identity/key/type validation"
+
+
 def _stop_card(round_index: int, incumbent_name: str, role_name: str,
                reason: str, trace_note: str) -> dict:
     """The card for a round that proposes nothing.
@@ -480,10 +525,16 @@ def build_prompt(base: Path, request: dict, history: list[dict], round_index: in
 
 
         f"## Proposal card (mandatory; proposer.py:372-388)\n"
-        f"Include it in your JSON reply. The controller fills `candidate`, "
+        # Upstream text_to_sql/proposer.py:372-388 instructs a disk write;
+        # _ask_cli names the actual workspace/artifacts directory for the CLI.
+        f"For a CLI improver, write `artifacts/proposal_card.json` in the "
+        f"method artifact directory named by the editor, outside the harness. "
+        f"The file must contain one JSON object, with no proposal_card wrapper. "
+        f"For an endpoint, include that object as `proposal_card` in your JSON "
+        f"reply instead. The controller fills `candidate`, "
         f"`branch_id`, `generation_round`, `base_candidate`, `peer_candidates` and "
         f"`role`; you supply exactly these four lists:\n"
-        f'  "proposal_card": {{\n'
+        f'  {{\n'
         f'    "behavior_changes": [{{"trace": "...", "observed_issue": "...", '
         f'"change": "...", "evidence": "...", "expected_effect": "..."}}],\n'
         f'    "preserved_behaviors": ["..."],\n'
@@ -494,7 +545,8 @@ def build_prompt(base: Path, request: dict, history: list[dict], round_index: in
         f"A missing or mistyped card is discarded and the incumbent is kept "
         f"(proposer.py:154-193,456-515). `verification` may describe only the "
         f"traces the platform staged; the child is unexecuted.\n\n"
-        f'Include the proposal card in your JSON reply, or reply {{"no_change": "<reason>"}}.'
+        f'Write the file (CLI) or include proposal_card in your JSON reply (endpoint), '
+        f'or reply {{"no_change": "<reason>"}}.'
     )
 
 
@@ -595,7 +647,10 @@ def main() -> int:
             label=f"TTHE[{role_name}]: no change")
 
     # ---- the proposal-card gate: no card, no admissible child -----------------
-    content = reply.get("proposal_card")
+    # text_to_sql/proposer.py:163 loads the disk card; :500-515 rejects a
+    # missing/invalid one. Keep that gate, adding only a transport fallback.
+    content, card_source, content_error = _proposal_content(reply)
+    record["proposal_card_source"] = card_source
     card = {
         "candidate": _candidate_name(round_index),
         "branch_id": int(round_index),
@@ -608,8 +663,10 @@ def main() -> int:
         "verification": content.get("verification") if isinstance(content, dict) else None,
         "risks": content.get("risks") if isinstance(content, dict) else None,
     }
-    if not _card_ok(card, round_index, incumbent_name):
-        reason = ("the challenger left no valid proposal card (proposer.py:154-193); "
+    if not _card_ok(card, round_index, incumbent_name) or content_error:
+        detail = content_error or _content_problem(content)
+        reason = (f"invalid proposal card from {card_source}: {detail} "
+                  "(proposer.py:154-193); "
                   "TTHE treats that as no child, so the incumbent is kept")
         stop = _stop_card(round_index, incumbent_name, role_name, reason,
                           evidence["worst_task"])
