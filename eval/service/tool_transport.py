@@ -1,17 +1,21 @@
 """One tool call over an AF_UNIX socket: the transport two datasets share.
 
-**Why a transport and not a mount.** AgentDojo and ALFWorld each hand the agent a file that *is*
-the interaction environment, because the program that talks to that environment runs inside the
-agent's own sandbox: `dojo.initial.json` (read by `data/datasets/agentdojo/cli/dojo`) and
-`game.tw-pddl` (read by `data/datasets/alfworld/lib/gym_env.py`). Reading either file is not a
-broken scorer -- the score is an honest replay -- but it is not a measurement of the benchmark
-either, because the agent obtained the state instead of eliciting it. Measured on the archived
-runs: AgentDojo's 515 reading tasks average 0.2592 against 0.434's 0.1406 for the 434 that did
-not read it.
+**Why a transport and not a mount.** ALFWorld hands the agent a file that *is* the interaction
+environment, because the program that talks to that environment runs inside the agent's own
+sandbox: `game.tw-pddl` (read by `data/datasets/alfworld/lib/gym_env.py`). AgentDojo did the same
+with `dojo.initial.json` until `data/datasets/agentdojo/relay.py` moved its environment behind
+this socket; that is the measurement below. Reading such a file is not a broken scorer -- the
+score is an honest replay -- but it is not a measurement of the benchmark either, because the
+agent obtained the state instead of eliciting it. Measured on the archived runs: AgentDojo's 515
+reading tasks average 0.2592 against 0.1406 for the 434 that did not read it.
 
 The fix is to keep the environment in a process the agent cannot read and let it ask. This module
 is the asking: newline-delimited JSON over a UNIX stream socket, one request per line, one reply
 per line. It knows nothing about tools, environments or datasets -- that is the caller's handler.
+Both halves are here so there is one implementation: `Relay` is what a host-side server (such as
+`data/datasets/agentdojo/relay.py`) runs, and `call` is what a sandboxed client imports -- SETUP
+projects this file beside `dojo.py` as `dojo_transport.py`, because the platform tree is hidden
+inside the sandbox.
 
 **The four rules that make it safe to put on the sandbox boundary.**
 

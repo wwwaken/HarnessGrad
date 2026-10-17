@@ -106,13 +106,10 @@ def test_selected_lookup_has_only_fixed_metadata(name, index, monkeypatch, adapt
             assert metadata == {"kind": "files"}
         elif name == "SETUP":
             assert metadata == {"files": [
-                # `immutable` is the platform contract flag (INTERFACE.md), not task data: the two
-                # runtime projections are marked read-only instead of being copied per task.
-                {"path": "dojo_runtime", "from": str(module.DATASET_ROOT / "agent_runtime"),
-                 "immutable": True},
+                # One program and no data: the environment is served by `agentdojo/relay.py`
+                # over the socket the platform publishes at /run/harnessgrad-tool, so there is
+                # no snapshot, no state file and no per-task runtime to copy.
                 {"path": "dojo.py", "from": str(module.ASSETS / "cli/dojo")},
-                {"path": "dojo.initial.json",
-                 "from": str(module.DATASET_ROOT / module.PREPARED / str(index) / "initial.json")},
             ]}
         else:
             # Check metadata identities and selected paths, leaving argv opaque.
