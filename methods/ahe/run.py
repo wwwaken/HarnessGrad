@@ -52,6 +52,9 @@ What is transplanted
   (`driver.py:134-140`).
 * The stop rule: `target_metric >= target_pass_rate` (`evolve.py:4395-4421`),
   whose default is 0.95 (`configs/base.yaml:10`).
+* Best-of-2 proposal generation: two concurrent edits of the same base, with
+  different strategy instructions (`evolve.py:3715-3758`, `:3857-3875`). Both
+  usable, distinct candidates are submitted together, before either is measured.
 
 What is not transplanted
 ------------------------
@@ -66,8 +69,8 @@ What is not transplanted
   "the method's own word for what kind of change this was" (`INTERFACE.md` §4.6)
   -- and never enforces it.
 * AHE's experiment scaffolding: `init_workspace`, the `runs/iteration_NNN/` tree,
-  best-of-N variants, the agent-debugger QA pass, the git tag/commit per change.
-  None of it is the decision rule, and the platform already supplies the loop.
+  the agent-debugger QA pass, the git tag/commit per change, and winner-only
+  merging / loser tags (`evolve.py:3185-3223`). The platform supplies the loop.
 * `perform_auto_rollback` (`evolve.py:2418-2454`) is deliberately **not** ported
   as a per-round mechanism: it is called only on resume (`evolve.py:4164-4172`)
   to restore the workspace to the start iteration, i.e. it is a resumption
@@ -75,8 +78,8 @@ What is not transplanted
 
 What mode A cannot express, stated plainly
 ------------------------------------------
-Mode A hands one pristine incumbent, measures one candidate per round, and
-carries it forward unconditionally. Therefore:
+Mode A hands one pristine incumbent to each call and measures each submitted
+step separately. The method receives no scores between steps in a batch. Therefore:
 
 * **The cross-iteration attribution itself is expressible** -- it only needs the
   next round's per-task results, and mode A stages every curve point as history.
@@ -88,10 +91,15 @@ carries it forward unconditionally. Therefore:
   pass@k signal to attribute against. One trial per task is the degenerate k=1
   case, which is the only case AHE itself runs without rollout data.
 * **AHE's full tool-using editor is not.** The evolve agent reads analysis
-  reports and edits the workspace with tools; this method is the shared one-shot
-  editor (`methods/editor.py`), so it gets one model call per round.
-* **Best-of-N parallel variants are not.** One candidate per round means no
-  cross-variant comparison.
+  reports and edits the workspace with tools; this method uses the shared
+  one-shot editor (`methods/editor.py`), once per variant.
+* **Best-of-2 proposals are restored; AHE's winner rule is not.** The platform
+  selects by train score. AHE's pass-rate / exception-count / index ordering
+  (`evolve.py:3313-3336`) and winner-manifest adoption (`:3220-3223`) cannot be
+  expressed inside this mode A call. Identical change declarations or candidate
+  contents deterministically reduce the submission to the first usable variant;
+  a declined, invalid or failed sibling is recorded rather than counted as a
+  second usable candidate. This proposal count is separate from per-task k.
 * **There is no acceptance gate, and none is invented.** The rollback in AHE is
   *decided by the model* and performed by it copying files back -- `evolve.py:4377`
   says the attribution is "report only, rollback decided by evolve agent" -- and
@@ -124,8 +132,10 @@ rule, not a reproduction of AHE's results.
 """
 from __future__ import annotations
 
+import json
 import os
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -354,9 +364,9 @@ def manifest_of(point: dict) -> dict | None:
     manifest is written into `method_reported` of the point it belongs to, so it
     cannot be read a round late and no such check is needed.
 
-    One reading of a manifest is *which round declared it*, and that is recorded:
-    the manifest in point `i` was declared by the method call that produced point
-    `i`, so it predicts the transition `i-1 -> i`.
+    The manifest's iteration identifies the method call that declared it. Two
+    points from the same call share that iteration; ahe_rule.edited_from_round
+    identifies the common base whose transition each manifest predicts.
     """
     reported = point.get("method_reported") or {}
     manifest = reported.get("ahe_manifest")
@@ -373,17 +383,25 @@ def attribution_history(history: list[dict]) -> list[dict]:
     """Grade every manifest the curve holds, oldest first.
 
     This reconstructs AHE's per-iteration attribution series: for each point `i`
-    that carries a manifest, compare `history[i-1]` with `history[i]`
-    (`evolve.py:4371-4384`). `records[-1]` is therefore *this* round's grading of
+    that carries a manifest, compare its declared edit base with `history[i]`
+    (`evolve.py:4371-4384`). Older single-candidate points use `history[i-1]`.
+    Best-of-N worktrees share a parent (`evolve.py:3123-3151`), so comparing two
+    siblings to each other would invent regressions unrelated to either edit.
+    `records[-1]` is therefore *this* round's grading of
     the immediately preceding round, and the earlier records are what the
     2+-iterations rule reads.
     """
     records = []
     for i in range(1, len(history)):
-        diff = observed_diff(history[i - 1], history[i])
+        rule = (history[i].get("method_reported") or {}).get("ahe_rule") or {}
+        parent_round = rule.get("edited_from_round")
+        before = next((p for p in reversed(history[:i])
+                       if p.get("round") == parent_round), history[i - 1])
+        diff = observed_diff(before, history[i])
         manifest = manifest_of(history[i])
         records.append({
             "round": history[i].get("round"),
+            "edited_from_round": before.get("round"),
             "manifest": manifest,
             "diff": diff,
             "evidence": evaluate_changes(manifest, diff) if manifest else None,
@@ -397,7 +415,7 @@ def abandoned_levels(records: list[dict]) -> dict[str, list[str]]:
     "If the same failure class persists across 2+ iterations despite fixes at one
     component level, that level may be the wrong choice." Operationalised as: the
     same `(failure_pattern, constraint_level)` pair was declared in at least two
-    distinct rounds and never earned EFFECTIVE. Returns
+    distinct method iterations and never earned EFFECTIVE. Returns
     `{failure_pattern: [levels to stop retrying]}`.
 
     AHE leaves this to the model reading `evolution_history.md`; computing it is
@@ -419,10 +437,11 @@ def abandoned_levels(records: list[dict]) -> dict[str, list[str]]:
                 continue
             entry = tried.setdefault(pattern, {}).setdefault(
                 level, {"rounds": set(), "effective": 0})
-            # A set, not a list: the same round declaring the same pattern twice
-            # is one iteration, and the rule counts iterations
-            # (`evolve_prompt.md:103`).
-            entry["rounds"].add(record.get("round"))
+            # Two variants in one evolve call are one iteration, not two failed
+            # attempts at a component (`evolve_prompt.md:103`). The manifest's
+            # iteration survives the platform assigning one round per step;
+            # the set also deduplicates repeated declarations within a manifest.
+            entry["rounds"].add(manifest.get("iteration", record.get("round")))
             if (by_id.get(str(chg.get("id"))) or {}).get("verdict") == "EFFECTIVE":
                 entry["effective"] += 1
     return {
@@ -455,10 +474,9 @@ def choose_edit_dir(base: Path, history: list[dict],
     """Which harness this round edits, and why.
 
     AHE rolls back by restoring the ineffective change's files to the previous
-    iteration's version (`evolve.py:2860-2861`). At mode A's granularity -- one
-    candidate per round -- the previous round *is* the harmful change, so the
-    faithful rollback is to build the candidate on the state two rounds back
-    (`history[-2]`), which is exactly what `states/` stages for a method
+    iteration's version (`evolve.py:2860-2861`). At mode A's granularity the
+    previous candidate is the harmful change. Roll back to its declared edit
+    base (or `history[-2]` for older points), which `states/` stages for a method
     (`driver.py:134-140`).
 
     Only HARMFUL triggers this. INEFFECTIVE's own instruction is "rollback **or**
@@ -472,7 +490,8 @@ def choose_edit_dir(base: Path, history: list[dict],
         return base, ""
     if len(history) < 2:
         return base, "a rollback was requested but no earlier state is on the curve"
-    before = history[-2]
+    before = next((p for p in reversed(history[:-1])
+                   if p.get("round") == (record or {}).get("edited_from_round")), history[-2])
     staged = _state_dir(base, before.get("round"))
     if staged and Path(staged).is_dir():
         return Path(staged), (f"the HARMFUL change was rolled back: this round edits "
@@ -529,7 +548,8 @@ def render_attribution(record: dict | None) -> str:
             f"several changes (`evolve.py:2855-2858`).")
     lines.append(
         f"- Rollback method: restore the files of a rolled-back change to their "
-        f"round-{int(record.get('round') or 0) - 1} contents; the state is staged "
+        f"round-{record.get('edited_from_round', int(record.get('round') or 0) - 1)} "
+        f"contents; the state is staged "
         f"under `_harnessgrad/states/` (`evolve.py:2860-2861`).")
     return "\n".join(lines)
 
@@ -623,6 +643,39 @@ def build_prompt(base: Path, edit_dir: Path, req: dict, history: list[dict],
     return "\n".join(parts)
 
 
+def variant_prompt(prompt: str, variant: int) -> str:
+    """Upstream evolve.py:3715-3758 gives each worktree a strategy_hint;
+    :2913-2916 renders it as an assigned constraint. Explicit strategies supply
+    diversity even when the shared editor uses temperature=0.0.
+    """
+    strategy = (
+        "Focus on the implementation of the evidenced root cause: make the "
+        "smallest direct repair at the failing component. Pre-register that "
+        "concrete change and its predicted fixes and risks."
+        if variant == 1 else
+        "Use a different component or a different evidenced failure mode: "
+        "prefer a preventive check or recovery path over a direct repair at "
+        "the failing implementation. Pre-register that alternative mechanism "
+        "and its predicted fixes and risks."
+    )
+    return (f"{prompt}\n\n## Best-of-2 variant {variant}\n{strategy}\n"
+            "Both variants edit the same base independently. Produce a substantively "
+            "different change for your assigned strategy, not just a renamed change. "
+            "If the evidence does not support it, return no_change.")
+
+
+def _same_candidate(steps: list[dict]) -> bool:
+    """Same edit base + equal final contents on the union of edited paths means
+    the two applied candidates are identical, even if their manifests differ.
+    """
+    left, right = (Path(step["harness_dir"]) for step in steps)
+    for name in set(steps[0]["files"]) | set(steps[1]["files"]):
+        a, b = left / name, right / name
+        if (a.read_bytes() if a.is_file() else None) != (b.read_bytes() if b.is_file() else None):
+            return False
+    return True
+
+
 # ------------------------------------------------------------- the manifest ---
 
 def build_manifest(reply: dict, round_index: int, written: list[str]) -> dict:
@@ -701,7 +754,9 @@ AHE_RULE_TEXT = (
     "(`evolve.py:4377`), the attribution is report-only, and the rollback is "
     "performed by the model restoring files (`evolve.py:2860-2861`). The only "
     "verdict is the attribution's EFFECTIVE/MIXED/HARMFUL/... judgement "
-    "(`evolve.py:2294-2303`); the platform's measurement decides the score.")
+    "(`evolve.py:2294-2303`). Two distinct variants are submitted together; "
+    "winner selection remains with the platform by train score, rather than "
+    "AHE's pass-rate/exception/index rule (`evolve.py:3313-3336`).")
 
 
 # ------------------------------------------------------------------ main ---
@@ -728,6 +783,10 @@ def main() -> int:
 
     verdicts = {str(e.get("change_id")): e.get("verdict")
                 for e in ((record or {}).get("evidence") or {}).get("change_evaluations", [])}
+    edited_from_round = next(
+        (p.get("round") for p in reversed(history)
+         if _state_dir(base, p.get("round")) == str(edit_dir)),
+        incumbent.get("round")) if edit_dir != base else incumbent.get("round")
     rule_report = {
         "rule": "AHE: pre-registered predictions graded by per-task attribution; "
                 "the verdict drives KEEP/IMPROVE/ROLLBACK+PIVOT",
@@ -739,6 +798,7 @@ def main() -> int:
         "abandoned_levels": abandoned,
         "rollback": rollback_note or None,
         "edited_from": str(edit_dir),
+        "edited_from_round": edited_from_round,
         "pass_threshold": PASS_THRESHOLD,
     }
 
@@ -762,48 +822,82 @@ def main() -> int:
             extra={"ahe_rule": rule_report["rule"]},
             label=f"AHE: stop at target ({incumbent_score} >= {target})")
 
-    dest = editor.candidate_path(request)
-    try:
-        reply = editor.ask(
-            build_prompt(base, edit_dir, request, history, record, abandoned,
-                         rollback_note),
-            system=AHE_SYSTEM, base=base)
-    except SystemExit:
-        raise
-    except Exception as exc:                                   # noqa: BLE001
-        return editor.fail(request, method="ahe", exc=exc, base=base,
-                           state={"ahe_manifest": record})
+    prompt = build_prompt(base, edit_dir, request, history, record, abandoned, rollback_note)
+    steps, outcomes, declarations, errors = [], [], [], []
+    # Upstream evolve.py:3857-3875 launches N independent evolve agents, while
+    # :3123-3151 bases every worktree on the same workspace. Preserve order when
+    # collecting results so duplicates always retain the first usable variant.
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        futures = [pool.submit(editor.ask, variant_prompt(prompt, variant),
+                               system=AHE_SYSTEM, base=base, parent=edit_dir)
+                   for variant in (1, 2)]
+        for variant, future in enumerate(futures, 1):
+            dest = editor.candidate_path(request, "candidate" if variant == 1 else "candidate-v2")
+            changed, files, reply = False, [], {}
+            try:
+                reply = future.result()
+            except Exception as exc:                           # noqa: BLE001
+                errors.append(exc)
+                status, note = "provider_error", f"{type(exc).__name__}: {str(exc)[:300]}"
+                dest = base
+                declarations.append(None)
+            else:
+                if "no_change" in reply:
+                    status, note = "declined", str(reply["no_change"])[:200]
+                    editor.apply_edits(edit_dir, dest, [])
+                    reply = {}
+                else:
+                    changed, files, note = editor.apply_edits(edit_dir, dest, reply.get("files"))
+                    status = "usable" if changed else "invalid"
+                    if not changed:
+                        dest = base  # Never submit an invalid tree as a no-change decision.
+                # Compare declared changes before build_manifest fills omitted file
+                # lists from the applied edits. Reordering entries is not diversity.
+                declarations.append(sorted(json.dumps(c, sort_keys=True) for c in
+                                           build_manifest(reply, round_index, [])["changes"]))
+            manifest = build_manifest(reply, round_index, files)
+            hypothesis = str(reply.get("hypothesis", ""))[:300] if changed else note
+            if status in ("invalid", "provider_error"):
+                manifest["note"] = f"the proposal was unusable: {note}"
+            outcomes.append({"variant": variant, "status": status, "reason": note or None})
+            steps.append({
+                "harness_dir": dest, "changed": changed, "files": files if changed else [],
+                "hypothesis": hypothesis, "edit_kind": _edit_kind(manifest, changed),
+                "label": f"AHE variant {variant}: {hypothesis[:50] or status}",
+                "method_reported": {"variant": variant, "ahe_rule": rule_report,
+                                    "ahe_manifest": manifest,
+                                    "ahe_attribution": (record or {}).get("evidence")},
+            })
 
-    if "no_change" in reply:
-        manifest = build_manifest({}, round_index, [])
-        editor.apply_edits(edit_dir, dest, [])
-        return editor.report(
-            request, method="ahe", harness_dir=dest, changed=False,
-                                                     stop=False,
-            hypothesis=str(reply["no_change"])[:200], edit_kind="ahe_rule",
-            method_reported={"ahe_rule": rule_report, "ahe_manifest": manifest,
-                             "ahe_attribution": (record or {}).get("evidence")},
+    usable = [step for step in steps if step["changed"]]
+    fallback = None
+    if declarations[0] is not None and declarations[0] == declarations[1]:
+        fallback = "identical_changes"
+    elif len(usable) == 2 and _same_candidate(usable):
+        fallback = "identical_candidates"
+    elif len(usable) < 2:
+        fallback = "only_one_usable_variant" if usable else "no_usable_variants"
+    selected = (usable or steps[:1])[:1] if fallback else usable
+    rollout_report = {"requested": 2, "submitted": len(selected),
+                      "fallback_reason": fallback, "variant_outcomes": outcomes,
+                      "winner_selection": "platform_train_score"}
+    for step in steps:
+        step["method_reported"]["ahe_rollouts"] = rollout_report
+
+    if not usable and errors:
+        return editor.fail(request, method="ahe", exc=errors[0], base=base,
+                           state=selected[0]["method_reported"])
+    if len(selected) == 2:
+        return editor.report_many(
+            request, method="ahe", steps=selected, stop=False,
             acceptance_rule=AHE_RULE_TEXT,
             extra={"ahe_rule": rule_report["rule"]},
-            label="AHE: no change")
-
-    changed, files, note = editor.apply_edits(edit_dir, dest, reply.get("files"))
-    manifest = build_manifest(reply, round_index, files)
-    if not changed:
-        manifest["note"] = f"the proposal was unusable: {note}"
-    hypothesis = (f"unusable proposal: {note}" if not changed
-                  else str(reply.get("hypothesis", ""))[:300])
-
+            note="AHE: two independent variants; platform selects by train score")
     return editor.report(
-        request, method="ahe", harness_dir=dest, changed=changed, files=files,
-        hypothesis=hypothesis,
-        edit_kind=_edit_kind(manifest, changed),
-        method_reported={"ahe_rule": rule_report, "ahe_manifest": manifest,
-                         "ahe_attribution": (record or {}).get("evidence")},
+        request, method="ahe", **selected[0], stop=False,
         acceptance_rule=AHE_RULE_TEXT,
         extra={"ahe_rule": rule_report["rule"]},
-        label=(f"[AHE {manifest['changes'][0].get('id') if manifest['changes'] else '-'}]"
-               f" {hypothesis[:50]}") if changed else "AHE: unusable proposal")
+        note=f"AHE: single-candidate fallback ({fallback})")
 
 
 if __name__ == "__main__":
