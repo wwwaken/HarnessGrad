@@ -406,8 +406,23 @@ def main() -> int:
 
     design_record: dict = {}
 
+    def generation_of(history_rows: list) -> int:
+        """Which generation this call is.
+
+        A generation is one design call and the candidates it produced; the record already
+        says how many candidates each call submitted (`steps_in_submission`), so counting
+        the batches in the history is enough. Reported beside the round index because the
+        two are different units: a three-candidate generation costs three rounds.
+        """
+        batches = {row.get("round") for row in history_rows
+                   if row.get("steps_in_submission")}
+        return len(batches) + 1
+
+    generation = generation_of(history)
+
     def carried(children: int, parent_rounds: list) -> dict:
         return {"meta_harness_frontier": frontier, "meta_harness_base": base_why,
+                "meta_harness_generation": generation,
                 "meta_harness_children": children,
                 "meta_harness_parent": parent_rounds[0] if parent_rounds else None,
                 "meta_harness_parents": parent_rounds,
@@ -537,10 +552,16 @@ def main() -> int:
                    "frontier_best": frontier["_best"]},
             label="Meta-Harness: no candidate produced")
 
+    # **One generation, not the whole search.** The platform owns how many rounds a study
+    # gets, and `--rounds` counts *measured states*: a three-candidate generation therefore
+    # costs three of them. Stopping here (`stop=True`) ended the search after the first
+    # generation -- measured on 2026-10-17, that was the entire study for this method: one
+    # call, three candidates, no feedback. `stop=False` lets the next call build the next
+    # generation from the frontier this one updated, which is the loop the paper describes.
     return editor.report_many(
         req, method="meta_harness", steps=steps,
         acceptance_rule=_ACCEPTANCE_RULE,
-        stop=True,
+        stop=False,
         note=f"Meta-Harness: {len(steps)} candidate(s) submitted in one call",
         extra={"selection_rule": "per-task frontier; base = overall best staged state",
                "frontier_best": frontier["_best"],

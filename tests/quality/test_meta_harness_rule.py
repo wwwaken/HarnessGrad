@@ -279,6 +279,45 @@ def test_main_reports_a_real_edit_as_changed(tmp_path, monkeypatch):
     assert got["stdout"]["hypothesis"] == "make it print more"
 
 
+def test_a_generation_does_not_end_the_search(tmp_path, monkeypatch):
+    """**一代 ≠ 整个搜索。**
+
+    The platform's `--rounds` counts measured states, so a three-candidate generation costs
+    three of them; if the batch submission also ended the run (`stop=True`), the method got
+    exactly one generation and never saw the frontier its own measurements updated. Measured
+    on 2026-10-17: that was the entire study for `meta_harness` -- three candidates, one
+    call, no feedback. `stop=False` is what lets the next call start the next generation.
+    """
+    history = [_training(0, {"t01": 0.0})]
+    base = _harness(tmp_path, history)
+    got = _invoke(MH, _request(base, tmp_path / "ws", tmp_path / "traj.json", history),
+                  monkeypatch, {"files": [{"path": "agent.py", "find": "print('hello')",
+                                           "replace": "print('hello world')"}],
+                                "hypothesis": "one more generation"})
+    assert got["stdout"]["changed"] is True
+    assert got["stdout"].get("stop") is False, (
+        "a batch submission must not end the study; the next call is the next generation")
+
+
+def test_the_generation_index_is_on_the_record(tmp_path, monkeypatch):
+    """代次与轮次是两种单位,记录里两个都要有。"""
+    import editor
+
+    history = [_training(0, {"t01": 0.0})]
+    base = _harness(tmp_path, history)
+    captured: dict = {}
+    real_report = editor.report
+
+    def spy(req, **kw):
+        captured.update(kw)
+        return real_report(req, **kw)
+
+    monkeypatch.setattr(MH.editor, "report", spy, raising=False)
+    _invoke(MH, _request(base, tmp_path / "ws", tmp_path / "traj.json", history),
+            monkeypatch, {"no_change": "nothing left"})
+    assert captured["method_reported"].get("meta_harness_generation") == 1
+
+
 def test_a_method_that_declines_keeps_its_budget(tmp_path, monkeypatch):
     """拒绝 ≠ 结束。`stop=False`,否则一次"没什么可改"会终结整条轨迹
     (INTERFACE.md 的 `stop` 一节)。"""
