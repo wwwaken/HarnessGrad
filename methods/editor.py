@@ -29,12 +29,14 @@ Two defects are fixed structurally here rather than in each method
 """
 from __future__ import annotations
 
+import itertools
 import json
 import os
 import shutil
 import stat
 import sys
 import tempfile
+import time
 from pathlib import Path, PureWindowsPath
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -1378,6 +1380,56 @@ def _ask_cli(prompt: str, base: Path, parent: Path, improver: dict) -> dict:
             "artifacts": artifacts}
 
 
+#: One counter for endpoint call records, so two calls in the same second cannot collide.
+_CALL_SEQ = itertools.count(1)
+
+
+def _record_endpoint_call(prompt: str, system: str, reply: str, model: str,
+                          resp: object) -> None:
+    """Keep one endpoint conversation on disk, in the run's own `method_logs` tree.
+
+    **The CLI transcript already keeps its reasoning; this is the other half.** When a
+    method's proposal goes through the chat endpoint instead of the CLI improver -- an
+    `endpoint_only=True` design call, or a run with no CLI improver at all -- the prompt
+    and the reply existed only in memory. Measured on 2026-10-17: `meta_harness`'s design
+    step and six of `dream_rsi`'s nine rounds were endpoint calls, so the only surviving
+    evidence of *why* those harnesses were proposed was the parsed edit itself.
+
+    The directory comes from `HG_CALL_LOG_DIR`, which the driver sets per round. Without
+    it (a method invoked by hand) nothing is written: guessing a path would scatter files
+    somewhere nobody looks.
+
+    Never raises. A record that fails must not turn a measured call into a failed one.
+    """
+    directory = os.environ.get("HG_CALL_LOG_DIR")
+    if not directory:
+        return
+    usage = getattr(resp, "usage", None)
+    try:
+        dest = Path(directory) / "endpoint"
+        dest.mkdir(parents=True, exist_ok=True)
+        record = {
+            "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "model": model,
+            "system": system,
+            "prompt": prompt,
+            "reply": reply,
+            "prompt_chars": len(prompt),
+            "reply_chars": len(reply),
+            "usage": None if usage is None else {
+                "input": getattr(usage, "prompt_tokens", None),
+                "output": getattr(usage, "completion_tokens", None),
+                "cached": ((getattr(usage, "prompt_tokens_details", None) or None)
+                           and getattr(usage.prompt_tokens_details, "cached_tokens", None)),
+            },
+        }
+        name = (f"{time.strftime('%H%M%S', time.gmtime())}-{os.getpid()}-"
+                f"{next(_CALL_SEQ):04d}.json")
+        (dest / name).write_text(json.dumps(record, ensure_ascii=False, indent=1))
+    except (OSError, TypeError, ValueError):
+        return
+
+
 def ask(prompt: str, system: str = DEFAULT_SYSTEM, base: Path | None = None,
         skill: bool = True, parent: Path | None = None,
         endpoint_only: bool = False) -> dict:
@@ -1468,6 +1520,7 @@ def ask(prompt: str, system: str = DEFAULT_SYSTEM, base: Path | None = None,
         # still a call the method paid for, and a parse failure is exactly when someone
         # asks what the round cost.
         _record_usage(getattr(resp, "usage", None), getattr(resp, "model", None) or model)
+        _record_endpoint_call(prompt, system, last, getattr(resp, "model", None) or model, resp)
         # Debug affordance: `HG_METHOD_DUMP=<path>` writes the raw reply out. A model
         # reply that will not parse is the hardest failure to diagnose from the
         # outside -- the platform only ever sees "unparseable" and 200 characters of

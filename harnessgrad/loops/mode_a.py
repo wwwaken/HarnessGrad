@@ -348,7 +348,15 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
                     "why": f"no completion in {STEP_ATTEMPTS} attempts; the run stops here "
                            f"because a step that cannot finish is not a step"})
                 break
-            reply, traj, gen_s = _invoke_method(r)
+            # **Where an endpoint call keeps its conversation.** The CLI improver's
+            # transcript already lands in this round's `method_logs`; a proposal that goes
+            # through the chat endpoint has no such transcript, so the method is told where
+            # to write one. Cleared afterwards so a later call cannot inherit a stale path.
+            os.environ["HG_CALL_LOG_DIR"] = str(run_dir / "method_logs" / f"round-{r}")
+            try:
+                reply, traj, gen_s = _invoke_method(r)
+            finally:
+                os.environ.pop("HG_CALL_LOG_DIR", None)
             if reply is None:
                 continue
             # **The declared rule is nested, and this loop looked at the top level.** The
