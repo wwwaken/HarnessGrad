@@ -193,6 +193,15 @@ def test_one_test_file_can_be_the_pool_alone(monkeypatch, official, pool, size):
     assert len(module.SPLIT["eval"]) == size
 
 
+def test_a_repeated_study_id_is_refused(tmp_path, monkeypatch):
+    """The study score is a mean over tasks; a duplicate would weight one task twice."""
+    study = tmp_path / "study.txt"
+    study.write_text("07b42fd_1\n07b42fd_1\n", encoding="utf-8")
+    module = _reload(monkeypatch, HG_APPWORLD_STUDY_IDS=str(study), HG_APPWORLD_POOL="dev")
+    with pytest.raises(ValueError, match="more than once"):
+        module.load()
+
+
 def test_pool_train_is_refused(monkeypatch):
     """A score on the training split measures the material the method studied."""
     module = _reload(monkeypatch, **{POOL_KNOB: "train"})

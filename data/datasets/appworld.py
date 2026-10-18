@@ -227,12 +227,25 @@ _ALL = [row["task_id"] for row in _ROWS.values()]
 
 
 def _study_ids() -> list[str]:
-    """The study-side ids named by `HG_APPWORLD_STUDY_IDS`, in file order."""
+    """The study-side ids named by `HG_APPWORLD_STUDY_IDS`, in file order.
+
+    A repeated id is refused rather than deduplicated: the study score is a mean over the
+    study tasks, so a duplicated line would weight one task twice and quietly move the
+    number that selects a checkpoint. Set-based validation downstream would not notice,
+    because the id is a member either way.
+    """
     if not _STUDY_FILE:
         return []
     text = Path(_STUDY_FILE).read_text(encoding="utf-8")
-    return [chunk for line in text.splitlines()
-            for chunk in line.replace(",", " ").split()]
+    ids = [chunk for line in text.splitlines()
+           for chunk in line.replace(",", " ").split()]
+    repeats = sorted({task_id for task_id in ids if ids.count(task_id) > 1})
+    if repeats:
+        raise ValueError(
+            f"HG_APPWORLD_STUDY_IDS={_STUDY_FILE} names {len(repeats)} task id(s) more "
+            f"than once ({', '.join(repeats[:5])}); a repeated id would be measured once "
+            "and counted twice in the study score")
+    return ids
 
 
 def _sides() -> tuple[list[str], list[str]]:
