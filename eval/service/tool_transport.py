@@ -199,6 +199,10 @@ class Relay:
             with self.receipt_lock:
                 self.receipt["errors"] += 1
             return {"ok": False, "error": "bad_request"}
+        if not isinstance(request, dict):
+            with self.receipt_lock:
+                self.receipt["errors"] += 1
+            return {"ok": False, "error": "bad_request"}
         op = request.get("op")
         args = request.get("args") or {}
         if not isinstance(op, str) or not op:

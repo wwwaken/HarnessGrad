@@ -28,6 +28,7 @@ the artefact.
 
 | dataset / blocker | status | disposition | blocking class(es) |
 | --- | --- | --- | --- |
+| `kumo / kumo-measurement-coverage` | measurement | single-task integration verified; broader evaluation and resource closure remain separate | `PENDING-RUN`, `PRE-DIAGNOSTIC` |
 | `api_bank / retain-contract-refusal` | external | permanent refusal | `REFUSED` |
 | `nestful / retain-contract-refusal` | external | permanent refusal | `REFUSED` |
 | `sotuqa / retain-contract-refusal` | external | permanent refusal | `REFUSED` |
@@ -35,7 +36,7 @@ the artefact.
 
 **Withdrawn 2026-10-16 — `bfcl_v3 / simple-ast-contract`, `triviaqa / hub-export-scorer-linkage`
 and `appworld / successful-task-evidence`.** All three rows left this table; **no non-refusal
-blocker remains in the registry**, so the class vocabulary below now classifies nothing and is
+blocker remained in the registry at that review**, so the class vocabulary below now classifies nothing and is
 retained only as the historical scheme. The three went for two different reasons, and the
 difference is recorded rather than flattened:
 

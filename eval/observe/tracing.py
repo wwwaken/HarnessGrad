@@ -464,6 +464,7 @@ def _write_progress(progress_dir, round_no: int, tid: str,
                     "exit_code": diagnostic.get("exit_code"),
                     "stderr": (diagnostic.get("stderr") or "")[-8000:],
                     "harness_runtime": diagnostic.get("harness_runtime"),
+                    "runtime_services": diagnostic.get("runtime_services"),
                     "model_gateway": diagnostic.get("model_gateway"),
                 }
                 body = diagnostic.get("trace")
@@ -503,6 +504,8 @@ def _write_progress(progress_dir, round_no: int, tid: str,
                     pass
         task_file(dest, f"{tid}.json").write_text(json.dumps({
             "task_id": tid, "round": round_no,
+            **({"runtime_services": [r.get("runtime_services") for r in measured]}
+               if any(r.get("runtime_services") for r in measured) else {}),
             "score": sum(scores) / len(scores) if scores else None,
             "scorer_isolation_class": isolation,
             "scorer_isolation_comparable": isolation != "unknown",

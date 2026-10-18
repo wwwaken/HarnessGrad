@@ -28,7 +28,7 @@ import os
 from typing import Any, Mapping
 
 from harnessgrad.config.areas import (
-    AgentConfig, Config, EgressConfig, EnvironmentConfig, ImproverConfig,
+    AgentConfig, JudgeConfig, Config, EgressConfig, EnvironmentConfig, ImproverConfig,
     MethodConfig, RunConfig, RuntimeConfig, SandboxConfig, StorageConfig,
 )
 
@@ -74,6 +74,7 @@ def load(env: Mapping[str, str] | None = None) -> Config:
     source = os.environ if env is None else env
     return Config(
         agent=_load_area(AgentConfig, source),
+        judge=_load_area(JudgeConfig, source),
         method=_load_area(MethodConfig, source),
         improver=_load_area(ImproverConfig, source),
         environment=_load_area(EnvironmentConfig, source),
@@ -91,6 +92,7 @@ def load(env: Mapping[str, str] | None = None) -> Config:
 #: whole `Config`).
 _AREA_CLASSES: dict[str, type] = {
     "agent": AgentConfig,
+    "judge": JudgeConfig,
     "method": MethodConfig,
     "improver": ImproverConfig,
     "environment": EnvironmentConfig,
