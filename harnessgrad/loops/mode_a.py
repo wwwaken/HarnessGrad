@@ -122,6 +122,30 @@ def _copy_round_traces(run_dir: Path, source_round: int, target_round: int) -> N
         shutil.copytree(src, dst)
 
 
+def _keep_endpoint_records(source: Path, run_dir: Path, round_no: int) -> None:
+    """Move the endpoint conversations into the run's record, beside the CLI transcripts.
+
+    The method wrote them under `method_root` (its sandbox does not mount the run
+    directory); this is the same trip the trajectory takes. Best-effort: a run whose
+    records cannot be kept is still a run that ran, so a failure here is logged, never
+    raised.
+    """
+    if not source.is_dir():
+        return
+    dest = run_dir / "method_logs" / f"round-{round_no}" / "endpoint"
+    try:
+        dest.mkdir(parents=True, exist_ok=True)
+        # Recursive: `editor.ask` writes under `<dir>/endpoint/`, so a flat glob here
+        # copied nothing -- the same silent-empty record the move exists to prevent.
+        for path in sorted(source.rglob("*.json")):
+            shutil.copy2(path, dest / path.name)
+    except OSError as exc:
+        console.note(f"could not keep the endpoint records of round {round_no}: {exc}",
+                     level="warn")
+        return
+    shutil.rmtree(source, ignore_errors=True)
+
+
 def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
                 task_ids, scorable, sampling, cache, cumulative,
                 train_ids=None, split=None, setups=None,
@@ -352,11 +376,19 @@ def _run_mode_a(args, work, man, run_id, mode, curve, h0_sha, base, tasks,
             # transcript already lands in this round's `method_logs`; a proposal that goes
             # through the chat endpoint has no such transcript, so the method is told where
             # to write one. Cleared afterwards so a later call cannot inherit a stale path.
-            os.environ["HG_CALL_LOG_DIR"] = str(run_dir / "method_logs" / f"round-{r}")
+            # **The record is written where the method can actually write.** Its sandbox
+            # does not mount the run directory -- the trajectory travels the same way, into
+            # `method_root` under /tmp -- so pointing this at `runs/...` made every write
+            # fail silently (measured 2026-10-18: zero endpoint records for a run whose
+            # design call is `endpoint_only=True`). It lands beside the trajectory and is
+            # copied into the run's own `method_logs` right after the call.
+            call_log_dir = method_root / f"round{r}_endpoint"
+            os.environ["HG_CALL_LOG_DIR"] = str(call_log_dir)
             try:
                 reply, traj, gen_s = _invoke_method(r)
             finally:
                 os.environ.pop("HG_CALL_LOG_DIR", None)
+                _keep_endpoint_records(call_log_dir, run_dir, r)
             if reply is None:
                 continue
             # **The declared rule is nested, and this loop looked at the top level.** The
