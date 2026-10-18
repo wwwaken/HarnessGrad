@@ -409,14 +409,18 @@ def main() -> int:
     def generation_of(history_rows: list) -> int:
         """Which generation this call is.
 
-        A generation is one design call and the candidates it produced; the record already
-        says how many candidates each call submitted (`steps_in_submission`), so counting
-        the batches in the history is enough. Reported beside the round index because the
-        two are different units: a three-candidate generation costs three rounds.
+        A generation is one design call and the candidates it produced. The record says both
+        how many states that call bought (`steps_in_submission`) and which of them a row is
+        (`step_index`), so a batch is **one** generation and its k rows are k measurements of
+        it. Counting distinct `round`s instead made a three-candidate design advance the index
+        by three: measured on `rsi10-20261018T062351Z-meta_harness-train`, rounds 1-3 (one
+        design, three implementations) were recorded as generations 2, 3 and 4, so the record
+        claimed four designs where two had happened. Reported beside the round index because
+        the two are different units: a three-candidate generation costs three rounds.
         """
-        batches = {row.get("round") for row in history_rows
-                   if row.get("steps_in_submission")}
-        return len(batches) + 1
+        starts = sum(1 for row in history_rows
+                     if row.get("steps_in_submission") and not row.get("step_index"))
+        return starts + 1
 
     generation = generation_of(history)
 

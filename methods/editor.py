@@ -1769,15 +1769,42 @@ def report(req: dict, *, method: str, harness_dir: Path, changed: bool,
 
 
 
+#: "Attach whatever this process last saw", for callers that cannot be wrong about it.
+#:
+#: `report` is such a caller: one process is one method call, so the improver run recorded
+#: at the end of it *is* the one that produced this candidate. `report_many` is not, and the
+#: difference is the whole reason this sentinel exists -- see `_step_payload`.
+_PROCESS_IMPROVER = object()
+
+
 def _step_payload(*, harness_dir, label, edit_kind, changed, tokens_now,
-                  method_reported, incumbent_round=None) -> dict:
+                  method_reported, incumbent_round=None,
+                  improver=_PROCESS_IMPROVER) -> dict:
     """One step of a trajectory, built the same way however many of them there are.
 
     `incumbent_round` is the **selection** half of a rule: `score` on a curve point is the
     *candidate's* measurement, so a method that decides "keep the state from round 3" has to
     say so, or the record shows only what it tried and never what it kept. Omitted by
     default, which means "this candidate becomes the base for my next step".
+
+    **The spend split comes from the process, and it used to be hard-coded to `None` here.**
+    That was not a neutral omission, because this function is the *batch* path and every
+    batched method goes through it: measured 2026-10-18 on the nine-method batch, every
+    curve point of every method recorded `method_generation_input: null`,
+    `method_output: null`, `method_calls: null` and `method_spend_source: null` -- including
+    the rounds where the improver's provider had reported a usage block. The single-candidate
+    path (`report`) did read it, so the two halves of one platform disagreed about the same
+    call, and `records._cost_fields` had nothing to read. The same three lines as `report`
+    now, from the same place.
+
+    `improver` is separate because *attribution* is a different question from *measurement*.
+    `_LAST_IMPROVER` is one process-level slot holding the last CLI run, so a batch of k
+    steps cannot say which step that run produced -- and filling all k in says it produced
+    all k, which is false for a batch whose earlier candidates came from endpoint calls. So
+    a k>1 batch passes `None` and the account is recorded once at the envelope, marked
+    call-scoped. A one-step submission is unambiguous and passes the run itself.
     """
+    spend_now = spent()
     step = {
         "harness_dir": str(harness_dir),
         "label": label or ("edit" if changed else "no change"),
@@ -1788,27 +1815,41 @@ def _step_payload(*, harness_dir, label, edit_kind, changed, tokens_now,
         # ~24 KB of harness sources in and ~200 tokens out, so a rising improver cost is a
         # source-reading cost, not a thinking cost.
         "claimed_cost": {"generation_tokens": tokens_now,
-                         "method_input_tokens": None, "method_output_tokens": None,
-                         "method_model_calls": None, "method_model": None,
-                         "method_spend_source": None},
-        "method_reported": {"score": None, **_reported_with_improver(method_reported)},
+                         "method_input_tokens": spend_now["input"] or None,
+                         "method_output_tokens": spend_now["output"] or None,
+                         "method_model_calls": spend_now["calls"] or None,
+                         "method_model": spend_now["model"],
+                         # Null tokens above mean "nobody counted" only if this says so;
+                         # without it a reader cannot tell a free round from an invisible
+                         # one. It is also what makes the nulls above *provable* rather
+                         # than a gap in the record.
+                         "method_spend_source": spend_source(),
+                         "method_cache_read_tokens": cache_read_tokens()},
+        "method_reported": {"score": None,
+                            **_reported_with_improver(method_reported,
+                                                      improver=improver)},
     }
     if incumbent_round is not None:
         step["incumbent_round"] = int(incumbent_round)
     return step
 
 
-def _reported_with_improver(method_reported: dict | None) -> dict:
+def _reported_with_improver(method_reported: dict | None,
+                            improver=_PROCESS_IMPROVER) -> dict:
     """The method's own report plus the improver's account of itself, under its own key.
 
     Kept apart rather than merged so a method's keys cannot collide with the improver's,
     and omitted entirely for endpoint improvers -- an empty block would say "the improver
     reported nothing", which is not the same as "there was no CLI improver".
+
+    `improver=None` means **do not attach**: the caller cannot attribute the process's last
+    CLI run to this record (see `_step_payload`). Passing the run explicitly is how a caller
+    that *can* attribute it says so.
     """
     merged = dict(method_reported or {})
-    run = improver_run()
+    run = improver_run() if improver is _PROCESS_IMPROVER else improver
     if run:
-        merged["improver_run"] = run
+        merged["improver_run"] = dict(run)
     return merged
 
 
@@ -1821,8 +1862,13 @@ def _batch_reported(steps: list[dict], payloads: list[dict]) -> dict:
         per_step = [e.get("method_reported") or {} for e in steps]
         if any(per_step):
             envelope["per_step"] = per_step
-        if improver_run():
-            envelope["improver_run"] = improver_run()
+        run = improver_run()
+        if run:
+            envelope["improver_run"] = run
+            # **Not per step, and the record says so.** One CLI run bought this batch as a
+            # whole; a reader who found it inside `per_step[i]` would be entitled to count
+            # it k times, and nothing on the record said not to.
+            envelope["improver_run_scope"] = "call"
     return envelope
 
 
@@ -1871,7 +1917,11 @@ def report_many(req: dict, *, method: str, steps: list[dict],
             harness_dir=entry["harness_dir"], label=entry.get("label") or "",
             edit_kind=entry.get("edit_kind"), changed=changed,
             tokens_now=tokens, method_reported=entry.get("method_reported"),
-            incumbent_round=entry.get("incumbent_round")))
+            incumbent_round=entry.get("incumbent_round"),
+            # One step, one candidate: the process's last CLI run *is* the run that
+            # produced it, so it is attributable. k>1 is not, and `_step_payload` records
+            # why the account then lives on the envelope instead.
+            improver=improver_run() if len(steps) == 1 else None))
 
     trajectory = {
         "steps": payloads,
