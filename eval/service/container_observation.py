@@ -53,6 +53,8 @@ import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
+import eval.service.netpool as netpool
+
 SCHEMA = "harnessgrad.container-observation.v1"
 #: The policy fields this probe measures back. `_refuse_unobserved_policies` admits only these,
 #: and only when every field it was asked about is covered -- an observation that proves the
@@ -287,17 +289,17 @@ def observe_for(image: str, spec: dict, *, network: str | None, run_id: str = ""
     (`container_mod.run` defaults it to `True`; a task whose state is the container's
     filesystem does not pass it). It is a parameter because the rootfs in the receipt has
     to be the rootfs the harness saw, and only the caller knows which launcher ran.
+
+    The probe's network is allocated exactly like a task's (`netpool.allocate`, key
+    `probe-<run_id>`) and created with an explicit `--subnet`, so the probe cannot become
+    the thing that exhausts the daemon's default pool -- it is created at admission, when
+    the first tasks are starting, which is the worst moment to spend a `/16`.
     """
     runner = runner or _default_runner(timeout_s)
     probe_network: str | None = None
     if network == "services":
         probe_network = _probe_network_name(image, spec, run_id)
-        created = runner(["docker", "network", "create", "--internal", probe_network,
-                          "--label", f"harnessgrad.run={run_id or 'run'}"], None)
-        if created.returncode != 0:
-            raise ObservationError(
-                f"could not create the observation network {probe_network}: "
-                f"{(created.stderr or '').strip()[:300]}")
+        _create_probe_network(runner, probe_network, run_id)
     else:
         probe_network = network
     try:
@@ -309,6 +311,66 @@ def observe_for(image: str, spec: dict, *, network: str | None, run_id: str = ""
                 runner(["docker", "network", "rm", probe_network], None)
             except Exception:        # noqa: BLE001
                 pass
+
+
+def _create_probe_network(runner, name: str, run_id: str) -> str:
+    """Create the probe's throwaway network on an allocated `/24`. Returns the subnet.
+
+    The same two rules as `services.create_network`, for the same reason: an explicit
+    `--subnet` on every create (a probe network drawn from the default pool is the next
+    thing that can exhaust it -- one per container shape per process, created at admission
+    exactly when the first task networks are appearing), and the allocator's next candidate
+    on a collision. The key is `probe-<run_id>` rather than the run's own, so a probe and
+    the tasks it observes never ask for the same subnet first.
+    """
+    try:
+        candidates = netpool.allocate(f"probe-{run_id or 'run'}", name)
+    except netpool.NetPoolError as exc:
+        # An unusable base is a host configuration problem, and the allocator's message
+        # already names the variable; keep the probe's caller on `ObservationError` so a
+        # misconfigured base is a refused admission, not a ValueError out of the runner.
+        raise ObservationError(
+            f"cannot allocate the observation network {name}: {exc}") from exc
+    run_label = f"harnessgrad.run={run_id or 'run'}"
+    last = ""
+    for subnet in candidates:
+        created = runner(["docker", "network", "create", "--internal", name,
+                          "--subnet", subnet,
+                          "--label", run_label,
+                          "--label", f"{netpool.SUBNET_LABEL}={subnet}"], None)
+        if created.returncode == 0:
+            return subnet
+        stderr = (created.stderr or "").strip()
+        if netpool.network_exists(stderr, name):
+            existing = _existing_network_subnet(runner, name)
+            if existing == subnet:
+                # A probe killed mid-flight leaves this name and subnet behind; the digest
+                # in the name is a function of the bounds, so it asks for the same subnet
+                # again. Reuse rather than refuse admission for a network nobody is using.
+                return subnet
+            raise ObservationError(
+                f"network {name} already exists with subnet "
+                f"{existing or 'unknown'}, but the probe asked for {subnet}. Remove the "
+                f"leftover with `docker network rm {name}` and re-run admission.")
+        if netpool.subnet_taken(stderr):
+            last = stderr.splitlines()[-1][:160] if stderr else ""
+            continue
+        raise ObservationError(
+            f"could not create the observation network {name}: {stderr[:300]}")
+    raise ObservationError(
+        f"could not create the observation network {name} on any "
+        f"/{netpool.SUBNET_PREFIX} of the configured base {candidates.base} "
+        f"({candidates.count} tried; last: {last or 'none'}). Set "
+        f"{netpool.BASE_ENV} to an unused IPv4 CIDR of /{netpool.SUBNET_PREFIX} or larger, "
+        f"or check the host with `python3 tools/network_preflight.py --networks 40`.")
+
+
+def _existing_network_subnet(runner, name: str) -> str | None:
+    """The subnet recorded on a network, read through the caller's docker runner."""
+    proc = runner(["docker", "network", "inspect", name], None)
+    if proc.returncode != 0:
+        return None
+    return netpool.subnet_from_network_inspect(proc.stdout or "")
 
 
 def _probe_network_name(image: str, spec: dict, run_id: str) -> str:
