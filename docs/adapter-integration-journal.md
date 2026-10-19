@@ -5745,3 +5745,19 @@ no stray branches. Only `main` was pushed, as instructed.
   already paid for one rewrite - which is why GSM8K's archived-run `platform.git_sha` is unresolvable.
   Measured clone cost: **37.5 MB to download** (`--depth 1`: 14 MB); 134 MB on disk, of which 89 MB is the
   checked-out tree and 37 MB is local-only worktree indexes that are never pushed.
+
+
+## AIME registry consistency — 2026-10-17
+
+- AIME is a published adapter. Declare its existing task-mean aggregation in `data/aggregation_policies.json`, and include it in the layout/import inventories (29 datasets). Extend the aggregation regression beyond its immutable original fixture to check AIME explicitly. No adapter, scorer or execution behavior changes.
+- Conda validation: **76 passed, 38 subtests passed, 1 deselected** across aggregation policies, layout and import-direction checks. The deselected inventory test imports every dataset and requires unrelated host datasets/dependencies; the source-only inventory checks ran.
+
+
+## LoCoMo native Harbor adapter — 2026-10-17
+
+- Native `files` adapter with `network=none`: 10 complete conversation tasks, 1,986 questions, all five categories. Full `conversation.md` and all task questions are available at task start; the harness submits `answers.json`. Classification: `evidence / long_context`, exercising `context`.
+- Official data is pinned to `snap-research/locomo@3eb6f2c5`; Harbor input/scoring references to `3e9f14a7`. Deterministic token-F1/refusal scoring, no model judge. Per-question predictions and scores are retained in standard verdict evidence; gold is supplied only to the verifier after actor exit.
+- `report.py` provides a manual question-weighted summary with explicit selected coverage. Standard driver scoring and result persistence are unchanged. Helper modules load by file path following ScienceWorld; the original import-boundary rule is preserved. Uses Conda and the existing HTTP model route. See [adapter README](../data/datasets/locomo/README.md) and [source pins](../data/datasets/locomo/specs/source.json).
+- Conda validation: **150 passed, 38 subtests passed, 1 failed, 23 deselected**. The failure is the all-dataset controls inventory: runtime discovery omits five unrelated unprovisioned/unimportable adapters; reproduced on the AIME-only base without LoCoMo. Deselections are one all-adapter import inventory and 22 dataset controls; LoCoMo controls ran separately. Released-data Harbor differential was enabled.
+- Actual sandboxed conv-26 controls: 199 questions, oracle/noop measured scores 1/0; every per-question record retained. Manual report function and CLI agree. Python/SDK/scorer imports pass inside the sandbox; temporary work root cleaned. Zero model calls. [Current validation](../data/datasets/locomo/specs/validation-20261017.json) binds source hashes and local evidence.
+- No real local-model run, target-host validation, full-model benchmark, staged production admission or study/eval split is claimed. Formal evaluation follows existing platform checks.

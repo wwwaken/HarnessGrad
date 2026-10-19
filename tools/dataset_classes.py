@@ -174,6 +174,9 @@ EXERCISES: dict[str, tuple[str, ...]] = {
     "musique": ("context",),
     "twowikimultihopqa": ("context",),
     "livecodebench": ("tools", "verification"),
+    # Harbor delivers the complete conversation at task start; the score tests
+    # selecting evidence from that static history, not incremental retention.
+    "locomo": ("context",),
     "appworld": ("context", "tools", "control", "recovery"),
     "bird_minidev": ("context", "tools", "verification"),
     "physicsquestions": ("context", "verification"),
@@ -250,6 +253,7 @@ CAPABILITY: dict[str, tuple[str, str]] = {
     "musique": ("evidence", "information_seeking"),
     "twowikimultihopqa": ("evidence", "information_seeking"),
     "livecodebench": ("artifact", "code_generation"),
+    "locomo": ("evidence", "long_context"),
     "appworld": ("tool_use", "tool_dialogue"),
     "bird_minidev": ("artifact", "text_to_sql"),
     "physicsquestions": ("reasoning", "reasoning"),
@@ -312,6 +316,7 @@ EXPECTED_INTERACTION = {
     "reasoning_gym": "single_shot",
     "twowikimultihopqa": "single_shot",
     "livecodebench": "single_shot",
+    "locomo": "single_shot",
     "bird_minidev": "single_shot",
     "physicsquestions": "single_shot",
     "scienceworld": "closed_loop",
