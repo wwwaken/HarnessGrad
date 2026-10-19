@@ -518,17 +518,6 @@ def _write_progress(progress_dir, round_no: int, tid: str,
             "task_id": tid, "round": round_no,
             **({"runtime_services": [r.get("runtime_services") for r in measured]}
                if any(r.get("runtime_services") for r in measured) else {}),
-            # What launched the harness, when it was not the environment's own container.
-            # `placement: "inside"` puts the harness *in* the service container, where it
-            # shares that container's filesystem and therefore its recording
-            # (`eval/containers/service_exec.py`) -- a different world from the one every
-            # other score was measured in, so the record has to name which it was. Absent
-            # for every other placement, so no existing record changes shape.
-            **({"service_placement": [r["runtime_boundary"] for r in measured
-                                      if (r.get("runtime_boundary") or {}).get(
-                                          "agent_placement")]}
-               if any((r.get("runtime_boundary") or {}).get("agent_placement")
-                      for r in measured) else {}),
             "score": sum(scores) / len(scores) if scores else None,
             "scorer_isolation_class": isolation,
             "scorer_isolation_comparable": isolation != "unknown",

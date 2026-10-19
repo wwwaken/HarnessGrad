@@ -35,9 +35,11 @@ not read is reported as *unobserved*, never as matching: the whole point of the 
 
 It changes no admission behaviour by itself: the receipt only admits a task when the
 caller hands it to `eval/run/runner.py`'s `_refuse_unobserved_policies`, and the one
-producer is `_observations_for` there, which probes the container an `exec` environment
-with `placement: "inside"` really runs in (`eval/containers/service_exec.py`) and caches
-one receipt per distinct `(image, cpus, memory_mb, network)` for the process.
+producer is `_observations_for` there. That caller derives the probe's image, bounds and
+rootfs mode from the **launcher** (`eval/containers/container.py:envelope`) rather than from
+the dataset's declaration, and refuses a receipt when the two disagree; `observe_for`
+resolves the declared `network` policy word the way the runner will, because `services` is
+a policy and not a docker network name.
 """
 from __future__ import annotations
 
@@ -102,10 +104,11 @@ def _docker_argv(image: str, limits: dict, network: str | None,
             "--memory", limits["memory"],
             "--pids-limit", str(limits["pids"])]
     if read_only:
-        # A task container runs with a read-only rootfs; a **service** container does not
-        # (the service writes its own state), so the flag is a property of the thing being
-        # observed and not of the probe. Declaring a read-only rootfs while starting a
-        # writable one would put a value in the receipt that nothing measured.
+        # Whether the rootfs is read-only is a property of the container being described,
+        # not of the probe: `container_mod.run` starts the harness's container read-only,
+        # and a launch that does not must not be described by a receipt that says it did.
+        # Claiming a read-only rootfs while starting a writable one would put a value in
+        # the receipt that nothing measured.
         argv += ["--read-only", "--tmpfs", "/tmp:rw,size=64m"]
     argv += ["--network", network or "none",
              "--entrypoint", "sleep", image, str(DEFAULT_TIMEOUT_S)]
@@ -267,8 +270,8 @@ def observe(image: str, spec: dict, *, network: str | None = None,
 
 def observe_for(image: str, spec: dict, *, network: str | None, run_id: str = "",
                 runner=None, timeout_s: float = DEFAULT_TIMEOUT_S,
-                read_only: bool = False) -> Observation:
-    """`observe` on the network the task will actually get, on a service's terms.
+                read_only: bool = True) -> Observation:
+    """`observe` on the network the task will actually get, for an `exec` environment.
 
     `network` here is the declared **policy** (INTERFACE.md §2.5.2): `none`, `services` or
     `bridge`. The policy word is not a docker network name, so it cannot be handed to
@@ -280,9 +283,10 @@ def observe_for(image: str, spec: dict, *, network: str | None, run_id: str = ""
     receipt for a task that is about to get an internal network: true about a container
     nobody runs.
 
-    `read_only` defaults to `False` because this function exists for service containers,
-    which have a writable rootfs. The probe therefore also measures one, instead of
-    claiming a read-only rootfs the container will not have.
+    `read_only` is the **launcher's** value for the container being described
+    (`container_mod.run` defaults it to `True`; a task whose state is the container's
+    filesystem does not pass it). It is a parameter because the rootfs in the receipt has
+    to be the rootfs the harness saw, and only the caller knows which launcher ran.
     """
     runner = runner or _default_runner(timeout_s)
     probe_network: str | None = None

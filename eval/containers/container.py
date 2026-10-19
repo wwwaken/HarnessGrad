@@ -542,7 +542,7 @@ def command(argv: list[str], *, image: str, task_dir: Path, task_mount: str,
             immutable_runtimes: tuple[tuple[Path, str], ...] = (),
             limits: dict | None = None) -> list[str]:
     """The `docker run` argv. Split out so `self_check` and the tests can read it."""
-    limits = limits or {}
+    limits = envelope(limits)
     cmd = ["docker", "run", "--rm", "--network", network]
 
     if read_only:
@@ -553,9 +553,9 @@ def command(argv: list[str], *, image: str, task_dir: Path, task_mount: str,
         # confusing failures; it is a tmpfs, so it dies with the container.
         cmd += ["--read-only", "--tmpfs", "/tmp:rw,exec,nosuid,size=512m,mode=1777"]
 
-    cmd += ["--pids-limit", str(limits.get("pids", 1024))]
-    cmd += ["--memory", str(limits.get("memory", "4g"))]
-    cmd += ["--cpus", str(limits.get("cpus", "2"))]
+    cmd += ["--pids-limit", str(limits["pids"])]
+    cmd += ["--memory", limits["memory"]]
+    cmd += ["--cpus", _number(limits["cpus"])]
 
     cmd += _mounts(task_dir, task_mount, harness_root, tuple(state_dirs),
                    task_dir_writable, tuple(readonly_paths))
@@ -1052,3 +1052,53 @@ def limits_from(spec: dict) -> dict:
     """The `docker run/create` resource envelope declared by an environment."""
     return {"cpus": spec.get("cpus", 2), "pids": 1024,
             "memory": f"{int(spec.get('memory_mb', 4096))}m"}
+
+
+def _number(value) -> str:
+    """A CPU count as docker spells it: `2`, not `2.0`.
+
+    `envelope()` normalises to a float so two envelopes compare as numbers; the argv must
+    not inherit that, because `--cpus 2.0` and `--cpus 2` are the same request and only one
+    of them is the string this module has always passed.
+    """
+    try:
+        number = float(value)
+    except (TypeError, ValueError) as exc:
+        raise ContainerUnavailable(f"unreadable cpu limit {value!r}") from exc
+    return str(int(number)) if number.is_integer() else str(number)
+
+
+def envelope(limits: dict | None = None) -> dict:
+    """The resource flags a container **really gets**, in one place and in one shape.
+
+    Three readers have to agree about this and used to have no way to: `command()` writes
+    the flags, `eval/service/container_observation.py` measures them back, and the runner
+    has to know whether an environment's declared `cpus`/`memory_mb` are what the launcher
+    applies. A fourth hand-written copy of "the defaults are 2 / 4g / 1024" is a copy that
+    can drift, and the drift would be invisible -- the receipt would describe a container
+    nobody runs.
+
+    `limits=None` is not "no limits": it is docker's default CPU, memory and PID envelope,
+    which is what `command()` has always applied when a caller passes none. `numbers` are
+    the same values as `memory_mb`, so a caller that has to compare an envelope against a
+    declaration does not have to parse `4g`.
+    """
+    limits = limits or {}
+    memory = str(limits.get("memory", "4g"))
+    return {"cpus": float(limits.get("cpus", 2)), "pids": int(limits.get("pids", 1024)),
+            "memory": memory, "memory_mb": _memory_mb(memory)}
+
+
+def _memory_mb(memory: str) -> int:
+    """The MB a docker memory string names. Only the two spellings `command()` emits."""
+    suffixes = {"g": 1024, "m": 1}
+    text = memory.strip().lower()
+    factor = suffixes.get(text[-1:], None)
+    if factor is not None:
+        text = text[:-1]
+    try:
+        value = float(text)
+    except ValueError as exc:
+        raise ContainerUnavailable(
+            f"unreadable docker memory limit {memory!r}") from exc
+    return int(round(value * (factor or 1)))

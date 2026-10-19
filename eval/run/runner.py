@@ -14,7 +14,6 @@ from pathlib import Path
 
 import eval.containers.container as container_mod
 import eval.containers.harness_runtime as harness_runtime
-import eval.containers.service_exec as service_exec_mod
 import eval.service.modelgate as modelgate_mod
 from eval.service import container_observation as container_observation_mod
 from eval.service.native_model_route import NativeModelRoute
@@ -118,26 +117,64 @@ def _refuse_unobserved_policies(task: dict, env: dict | None,
     return result
 
 
-def _ambiguous_placement(env: dict | None) -> bool:
-    """Does this environment's `placement` name something the platform refuses to guess?
-
-    Only the one case `service_exec.plan` refuses: `inside` with several services. Kept as
-    a predicate beside `_observations_for` because the *refusal* it produces belongs to
-    `run_one`, and a caller that intercepts the task earlier must not replace its reason
-    with "unobserved".
-    """
-    try:
-        service_exec_mod.plan(env)
-    except service_exec_mod.ServiceExecUnavailable:
-        return True
-    return False
-
-
 #: The observation receipts this process has taken, keyed by the container shape each one
 #: measured. **Module-level, because a probe costs about 1.3 s and a run is one process**:
 #: a per-round cache would re-probe on every round of a twenty-round run for a value that
 #: cannot change while the daemon and the image do not.
 _OBSERVATIONS: dict[tuple, dict | None] = {}
+
+
+def _environment_shape(env: dict) -> dict | None:
+    """The container `_run_one` gives the harness, or `None` when it cannot be described.
+
+    Every field comes from the **launcher**, never from the declaration, because the
+    receipt is only worth something as evidence about the container the harness really ran
+    in:
+
+    * the image is `env["image"]`, which `container_mod.run` starts;
+    * the bounds are `container_mod.envelope(None)`, because `container_mod.run` takes no
+      `limits` and so hands `container_mod.command` none, whose defaults are docker's
+      (2 cpus, 4g, 1024 pids). **Measured**: an environment declaring `cpus: 4` still gets
+      `--cpus 2` on this path, so reading `env["cpus"]` here would be a second,
+      hand-written description of a container the platform does not start;
+    * `read_only` is that launcher's own default (it passes no `read_only`), which is what
+      decides whether the rootfs in the receipt is the one the harness saw;
+    * the network is the declared **policy word** (`none`/`services`/`bridge`) -- which is
+      what `_run_one` hands the launcher once it has resolved `services` to a per-task
+      internal network. The probe resolves it the same way
+      (`eval/service/container_observation.py:observe_for`).
+    """
+    # Only the launcher this module can describe. `state: "container"`
+    # (`_run_one_container_state`) has its own envelope, a writable rootfs, an
+    # always-internal network and an optional second `bridge` connection, so a probe of
+    # the launch below would put a `NetworkMode` in the receipt that that container does
+    # not have. Its receipt is a separate change, not a guess; it keeps today's refusal.
+    if env.get("state", "mount") != "mount":
+        return None
+    if not env.get("image"):
+        return None
+    limits = container_mod.envelope(None)
+    return {"image": env["image"], "cpus": limits["cpus"], "memory_mb": limits["memory_mb"],
+            "pids": limits["pids"], "read_only": True,
+            "network": env.get("network", "none")}
+
+
+def _declared_but_not_applied(env: dict, shape: dict) -> str | None:
+    """Why the environment's declared bounds are not the launcher's, or `None`.
+
+    A receipt is evidence about one container. If a dataset declared 4 cpus and the
+    launcher gives 2, admitting the task on a receipt for the declared numbers would be the
+    specific lie this gate exists to prevent -- so the task keeps its refusal and the
+    reason names the launcher.
+    """
+    for field, default in (("cpus", 2), ("memory_mb", 4096)):
+        declared, applied = float(env.get(field, default)), float(shape[field])
+        if abs(declared - applied) > 1e-9:
+            return (f"the environment declares {field}={declared:g} and the launcher applies "
+                    f"{field}={applied:g} (`container_mod.run` passes no `limits`, so "
+                    f"`command()` uses docker's defaults); a receipt would describe a "
+                    f"container the score does not come from")
+    return None
 
 
 def _observations_for(envs: dict | None, tasks: list[dict], *,
@@ -147,53 +184,60 @@ def _observations_for(envs: dict | None, tasks: list[dict], *,
     Admission refuses `env.cpus`/`env.memory_mb`/`env.exec_defaults`/`env.network` unless
     the caller shows a receipt from `eval/service/container_observation.py` whose `covers`
     names every declared field. Nothing in production supplied one, which is why AppWorld
-    stopped at `backend_observation_unavailable` rather than running.
+    stopped at `backend_observation_unavailable` (2026-10-18) instead of running.
 
-    A receipt is only *about* something when the container it measured is the one the
-    harness runs in, so this produces one for the `placement: "inside"` environments and
-    for nothing else: `service_exec.observation_spec` refuses when the service's bounds are
-    not the environment's, and an environment with no receipt stays refused. Probing an
-    `exec` environment's own image instead would be cheaper and would admit tasks the
-    platform still does not run inside the container it measured, which is the lie this
-    gate exists to prevent.
-
-    Failures are cached as `None` too. A probe that fails stays failed for this process,
-    and re-probing it once per task would turn one broken daemon into 585 identical
-    three-second waits before a refusal that was decided already.
+    A probe costs about 1.3 s, so it is taken once per distinct `(image, cpus, memory_mb,
+    pids, read_only, network)` and cached for the process; a 585-task set must not pay it
+    585 times. Failures are cached as `None` for the same reason: one broken daemon must
+    not become 585 identical waits before a refusal that was already decided.
     """
     observations: dict[str, dict] = {}
+    said: set[str] = set()
     for task in tasks:
         task_id = task["task_id"]
         env = (envs or {}).get(task_id) or {}
-        try:
-            plan = service_exec_mod.plan(env)
-        except service_exec_mod.ServiceExecUnavailable:
-            continue                       # refused by name when the task is measured
-        if plan is None:
+        if env.get("kind") != "exec":
             continue
-        try:
-            key = service_exec_mod.shape(plan, env)
-        except service_exec_mod.ServiceExecUnavailable:
+        if not (env.get("services") or []):
+            # The refusal that does not change: a plain `exec` environment's declared
+            # bounds are still unobserved. Only the declaration whose missing observation
+            # blocked the services contract (AppWorld, 2026-10-18) is probed here;
+            # widening the receipt to every exec environment would admit datasets nobody
+            # has measured, which is a separate change with its own review.
             continue
+        shape = _environment_shape(env)
+        if shape is None:
+            # Once per run, not once per task: a property of the dataset's state kind, and
+            # 585 copies of one sentence would bury the rest of the log.
+            if "state" not in said:
+                said.add("state")
+                print(f"  admission: environments with state {env.get('state')!r} keep "
+                      f"today's refusal in this commit -- their launcher is a different "
+                      f"container shape -- so nothing is probed for them",
+                      file=sys.stderr)
+            continue
+        key = tuple(shape[field] for field in
+                    ("image", "cpus", "memory_mb", "pids", "read_only", "network"))
         if key not in _OBSERVATIONS:
-            try:
-                image, spec = service_exec_mod.observation_spec(plan, env)
-            except service_exec_mod.ServiceExecUnavailable as exc:
-                # One line per distinct container shape, not per task: 585 copies of the
-                # same sentence would bury the rest of the log.
+            problem = _declared_but_not_applied(env, shape)
+            if problem is not None:
                 _OBSERVATIONS[key] = None
-                print(f"  admission: no observation for {key[0]}, so every task in it "
-                      f"stays refused: {exc}", file=sys.stderr)
-                continue
-            try:
-                _OBSERVATIONS[key] = container_observation_mod.observe_for(
-                    image, spec, network=env.get("network"), run_id=run_id).receipt()
-            except (container_observation_mod.ObservationError, OSError,
-                    subprocess.TimeoutExpired) as exc:
-                _OBSERVATIONS[key] = None
-                print(f"  admission: the observation probe could not run for {image} "
-                      f"({type(exc).__name__}: {exc}); nothing was observed, so every "
-                      f"task that needs it stays refused", file=sys.stderr)
+                print(f"  admission: no observation for {shape['image']}: {problem}",
+                      file=sys.stderr)
+            else:
+                try:
+                    _OBSERVATIONS[key] = container_observation_mod.observe_for(
+                        shape["image"],
+                        {"cpus": shape["cpus"], "memory_mb": shape["memory_mb"]},
+                        network=shape["network"], run_id=run_id,
+                        read_only=shape["read_only"]).receipt()
+                except (container_observation_mod.ObservationError, OSError,
+                        subprocess.TimeoutExpired) as exc:
+                    _OBSERVATIONS[key] = None
+                    print(f"  admission: the observation probe could not run for "
+                          f"{shape['image']} ({type(exc).__name__}: {exc}); nothing was "
+                          f"observed, so every task that needs it stays refused",
+                          file=sys.stderr)
         if _OBSERVATIONS[key] is not None:
             observations[task_id] = _OBSERVATIONS[key]
     return observations
@@ -339,14 +383,6 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
     # absence of a declaration, not a separate code path invented for old datasets.
     env_spec = env or {"kind": "files"}
     is_exec = env_spec.get("kind") == "exec"
-    # `placement` is the declaration this platform read but never applied: an `exec`
-    # environment that names a service and says `placement: "inside"` runs the harness *in*
-    # that service's container (`eval/containers/service_exec.py`). `None` is every other
-    # environment -- absent, `"beside"`, or no service -- and it is the unchanged path.
-    try:
-        inside = service_exec_mod.plan(env_spec) if is_exec else None
-    except service_exec_mod.ServiceExecUnavailable as exc:
-        return _invalid(task, exc, stage="service placement admission", service=None)
     record_spec = ((setup or {}).get("tool_relay") or {}).get("record")
     if record_spec is not None:
         try:
@@ -448,13 +484,39 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                           if stepwise_session is not None else task)
             task_file.write_text(json.dumps(runtime_task(actor_task, setup)))
 
-        # ---- what the harness is launched with, decided before the services start ----
-        #
-        # This block used to sit below `services.start`. It moved up for exactly one
-        # reason: `placement: "inside"` adds the harness's own trees to the **service**
-        # container (`eval/containers/service_exec.py`), and a docker mount can only be
-        # added when a container is created. Nothing here depends on a service running, so
-        # the order decides only which of two failures is reported first.
+        # Services come up before the harness and are health-checked before it starts
+        # (INTERFACE.md §2.5.7, steps 1-3). A harness that starts against a service
+        # that is still initialising does not produce a bad measurement, it produces a
+        # measurement of a race -- so the failure is refused here rather than scored.
+        if service_specs:
+            try:
+                running = services_mod.start(
+                    service_specs,
+                    # A caller that names no root gets a throwaway one beside the task
+                    # directory: an in-process caller (a test) wants the lifecycle
+                    # exercised, not a directory in somebody's run tree.
+                    recordings_root=(recordings_root
+                                     or workdir.parent / f".recordings-{run_id or 'run'}"),
+                    run_id=run_id or "run", task_id=task["task_id"],
+                    run_seed=run_seed or "0")
+                network_name = running.network
+            except services_mod.ServiceUnavailable as exc:
+                return _invalid(task, exc, stage=exc.stage, service=exc.service)
+
+        if web_spec:
+            try:
+                if network_name is None:
+                    network_name = services_mod.create_network(run_id or "run", task["task_id"])
+                    owns_network = True
+                record_base = recordings_root or workdir.parent
+                web_gateway = web_gateway_mod.WebGateway(
+                    bind_host=services_mod.gateway_ip(network_name),
+                    record_path=record_base / task["task_id"] / "web" / "requests.jsonl",
+                    enable_search=bool(web_spec.get("search")),
+                    enable_fetch=bool(web_spec.get("fetch"))).start()
+            except Exception as exc:
+                return _invalid(task, exc, stage="start", service="web")
+
         manifest = json.loads((repo / "harness.json").read_text())
         entry = manifest["entrypoint"]
         # Trees this harness needs in order to run at all — a CLI it drives, a
@@ -462,39 +524,22 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
         # know where somebody's agent CLI is installed.
         runtime_paths = tuple(Path(p).expanduser()
                               for p in (manifest.get("runtime_paths") or []))
-        # The image the harness's process runs inside. For `placement: "inside"` that is
-        # the **service's** image, because the process is `docker exec`'d into the service
-        # container; asking the environment's own `image` here would ask the wrong image
-        # which interpreter it has.
-        harness_image = inside.image if inside is not None else env_spec.get("image")
         # Inside a container the entrypoint is still `<repo>/<entry>` because the
         # harness tree is mounted at its own host path; only the task's paths move,
         # because the dataset named a location *in the environment*.
-        #
-        # `placement: "inside"` is the one case that does **not** translate, and it cannot:
-        # the task directory is bound into the service container at its host path
-        # (`service_exec.mounts`), and the environment's own `workdir` is already occupied
-        # inside a service image -- for AppWorld it is `/appworld`, the world server's data
-        # root (`data/datasets/appworld/server.sh`). Mounting the task over it would take
-        # the environment's data away, and every action would then fail for a reason
-        # nothing would name.
         #
         # The interpreter is **the platform's own** for `exec`, mounted in read-only,
         # rather than whatever `python` the image happens to have -- which may be
         # nothing (measured: the real Terminal-Bench image has no `python3` at all).
         # `files` keeps the bare name, because there the host's PATH is the right answer
         # and changing it would change what every existing dataset measures.
-        if inside is not None:
-            task_arg, workdir_arg = str(task_file), str(workdir)
-        elif is_exec:
-            task_arg = container_mod.to_container(task_file, workdir, task_mount)
-            workdir_arg = task_mount
-        else:
-            task_arg, workdir_arg = str(task_file), str(workdir)
+        task_arg = (container_mod.to_container(task_file, workdir, task_mount)
+                    if is_exec else str(task_file))
+        workdir_arg = task_mount if is_exec else str(workdir)
         # The image's interpreter when it has one (§2.5.3), the platform's when it does
         # not. `files` keeps the bare name: there the host's PATH is the right answer and
         # changing it would change what every existing dataset measures.
-        image_python = container_mod.image_python(harness_image) if is_exec else None
+        image_python = container_mod.image_python(env_spec["image"]) if is_exec else None
         python = image_python or (sys.executable if is_exec else "python")
         argv = [python, str(repo / entry), "--task", task_arg,
                 "--workdir", workdir_arg]
@@ -504,14 +549,9 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
         # ordinary case: nobody configured one, and the run then behaves exactly as it
         # did before this existed. See `eval/containers/harness_runtime.py` for why this is not a
         # derived image and not the platform's interpreter.
-        # The digest is the one of the image the harness runs in -- the service's for
-        # `placement: "inside"` -- because an overlay is resolved per image and a
-        # version of the harness's dependencies chosen for a different image is a
-        # `ModuleNotFoundError` at the first import.
         overlay = harness_runtime.lookup(
-            repo, python, image=(harness_image if is_exec else None),
-            image_digest=((inside.service.get("image_digest") if inside is not None
-                           else env_spec.get("image_digest")) if is_exec else None))
+            repo, python, image=(env_spec["image"] if is_exec else None),
+            image_digest=(env_spec.get("image_digest") if is_exec else None))
         if overlay:
             # Only the paths are collected here; the environment is applied below, where
             # `child_env` exists. It used to be written here, one screen above its own
@@ -530,81 +570,6 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
         # sandbox needs a real directory to mount over. Empty and gitignored, so it
         # cannot move a sha.
         state_dir.mkdir(exist_ok=True)
-
-        # The dataset's interaction environment, if it declares one. Created here rather
-        # than just before the launch because an `inside` placement binds its socket into
-        # the service container, which is already running by then. The whole point is that
-        # the agent gets a socket and never the state; a declared relay that cannot start
-        # is `unmeasured`, not a task scored against a hole.
-        if stepwise_session is not None:
-            # Project only this read-only socket directory. Neither gold nor session
-            # state is written beneath the actor's writable task directory.
-            stepwise_dir = Path(tempfile.mkdtemp(prefix="hg-stepwise-"))
-            stepwise_relay = StepwiseRelay(
-                stepwise_dir, stepwise_session, contract=chess_stepwise.STEPWISE,
-                public_fields=chess_stepwise.PUBLIC_FIELDS, timeout_s=timeout_s)
-        if tool_relay_mod.declaration(setup) is not None:
-            try:
-                tool_relay = tool_relay_mod.start(setup, **({"context": {
-                    "task_id": task["task_id"], "run_id": run_id or "direct",
-                    "trial_id": trial_id or "trial-1", "seed": run_seed}}
-                    if record_spec is not None else {}))
-            except RuntimeError as exc:
-                return _invalid(task, exc, stage="tool relay", service=None)
-
-        # One mount plan, from the same inputs the second-container path passes to
-        # `container_mod.run`, and for the one container a plan names. The model *route*
-        # needs no mount here: on an `exec` environment the agent's model is published as a
-        # TCP gateway on the task's network (`eval/service/modelgate.py`) and the harness is
-        # handed `HG_AGENT_BASE_URL` in `child_env`; the service container is already on
-        # that network. A socket route is still passed through when one exists, at the same
-        # fixed destination the bwrap path publishes it at.
-        exec_mounts: dict[str, tuple[str, ...]] = {}
-        if inside is not None:
-            exec_mounts[inside.name] = service_exec_mod.mounts(
-                task_dir=workdir, harness_root=repo, state_dir=state_dir,
-                readonly_paths=(tuple(harness_runtime.extra_paths(overlay))
-                                + (() if image_python
-                                   else container_mod.interpreter_paths())),
-                model_socket=(model_gateway.socket_path
-                              if isinstance(model_gateway, NativeModelRoute) else None),
-                tool_socket=tool_relay.path if tool_relay is not None else None,
-                stepwise_dir=stepwise_dir,
-                network=network_name or env_spec.get("network"))
-
-        # Services come up before the harness and are health-checked before it starts
-        # (INTERFACE.md §2.5.7, steps 1-3). A harness that starts against a service
-        # that is still initialising does not produce a bad measurement, it produces a
-        # measurement of a race -- so the failure is refused here rather than scored.
-        if service_specs:
-            try:
-                running = services_mod.start(
-                    service_specs,
-                    # A caller that names no root gets a throwaway one beside the task
-                    # directory: an in-process caller (a test) wants the lifecycle
-                    # exercised, not a directory in somebody's run tree.
-                    recordings_root=(recordings_root
-                                     or workdir.parent / f".recordings-{run_id or 'run'}"),
-                    run_id=run_id or "run", task_id=task["task_id"],
-                    run_seed=run_seed or "0",
-                    exec_mounts=exec_mounts)
-                network_name = running.network
-            except services_mod.ServiceUnavailable as exc:
-                return _invalid(task, exc, stage=exc.stage, service=exc.service)
-
-        if web_spec:
-            try:
-                if network_name is None:
-                    network_name = services_mod.create_network(run_id or "run", task["task_id"])
-                    owns_network = True
-                record_base = recordings_root or workdir.parent
-                web_gateway = web_gateway_mod.WebGateway(
-                    bind_host=services_mod.gateway_ip(network_name),
-                    record_path=record_base / task["task_id"] / "web" / "requests.jsonl",
-                    enable_search=bool(web_spec.get("search")),
-                    enable_fetch=bool(web_spec.get("fetch"))).start()
-            except Exception as exc:
-                return _invalid(task, exc, stage="start", service="web")
 
         # A writable HOME, and the XDG directories, per task.
         #
@@ -632,12 +597,7 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
         if is_exec:
             # An allowlist, and container-side HOME/XDG/TMPDIR: forwarding the host
             # values would name directories that do not exist inside the image.
-            #
-            # `task_mount` for the image's own container, the task's **host** path for a
-            # `placement: "inside"` environment, because that is where the service
-            # container has the task directory bound (`service_exec.mounts`).
-            child_env = container_mod.container_env(
-                str(workdir) if inside is not None else task_mount, deadline_s=timeout_s)
+            child_env = container_mod.container_env(task_mount, deadline_s=timeout_s)
         else:
             child_env = harness_env()
             child_env.update({
@@ -710,20 +670,28 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                     + (() if image_python else container_mod.interpreter_paths()))
                    if is_exec else ())
 
-        # Created above, beside the mount plan that publishes its socket. Only the
-        # variable it hands the harness is set here, where `child_env` exists.
-        if stepwise_relay is not None:
+        if stepwise_session is not None:
+            # Project only this read-only socket directory. Neither gold nor session
+            # state is written beneath the actor's writable task directory.
+            stepwise_dir = Path(tempfile.mkdtemp(prefix="hg-stepwise-"))
+            stepwise_relay = StepwiseRelay(
+                stepwise_dir, stepwise_session, contract=chess_stepwise.STEPWISE,
+                public_fields=chess_stepwise.PUBLIC_FIELDS, timeout_s=timeout_s)
             child_env["HG_STEPWISE_SOCKET"] = str(stepwise_relay.path)
 
+        # The dataset's interaction environment, if it declares one. Started here and not in
+        # the harness: the whole point is that the agent gets a socket and never the state.
+        # A declared relay that cannot start is `unmeasured`, not a task scored against a hole.
+        if tool_relay_mod.declaration(setup) is not None:
+            try:
+                tool_relay = tool_relay_mod.start(setup, **({"context": {
+                    "task_id": task["task_id"], "run_id": run_id or "direct",
+                    "trial_id": trial_id or "trial-1", "seed": run_seed}}
+                    if record_spec is not None else {}))
+            except RuntimeError as exc:
+                return _invalid(task, exc, stage="tool relay", service=None)
+
         def launch():
-            if inside is not None:
-                # The environment's own container (`eval/containers/service_exec.py`). No
-                # second container is started: the task directory, the harness tree and
-                # the task's scratch space were bound into the service container when it
-                # was created, and `HARNESSGRAD_STATE`/`HOME` name them at their host paths.
-                return service_exec_mod.run(
-                    argv, container=running.containers[inside.name],
-                    workdir=workdir, env=child_env, timeout_s=timeout_s)
             if is_exec:
                 # `runtime_paths` is deliberately not applied: it exists because a
                 # host CLI lives outside `/usr`, and inside a container the runtime is
@@ -892,14 +860,7 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                     "verifier_timeout_s": verify_timeout_s,
                     "agent_network": env_spec.get("network", "inherited") if not is_exec else network,
                     "agent_package_projected": bool(package_overlays),
-                    "verifier_package": "trusted",
-                    # What actually ran, for a placement that is not the second container.
-                    # Empty for every other environment, so no existing record changes.
-                    **({} if inside is None else service_exec_mod.receipt(
-                        plan=inside, container=running.containers[inside.name],
-                        workdir=workdir, mounts_used=exec_mounts[inside.name],
-                        network=network,
-                        recorded=inside.name in (running.recordings or {})))},
+                    "verifier_package": "trusted"},
                 # `account()` and not just "published": the connection counts are what
                 # turn a harness-side `Connection error` into a named cause. Read while
                 # the gateway is still up -- `finally` stops it right after this returns.
@@ -1433,9 +1394,9 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
     observations = ({} if diagnostic_authorization is not None
                     else _observations_for(envs, tasks, run_id=run_id))
     if observations:
-        print(f"  admission: {len({id(r) for r in observations.values()})} container "
-              f"observation(s) admit {len(observations)} of {len(tasks)} task(s)",
-              file=sys.stderr)
+        admitted = len({id(receipt) for receipt in observations.values()})
+        print(f"  admission: {admitted} container observation(s) admit "
+              f"{len(observations)} of {len(tasks)} task(s)", file=sys.stderr)
 
     # ---- one task, `trials` times, as a function ----------------------------------
     #
@@ -1461,12 +1422,6 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
                                               (verifiers or {}).get(tid), run_id=run_id,
                                               diagnostic_authorization=diagnostic_authorization,
                                               observation=observation)
-        if refusal is not None and _ambiguous_placement((envs or {}).get(tid)):
-            # An unobserved policy is not the reason this task cannot run: its placement
-            # names several services and the platform will not guess which one is the
-            # environment. Let `run_one` say that, rather than sending the reader to the
-            # probe to fix a contradiction no probe can resolve.
-            refusal = None
         if refusal is not None:
             _write_progress(progress_dir, round_no, tid, [], refusal["invalid"],
                             diagnostic=refusal, enforcement=enforcement)
@@ -1902,9 +1857,12 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
             # for the `env.cpus`/`env.memory_mb`/`env.exec_defaults`/`env.network` fields
             # `_refuse_unobserved_policies` demands, and a run that ran because of one has
             # to carry it: "we observed this" is a claim a reader can only check against
-            # the record.
-            "env_observations": [r for i, r in enumerate(observations.values())
-                                 if r not in list(observations.values())[:i]],
+            # the record. Absent when nothing was probed, so an unobserved round's result
+            # is unchanged.
+            **({"env_observations": [
+                   receipt for index, receipt in enumerate(observations.values())
+                   if receipt not in list(observations.values())[:index]]}
+               if observations else {}),
             "identity_declared": identity_declared,
             "identity_variants": identity_variants,
             "tokens": tokens}
