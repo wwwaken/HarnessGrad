@@ -28,7 +28,13 @@ from eval.run.integrity import NOT_PLATFORM, PLATFORM, PLATFORM_ROOT, snapshot  
 #: 运行产物与缓存:由运行本身生成,不是平台源码。和 `runs/` 同类,所以按前缀放行,
 #: 不逐个登记 —— 它们的名字带日期/编号,登记不完。
 _GENERATED_PREFIXES = ("runs", "__pycache__", ".git", ".pytest_cache",
-                      ".scratch", ".ruff_cache", ".overleaf-mcp")
+                      ".scratch", ".ruff_cache", ".overleaf-mcp",
+                      # `improver-hg-cli-ask-*.log`: the transcript an improver call dumps
+                      # into the directory it was started from. Written *by* a run, named
+                      # with a random suffix, and already ignored by `.gitignore`; without
+                      # this prefix one improver call leaves the whole classification test
+                      # red for whoever runs it next.
+                      "improver-hg-cli-ask-")
 
 
 def _top_level() -> list[str]:
