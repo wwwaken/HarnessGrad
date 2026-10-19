@@ -451,3 +451,7 @@ console/.cache/
 # launch ledger (time, run id, full argv). Outputs, not source.
 console/.launch/
 console/.launch-log.jsonl
+
+# Local model credentials for the console's chat. Never committed: the key lives here and
+# only the server reads it.
+console/.local/
