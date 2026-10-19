@@ -148,7 +148,7 @@ def harness_env() -> dict:
     the moment it is added rather than when someone remembers the prefix.
     """
     env = {k: v for k, v in os.environ.items()
-           if not k.startswith(("HG_METHOD_", "HG_ENV_", "HARNESSGRAD_SEED"))
+           if not k.startswith(("HG_METHOD_", "HG_ENV_", "HG_JUDGE_", "HARNESSGRAD_SEED"))
            and k not in _improver_credentials()}
     return env
 
@@ -187,15 +187,35 @@ def run_one(repo: Path, task: dict, timeout_s: int | None = None,
             recordings_root: Path | None = None,
             diagnostic_authorization: Authorization | None = None,
             trial_id: str | None = None,
-            observation: dict | None = None) -> dict:
+            observation: dict | None = None,
+            _worker: dict | None = None) -> dict:
     if diagnostic_authorization is not None:
         diagnostic_authorization.require_scope(run_id, [task["task_id"]])
     refusal = _refuse_unobserved_policies(
         task, env, verifier, run_id=run_id,
         diagnostic_authorization=diagnostic_authorization, observation=observation)
+    # **Both branches of this merge are kept, and neither is optional.** Ours is the admission
+    # receipt (`appworld-observe`): a container observation that admits only the policy fields
+    # it actually measured back. Theirs is the cooperative/worker execution path (`workers` in
+    # a setup) and its runtime receipt. Resolving by dropping either would have silently
+    # removed a capability -- one an AppWorld run needs to be admitted at all, the other a
+    # multi-peer evaluation that only a dataset declaring `workers` can reach.
+    if (setup or {}).get("workers") is not None and refusal is None:
+        from eval.run.cooperative import run
+        cooperative = run(repo, task, setup=setup, verifier=verifier, env=env,
+                          timeout_s=timeout_s, verify_timeout_s=verify_timeout_s,
+                          sandbox=sandbox, run_id=run_id, run_seed=run_seed,
+                          trial_id=trial_id, recordings_root=recordings_root)
+        if observation is not None:
+            cooperative.setdefault("env_observation", observation)
+        return cooperative
+    runtime_receipt = {}
     result = refusal if refusal is not None else _run_one(
         repo, task, timeout_s, sandbox, setup, verifier, verify_timeout_s,
-        env, run_id, run_seed, recordings_root, trial_id=trial_id)
+        env, run_id, run_seed, recordings_root, trial_id=trial_id,
+        runtime_receipt=runtime_receipt, worker=_worker)
+    if runtime_receipt:
+        result["runtime_services"] = runtime_receipt
     if observation is not None and refusal is None:
         result.setdefault("env_observation", observation)
     if result.get("verdict") is not None:
@@ -211,7 +231,8 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
             verify_timeout_s: int | None = None,
             env: dict | None = None,
             run_id: str = "", run_seed: str = "",
-            recordings_root: Path | None = None, *, trial_id: str | None = None) -> dict:
+            recordings_root: Path | None = None, *, trial_id: str | None = None,
+            runtime_receipt: dict | None = None, worker: dict | None = None) -> dict:
     """Run the harness on one task in a throwaway dir, off the platform's disk.
 
     Returns {task_id, answer, trace, exit_code}. A non-zero exit is recorded as
@@ -235,6 +256,17 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
     # absence of a declaration, not a separate code path invented for old datasets.
     env_spec = env or {"kind": "files"}
     is_exec = env_spec.get("kind") == "exec"
+    record_spec = ((setup or {}).get("tool_relay") or {}).get("record")
+    if record_spec is not None:
+        try:
+            tool_relay_mod.validate_record(record_spec)
+            if not sandbox or is_exec or (verifier or {}).get("kind") != "command":
+                raise ValueError("recorded tool relay requires sandboxed files and a command verifier")
+            if (verifier or {}).get("scorer_bundle", {}).get("isolation_class") == "pristine-offline":
+                raise ValueError("recorded tool relay cannot use pristine-offline verification")
+        except ValueError as exc:
+            return _invalid(task, exc, stage="tool recording admission", service=None)
+    runtime_receipt = runtime_receipt if runtime_receipt is not None else {}
     try:
         immutable_runtimes = projections((setup or {}).get("files"))
         verifier_runtimes = projections((verifier or {}).get("inputs"))
@@ -299,6 +331,7 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
     runtime_dir = None
     stepwise_relay = None
     stepwise_dir = None
+    tool_relay = None
     package_overlays = ()
     workdir = Path(tempfile.mkdtemp(prefix="hg-task-"))
     try:
@@ -449,6 +482,8 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                 # about, where a verifier would then be reading them.
                 "TMPDIR": str(home / "tmp"),
             })
+        if worker is not None:
+            child_env["HG_WORKER_ID"] = worker["id"]
         child_env["HG_AGENT_DEADLINE_S"] = str(timeout_s)
         child_env["HARNESSGRAD_STATE"] = str(state_dir)
         if overlay:
@@ -520,10 +555,12 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
         # The dataset's interaction environment, if it declares one. Started here and not in
         # the harness: the whole point is that the agent gets a socket and never the state.
         # A declared relay that cannot start is `unmeasured`, not a task scored against a hole.
-        tool_relay = None
         if tool_relay_mod.declaration(setup) is not None:
             try:
-                tool_relay = tool_relay_mod.start(setup)
+                tool_relay = tool_relay_mod.start(setup, **({"context": {
+                    "task_id": task["task_id"], "run_id": run_id or "direct",
+                    "trial_id": trial_id or "trial-1", "seed": run_seed}}
+                    if record_spec is not None else {}))
             except RuntimeError as exc:
                 return _invalid(task, exc, stage="tool relay", service=None)
 
@@ -560,6 +597,8 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
             # platform's own environment rather than guessed from the run id.
             work_root = Path(os.environ.get("HARNESSGRAD_WORK_ROOT")
                              or repo.parent.parent)
+            if worker is not None:
+                work_root = worker["root"]
             return sandbox_mod.run(argv, platform=PLATFORM_ROOT,
                                    work_root=work_root, task_dir=workdir,
                                    env=child_env, timeout_s=timeout_s, cwd=workdir,
@@ -571,7 +610,8 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                                                  if isinstance(model_gateway, NativeModelRoute) else None),
                                    model_path=(model_gateway.path
                                                if isinstance(model_gateway, NativeModelRoute) else ""),
-                                   tool_socket=(tool_relay.path if tool_relay is not None else None),
+                                   tool_socket=(worker["socket"] if worker is not None else
+                                                tool_relay.path if tool_relay is not None else None),
                                    package_overlays=package_overlays,
                                    immutable_runtimes=immutable_runtimes)
 
@@ -635,6 +675,14 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
         # The harness has exited. Grade the controller's completed live exchange,
         # or its frozen artifacts on the existing offline path (§2.2 and §2.4).
         with phases("verify"):
+            if tool_relay is not None and record_spec is not None:
+                try:
+                    entry = tool_relay.recording_input(archive_root=recordings_root)
+                    targets(workdir, projections([entry]))
+                    (workdir / entry["path"]).mkdir(exist_ok=True)
+                    verifier = {**verifier, "inputs": [*(verifier.get("inputs") or []), entry]}
+                except (OSError, ValueError, RuntimeError) as exc:
+                    return _invalid(task, exc, stage="tool recording", service=None)
             if stepwise_relay is not None:
                 verdict = chess_stepwise.finish(stepwise_relay, exit_code)
             else:
@@ -649,11 +697,28 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                 if protocol is not None:
                     verdict["protocol"] = protocol
 
+        if (verifier or {}).get("result_contract") is not None:
+            verdict["submission"] = {"answer_file": "missing" if not answer_path.exists() else
+                                     "empty" if not answer.strip() else "present"}
+        if tool_relay is not None and tool_relay.recording is not None:
+            verdict["interaction_record"] = tool_relay.recording
         # The environment's own spend, read from the recordings **before teardown**:
         # the containers are about to be removed and their evidence with them.
         env_usage = running.usage() if running is not None else {}
+        if tool_relay is not None and tool_relay.model is not None:
+            model_report = tool_relay.model.report()
+            env_usage = {"input_tokens": model_report["usage"]["prompt_tokens"],
+                         "output_tokens": model_report["usage"]["completion_tokens"],
+                         "calls": len(model_report["calls"]), "services_reported": 1}
 
-        return {"task_id": task["task_id"], "answer": answer,
+        worker_artifacts = {}
+        if worker is not None:
+            from eval.run.artifacts import collect
+            try:
+                worker_artifacts = {"artifacts": collect(workdir, worker["artifacts"])}
+            except (ValueError, OSError) as exc:
+                return _invalid(task, exc, stage="worker artifacts", service=None)
+        return {**worker_artifacts, "task_id": task["task_id"], "answer": answer,
                 "trace": trace, "exit_code": exit_code, "stderr": stderr,
                 # A wrapper (the sandbox) is the direct child when `sandbox` is set, and a
                 # wrapper relays an inner kill as `128+signal`. Recording which launch
@@ -681,6 +746,9 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                                 if web_gateway is not None else None),
                 "identity": _last_identity(trace)}
     finally:
+        if tool_relay is not None:
+            tool_relay.cleanup()
+            runtime_receipt["tool_relay"] = tool_relay.report()
         if stepwise_relay is not None:
             stepwise_relay.stop()
         if stepwise_dir is not None:
@@ -1090,6 +1158,15 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
     if len(set(evaluation_protocols.values())) > 1:
         raise ValueError("cannot aggregate interactive and offline ChessBench protocols")
 
+    from eval.run import repeated_trials
+    trial_protocol = repeated_trials.protocol_for(tasks, verifiers or {}, trials)
+    trial_rows = {t["task_id"]: [] for t in tasks} if trial_protocol else {}
+    def fresh_measurement(tid):
+        spec = (verifiers or {}).get(tid) or {}
+        relay = ((setups or {}).get(tid) or {}).get("tool_relay") or {}
+        return bool(trial_protocol or spec.get("judge") or spec.get("result_contract") or relay.get("record")
+                    or ((setups or {}).get(tid) or {}).get("workers"))
+
     def measurement_key(task):
         key = f"{harness_sha}:{task['task_id']}:{trials}"
         # A changed scorer declaration must not reuse another runtime's score.
@@ -1219,7 +1296,7 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
         # cached mean of three, and reusing one for the other would quietly answer a
         # different question than the run asked.
         key = measurement_key(task)
-        hit = cache.get(key)
+        hit = None if fresh_measurement(tid) else cache.get(key)
         if hit is not None:
             if declared_class((verifiers or {}).get(tid)) == "pristine-offline":
                 cached = hit.get("trial_verdicts") or [hit.get("verdict") or {}]
@@ -1253,10 +1330,10 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
                                      setup=(setups or {}).get(tid),
                                      verifier=(verifiers or {}).get(tid),
                                      env=(envs or {}).get(tid),
-                                     run_id=run_id, run_seed=run_seed,
+                                     run_id=run_id, run_seed=(str(trial_protocol["seeds"][trial]) if trial_protocol else run_seed),
                                      recordings_root=recordings_root,
                                      **({"trial_id": trial_identity(trial)}
-                                        if declared_class((verifiers or {}).get(tid)) == "pristine-offline" else {}),
+                                        if fresh_measurement(tid) or declared_class((verifiers or {}).get(tid)) == "pristine-offline" else {}),
                                      **({"diagnostic_authorization": diagnostic_authorization}
                                         if diagnostic_authorization is not None else {}))
                 except BaseException as exc:
@@ -1268,6 +1345,12 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
                 # cached either: the cache key names the harness, and the reason this
                 # task failed was not the harness, so caching it would carry a dataset bug
                 # into every later round and hide the round where it was introduced.
+                if trial_protocol:
+                    plan = {"task_id": tid, "trial_id": trial_identity(trial),
+                            "seed": str(trial_protocol["seeds"][trial])}
+                    provider = _provider_failure(result)
+                    trial_rows[tid].append(repeated_trials.result_row(
+                        result, plan, provider_failure=provider))
                 if result.get("invalid"):
                     unmeasured = result["invalid"]
                     held.failed(str(unmeasured.get("detail") or "")[:200])
@@ -1489,24 +1572,25 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
         declared = result.get("identity")
         if declared:
             declarations.append(declared)
-        cache[key] = {"score": score, "trace": result["trace"],
-                      "per_task_trials": per_task_trials.get(tid),
-                      "per_task_std": per_task_std.get(tid),
-                      # The other trials travel with the score too. A cached round used to
-                      # restore only the last trial's trace and verdict, so the round that
-                      # *reused* a measurement was exactly the round whose 2/3 could not be
-                      # explained.
-                      "trial_traces": trial_traces.get(tid),
-                      "trial_verdicts": trial_verdicts.get(tid),
-                      "harness_failed": failure,
-                      "harness_output": harness_output.get(tid),
-                      # The verdict travels with the score. Without this, a cached round
-                      # writes `score 0.0, kind null, detail ""` -- the exact "a number
-                      # with no explanation" this record exists to prevent. Measured on
-                      # `loop-terminal_bench-41133` round 5: all five verdict files were
-                      # empty because the round was entirely cache hits.
-                      "verdict": verdicts.get(tid) or {},
-                      "harness_runtime": result.get("harness_runtime")}
+        if not fresh_measurement(tid):
+            cache[key] = {"score": score, "trace": result["trace"],
+                          "per_task_trials": per_task_trials.get(tid),
+                          "per_task_std": per_task_std.get(tid),
+                          # The other trials travel with the score too. A cached round used to
+                          # restore only the last trial's trace and verdict, so the round that
+                          # *reused* a measurement was exactly the round whose 2/3 could not be
+                          # explained.
+                          "trial_traces": trial_traces.get(tid),
+                          "trial_verdicts": trial_verdicts.get(tid),
+                          "harness_failed": failure,
+                          "harness_output": harness_output.get(tid),
+                          # The verdict travels with the score. Without this, a cached round
+                          # writes `score 0.0, kind null, detail ""` -- the exact "a number
+                          # with no explanation" this record exists to prevent. Measured on
+                          # `loop-terminal_bench-41133` round 5: all five verdict files were
+                          # empty because the round was entirely cache hits.
+                          "verdict": verdicts.get(tid) or {},
+                          "harness_runtime": result.get("harness_runtime")}
 
     # What the harness spent. Read from the traces rather than asked for: a harness
     # that reports its own cost can under-report, and every harness already writes
@@ -1578,7 +1662,23 @@ def _evaluate(repo: Path, tasks: list[dict], scorable: dict[str, str],
             "stderr_tail": " ".join((why.get("stderr") or "").split())[-400:],
             "not_run": sorted(not_run),
         }
-    return {"per_task": per_task, "per_task_std": per_task_std, "score_std": score_std,
+    repeated = {}
+    if trial_protocol:
+        manifest = [{"task_id": t["task_id"], "trial_id": trial_identity(i),
+                     "seed": str(trial_protocol["seeds"][i])}
+                    for t in tasks for i in range(trials)]
+        report = repeated_trials.aggregate(manifest,
+                    [row for task in tasks for row in trial_rows[task["task_id"]]],
+                    trial_protocol["ks"])
+        report["configuration"] = trial_protocol
+        report["run_id"] = run_id
+        report["round"] = round_no
+        report["harness_sha"] = harness_sha
+        repeated = {"repeated_trials": report}
+        if progress_dir is not None:
+            report_root = Path(progress_dir) / "protocols" / f"round-{round_no}" / hashlib.sha256(harness_sha.encode()).hexdigest()[:16]
+            repeated_trials.persist(report_root, report)
+    return {**repeated, "per_task": per_task, "per_task_std": per_task_std, "score_std": score_std,
             "scorer_isolation_class": scorer_isolation_class,
             # Preserve unobserved diagnostic facts without making them comparable.
             "scorer_isolation_comparable": scorer_isolation_class != "unknown",

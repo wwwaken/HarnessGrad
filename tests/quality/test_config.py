@@ -40,13 +40,13 @@ def test_the_surface_has_exactly_the_declared_variables():
     reader uses to answer "what does this platform read?".
     """
     hg_names = [name for name in config.ENV_NAMES if name.startswith("HG_")]
-    assert len(hg_names) == 38, hg_names
+    assert len(hg_names) == 41, hg_names
     assert len(config.ENV_NAMES) == len(set(config.ENV_NAMES))
     # The three credentials the repository's rule names. `DEEPSEEK_API_KEY` is the
     # default improver registry entry's `api_key_env`, so it is declared beside it.
     secrets = {row["variable"] for row in config.describe() if row["secret"]}
     assert secrets == {"HG_AGENT_API_KEY", "HG_METHOD_API_KEY", "HG_ENV_API_KEY",
-                       "DEEPSEEK_API_KEY"}
+                       "DEEPSEEK_API_KEY", "HG_JUDGE_API_KEY"}
 
 
 def test_describe_names_every_variable_with_a_default_and_a_reason():
@@ -56,7 +56,7 @@ def test_describe_names_every_variable_with_a_default_and_a_reason():
     for row in rows:
         assert row["what"], row
         assert row["area"] in {"agent", "method", "improver", "environment",
-                               "sandbox", "egress", "runtime", "storage"}
+                               "sandbox", "egress", "runtime", "storage", "judge"}
         if row["secret"]:
             # Never a value, not even a default: a credential's state is a fact, its
             # bytes are not the platform's to print.

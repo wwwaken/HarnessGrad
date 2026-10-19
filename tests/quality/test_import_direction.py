@@ -18,6 +18,8 @@ SOURCE_DIRS = ("data", "eval", "harnessgrad", "tools")
 
 # Exact file/module edges, not permission for all of eval to depend on config.
 ALLOWED_EVAL_CONFIG_EDGES = {
+    ("eval/service/judge.py", "harnessgrad.config"):
+        "Reads only the explicitly configured verifier judge identity and credential.",
     ("eval/containers/harness_runtime.py", "harnessgrad.config"):
         "Reads the resolved runtime overlay configuration.",
     ("eval/containers/sandbox.py", "harnessgrad.config"):
@@ -30,6 +32,14 @@ ALLOWED_EVAL_CONFIG_EDGES = {
 # neither a whole control directory nor other imports from these files are exempt.
 # Remove an entry when its dependency is moved; stale entries fail the guard.
 EXCEPTIONS = {
+    ("data-eval", "data/datasets/kumo/control.py", "eval.run.runner"):
+        "The dataset-local control validates SETUP -> oracle harness -> VERIFY, as ALFWorld does.",
+    ("data-eval", "data/datasets/kumo/control.py", "eval.run.tool_relay"):
+        "The local control starts and cleans its selected private relay without changing the runner.",
+    ("data-eval", "data/datasets/kumo/control.py", "eval.service.tool_transport"):
+        "The local control performs an actual query through the existing shared transport.",
+    ("data-eval", "data/datasets/kumo/relay.py", "eval.service.tool_transport"):
+        "The private KUMO server program reuses the platform transport, as ALFWorld does.",
     ("data-eval", "data/datasets/agentdojo/relay.py", "eval.service.tool_transport"):
         "The dataset's host-side environment server needs the case and the dataset runtime, so it"
         " lives dataset-side; it serves through the platform's one transport instead of writing a"
@@ -237,7 +247,7 @@ class ImportDirectionTests(unittest.TestCase):
 
     def test_publication_preserves_the_ordered_30_adapter_names(self):
         from data.scaffolds import registry
-        expected = ('agentdojo', 'aime', 'alfworld', 'api_bank', 'appworld', 'bfcl_v3', 'bird_minidev', 'chessbench_puzzles', 'ds1000', 'fever', 'gaia', 'gsm8k', 'hotpotqa', 'jericho', 'livecodebench', 'locomo', 'musique', 'nestful', 'physicsquestions', 'reasoning_gym', 'scienceworld', 'sotuqa', 'sportsunderstanding', 'spreadsheetbench', 'strategyqa', 'tau2_bench', 'tau_bench', 'terminal_bench', 'triviaqa', 'twowikimultihopqa')
+        expected = ('agentdojo', 'aime', 'alfworld', 'api_bank', 'appworld', 'bfcl_v3', 'bird_minidev', 'chessbench_puzzles', 'ds1000', 'fever', 'gaia', 'gsm8k', 'hotpotqa', 'jericho', 'kumo', 'livecodebench', 'locomo', 'musique', 'nestful', 'physicsquestions', 'reasoning_gym', 'scienceworld', 'sotuqa', 'sportsunderstanding', 'spreadsheetbench', 'strategyqa', 'tau2_bench', 'tau_bench', 'terminal_bench', 'triviaqa', 'twowikimultihopqa')
         self.assertEqual(registry.published(), expected)
         for name in expected:
             module = registry.importlib.import_module(registry.module_name(name))

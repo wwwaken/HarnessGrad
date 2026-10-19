@@ -636,6 +636,17 @@ def _check_no_secrets(task: dict, name: str) -> None:
 def _check_setup(spec, tid: str, name: str) -> None:
     if not isinstance(spec, dict):
         raise ValueError(f"dataset {name!r}: SETUP[{tid!r}] must be a dict")
+    if ((spec.get("tool_relay") or {}).get("record")) is not None:
+        from data.scaffolds.runtime_extensions import validate_record
+        validate_record(spec["tool_relay"]["record"])
+    if (spec.get("tool_relay") or {}).get("model") is not None:
+        from data.scaffolds.runtime_extensions import validate_judge
+        validate_judge(spec["tool_relay"]["model"])
+    if "workers" in spec:
+        from data.scaffolds.runtime_extensions import validate_workers
+        validate_workers(spec["workers"])
+        for worker in spec["workers"]:
+            _check_setup({"files": worker.get("files", [])}, tid, name)
     if "runtime_prompt" in spec and (
             not isinstance(spec["runtime_prompt"], str)
             or not spec["runtime_prompt"].strip()):
@@ -666,6 +677,22 @@ def _check_verifier(spec, tid: str, name: str) -> None:
         raise ValueError(f"dataset {name!r}: VERIFY[{tid!r}] must be a dict")
     from data.scaffolds.scorer_isolation import declared_class
     declared_class(spec)
+    if "container_runtime" in spec:
+        from data.scaffolds.runtime_extensions import validate_container_runtime
+        validate_container_runtime(spec["container_runtime"])
+        if spec.get("kind") != "command" or not spec.get("result_contract"):
+            raise ValueError("container_runtime requires command and result_contract")
+    if "trial_protocol" in spec:
+        from data.scaffolds.runtime_extensions import validate_trials
+        validate_trials(spec["trial_protocol"])
+    if "judge" in spec:
+        from data.scaffolds.runtime_extensions import validate_judge as validate
+        validate(spec["judge"])
+        if spec.get("kind") != "command" or "result_contract" not in spec:
+            raise ValueError("judge requires command verification with result_contract")
+    if "result_contract" in spec:
+        from data.scaffolds.runtime_extensions import validate_result as validate
+        validate(spec["result_contract"])
     kind = spec.get("kind")
     if kind not in VERIFIER_KINDS:
         raise ValueError(

@@ -480,7 +480,34 @@ def _verify(workdir: Path, verifier: dict | None, answer: str, **options) -> dic
             if declared_class(verifier or {}) == "pristine-offline":
                 raise ImmutableRuntimeUnavailable("this verification boundary cannot express immutable runtime binds")
             targets(workdir, bindings)
-        return _verify_dispatch(workdir, verifier, answer, **options)
+        from eval.verification.result_contract import apply, validate as validate_result
+        contract = (verifier or {}).get("result_contract")
+        judge_spec = (verifier or {}).get("judge")
+        if contract is not None:
+            try:
+                validate_result(contract)
+            except ValueError as exc:
+                return {"kind": "command", "passed": False, "score": None,
+                        "outcome": "unmeasured", "unmeasured": str(exc)}
+        if judge_spec is None:
+            return apply(_verify_dispatch(workdir, verifier, answer, **options), contract)
+        from eval.service.judge import Judge, JudgeUnavailable
+        try:
+            if (not options.get("sandbox") or (options.get("env") or {}).get("kind", "files") != "files"
+                    or verifier.get("kind") != "command" or verifier.get("native_runtime")
+                    or declared_class(verifier) not in ("unknown", "actor-workdir") or contract is None):
+                raise JudgeUnavailable("judge requires sandboxed files command verification and result_contract v1")
+            with Judge(judge_spec) as judge:
+                verdict = _verify_dispatch(workdir, verifier, answer, judge=judge, **options)
+            report = judge.report()
+            verdict["judge"] = report
+            if report["faults"]:
+                verdict.update(score=None, passed=False, outcome="unmeasured",
+                               unmeasured="judge call or transport failed")
+            return apply(verdict, contract)
+        except (JudgeUnavailable, ValueError, OSError) as exc:
+            return {"kind": "command", "passed": False, "score": None,
+                    "outcome": "unmeasured", "unmeasured": str(exc)}
     except ImmutableRuntimeUnavailable as exc:
         return {"kind": "command", "passed": False, "score": None,
                 "outcome": "unmeasured", "unmeasured": str(exc),
@@ -490,6 +517,9 @@ def _verify(workdir: Path, verifier: dict | None, answer: str, **options) -> dic
 def _verify_dispatch(workdir: Path, verifier: dict | None, answer: str, **options) -> dict:
     """Bind a supported host scorer's native pin to execution and verdict."""
     spec = verifier or {}
+    if "container_runtime" in spec:
+        from eval.verification.observed import verify
+        return verify(workdir, spec, answer, **options)
     if "native_runtime" not in spec:
         return _verify_existing(workdir, verifier, answer, **options)
     from eval.verification.native_runtime import admit, NativeRuntimeUnavailable, SUPPORTED_DATASETS, CHECK_PATHS
@@ -526,7 +556,7 @@ def _verify_existing(workdir: Path, verifier: dict | None, answer: str,
             service_specs: list[dict] | None = None,
             running=None, task_id: str | None = None,
             run_id: str | None = None, trial_id: str | None = None,
-            native_runtime=None, immutable_runtimes=()) -> dict:
+            native_runtime=None, immutable_runtimes=(), judge=None) -> dict:
     """Run a verifier with platform-owned output storage for exec reward checks."""
     spec = verifier or {"kind": "answer", "expected": None}
     env_spec = env or {"kind": "files"}
@@ -561,12 +591,12 @@ def _verify_existing(workdir: Path, verifier: dict | None, answer: str,
                                  timeout_s=timeout_s, env=env,
                                  service_specs=service_specs, running=running,
                                  verdict_dir=Path(verdict_dir), native_runtime=native_runtime,
-                                 immutable_runtimes=immutable_runtimes)
+                                 immutable_runtimes=immutable_runtimes, judge=judge)
             return record_class(_enforce_scorer_input(verdict, binding), spec, actual)
     verdict = _verify_inner(workdir, verifier, answer, sandbox=sandbox,
                          timeout_s=timeout_s, env=env,
                          service_specs=service_specs, running=running, native_runtime=native_runtime,
-                         immutable_runtimes=immutable_runtimes)
+                         immutable_runtimes=immutable_runtimes, judge=judge)
     return record_class(_enforce_scorer_input(verdict, binding), spec, actual)
 
 
@@ -594,7 +624,7 @@ def _verify_inner(workdir: Path, verifier: dict | None, answer: str,
             env: dict | None = None,
             service_specs: list[dict] | None = None,
             running=None, verdict_dir: Path | None = None, native_runtime=None,
-            immutable_runtimes=()) -> dict:
+            immutable_runtimes=(), judge=None) -> dict:
     """Decide whether the task was completed. Returns {kind, passed, detail}.
 
     `answer` is the legacy path and stays byte-for-byte what it was: stripped,
@@ -709,7 +739,7 @@ def _verify_inner(workdir: Path, verifier: dict | None, answer: str,
             # which is a route from the subject into a process that can read the
             # platform -- the failure this module exists to prevent.)
             work_root = Path(os.environ.get("HARNESSGRAD_WORK_ROOT")
-                             or workdir.parent.parent)
+                             or (workdir if immutable_runtimes else workdir.parent.parent))
             # The namespace freezes the task tree and gives the check a private tmpfs at
             # `/tmp`, so HOME/TMPDIR point **there** and not at the workdir. Measured on
             # ALFWorld: a check whose toolchain writes `$HOME/.cache` against a read-only
@@ -717,12 +747,16 @@ def _verify_inner(workdir: Path, verifier: dict | None, answer: str,
             # anything, and the failure would have been recorded as a harness failure.
             check_env = _verifier_env(workdir)
             check_env.update({"HOME": "/tmp", "TMPDIR": "/tmp"})
+            judge_options = {}
+            if judge is not None:
+                check_env["HG_JUDGE_SOCKET"] = "/run/harnessgrad-tool/tool.sock"
+                judge_options = {"network": "none", "tool_socket": judge.path}
             proc = sandbox_mod.run(argv, platform=PLATFORM_ROOT, work_root=work_root,
                                    task_dir=workdir, env=check_env,
                                    timeout_s=timeout_s,
                                    cwd=cwd, repo=workdir, task_dir_writable=False,
                                    immutable_runtimes=immutable_runtimes,
-                                   writable_paths=(reward_dir,) if reward_dir else ())
+                                   writable_paths=(reward_dir,) if reward_dir else (), **judge_options)
         else:
             proc = subprocess.run(argv, capture_output=True, text=True, errors="replace",
                                   timeout=timeout_s, cwd=cwd,

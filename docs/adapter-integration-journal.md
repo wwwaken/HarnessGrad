@@ -5761,3 +5761,79 @@ no stray branches. Only `main` was pushed, as instructed.
 - Conda validation: **150 passed, 38 subtests passed, 1 failed, 23 deselected**. The failure is the all-dataset controls inventory: runtime discovery omits five unrelated unprovisioned/unimportable adapters; reproduced on the AIME-only base without LoCoMo. Deselections are one all-adapter import inventory and 22 dataset controls; LoCoMo controls ran separately. Released-data Harbor differential was enabled.
 - Actual sandboxed conv-26 controls: 199 questions, oracle/noop measured scores 1/0; every per-question record retained. Manual report function and CLI agree. Python/SDK/scorer imports pass inside the sandbox; temporary work root cleaned. Zero model calls. [Current validation](../data/datasets/locomo/specs/validation-20261017.json) binds source hashes and local evidence.
 - No real local-model run, target-host validation, full-model benchmark, staged production admission or study/eval split is claimed. Formal evaluation follows existing platform checks.
+
+## KUMO native private relay — 2026-10-17
+
+- Branch `feat/kumo-integration`; source `linhaowei1/kumo@576748764f7d72634654d0784944a485eca9047c`. Sparse resource inventory: 5,846 files / 127,892,007 bytes, all SHA256 checked. Dataset root is outside git. See [adapter README](../data/datasets/kumo/README.md).
+- The official `Environment.evaluate_answer` checks consistency with every released observation. It differs from Harbor's exact gold-string comparison. Two full candidate sweeps found 5,255 unique-gold cases, 35 multi-answer cases and 10 unsatisfiable cases. The adapter offers **5,290/5,300** cases, preserves all 35 multi-answer predicates and records all ten exclusions. Metric `kumo.official.consistency_accuracy.v1`, protocol `kumo.query50.v1` (50 accepted actions, not upstream's 50 model turns).
+- Native actor receives only selected public task material and a CLI; private rules/observations stay in the host relay. Cross-connection budgets, SHA binding, platform-inserted receipts, forged-receipt replacement and private staging cleanup are exercised by tests. Local and platform oracle/noop controls reach 1/0 on released AlgorithmEnv/0 without model calls. Class: reasoning / planning_and_search; exercises context, tools, control, verification.
+- User explicitly requested the API in this checkout's `.env`. One preselected train task, `kumo/easy/CookingEnv/42`, ran with `gpt-5.6-terra`, 12 model calls, 42,300 input tokens, 1,141 output tokens, zero retries, three accepted queries, and an official score **0**. Exit 0, valid measured verdict, 163.102 seconds; relay and work root cleaned. This is a successful integration diagnostic with a wrong model answer, not a benchmark result. No score-based retry or method tuning was performed.
+- Receipt: workspace `datasets/kumo/diagnostic-20261017-02/receipt.json`; result contains the trace and trusted episode. The earlier `diagnostic-20261017-01` is preserved: `HG_AGENT_RETRIES=0` meant zero total attempts in the base loop, so no API call occurred. Its assessment explicitly rejects the raw empty-answer score as a model measurement. The diagnostic now uses one total attempt (zero retries).
+- Relevant validation reached **184 passed, 38 subtests passed, 26 deselected**, including the 20 KUMO tests. The deselections are unrelated controls and inventory checks blocked by existing host contents. Source checks, download hashes and dataset lint pass. A wider 167-file regression was attempted: 120 files passed, 47 had failures/errors/no collected tests. Missing datasets/packages, retained source-snapshot drift and parallel source mutation prevent a green full-suite claim. The affected integrity tests were rechecked without the scaffold generator: five of seven files pass; identity/isolation retain failures. Detailed logs stay under workspace `datasets/kumo/`.
+- Network is inherited for HTTPS API access; no egress restriction or filesystem quota is claimed. Existing command scorer isolation is `actor-workdir`. The default hash split is explicit in the diagnostic (3,515 train / 1,775 eval), with source/manifest/split/harness hashes and budgets recorded. No production admission or difficulty curve is inferred; task_difficulty reports no measured state.
+
+
+## KUMO minimal integration revision — 2026-10-18
+
+The 2026-10-17 entry records implementation `b8899205`; its API receipt and validation
+remain historical evidence. This revision removes the added shared SHA fields,
+trusted-recording injection, runner result fields, global relay admission changes,
+classifier fallback and inventory-summary rendering. KUMO now uses existing
+`files`/`tool_relay`/`command` contracts, validates input digests inside its adapter,
+relay and verifier, exposes `do`, and explicitly declares the existing hash split
+as an adapter policy. Official final-answer scoring does not require a recording.
+
+Shared runtime changes are limited to stopping the relay and removing private staging
+on normal completion and failure, with cleanup errors propagated. Control orchestration
+moved to `tools/kumo_control.py`, removing three data-to-eval dependency exceptions;
+only the server's shared-transport import remains. No new public interface is required.
+
+Validation: **183 passed, 38 subtests passed, 26 deselected**, including 19 KUMO tests;
+the deselections are unrelated controls and existing host-dependent inventory checks.
+Released AlgorithmEnv/0 local and platform oracle/noop controls return 1/0. Dataset
+lint and all 5,846 source-file hashes pass; classification is closed-loop with
+3,515 train / 1,775 eval. No new API calls were made. See
+[data validation](../data/datasets/kumo/validation-minimal-20261018.json).
+
+
+## KUMO shared-runtime compatibility — 2026-10-18
+
+Following the compatibility review, the shared runner and tool-relay modules are
+restored exactly to `89626402`. This supersedes the lifecycle changes recorded for
+`5ab95cab`. Cleanup failure no longer introduces a new exception that can abort
+other datasets' evaluation batches. No shared execution logic changes remain.
+KUMO keeps dataset-local validation and existing setup/verifier contracts, and
+inherits the baseline relay staging/cleanup limitations. Test fixture cleanup is
+explicitly separate from production behavior. Prior API and validation evidence
+is retained unchanged. Current validation: see
+[compatibility receipt](../data/datasets/kumo/validation-compatible-20261018.json).
+
+
+## KUMO controls follow dataset asset layout — 2026-10-18
+
+Moved the control entry point from `tools/kumo_control.py` to
+`data/datasets/kumo/control.py`, matching the existing dataset-local controls.
+The local arm still reuses command-control helpers. Platform controls now stage
+`data/datasets/kumo/oracle_harness/` directly, querying and submitting through the
+CLI instead of rewriting a shared oracle template with string replacement.
+Removed the unnecessary `tools/kumo_diagnostic.py`; historical API artifacts and
+receipts are retained. Tests and current documentation use the new control path.
+Only file-specific dependency guard entries were added; shared execution code
+and interfaces remain identical to the pre-KUMO baseline.
+
+Validation: 180 passed, 38 subtests passed, 26 deselected in the focused regression
+suite (same unrelated controls and host-inventory exclusions as the preceding
+revision). Dataset lint passes. Released AlgorithmEnv/0 local and platform
+oracle/noop controls return 1/0; the platform test also asserts one real query for
+the oracle arm and zero for noop. Logs are preserved in workspace
+`datasets/kumo/layout-tests-20261018.log` and `layout-controls-20261018.json`.
+No API calls were made for this layout change.
+
+
+## LoCoMo auxiliary-code cleanup — 2026-10-18
+
+- Remove the standalone `tools/locomo_diagnostic.py` entry point and its README instructions. Remove the adapter constant used only by that script and the unused test import. Standard driver execution, controls, scoring and manual reporting are unchanged.
+- Keep the 2026-10-17 validation receipt as historical evidence; the README now states that its hashes describe the earlier tree.
+- Conda validation: **60 passed**, including the optional pinned-data comparisons over all 10 conversations and 1,986 questions. LoCoMo dataset lint and `git diff --check` pass. No model calls.
+
+- API connectivity check after cleanup: Conda + standard `driver.py` + unchanged `loop`, one full conv-26 transcript with only its first three questions, one trial, jobs=1, rounds=0. Six successful calls to the configured `Ling-3.1-flash` API; driver exited 0, all three answers and per-question records saved, task/curve/manual-summary scores agree. The temporary loopback HTTP-to-HTTPS bridge was needed by the existing HTTP-only native model route; no platform code was changed. Test artifacts are outside Git at `datasets/locomo/audit-20261018/api-cleanup-01/`. The test is not comparable to a full benchmark, and does not establish direct HTTPS support. Runner temporary files, bridge and work root cleaned; source data hash unchanged.

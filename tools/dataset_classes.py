@@ -157,6 +157,7 @@ UNCOVERED_DEMANDS: dict[str, tuple[str, ...]] = {
 from harnessgrad.components import COMPONENTS as FUNCTIONS  # noqa: E402
 
 EXERCISES: dict[str, tuple[str, ...]] = {
+    "kumo": ("context", "tools", "control", "verification"),
     "alfworld": ("context", "tools", "control", "recovery"),
     "agentdojo": ("context", "tools", "control", "safety"),
     "bfcl_v3": ("tools",),
@@ -237,6 +238,7 @@ UNCOVERED_FUNCTIONS: dict[str, str] = {
 #: than two so the levels cannot drift apart: there is no way to add a dataset to a demand and
 #: forget its surface, which a second dict keyed by the same names would allow.
 CAPABILITY: dict[str, tuple[str, str]] = {
+    "kumo": ("reasoning", "planning_and_search"),
     "alfworld": ("environment", "embodied_text"),
     "agentdojo": ("tool_use", "tool_dialogue"),
     "bfcl_v3": ("tool_use", "tool_calling"),
@@ -301,6 +303,7 @@ ACT_VERBS = ("do", "call")
 #: `agentdojo` mistake above; the derived side is what caught it.
 EXPECTED_INTERACTION = {
     "agentdojo": "closed_loop",
+    "kumo": "closed_loop",
     "alfworld": "closed_loop",
     "bfcl_v3": "single_shot",
     "chessbench_puzzles": "single_shot",

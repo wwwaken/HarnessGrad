@@ -1,8 +1,11 @@
 # Runtime observation: the missing producer
 
-**Status:** open. Nothing in this repository produces the observation; the platform only
-validates one if it is handed over. This file specifies the piece that is missing, so a
-container-backed dataset can be measured with a number that survives being questioned.
+**Status (2026-10-18):** implemented for opt-in fixed workers and their combined verifier
+via `eval/containers/observed.py` (`backend=observed-v1`). This route reads cgroup v2,
+mount/statvfs, privilege and network facts and calls `admit_runtime` before candidate execution.
+See [the dataset runtime contract](dataset-runtime-interfaces.md#71-docker-worker-与组合-verifier).
+The legacy single-actor exec/container-state routes remain refused. The historical analysis
+below describes those routes, not the new observed worker backend.
 
 ## The gap, precisely
 

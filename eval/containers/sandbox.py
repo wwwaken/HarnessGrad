@@ -315,7 +315,8 @@ def command(argv: list[str], *, platform: Path, work_root: Path,
         target = Path(path)
         if target.exists():
             plan += ["--ro-bind", str(target), str(target)]
-    plan += ["--ro-bind", str(work_root), str(work_root)]
+    if not (immutable_runtimes and work_root == task_dir.resolve()):
+        plan += ["--ro-bind", str(work_root), str(work_root)]
     if not task_dir_writable and not immutable_runtimes:
         # Verification runs with the harness's artifacts frozen. Said *last*, so it is
         # the final word about this path.

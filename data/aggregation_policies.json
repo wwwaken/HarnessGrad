@@ -15,6 +15,7 @@
   "gsm8k": {"run_reward": {"aggregation": "arithmetic_mean", "denominator": "measured_tasks"}},
   "hotpotqa": {"run_reward": {"aggregation": "arithmetic_mean", "denominator": "measured_tasks"}},
   "jericho": {"run_reward": {"aggregation": "arithmetic_mean", "denominator": "measured_tasks"}},
+  "kumo": {"run_reward": {"aggregation": "arithmetic_mean", "denominator": "measured_tasks"}},
   "livecodebench": {"run_reward": {"aggregation": "arithmetic_mean", "denominator": "measured_tasks"}},
   "locomo": {"run_reward": {"aggregation": "arithmetic_mean", "denominator": "measured_tasks"}},
   "musique": {"run_reward": {"aggregation": "arithmetic_mean", "denominator": "measured_tasks"}, "corpus_metrics": {"aggregation": "ordered_macro_mean", "denominator": "provided_results"}},
