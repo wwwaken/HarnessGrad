@@ -32,7 +32,6 @@
 
     <nav class="nav">
       <a class="nav-item" href="#/runs" data-view-link="runs">实验 <span class="nav-badge" id="nav-runs">—</span></a>
-      <a class="nav-item" href="#/coverage" data-view-link="coverage">覆盖 <span class="nav-badge" id="nav-coverage">—</span></a>
       <a class="nav-item" href="#/trace" data-view-link="trace">轨迹</a>
       <a class="nav-item" href="#/version" data-view-link="harness">版本</a>
     </nav>
@@ -79,14 +78,6 @@
       </div>
     </section>
 
-    <!-- 覆盖：8 个方法 × 每个已测训练轮次 × 3 个评测池，格子有没有补齐 -->
-    <section class="view" id="view-coverage">
-      <div class="topbar">
-        <h1>覆盖</h1>
-        <span class="sub">方法 × 轮次 × 评测池：一格一次 ckpt 测量，空格就是真的没有</span>
-      </div>
-      <div id="cov-root" class="cov-wrap"><div class="load">读取覆盖矩阵…</div></div>
-    </section>
 
     <!-- 轨迹：与 /trace.html 同一个模块（trace-view.js），两条入口显示同一条轨迹 -->
     <section class="view" id="view-trace">

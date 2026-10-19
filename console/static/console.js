@@ -1368,7 +1368,6 @@
   /* ───────────────────────────────────── 路由与绑定
      四个顶栏地址（只有这四屏，别的都不渲染）：
        #/runs[/<id>]                                实验
-       #/coverage                                   覆盖（round × pool 网格）
        #/trace[?run=<id>&round=<n>]                 轨迹（与 /trace.html 同一模块）
        #/version[/<run>/<round>]                    版本＝原来的三栏 harness 视图
      别名（旧地址不删，都还有效）：
@@ -1385,7 +1384,6 @@
     const q = new URLSearchParams(qIndex < 0 ? "" : rawAll.slice(qIndex + 1));
     const asRound = (value) => (/^\d+$/.test(value || "") ? Number(value) : null);
     if (raw === "runs") return { view: "runs", runId: null };
-    if (raw === "coverage") return { view: "coverage" };
     if (raw === "trace") {
       return { view: "trace", runId: q.get("run") || null, round: asRound(q.get("round") || "") };
     }

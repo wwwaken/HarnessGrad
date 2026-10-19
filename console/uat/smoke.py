@@ -574,7 +574,6 @@ def c1_2(t: UAT):
     p = t.open("/#/runs")
     t.wait(p, "() => !!document.querySelector('#runs-table table.grid tbody tr')", "runs 列表")
     for link, sel, desc in (
-        ("coverage", "#cov-root tbody.cov-group", "覆盖矩阵"),
         ("harness", "#h-editor .ln", "版本的三栏（diff/文件）"),
         ("trace", "#trace-root #tasks [data-name]", "轨迹"),
     ):
@@ -1771,58 +1770,13 @@ BLOCKED = [
 
 
 # ═══════════════════════════════════════════════════════ 场景 13：覆盖矩阵
-@check("13-1", "13 覆盖", "覆盖矩阵 = /api/coverage：方法行数、头条 有效/应有、格子点到 run", "S1")
-def c13_1(t: UAT):
-    cov = t.api("/api/coverage")
-    methods = cov.get("methods") or []
-    totals = cov.get("totals") or {}
-    p = t.open("/#/coverage")
-    t.wait(p, "() => document.querySelectorAll('#cov-root tbody.cov-group').length > 0", "覆盖矩阵")
-    m = t.stable(p, """() => {
-        const root = document.querySelector('#cov-root');
-        if (!root) return {groups: 0, hero: '', first: null, links: 0};
-        const hero = root.querySelector('.cov-hero .cov-big');
-        const links = [...root.querySelectorAll('td.cov-cell[data-state="ok"] a.cov-hit')];
-        return {groups: [...root.querySelectorAll('tbody.cov-group')].length,
-                hero: hero ? hero.innerText.replace(/\\s+/g, ' ').trim() : '',
-                links: links.length,
-                first: links.length ? links[0].getAttribute('href') : null};
-    }""")
-    if m["groups"] < 8:
-        raise Fail(f"覆盖矩阵只有 {m['groups']} 个方法分组（应 ≥ 8）| {t.where(p, '#cov-root')}")
-    if m["groups"] != len(methods):
-        raise Fail(f"页面 {m['groups']} 个方法分组 != /api/coverage {len(methods)} 个方法 | "
-                   f"url={p.url} sel=#cov-root dom={trunc(m['hero'])}")
-    want = (totals.get("valid"), totals.get("expected"))
-    got = re.findall(r"\d+", m["hero"])
-    if not (len(got) >= 2 and got[0] == str(want[0]) and got[1] == str(want[1])):
-        raise Fail(f"头条 “{trunc(m['hero'])}” != /api/coverage totals {want[0]} / {want[1]} | "
-                   f"url={p.url} sel=#cov-root .cov-big")
-    first = m["first"] or ""
-    if not first.startswith("#/runs/"):
-        raise Fail(f"没有可点的有效格（ok 链接 {m['links']} 个，第一个 {first!r}）| "
-                   f"url={p.url} sel=#cov-root a.cov-hit")
-    run_id = urllib.parse.unquote(first[len("#/runs/"):])
-    p.evaluate("() => document.querySelector('#cov-root td.cov-cell[data-state=\"ok\"] a.cov-hit').click()")
-    landed = False
-    for _ in range(80):
-        cur = p.evaluate("() => location.hash")
-        rail = p.evaluate("() => (document.querySelector('#run-rail') || {}).innerText || ''")
-        if cur == first and run_id in rail:
-            landed = True
-            break
-        p.wait_for_timeout(100)
-    if not landed:
-        raise Fail(f"点第一格没有落到 {run_id}（hash={p.evaluate('() => location.hash')}）| "
-                   f"{t.where(p, '#run-rail')}")
-    return (f"{m['groups']} 个方法 = API；头条 {got[0]} / {got[1]} = totals "
-            f"{want[0]}/{want[1]}；点第一格 → {trunc(run_id, 60)}")
-
-
 #: 已删除的判定项：它们判定的**屏**已经从 console 删掉了，所以连同判定项一起删。
 #: 这不是放宽任何断言 —— 保留的 36 项一字未改，改的只是被删屏的入口。
 #: 这一节会原样写进每次运行生成的记录，所以分母从 41 变 36 是可见、可核对的。
 DELETED = [
+    ("13-1", "13 覆盖", "覆盖矩阵 = /api/coverage：方法行数、头条 有效/应有、格子点到 run",
+     "覆盖屏已删除：导航回到 实验 / 轨迹 / 版本，#/coverage 重定向到 #/runs。"
+     "/api/coverage 仍在服务端但无屏读取；171/171 这个事实留在数据集卡与 HF 上。"),
     ("1-3", "1 冷启动", "对话是确定性的技能台：两张卡能开出、不调用模型、起跑/应用禁用",
      "对话屏 + 两张技能卡（造 harness / 提方法）已删除；导航只剩 实验 / 轨迹 / 版本。"),
     ("11-1", "11 方法页", "方法表行数/名字 = /api/methods",

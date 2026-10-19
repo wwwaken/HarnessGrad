@@ -3,7 +3,7 @@
 一个**只读**的 Web 控制台，用来在共享 Linux 机器上看真实的 run、真实的逐轮 diff、
 真实的方法注册表。它不启动实验、不修改实验、不碰 `Study/HarnessGrad/`。
 
-四屏：**实验 / 覆盖 / 轨迹 / 版本**。每一屏上的每个控件现在都能真的用 —— 没有禁用的
+三屏：**实验 / 轨迹 / 版本**。每一屏上的每个控件现在都能真的用 —— 没有禁用的
 「启动」、没有写着「M4」的占位、没有要等下一版才生效的预览。
 
 > **唯一硬规则：只读。**
@@ -36,7 +36,6 @@ python3 server.py --port 4460
 
 ```
 实验     跑过的 / 正在跑的（列表 + 右栏：曲线、每轮表、eval 池）
-覆盖     round × pool 网格：8 个方法 × 每个已测训练轮次 × 3 个评测池，一格一次测量
 轨迹     一条 task 的完整来回（主界面，和 /trace.html 同一个模块）
 版本     一个 harness 在各轮长什么样、改了什么（三栏：文件树 / diff 或文件 / 事实卡）
 ```
@@ -45,7 +44,6 @@ python3 server.py --port 4460
 | --- | --- |
 | `/#/runs` | 实验列表：研究（多轮）/ 单点测量 / 无曲线 / 全部；benchmark、harness、状态、搜索筛选 |
 | `/#/runs/<id>` | 深链接到某个 run；刷新、新标签页都保持同一 run |
-| `/#/coverage` | 覆盖矩阵：方法（行，展开成每一轮）× 评测池（列）；标题的 `171 / 171 格有效` 是数出来的 |
 | `/#/trace[?run=<id>&round=<n>]` | 轨迹视图（主界面；挂载 `trace-view.js`，与 `/trace.html` 同一条轨迹） |
 | `/#/version[/<run>/<round>]` | 版本：逐轮 patch / per-file diff / 状态快照文件 / 事实卡 |
 | `/#/version?start=base` | 版本的基线起点（`base_harness/loop` 的只读文件） |
@@ -73,19 +71,18 @@ python3 server.py --port 4460
 | 导航里的 `对话`、`实验室`，以及 `对比` 屏的残留（`static/compare.html`、`compare.js`） | 这些屏已经不存在，路由里也不该再有它们 |
 
 **保留且行为不变**：实验列表（`调用` 列 + `脚本化` 徽章）、run 详情右栏（身份、曲线、
-带 `调用` 的逐轮表、折叠的 `eval 池`、H0 处理）；覆盖矩阵（方法 × 轮 × 池，标题数字由
+带 `调用` 的逐轮表、折叠的 `eval 池`、H0 处理）。
 `/api/coverage` 算出，有效格点开是那次测量的 run）；轨迹（任务清单、时间线、判定详情、
 长输出展开）；版本（两组文件树、每文件 diff + 文件切换器、事实卡、sha 链接、
 `#/version/<run>/<round>` 深链接）。
 
-**新增一屏**：`覆盖`（`#/coverage`，`GET /api/coverage`）—— 原来的界面只能一行一行
 列 run，看不出「round × pool 网格是完整的」这句话；矩阵把 8 个方法 × 57 个已测训练轮次
 × 3 个池 = 171 个格子一次摆出来，标题里的 `171 / 171` 是从数据里数出来的。
 
 被删掉的屏留下的旧地址不删：见上面路由表的最后一行，它们都落到实验列表。
 
-判定项也跟着屏删了 5 条（`1-3`、`11-1…11-4`），另加 1 条覆盖矩阵的检查：`过/总` 从
-`41/41`（41 项）变成 `37/37`（36 + 1）。每一步的对照在
+判定项跟着屏一起删了 6 条（`1-3`、`11-1…11-4`、`13-1`）：`过/总` 从
+`41/41`（41 项）变成 `36/36`（36 + 1）。每一步的对照在
 `uat/uat-2026-10-19-before-delete.md`，每次运行的记录在 `uat/uat-2026-10-19.md`。
 
 ---
@@ -391,9 +388,9 @@ python3 server.py --port 4460
 - 方法 -> stamp 是**批次事实**，写死在 `COVERAGE_METHODS`：`dream_rsi` / `meta_harness`
   在 `20261017T123952Z` 下也有 ckpt 目录，但那是另一批训练，round N 不是同一个 state。
 - 已知差别：`/api/compare` 只按 ckpt 命名配对，所以它看不到 exam 形式的 10 个格子；
-  `dream_rsi r6 valid_unseen` 在 compare 里是另一批的 `0.000`，在覆盖屏里是
+  **已修**：`dream_rsi r6 valid_unseen` 曾在 compare 里退回另一批的 `0.000`；真相是该批的 exam 跑 
   `20261018T062351Z` 的 exam 测量（harness sha `db2aab11`，与 r6 的 seen/train 同一个）。
-  覆盖屏不沿用 compare 的退回逻辑：它只认这个方法自己那批。
+  （1.000，sha `db2aab11`）。`eval_index` 现在也认 exam 形式，并按"有效优先"取格。
 
 ### `GET /api/explain?run=<id>&round=<n>&force=0|1`（保留，未在屏上使用）
 
@@ -479,7 +476,7 @@ python3 uat/smoke.py --url http://127.0.0.1:4460
 # 对比接口（每个方法都要能对上轮次；没测的格子必须是 null）
 curl -s 'http://127.0.0.1:4460/api/compare?method=dream_rsi' | python3 -m json.tool
 
-# 覆盖矩阵（totals.valid 必须等于 totals.expected；rrsi 只能在 excluded[] 里）
+# 覆盖矩阵（仍在服务端，但**没有屏在读它**；totals.valid 必须等于 totals.expected）
 curl -s 'http://127.0.0.1:4460/api/coverage' | python3 -m json.tool
 
 # 只读约束（不应出现非 GET）
@@ -487,7 +484,7 @@ grep -n "do_POST\|do_PUT\|do_DELETE" server.py   # 无输出
 ```
 
 `uat/smoke.py` 是工作区里的只读 UAT（浏览器实测）；它只发 GET，不启 driver。当前
-**37 项**（删掉了对话/技能卡与方法页的 5 项、加了 1 项覆盖矩阵；见
+**36 项**（删掉了对话/技能卡、方法页、覆盖屏共 6 项；见
 `uat/uat-2026-10-19.md`）。没有它也可以直接用浏览器打开四屏检查。
 
 > 注意：`static/` 是即改即生效的，`server.py` 不是。改了 `server.py` 以后，正在跑的那个
