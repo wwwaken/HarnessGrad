@@ -107,6 +107,10 @@ NOT_PLATFORM = {
                "2026-10-19, when `test_every_top_level_entry_is_classified` caught it after "
                "the site moved from `web/` to `website/`: `web/` stayed in the list and the "
                "new directory was never written down on either side",
+    "console": "the read-only audit console (`console/`): it **reads** `runs/` and the "
+               "platform's own exports and writes nothing; no run executes it, so editing it "
+               "cannot change what a measurement does. Listed here rather than in PLATFORM "
+               "for the same reason as `web`: a human reads it, a run does not",
     "web": "the frontend SPA (`web/`): a **human** reads it, a run does not. It is built "
            "from `runs/` through a read API and its build output changes on every build, "
            "so hashing it would fail a run for a reason that cannot change a number. "
