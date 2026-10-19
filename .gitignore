@@ -446,3 +446,8 @@ tests/fixtures/hg_*/
 # would add ~11 MB of PNGs to the repository for no reader.
 console/uat/evidence/
 console/.cache/
+
+# Launch output from the console's run skill: per-run logs and the append-only
+# launch ledger (time, run id, full argv). Outputs, not source.
+console/.launch/
+console/.launch-log.jsonl

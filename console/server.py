@@ -48,6 +48,8 @@ import json
 import math
 import os
 import pathlib
+import subprocess
+import sys
 import re
 import shutil
 import threading
@@ -443,6 +445,147 @@ def kind_counts(rows: list[dict]) -> dict[str, int]:
 
 
 # ─────────────────────────────────────────────────────── 各接口
+# ─────────────────────────────────────────────────────── 对话 / 跑实验
+#: 这是控制台**唯一的写接口**。三条纪律：① 有 driver 活着就拒绝；② run_id 由服务端生成；
+#: ③ 每次启动追加一行到 `.launch-log.jsonl`（时间、run_id、完整 argv），出事能倒查。
+LAUNCH_DIR = ROOT / ".launch"
+LAUNCH_LOG = ROOT / ".launch-log.jsonl"
+BUDGET_DIR = pathlib.Path("/tmp/hg-rsi10-lb")
+DRIVER = PLATFORM / "driver.py"
+
+
+def adapters() -> list[dict]:
+    """`data/datasets/*.py` 里 `KIND = "dataset"` 的那些。不是适配器的模块不进选择器。"""
+    out = []
+    for f in sorted((PLATFORM / "data" / "datasets").glob("*.py")):
+        if f.name.startswith("_"):
+            continue
+        text = f.read_text(encoding="utf-8", errors="replace")[:4000]
+        if not re.search(r'^KIND\s*=\s*"dataset"', text, re.M):
+            continue
+        out.append({"name": f.stem, "path": f"data/datasets/{f.name}"})
+    return out
+
+
+def base_harnesses() -> list[str]:
+    root = PLATFORM / "base_harness"
+    if not root.is_dir():
+        return []
+    return sorted(p.name for p in root.iterdir()
+                  if p.is_dir() and (p / "harness.json").is_file())
+
+
+def improvers() -> list[dict]:
+    data = read_json(PLATFORM / "improvers" / "improvers.json")
+    wanted = data.get("improvers") if isinstance(data.get("improvers"), dict) else {}
+    out = []
+    for name, spec in sorted(wanted.items()):
+        if not isinstance(spec, dict):
+            continue
+        out.append({"name": name, "model": spec.get("model") or "", "kind": spec.get("kind") or ""})
+    return out
+
+
+def live_drivers_by_run() -> dict[str, dict]:
+    """在跑的 driver：读 /proc，不 grep ps（`ps` 会截断 cmdline）。"""
+    found: dict[str, dict] = {}
+    for entry in pathlib.Path("/proc").iterdir():
+        if not entry.name.isdigit():
+            continue
+        try:
+            argv = [a.decode("utf-8", "replace") for a in (entry / "cmdline").read_bytes().split(b"\0") if a]
+        except OSError:
+            continue
+        if not any(a.endswith("driver.py") or a == "driver.py" for a in argv):
+            continue
+        run_id = ""
+        if "--run-id" in argv:
+            i = argv.index("--run-id")
+            run_id = argv[i + 1] if i + 1 < len(argv) else ""
+        found[run_id or f"pid-{entry.name}"] = {"pid": int(entry.name), "argv": argv[:6]}
+    return found
+
+
+def launch_form() -> dict:
+    """选择器的取值全部来自平台自己，不写死。"""
+    names = adapters()
+    return {"datasets": names, "harnesses": base_harnesses(), "improvers": improvers(),
+            "pools": list(POOLS), "defaults": {"dataset": "alfworld", "harness": "loop",
+                                             "rounds": 10, "jobs": 12, "trials": 1,
+                                             "sampling": "all"}}
+
+
+def launch_argv(form: dict, run_id: str) -> list[str]:
+    """预览与真正起跑**共用这一个函数** —— 否则"预览的命令"和"实际跑的命令"迟早分叉。"""
+    jobs = int(form["jobs"])
+    return [sys.executable, str(DRIVER),
+            "--harness", str(form["harness"]),
+            "--dataset", str(form["dataset"]),
+            "--split", "declared",
+            "--side", "train",
+            "--sampling", str(form.get("sampling") or "all"),
+            "--rounds", str(int(form["rounds"])),
+            "--trials", str(int(form["trials"])),
+            "--jobs", str(jobs),
+            "--improver", str(form["improver"]),
+            "--improver-model", str(form["improver_model"]),
+            "--run-id", run_id,
+            "--runs-root", str(RUNS),
+            "--gpu-budget", str(jobs),
+            "--gpu-budget-dir", str(BUDGET_DIR)]
+
+
+def new_run_id(form: dict) -> str:
+    stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+    tag = re.sub(r"[^A-Za-z0-9]+", "_", str(form["dataset"])) or "run"
+    return f"rsi10-{stamp}-{tag}-{form['improver']}-train"
+
+
+def guard_launch(form: dict) -> tuple[int, dict]:
+    """返回 (状态码, 错误体)；200 表示可以起跑。判断顺序是有意的：先安全，再合法性。"""
+    live = live_drivers_by_run()
+    if live:
+        return 409, {"error": "driver-running", "detail": "已经有一个 driver 在跑，先等它结束",
+                     "live": [{"run_id": k, **v} for k, v in live.items()]}
+    if not BUDGET_DIR.is_dir():
+        return 400, {"error": "no-budget-dir",
+                     "detail": f"GPU 预算目录不存在：{BUDGET_DIR}（要先排窗口）"}
+    known = {a["name"] for a in adapters()}
+    if form.get("dataset") not in known:
+        return 400, {"error": "unknown-dataset",
+                     "detail": f"{form.get('dataset')!r} 不是 KIND=dataset 的适配器"}
+    if form.get("harness") not in set(base_harnesses()):
+        return 400, {"error": "unknown-harness", "detail": "基线 harness 不存在"}
+    if not form.get("improver"):
+        return 400, {"error": "no-improver", "detail": "train 侧必须指定改进器"}
+    for key, lo, hi in (("rounds", 1, 20), ("jobs", 1, 64), ("trials", 1, 3)):
+        try:
+            value = int(form[key])
+        except (KeyError, TypeError, ValueError):
+            return 400, {"error": "bad-value", "detail": f"{key} 必须是整数"}
+        if not lo <= value <= hi:
+            return 400, {"error": "bad-value", "detail": f"{key} 必须在 {lo}..{hi}"}
+    return 200, {}
+
+
+def api_launch(form: dict) -> tuple[int, dict]:
+    code, err = guard_launch(form)
+    if code != 200:
+        return code, err
+    run_id = new_run_id(form)
+    argv = launch_argv(form, run_id)
+    LAUNCH_DIR.mkdir(parents=True, exist_ok=True)
+    log_path = LAUNCH_DIR / f"{run_id}.log"
+    with log_path.open("ab") as handle:
+        subprocess.Popen(argv, stdout=handle, stderr=subprocess.STDOUT,
+                         start_new_session=True, cwd=str(PLATFORM))
+    with LAUNCH_LOG.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps({"at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                                 "run_id": run_id, "argv": argv, "by": "console chat"},
+                                ensure_ascii=False) + "\n")
+    return 202, {"run_id": run_id, "argv": argv, "log": str(log_path.relative_to(ROOT))}
+
+
 def api_health() -> dict:
     live = live_drivers()
     rows = all_rows()
@@ -2295,6 +2438,17 @@ class Handler(BaseHTTPRequestHandler):
                     return self._error("name query parameter is required", 400)
                 data = api_trace(parts[2], int(parts[4]), name)
                 return self._send(data) if data else self._send({"error": "not found"}, 404)
+            if parts[1:] == ["launch", "form"]:
+                return self._send(launch_form())
+            if parts[1:] == ["launch", "preview"]:
+                # 预览走**和起跑同一个** launch_argv()，只是 run_id 用占位符。
+                base = launch_form()["defaults"]
+                form = {k: (query.get(k) or [base[k]])[0] for k in
+                        ("dataset", "harness", "rounds", "jobs", "trials", "sampling")}
+                form["improver"] = (query.get("improver") or ["dsh"])[0]
+                form["improver_model"] = (query.get("improver_model") or ["deepseek-flash"])[0]
+                return self._send({"argv": launch_argv(form, "rsi10-<UTC>-<dataset>-<improver>-train"),
+                                   "form": form})
             if parts[1:] == ["methods"]:
                 return self._send({"rows": api_methods()})
             if len(parts) == 3 and parts[1] == "methods":
@@ -2357,6 +2511,25 @@ class Handler(BaseHTTPRequestHandler):
         except (ValueError, OSError) as exc:
             return self._send({"error": str(exc)}, 500)
         return self._error("unknown endpoint", 404)
+
+    def do_POST(self) -> None:  # noqa: N802
+        """控制台唯一的写接口：起一次实验。别的一律 404。"""
+        url = urlparse(self.path)
+        if url.path.strip("/") != "api/runs":
+            return self._send({"error": "unknown endpoint"}, 404)
+        try:
+            length = int(self.headers.get("Content-Length") or 0)
+            body = self.rfile.read(length) if length else b"{}"
+            form = json.loads(body.decode("utf-8") or "{}")
+            if not isinstance(form, dict):
+                raise ValueError("body must be an object")
+        except (ValueError, UnicodeDecodeError) as exc:
+            return self._send({"error": "bad-json", "detail": str(exc)}, 400)
+        try:
+            code, payload = api_launch(form)
+        except OSError as exc:
+            return self._send({"error": "launch-failed", "detail": str(exc)}, 500)
+        return self._send(payload, code)
 
     def _static(self, path: str) -> None:
         rel = unquote(path.lstrip("/")) or "index.html"
