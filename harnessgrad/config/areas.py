@@ -293,6 +293,14 @@ class RunConfig:
 
 
 @dataclass(frozen=True)
+class JudgeConfig:
+    """An independently configured verifier model; never forwarded to the actor."""
+    model: str | None = _var("HG_JUDGE_MODEL", None, "Explicit verifier judge model.", kind="opt")
+    base_url: str | None = _var("HG_JUDGE_BASE_URL", None, "Verifier judge endpoint.", kind="opt")
+    api_key: str | None = _var("HG_JUDGE_API_KEY", None, "Verifier-only credential.", kind="opt", secret=True)
+
+
+@dataclass(frozen=True)
 class Config:
     """Every area of configuration, as one value.
 
@@ -308,6 +316,7 @@ class Config:
     egress: EgressConfig
     runtime: RuntimeConfig
     storage: StorageConfig
+    judge: JudgeConfig = field(default_factory=JudgeConfig)
 
 
 __all__ = ["AgentConfig", "MethodConfig", "ImproverConfig", "EnvironmentConfig",

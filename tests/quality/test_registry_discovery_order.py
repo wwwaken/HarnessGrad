@@ -40,6 +40,7 @@ EXPECTED_DATASETS = (
     "gsm8k",
     "hotpotqa",
     "jericho",
+    "kumo",
     "livecodebench",
     "locomo",
     "musique",
