@@ -113,11 +113,6 @@ NOT_PLATFORM = {
                "platform's own exports and writes nothing; no run executes it, so editing it "
                "cannot change what a measurement does. Listed here rather than in PLATFORM "
                "for the same reason as `web`: a human reads it, a run does not",
-    "web": "the frontend SPA (`web/`): a **human** reads it, a run does not. It is built "
-           "from `runs/` through a read API and its build output changes on every build, "
-           "so hashing it would fail a run for a reason that cannot change a number. "
-           "`harnessgrad/api/` -- the server the SPA talks to -- *is* platform, because a "
-           "run's reader can be misled by it",
     "reports": "audit, evidence and review output that used to sit in the repository root "
                "and was moved here so the root stays navigable. It is written by humans and "
                "review sessions after a measurement, never read by a run; hashing it would "

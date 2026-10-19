@@ -455,16 +455,26 @@ DRIVER = PLATFORM / "driver.py"
 
 
 def adapters() -> list[dict]:
-    """`data/datasets/*.py` 里 `KIND = "dataset"` 的那些。不是适配器的模块不进选择器。"""
-    out = []
-    for f in sorted((PLATFORM / "data" / "datasets").glob("*.py")):
-        if f.name.startswith("_"):
-            continue
-        text = f.read_text(encoding="utf-8", errors="replace")[:4000]
-        if not re.search(r'^KIND\s*=\s*"dataset"', text, re.M):
-            continue
-        out.append({"name": f.stem, "path": f"data/datasets/{f.name}"})
-    return out
+    """可选数据集 = 平台自己发布的清单，不自己扫目录。
+
+    这里原来按 `data/datasets/*.py` 前 4 KB 里找 `KIND = "dataset"`，结果漏了 9 个
+    （`alfworld`、`agentdojo`、`gaia`、`terminal_bench`… —— 它们的 KIND 写在文件更后面）。
+    `data/scaffolds/registry.py::published()` 被文档指定为"哪些数据集存在"的唯一答案，
+    所以直接问它；只有它导不进来时才退回扫目录。
+    """
+    try:
+        sys.path.insert(0, str(PLATFORM))
+        from data.scaffolds.registry import published  # noqa: PLC0415
+        return [{"name": name, "path": f"data/datasets/{name}.py"} for name in published()]
+    except Exception:  # noqa: BLE001 - 平台不可导入时仍然给一个能用的列表
+        out = []
+        for f in sorted((PLATFORM / "data" / "datasets").glob("*.py")):
+            if f.name.startswith("_"):
+                continue
+            text = f.read_text(encoding="utf-8", errors="replace")
+            if re.search(r'^KIND\s*=\s*"dataset"', text, re.M):
+                out.append({"name": f.stem, "path": f"data/datasets/{f.name}"})
+        return out
 
 
 def base_harnesses() -> list[str]:
