@@ -132,11 +132,12 @@ def _environment_shape(env: dict) -> dict | None:
     in:
 
     * the image is `env["image"]`, which `container_mod.run` starts;
-    * the bounds are `container_mod.envelope(None)`, because `container_mod.run` takes no
-      `limits` and so hands `container_mod.command` none, whose defaults are docker's
-      (2 cpus, 4g, 1024 pids). **Measured**: an environment declaring `cpus: 4` still gets
-      `--cpus 2` on this path, so reading `env["cpus"]` here would be a second,
-      hand-written description of a container the platform does not start;
+    * the bounds are `container_mod.envelope(container_mod.limits_from(env))` -- the same
+      envelope the launcher passes -- **not** the raw declaration. Until `container_mod.run`
+      took a `limits` keyword it forwarded none (signature at `container.py:607-615`, the
+      `command()` call at `:638`), so a `cpus: 4` environment ran at `--cpus 2`; the receipt
+      has to describe the flags the container gets, so it is derived from them and
+      `_declared_but_not_applied` checks the two against each other;
     * `read_only` is that launcher's own default (it passes no `read_only`), which is what
       decides whether the rootfs in the receipt is the one the harness saw;
     * the network is the declared **policy word** (`none`/`services`/`bridge`) -- which is
@@ -153,7 +154,7 @@ def _environment_shape(env: dict) -> dict | None:
         return None
     if not env.get("image"):
         return None
-    limits = container_mod.envelope(None)
+    limits = container_mod.envelope(container_mod.limits_from(env))
     return {"image": env["image"], "cpus": limits["cpus"], "memory_mb": limits["memory_mb"],
             "pids": limits["pids"], "read_only": True,
             "network": env.get("network", "none")}
@@ -162,18 +163,23 @@ def _environment_shape(env: dict) -> dict | None:
 def _declared_but_not_applied(env: dict, shape: dict) -> str | None:
     """Why the environment's declared bounds are not the launcher's, or `None`.
 
-    A receipt is evidence about one container. If a dataset declared 4 cpus and the
-    launcher gives 2, admitting the task on a receipt for the declared numbers would be the
-    specific lie this gate exists to prevent -- so the task keeps its refusal and the
-    reason names the launcher.
+    A **tripwire**, not the mechanism: with the declaration now forwarded to
+    `container_mod.run` this cannot fire for a launcher that was given it, and it is kept
+    because the defect it catches is silent by construction -- a launch that drops the
+    envelope produces a container whose receipt is about different numbers, and `ok: True`
+    on the wrong container is worse than a refusal. One path can still trip it, and only
+    because the declaration cannot be expressed: `limits_from` truncates `memory_mb` with
+    `int()`, so a fractional value (4096.5) is applied as 4096 and the task keeps its
+    refusal with this reason rather than a receipt for a bound it did not get.
     """
     for field, default in (("cpus", 2), ("memory_mb", 4096)):
         declared, applied = float(env.get(field, default)), float(shape[field])
         if abs(declared - applied) > 1e-9:
-            return (f"the environment declares {field}={declared:g} and the launcher applies "
-                    f"{field}={applied:g} (`container_mod.run` passes no `limits`, so "
-                    f"`command()` uses docker's defaults); a receipt would describe a "
-                    f"container the score does not come from")
+            return (f"the environment declares {field}={declared:g} but the launcher "
+                    f"applies {field}={applied:g}; the declaration did not survive the "
+                    f"trip through `limits_from` to the container, and a receipt for the "
+                    f"declared number would describe a container the score does not come "
+                    f"from")
     return None
 
 
@@ -702,6 +708,12 @@ def _run_one(repo: Path, task: dict, timeout_s: int | None = None,
                     task_mount=task_mount, harness_root=repo,
                     state_dirs=(state_dir,), cwd=task_mount, env=child_env,
                     timeout_s=timeout_s, network=network,
+                    # The declared envelope, finally reaching the launcher. Until
+                    # `container_mod.run` took a `limits` keyword it had no way to pass
+                    # one on, so every mount-state `exec` container got `command()`'s
+                    # defaults whatever `env.cpus`/`env.memory_mb` said -- measured: a
+                    # `cpus: 4` declaration ran at `--cpus 2`.
+                    limits=container_mod.limits_from(env_spec),
                     # Stated rather than omitted: the harness gets **no** view of a
                     # service's recording, and the empty list is that decision.
                     readonly_paths=runtime,

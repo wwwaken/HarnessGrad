@@ -153,18 +153,31 @@ def test_a_files_environment_still_uses_the_host_sandbox(launched, tmp_path):
 
 # ------------------------------------------------- the probe is the same container ---
 
-def test_the_probe_spec_is_the_launcher_envelope_not_the_declaration(monkeypatch):
-    """A 4-cpu declaration must not become a 4-cpu receipt: the launcher gives 2."""
-    env = _env(cpus=4)
+def test_the_probe_spec_is_the_launcher_envelope_not_the_declaration():
+    """The receipt describes the flags the container gets, derived from `limits_from`."""
+    env = _env(cpus=4, memory_mb=8192)
     shape = runner._environment_shape(env)
-    applied = container_mod.envelope(None)
-    assert shape["cpus"] == applied["cpus"] == 2.0
-    assert shape["memory_mb"] == applied["memory_mb"] == 4096
+    applied = container_mod.envelope(container_mod.limits_from(env))
+    assert (shape["cpus"], shape["memory_mb"]) == (applied["cpus"], applied["memory_mb"])
+    assert (shape["cpus"], shape["memory_mb"]) == (4.0, 8192)
     assert shape["image"] == AGENT
-    assert runner._declared_but_not_applied(env, shape), (
-        "a declaration the launcher does not apply must not be admitted")
+    assert runner._declared_but_not_applied(env, shape) is None, (
+        "a launcher that was given the declaration must not trip the guard")
     # And the image the launcher starts is the one probed, not the service's.
     assert shape["image"] != SERVICE
+
+
+def test_the_guard_still_trips_on_a_declaration_the_launcher_cannot_express():
+    """`limits_from` truncates `memory_mb`, so 4096.5 MB is applied as 4096.
+
+    That is the one path left where the declaration does not survive to the container, and
+    a task on it keeps its refusal instead of getting a receipt for a bound it did not get.
+    """
+    env = _env(memory_mb=4096.5)
+    shape = runner._environment_shape(env)
+    assert shape["memory_mb"] == 4096
+    problem = runner._declared_but_not_applied(env, shape)
+    assert problem and "4096.5" in problem and "4096" in problem
 
 
 def test_a_matching_declaration_is_admitted_by_the_shape_alone():
@@ -202,3 +215,88 @@ def test_container_state_environments_are_not_probed_yet(monkeypatch):
     assert shape is None
     assert runner._observations_for({"a": _env(state="container")},
                                     [{"task_id": "a"}], run_id="r") == {}
+
+
+# ------------------------------------------- the declaration reaches the launcher ---
+
+def _flags(argv: list[str]) -> list[str]:
+    """The resource flags, in the order `command()` writes them."""
+    return [argv[argv.index(flag)] + " " + argv[argv.index(flag) + 1]
+            for flag in ("--pids-limit", "--memory", "--cpus")]
+
+
+#: What `container_mod.command` emitted before the declaration was forwarded. Both
+#: datasets on the `state: "mount"` exec path declare this envelope (appworld and
+#: tau_bench: `cpus: 2, memory_mb: 4096`), and the whole point of the default spelling is
+#: that the argv those two runs produce does not change.
+_HEAD_FLAGS = ["--pids-limit 1024", "--memory 4g", "--cpus 2"]
+
+
+@pytest.mark.parametrize("workdir", ["/appworld", "/app"])
+def test_a_declared_envelope_produces_the_argv_it_produced_before(tmp_path, workdir):
+    """appworld- and tau_bench-shaped declarations: byte-identical flags, `2` not `2.0`."""
+    declared = container_mod.limits_from({"cpus": 2, "memory_mb": 4096})
+    forwarded = container_mod.command(["true"], image=AGENT, task_dir=tmp_path,
+                                      task_mount=workdir, limits=declared)
+    before = container_mod.command(["true"], image=AGENT, task_dir=tmp_path,
+                                   task_mount=workdir)
+    assert forwarded == before, "a declaration that states the default changed the argv"
+    assert _flags(forwarded) == _HEAD_FLAGS
+    assert "2.0" not in forwarded
+
+
+def test_run_without_limits_is_the_argv_it_was(tmp_path, monkeypatch):
+    """`limits=None` is what the verifier passes, and it must not move."""
+    captured: list[list[str]] = []
+
+    def fake_run(cmd, **kwargs):
+        captured.append(list(cmd))
+        monkeypatch.setattr(container_mod, "remove_container", lambda name: None)
+        return subprocess.CompletedProcess(cmd, 0, "", "")
+
+    monkeypatch.setattr(container_mod.subprocess, "run", fake_run)
+    monkeypatch.setattr(container_mod, "remove_container", lambda name: None)
+    container_mod.run(["true"], image=AGENT, task_dir=tmp_path, task_mount="/app")
+    assert _flags(captured[0]) == _HEAD_FLAGS
+
+
+def test_a_wider_declaration_reaches_the_flags(tmp_path):
+    """The defect this commit closes: `cpus: 4, memory_mb: 8192` used to run at 2 / 4g."""
+    argv = container_mod.command(
+        ["true"], image=AGENT, task_dir=tmp_path, task_mount="/app",
+        limits=container_mod.limits_from({"cpus": 4, "memory_mb": 8192}))
+    assert _flags(argv) == ["--pids-limit 1024", "--memory 8192m", "--cpus 4"]
+    applied = container_mod.envelope(container_mod.limits_from(
+        {"cpus": 4, "memory_mb": 8192}))
+    assert (applied["cpus"], applied["memory_mb"]) == (4.0, 8192)
+
+
+def test_the_runner_passes_the_declaration(launched, tmp_path):
+    """The call site, not just the plumbing underneath it."""
+    repo = _repo(tmp_path)
+    _run(repo, _env(cpus=4, memory_mb=8192))
+    call = launched["container_run"][0]
+    assert call["limits"] == container_mod.limits_from({"cpus": 4, "memory_mb": 8192}), (
+        "the runner must hand the launcher the declared envelope")
+
+
+def test_the_verifier_call_site_still_gets_no_envelope():
+    """Its container is a different contract; forwarding the harness's envelope into it
+    would change the check's resources in a commit about admission."""
+    import ast
+    import inspect
+
+    from eval.verification import verifier
+
+    tree = ast.parse(inspect.getsource(verifier))
+    calls = [node for node in ast.walk(tree)
+             if isinstance(node, ast.Call)
+             and isinstance(node.func, ast.Attribute)
+             and node.func.attr == "run"
+             and isinstance(node.func.value, ast.Name)
+             and node.func.value.id == "container_mod"]
+    assert calls, "the verifier's container launch moved; update this test"
+    for call in calls:
+        keywords = {keyword.arg for keyword in call.keywords}
+        assert "limits" not in keywords, (
+            "the verifier's fresh container must keep `command()`'s default envelope")

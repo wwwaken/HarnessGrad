@@ -43,9 +43,11 @@ def _tasks(*ids: str) -> list[dict]:
     return [{"task_id": tid, "goal": "g"} for tid in ids]
 
 
-def _receipt(image: str = AGENT) -> dict:
+def _receipt(image: str = AGENT, spec: dict | None = None) -> dict:
+    """What `observe` returns for `spec`: `declared` echoes the envelope it was asked for."""
+    spec = dict(spec or {"cpus": 2.0, "memory_mb": 4096})
     return {"schema": co.SCHEMA, "image": image, "image_id": "sha256:" + "e" * 64,
-            "declared": {"cpus": 2.0, "memory_mb": 4096}, "observed": {"cpus_docker": 2.0},
+            "declared": spec, "observed": {"cpus_docker": spec["cpus"]},
             "ok": True, "problems": [], "unobserved": [], "covers": list(co.COVERS),
             "probe_seconds": 1.3}
 
@@ -64,7 +66,7 @@ def _probe(monkeypatch, receipts: dict[str, dict] | None = None, *, raises=None)
                       "run_id": run_id, "read_only": read_only})
         if raises is not None:
             raise raises
-        chosen = (receipts or {}).get(image) or _receipt(image)
+        chosen = (receipts or {}).get(image) or _receipt(image, spec)
         return SimpleNamespace(receipt=lambda: dict(chosen))
 
     monkeypatch.setattr(co, "observe_for", fake_observe_for)
@@ -111,20 +113,37 @@ def test_only_a_service_environment_of_the_launched_state_is_probed(monkeypatch)
     assert calls == []
 
 
-def test_a_declaration_the_launcher_does_not_apply_gets_no_receipt(monkeypatch):
-    """Measured: `container_mod.run` passes no `limits`, so a 4-cpu declaration still gets
-    `--cpus 2`. A receipt would then describe a container the score does not come from."""
+def test_a_wider_declaration_is_probed_and_its_receipt_admits_it(monkeypatch):
+    """The test that closes the defect, end to end.
+
+    A `cpus: 4, memory_mb: 8192` declaration used to be applied as 2 cpus / 4g. Now the
+    launcher receives it, the probe measures **that** envelope, and the receipt admits the
+    task -- so the admission is evidence about the container the harness really runs in.
+    """
+    env = _env(cpus=4, memory_mb=8192)
     calls = _probe(monkeypatch)
-    assert runner._observations_for({"a": _env(cpus=4)}, _tasks("a"), run_id="r") == {}
+    observations = runner._observations_for({"a": env}, _tasks("a"), run_id="r")
+    assert calls[0]["spec"] == {"cpus": 4.0, "memory_mb": 8192}
+    assert observations["a"]["declared"]["cpus"] == 4.0
+    assert observations["a"]["declared"]["memory_mb"] == 8192
+    refusal = runner._refuse_unobserved_policies(
+        {"task_id": "a"}, env, None, run_id="r", observation=observations["a"])
+    assert refusal is None, "the wider declaration must be admitted on its own receipt"
+
+
+def test_a_declaration_the_launcher_cannot_express_gets_no_receipt(monkeypatch):
+    """`limits_from` truncates `memory_mb`, so 4096.5 is applied as 4096.
+
+    The tripwire is kept for exactly this class -- a declaration that does not survive the
+    trip to the container -- and it must keep refusing rather than admit on a receipt for
+    a bound the harness did not get.
+    """
+    calls = _probe(monkeypatch)
+    assert runner._observations_for({"a": _env(memory_mb=4096.5)}, _tasks("a"),
+                                    run_id="r") == {}
     assert calls == []
     # And the same shape is not retried, or 585 tasks would print it 585 times.
-    assert runner._observations_for({"a": _env(cpus=4)}, _tasks("a"), run_id="r") == {}
-    assert calls == []
-
-
-def test_a_memory_declaration_the_launcher_does_not_apply_gets_no_receipt(monkeypatch):
-    calls = _probe(monkeypatch)
-    assert runner._observations_for({"a": _env(memory_mb=8192)}, _tasks("a"),
+    assert runner._observations_for({"a": _env(memory_mb=4096.5)}, _tasks("a"),
                                     run_id="r") == {}
     assert calls == []
 

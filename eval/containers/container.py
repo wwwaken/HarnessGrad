@@ -612,8 +612,15 @@ def run(argv: list[str], *, image: str, task_dir: Path, task_mount: str,
         extra_mounts: tuple[str, ...] = (),
         readonly_paths: tuple[Path, ...] = (),
         immutable_runtimes: tuple[tuple[Path, str], ...] = (),
-        ) -> subprocess.CompletedProcess:
+        limits: dict | None = None) -> subprocess.CompletedProcess:
     """`subprocess.run` shape, inside a **fresh** container. Same return type.
+
+    `limits` is the caller's resource envelope, forwarded to `command()`. It is a keyword
+    with the same `None` default `command()` has, and that default is load-bearing: before
+    it existed, **this function had no way to pass one on**, so every container it started
+    got `command()`'s defaults (2 cpus / 4g / 1024 pids) no matter what the environment
+    declared. `limits=None` therefore still means "the defaults", which is what
+    `eval/verification/verifier.py` relies on for the check's container.
 
     Fresh per call, not one container reused for the harness and then the check. The
     property §2.5.6 asks for -- that nothing the harness started is still running when
@@ -639,7 +646,8 @@ def run(argv: list[str], *, image: str, task_dir: Path, task_mount: str,
                   harness_root=harness_root, state_dirs=state_dirs, cwd=cwd,
                   env=env, network=network, read_only=read_only,
                   task_dir_writable=task_dir_writable, extra_mounts=extra_mounts,
-                  readonly_paths=readonly_paths, immutable_runtimes=immutable_runtimes)
+                  readonly_paths=readonly_paths, immutable_runtimes=immutable_runtimes,
+                  limits=limits)
     # A client timeout kills `docker run`, not the daemon-side container. `--rm`
     # only takes effect when that container exits, so retain an exact per-call
     # identity and reap it before callers tear down recordings or their network.
@@ -1079,14 +1087,28 @@ def envelope(limits: dict | None = None) -> dict:
     nobody runs.
 
     `limits=None` is not "no limits": it is docker's default CPU, memory and PID envelope,
-    which is what `command()` has always applied when a caller passes none. `numbers` are
+    which is what `command()` has always applied when a caller passes none. The numbers are
     the same values as `memory_mb`, so a caller that has to compare an envelope against a
     declaration does not have to parse `4g`.
+
+    **The memory spelling is the default's when the value is the default.** `limits_from`
+    renders 4096 MB as `4096m`, and `--memory 4096m` is the same request as `--memory 4g`
+    -- but the argv is what a run's log and receipts quote, and a dataset whose envelope
+    did not change must not read as though it had. Measured against the two datasets on
+    this path (`appworld`, `tau_bench`), which both declare 2 cpus / 4096 MB.
     """
     limits = limits or {}
-    memory = str(limits.get("memory", "4g"))
+    memory = str(limits.get("memory", DEFAULT_MEMORY))
+    memory_mb = _memory_mb(memory)
+    if memory_mb == _memory_mb(DEFAULT_MEMORY):
+        memory = DEFAULT_MEMORY
     return {"cpus": float(limits.get("cpus", 2)), "pids": int(limits.get("pids", 1024)),
-            "memory": memory, "memory_mb": _memory_mb(memory)}
+            "memory": memory, "memory_mb": memory_mb}
+
+
+#: `command()`'s own default memory flag. Named because `envelope()` compares against it:
+#: a request for exactly 4096 MB keeps this spelling rather than `4096m`.
+DEFAULT_MEMORY = "4g"
 
 
 def _memory_mb(memory: str) -> int:
