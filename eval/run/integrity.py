@@ -39,6 +39,8 @@ Read the numbers above before trusting a score from a harness you did not write.
 from __future__ import annotations
 
 import hashlib
+import os
+import time
 from pathlib import Path
 
 #: What counts as the platform: everything a run reads to decide what a number
@@ -154,18 +156,82 @@ def _digest(path: Path) -> str:
     return h.hexdigest()
 
 
+#: One digest per file, reused while the file's identity is unchanged.
+#:
+#: `snapshot()` is taken **around every method call** (`harnessgrad/methods.py:235`) and at
+#: both ends of a run (`eval/run/runner.py:1400`/`:1777`), and it hashed the whole platform
+#: each time: measured 2026-10-19 on `mistral`, 20,817 files and **2.4 s per call** -- twice
+#: per method call, so a 48-way batch pays seconds of pure I/O for every step it takes and
+#: the bill lands on the measurement instead of on the check.
+#:
+#: The fix is not a weaker check, it is a cheaper one. `st_ctime_ns` is in the identity on
+#: purpose: a writer can put `mtime` back with `os.utime`, but **nothing in user space can
+#: set `ctime`**, so a file that is rewritten and re-dated still fails the identity test and
+#: is re-hashed. Any write changes `ctime`, which is exactly what this check must notice.
+_DIGEST_CACHE: dict[str, tuple[tuple[int, int, int, int, int], float, str]] = {}
+_CACHE_STATS = {"hit": 0, "miss": 0}
+
+#: **A digest this fresh is not trusted.** File timestamps come from the kernel's coarse
+#: clock, so a write and the `os.utime` that re-dates it can land in the same tick and leave
+#: `(size, mtime, ctime)` identical while the bytes differ. Measured 2026-10-19: that window
+#: is a few milliseconds, and a rewrite inside it reused a stale digest in the test below.
+#: Entries younger than this are re-read; the method call this check wraps takes seconds, so
+#: the cost is paid once and the reuse still happens where it matters.
+_CACHE_MIN_AGE_S = 0.05
+
+
+def cache_stats() -> dict[str, int]:
+    """How many digests this process reused, and how many it had to read."""
+    return dict(_CACHE_STATS)
+
+
+def reset_cache() -> None:
+    """Drop the cache and its counters. Tests use this; a run never needs to."""
+    _DIGEST_CACHE.clear()
+    for key in _CACHE_STATS:
+        _CACHE_STATS[key] = 0
+
+
+def _identity(st: os.stat_result) -> tuple[int, int, int, int, int]:
+    return (st.st_dev, st.st_ino, st.st_size, st.st_mtime_ns, st.st_ctime_ns)
+
+
+def _digest_cached(path: Path) -> str:
+    """`_digest`, unless this exact file state was already hashed by this process."""
+    if os.environ.get("HG_INTEGRITY_NO_CACHE"):
+        _CACHE_STATS["miss"] += 1
+        return _digest(path)
+    identity = _identity(path.stat())
+    key = str(path)
+    cached = _DIGEST_CACHE.get(key)
+    if (cached is not None and cached[0] == identity
+            and time.monotonic() - cached[1] >= _CACHE_MIN_AGE_S):
+        _CACHE_STATS["hit"] += 1
+        return cached[2]
+    _CACHE_STATS["miss"] += 1
+    digest = _digest(path)
+    _DIGEST_CACHE[key] = (identity, time.monotonic(), digest)
+    return digest
+
+
 def snapshot(root: Path) -> dict[str, str]:
-    """Content digest of every platform file. Small: tens of files, kilobytes."""
+    """Content digest of every platform file.
+
+    Not small, whatever this docstring used to say: 20,817 files on 2026-10-19, ~2.4 s of
+    reading per call, and it is called twice per method call. Digests are reused while a
+    file's `(dev, inode, size, mtime, ctime)` is unchanged (`_digest_cached`); the *walk*
+    is not cached, so a file that appeared or disappeared is still seen.
+    """
     out: dict[str, str] = {}
     for name in PLATFORM:
         target = root / name
         if target.is_file():
-            out[name] = _digest(target)
+            out[name] = _digest_cached(target)
         elif target.is_dir():
             for p in sorted(target.rglob("*")):
                 if p.is_file() and "__pycache__" not in p.parts \
                         and not p.name.endswith(".pyc"):
-                    out[str(p.relative_to(root))] = _digest(p)
+                    out[str(p.relative_to(root))] = _digest_cached(p)
     return out
 
 
