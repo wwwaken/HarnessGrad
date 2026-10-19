@@ -171,6 +171,8 @@ that lives in `SLOW`.
 | `test_progress.py` | d | all `docker` arguments are passed to a monkeypatched `container._run_streaming`. |
 | `test_run_schema.py`, `test_sandbox.py`, `test_scienceworld_dataset.py` | c | `/tmp/...` strings are fixture *inputs* (`"/tmp/w"`, `"/tmp/x"`, archive candidates); none is bound or written. |
 | `test_test_lanes.py` | d | this document's own guard contains the literal `"docker"` in its signal table. It reads files; it binds nothing. |
+| `test_service_exec_placement.py` | b, c, d | **added with the inside-placement change.** (b) the bind is `socket.socket(AF_UNIX).bind()` on a socket under `tmp_path` — a UNIX socket created, never listened on. (c) the `hg-task-*` literals are container-side path *expectations*, and the one real container is named `unit-<uuid4>`, so two copies cannot collide. (d) most `docker` argv goes to fake launchers; the single real-daemon test uses that per-process name and **skips** when `docker` or a usable image is absent (`test_a_real_container_can_be_exec_d_into_and_is_then_removed`, 1.7 s measured on this host). |
+| `test_run_observation_wiring.py` | c, d | (c) `hg-observe-run-9-…` is an expected network-name prefix, asserted on a fake runner. (d) every `docker` argv in the file is handed to a monkeypatched runner; no daemon is touched. |
 
 ## Measurements
 

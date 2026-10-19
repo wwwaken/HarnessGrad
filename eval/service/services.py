@@ -357,12 +357,30 @@ def recording_host(recordings_root: Path, task_id: str, name: str) -> Path:
 
 
 def start(services: list[dict], *, recordings_root: Path, run_id: str,
-          task_id: str, run_seed: str) -> RunningServices:
+          task_id: str, run_seed: str,
+          exec_mounts: dict[str, tuple[str, ...]] | None = None) -> RunningServices:
     """Create the network, start every service, and wait for each to be healthy.
 
     Raises `ServiceUnavailable` — having already torn down whatever it started, so a
     failed task does not leave a network behind for the next one to inherit.
+
+    `exec_mounts` is the one way a service container gets a host tree, and it is keyed by
+    service name so a caller cannot widen a sidecar it does not run in. It exists for
+    `placement: "inside"` (`eval/containers/service_exec.py`): when the harness runs
+    *inside* a service container, that container needs the task directory, the harness
+    tree and the infrastructure sockets, and the only moment they can be added is
+    container start. Every other caller passes nothing and the "no host tree" rule below
+    stays exactly as it was.
     """
+    exec_mounts = dict(exec_mounts or {})
+    unknown = sorted(set(exec_mounts) - {svc["name"] for svc in services})
+    if unknown:
+        # A mount for a service that was not declared is a mount that silently never
+        # happened: the harness would run in a container missing the task directory and
+        # the failure would read as a broken harness.
+        raise ServiceUnavailable(
+            f"exec mounts name service(s) {unknown} that this environment does not "
+            f"declare ({[svc['name'] for svc in services]})", stage="start")
     # The same safety net `eval/container.run` carries, for the same reason: the driver
     # pins every service image before the run starts (§2.5.4), and a service started
     # from a tag would pull whatever the registry served that day.
@@ -419,10 +437,16 @@ def start(services: list[dict], *, recordings_root: Path, run_id: str,
             if record_host is not None:
                 cmd += ["--mount",
                         f"type=bind,src={record_host},dst={RECORDINGS_ROOT}/{name}"]
+            # Last, so a caller's plan cannot be shadowed by one of the platform's own
+            # mounts, and only ever for the container a caller named.
+            cmd += list(exec_mounts.get(name, ()))
             for key, value in sorted(env.items()):
                 cmd += ["-e", f"{key}={value}"]
             # No docker socket, and no host tree: a service is infrastructure the
-            # harness must not be able to read or kill its way out of (§2.5.8).
+            # harness must not be able to read or kill its way out of (§2.5.8). The one
+            # exception is `exec_mounts` above, and it is the harness's own trees moved
+            # into the container the harness runs in -- there is no second, wider tree
+            # a dataset can name.
             if "entrypoint" in svc:
                 cmd += ["--entrypoint", svc["entrypoint"]]
             cmd += [svc["image"], *svc.get("command", [])]
