@@ -22,6 +22,7 @@ import os
 import secrets
 import shlex
 import shutil
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -30,7 +31,7 @@ import data.scaffolds.registry as datasets
 from tools.improver import forbidden_reason
 from tools.improver import load_config as load_improvers
 from tools.improver import resolve as resolve_improver
-from ckpt.git_state import commit_state, manifest, stage_workspace
+from ckpt.git_state import STATE_DIRNAME, commit_state, manifest, stage_workspace
 from eval.observe.console import CONSOLE as console
 from eval.run.metrics import select_task_set
 from eval.run import metrics
@@ -304,16 +305,78 @@ def _resume_train_state(args, run_dir: Path, split, work: Path):
 
     if work.exists():
         shutil.rmtree(work)
-    stage_workspace(view, work)
-    staged_sha = commit_state(work, f"resume: round {last}")
+
+    # **The base tree has to be reachable in *this* repository, and after `--h0-from` it was
+    # not.** `mode_a` calls `reset_hard(work, h0_sha)` after every round and once more after
+    # the loop, and `reset_hard` starts with `git cat-file -t <sha>`. A resume stages only
+    # `state_after_round<last>/` into a fresh repo, so the object store holds that state and
+    # nothing else -- while `h0_sha` comes from the round-0 point, which on a shared-H0 run
+    # was measured in another repository. The result was `CalledProcessError` from
+    # `ckpt/git_state.py` twenty minutes into a paid run, on the *last* thing the run does
+    # (measured: both A-line runs, 2026-10-18 12:50Z and 12:52Z).
+    #
+    # The fix restages the base first: a tree hash is content-addressed, so committing the
+    # same files here reproduces the same `h0_sha`, and the object then exists for
+    # `reset_hard`. Restaging it is also a *check* the old path never made -- if the saved
+    # base does not hash to the address the curve already published, the two are not the
+    # same state and continuing would stitch a score to a tree it does not belong to.
+    h0_sha = (existing[0].get("identity") or {}).get("harness_sha")
+    base_state = run_dir / "state_after_round0"
+    restored_base = None
+    if h0_sha and base_state.is_dir():
+        stage_workspace(base_state, work)
+        restored_base = commit_state(work, "resume: base")
+        if restored_base != h0_sha:
+            raise ResumeRefused(
+                f"{run_dir.name}/state_after_round0/ hashes to {restored_base[:12]} but the "
+                f"run's round-0 point scored {h0_sha[:12]}; the saved base is not the state "
+                f"the curve published, so continuing would attach new rounds to a different "
+                f"harness")
+        # Keep `.git` (that is where the base object now lives) and put the state we
+        # continue from on top of it, exactly as the round loop does after measuring.
+        for child in list(work.iterdir()):
+            if child.name == ".git":
+                continue
+            shutil.rmtree(child) if child.is_dir() else child.unlink()
+        shutil.copytree(view, work, dirs_exist_ok=True, symlinks=True)
+        # `stage_workspace` creates this when it initialises a repo, and the copy above can
+        # remove it on a state saved by an older platform. The sandbox mounts a writable
+        # tmpfs over it, and a mount target has to exist.
+        (work / STATE_DIRNAME).mkdir(exist_ok=True)
+        staged_sha = commit_state(work, f"resume: round {last}")
+    else:
+        stage_workspace(view, work)
+        staged_sha = commit_state(work, f"resume: round {last}")
+        if h0_sha and not _tree_present(work, h0_sha):
+            raise ResumeRefused(
+                f"{run_dir.name} keeps no state_after_round0/, and the tree its round-0 point "
+                f"scored ({h0_sha[:12]}) is not in this repository's object store; the run "
+                f"cannot be restored to the state that score belongs to")
 
     base = _base_from_point(existing[0])
     traces_dir = run_dir / "round0_traces"
     base["traces"], base["trial_traces"] = _read_trace_bodies(traces_dir)
-    h0_sha = (existing[0].get("identity") or {}).get("harness_sha") or staged_sha
+    recorded_sha = (existing[last].get("identity") or {}).get("harness_sha")
+    # **Restaging is only a resume if it reproduces the state the last score belongs to.**
+    # The docstring above promised this check and the code did not make it; a saved state
+    # that hashes differently would have continued the curve from a tree no published point
+    # describes -- two code versions in one curve, one level below the `platform_content_sha`
+    # check above.
+    if recorded_sha and staged_sha != recorded_sha:
+        raise ResumeRefused(
+            f"state_after_round{last}/ hashes to {staged_sha[:12]} but round {last} was "
+            f"measured on {recorded_sha[:12]}; the saved state is not the state that score "
+            f"belongs to")
+    h0_sha = h0_sha or staged_sha
     return {"existing": existing, "last": last, "base": base, "h0_sha": h0_sha,
-            "recorded_sha": (existing[last].get("identity") or {}).get("harness_sha"),
-            "staged_sha": staged_sha}
+            "recorded_sha": recorded_sha,
+            "staged_sha": staged_sha, "restored_base": restored_base}
+
+
+def _tree_present(repo: Path, sha: str) -> bool:
+    """Is this tree object in `repo`'s object store? (`cat-file -e` exits 1, never raises.)"""
+    return subprocess.run(["git", "-C", str(repo), "cat-file", "-e", f"{sha}^{{tree}}"],
+                          capture_output=True).returncode == 0
 
 
 def _base_from_point(point: dict) -> dict:

@@ -17,6 +17,7 @@ import time
 from ckpt.git_state import commit_state
 from eval.observe.console import CONSOLE as console
 from eval.run.runner import evaluate
+from harnessgrad import policies
 from harnessgrad.environments import _env_record
 from harnessgrad.environments import _report_harness_failed
 from harnessgrad.environments import _report_invalid
@@ -30,6 +31,31 @@ from harnessgrad.records import _save_traces
 from harnessgrad.records import _save_verdicts
 from harnessgrad.records import _scored
 from harnessgrad.records import _write_curve
+
+def _baseline_block(path: str, point: dict) -> dict:
+    """What the frozen reference is, and why it may not describe this point.
+
+    A missing or malformed file is recorded as a problem rather than raised: the measurement
+    already happened and is valid, and it is the *comparison* that is unavailable. Raising here
+    would throw away a real score because a side file moved.
+    """
+    block: dict = {"kind": "frozen", "path": path}
+    try:
+        reference = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        block["problems"] = [f"the frozen reference could not be read: {exc}"]
+        return block
+    if not isinstance(reference, dict):
+        block["problems"] = ["the frozen reference is not one curve-point object"]
+        return block
+    block["run_id"] = reference.get("run_id")
+    block["round"] = reference.get("round")
+    block["problems"] = policies.reference_problems(
+        reference, point,
+        reference_tasks=reference.get("per_task") or {},
+        current_tasks=point.get("per_task") or {})
+    return block
+
 
 def _eval_source(args, runs_root: Path) -> tuple[Path, int]:
     """The harness state an `--side eval` run measures, and which round it was.
@@ -283,6 +309,16 @@ def _run_eval_side(*, work: Path, man: dict, run_id: str, run_dir: Path, tasks: 
     point["measured_by_platform"] = True
     point["verifier_kinds"] = sorted({(verifiers.get(t) or {}).get("kind", "answer")
                                       for t in scored})
+    # **The frozen reference's comparability belongs on the exam point too.** `mode_a` has
+    # written `baseline.problems` since the frozen-reference protocol existed; the eval side
+    # -- whose whole purpose is to be compared against that reference -- wrote nothing.
+    # Measured 2026-10-18: all eleven published exam points carry no `baseline` block, so the
+    # one fact a reader could not see is that every frozen reference was measured at
+    # `jobs=13` while these exams ran at `jobs=12`-`40`, and `jobs` is precisely the axis
+    # `policies.REFERENCE_MEASUREMENT` exists to keep visible: contention does not show up in
+    # a score.
+    if getattr(args, "baseline", None):
+        point["baseline"] = _baseline_block(args.baseline, point)
     _save_verdicts(run_dir, 0, res, [t["task_id"] for t in tasks])
     _save_traces(run_dir, 0, res.get("traces") or {}, None, split,
                  trial_traces=res.get("trial_traces"))
