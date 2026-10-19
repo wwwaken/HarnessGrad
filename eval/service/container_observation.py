@@ -33,10 +33,17 @@ Declared and observed are compared, and every disagreement is named. A value the
 not read is reported as *unobserved*, never as matching: the whole point of the gate is that
 "I could not check" must not be spelled "ok".
 
-It changes no admission behaviour by itself. Wiring it in is a separate, reviewed step.
+It changes no admission behaviour by itself: the receipt only admits a task when the
+caller hands it to `eval/run/runner.py`'s `_refuse_unobserved_policies`, and the one
+producer is `_observations_for` there. That caller derives the probe's image, bounds and
+rootfs mode from the **launcher** (`eval/containers/container.py:envelope`) rather than from
+the dataset's declaration, and refuses a receipt when the two disagree; `observe_for`
+resolves the declared `network` policy word the way the runner will, because `services` is
+a policy and not a docker network name.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import shlex
@@ -90,15 +97,21 @@ def limits_from(spec: dict) -> dict:
             "memory": f"{int(spec.get('memory_mb', 4096))}m"}
 
 
-def _docker_argv(image: str, limits: dict, network: str | None) -> list[str]:
+def _docker_argv(image: str, limits: dict, network: str | None,
+                 *, read_only: bool = True) -> list[str]:
     argv = ["docker", "run", "-d", "--rm",
             "--cpus", str(limits["cpus"]),
             "--memory", limits["memory"],
-            "--pids-limit", str(limits["pids"]),
-            "--read-only",
-            "--tmpfs", "/tmp:rw,size=64m",
-            "--network", network or "none",
-            "--entrypoint", "sleep", image, str(DEFAULT_TIMEOUT_S)]
+            "--pids-limit", str(limits["pids"])]
+    if read_only:
+        # Whether the rootfs is read-only is a property of the container being described,
+        # not of the probe: `container_mod.run` starts the harness's container read-only,
+        # and a launch that does not must not be described by a receipt that says it did.
+        # Claiming a read-only rootfs while starting a writable one would put a value in
+        # the receipt that nothing measured.
+        argv += ["--read-only", "--tmpfs", "/tmp:rw,size=64m"]
+    argv += ["--network", network or "none",
+             "--entrypoint", "sleep", image, str(DEFAULT_TIMEOUT_S)]
     return argv
 
 
@@ -172,16 +185,24 @@ def _parse_bytes(raw: str | None) -> int | None:
         return None
 
 
+def _default_runner(timeout_s: float):
+    def run(argv, stdin=None):
+        return subprocess.run(argv, input=stdin, capture_output=True, text=True,
+                              timeout=timeout_s + 30)
+    return run
+
+
 def observe(image: str, spec: dict, *, network: str | None = None,
-            runner=None, timeout_s: float = DEFAULT_TIMEOUT_S) -> Observation:
+            runner=None, timeout_s: float = DEFAULT_TIMEOUT_S,
+            read_only: bool = True) -> Observation:
     """Start one throwaway container under `spec`'s bounds and read the bounds back."""
-    runner = runner or (lambda argv, stdin=None: subprocess.run(
-        argv, input=stdin, capture_output=True, text=True, timeout=timeout_s + 30))
+    runner = runner or _default_runner(timeout_s)
     limits = limits_from(spec)
     started = time.monotonic()
     container = None
     try:
-        container = _exec(runner, _docker_argv(image, limits, network))
+        container = _exec(runner, _docker_argv(image, limits, network,
+                                               read_only=read_only))
         fields = _inspect_fields(runner, container)
         cgroup = _cgroup_dir(int(fields["pid"])) if fields.get("pid") else None
         cpu_max = _read_cgroup(cgroup, "cpu.max")
@@ -199,7 +220,7 @@ def observe(image: str, spec: dict, *, network: str | None = None,
     # than the task gets would observe the wrong thing.
     declared = {"cpus": float(limits["cpus"]), "memory_mb": int(spec.get("memory_mb", 4096)),
                 "pids": limits["pids"], "network": network or "none",
-                "rootfs_readonly": True,
+                "rootfs_readonly": bool(read_only),
                 "user": spec.get("user"), "workdir": spec.get("workdir")}
     observed = {
         "cpus_docker": (fields["nano_cpus"] or 0) / 1e9 or None,
@@ -245,6 +266,64 @@ def observe(image: str, spec: dict, *, network: str | None = None,
     return Observation(schema=SCHEMA, image=image, image_id=fields.get("image_id"),
                        declared=declared, observed=observed, problems=problems,
                        unobserved=unobserved, probe_seconds=time.monotonic() - started)
+
+
+def observe_for(image: str, spec: dict, *, network: str | None, run_id: str = "",
+                runner=None, timeout_s: float = DEFAULT_TIMEOUT_S,
+                read_only: bool = True) -> Observation:
+    """`observe` on the network the task will actually get, for an `exec` environment.
+
+    `network` here is the declared **policy** (INTERFACE.md §2.5.2): `none`, `services` or
+    `bridge`. The policy word is not a docker network name, so it cannot be handed to
+    `docker run` -- `services` is resolved per task to a private `--internal` network
+    (`eval/service/services.py:create_network`) that does not exist yet when admission is
+    decided. This creates one of the same shape, on the same flags, labelled with the same
+    run so `services.reap` can find it after a crash, probes on it, and removes it in a
+    `finally`. Probing on `--network none` instead would put `NetworkMode: none` in the
+    receipt for a task that is about to get an internal network: true about a container
+    nobody runs.
+
+    `read_only` is the **launcher's** value for the container being described
+    (`container_mod.run` defaults it to `True`; a task whose state is the container's
+    filesystem does not pass it). It is a parameter because the rootfs in the receipt has
+    to be the rootfs the harness saw, and only the caller knows which launcher ran.
+    """
+    runner = runner or _default_runner(timeout_s)
+    probe_network: str | None = None
+    if network == "services":
+        probe_network = _probe_network_name(image, spec, run_id)
+        created = runner(["docker", "network", "create", "--internal", probe_network,
+                          "--label", f"harnessgrad.run={run_id or 'run'}"], None)
+        if created.returncode != 0:
+            raise ObservationError(
+                f"could not create the observation network {probe_network}: "
+                f"{(created.stderr or '').strip()[:300]}")
+    else:
+        probe_network = network
+    try:
+        return observe(image, spec, network=probe_network, runner=runner,
+                       timeout_s=timeout_s, read_only=read_only)
+    finally:
+        if network == "services" and probe_network is not None:
+            try:                     # cleanup must never mask a probe failure
+                runner(["docker", "network", "rm", probe_network], None)
+            except Exception:        # noqa: BLE001
+                pass
+
+
+def _probe_network_name(image: str, spec: dict, run_id: str) -> str:
+    """A legal docker network name, unique per run and per observed spec.
+
+    `hg-observe-<run>-<8 hex>` rather than `hg-<run>-...` so it can never be confused with
+    a task's own network (`services.create_network`), which a task still needs at the same
+    moment. The digest is over the bounds being observed, so two environments that ask
+    for the same container share one name and cannot collide with one that asks for
+    another.
+    """
+    run = re.sub(r"[^A-Za-z0-9_.-]", "-", run_id or "run")
+    bounds = json.dumps([image, spec.get("cpus"), spec.get("memory_mb")], sort_keys=True)
+    digest = hashlib.sha256(bounds.encode()).hexdigest()[:8]
+    return f"hg-observe-{run}-{digest}"
 
 
 if __name__ == "__main__":                         # a manual probe, not a test
