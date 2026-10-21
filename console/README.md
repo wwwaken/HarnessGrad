@@ -54,6 +54,9 @@ python3 server.py --port 4460
 | `/trace.html?run=<id>&round=<n>` | 轨迹的独立页（`#/trace` 的别名）；数据只来自 `roundN_traces/` 与 `verdicts/round-N/` |
 | `/#/chat`、`/#/lab*`、`/#/methods`、`/#/compare` | 旧 hash 路由 → 一律 `replaceState` 到 `#/runs`；对话入口是 `/chat.html` |
 
+侧栏的手动展开/收起偏好会跨页面保存；如果用户还没有选择过，宽度不超过 `640px` 的
+窄屏会默认收起侧栏，避免主内容被固定侧栏挤成不可用的窄列。
+
 `#/version` 与 `#/harness` 落到同一个视图；在版本屏里改 run/轮次会把地址写成
 `#/harness/<run>/<round>`（旧地址不失效）。
 
